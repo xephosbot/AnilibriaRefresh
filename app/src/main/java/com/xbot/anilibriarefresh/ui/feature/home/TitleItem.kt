@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -66,13 +68,17 @@ private fun TitleItemContent(
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.LightGray)) {
         }
-        Column(modifier.padding(start = 16.dp).fillMaxHeight()) {
+        Column(
+            modifier
+                .padding(start = 16.dp)
+                .fillMaxHeight()) {
             Text(
                 text = title.name,
                 fontWeight = FontWeight.Bold
             )
             Text(text = title.description,
-                modifier.padding(top = 5.dp)
+                modifier
+                    .padding(top = 5.dp)
                     .weight(1f),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis)
@@ -84,7 +90,76 @@ private fun TitleItemContent(
 private fun LoadingTitleItem(
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.fillMaxWidth().height(120.dp))
+    Row(
+        modifier
+            .fillMaxWidth()
+            .height(170.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .padding(16.dp)
+    ) {
+        Box(
+            modifier
+                .size(height = 140.dp, width = 100.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.LightGray)
+        ) {
+        }
+        Column(
+            modifier
+                .padding(start = 16.dp)
+                .fillMaxHeight()) {
+            Box(
+                modifier
+                    .padding(top = 5.dp)
+                    .width(200.dp)
+                    .height(20.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Color.LightGray)
+            )
+            Box(
+                modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+                    .height(16.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Color.LightGray))
+            Box(
+                modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+                    .height(16.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Color.LightGray))
+            Box(
+                modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+                    .height(16.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Color.LightGray)
+            )
+            Row(modifier.weight(1f)) {
+                Box(
+                    modifier
+                        .width(70.dp)
+                        .height(16.dp)
+                        .align(Alignment.Bottom)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color.LightGray)
+                )
+                Box(
+                    modifier
+                        .padding(start = 8.dp)
+                        .width(70.dp)
+                        .height(16.dp)
+                        .align(Alignment.Bottom)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color.LightGray)
+                )
+            }
+        }
+    }
 }
 
 @Preview
@@ -98,5 +173,4 @@ private fun PreviewTitleItem() {
         uploadedTime = 0L
     )
     TitleItem(title = titleModel) { }
-
 }
