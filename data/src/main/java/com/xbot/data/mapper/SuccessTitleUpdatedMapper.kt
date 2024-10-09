@@ -15,7 +15,7 @@ object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<TitleUpdate, TitlePage>
                 TitleModel(
                     id = title.id,
                     name = title.names.ru ?: UNKNOWN_NAME,
-                    description = title.description,
+                    description = title.description ?: UNKNOWN_DESC,
                     posterUrl = title.posters?.small?.url,
                     uploadedTime = title.updated
                 )
@@ -25,4 +25,5 @@ object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<TitleUpdate, TitlePage>
     }
 
     private const val UNKNOWN_NAME = "Unknown Name"
+    private const val UNKNOWN_DESC = "Unknown description"
 }

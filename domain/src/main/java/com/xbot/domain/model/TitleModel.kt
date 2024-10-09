@@ -5,5 +5,5 @@ data class TitleModel(
     val name: String,
     val description: String,
     val posterUrl: String?,
-    val uploadedTime: Long
+    val uploadedTime: Long?
 )
