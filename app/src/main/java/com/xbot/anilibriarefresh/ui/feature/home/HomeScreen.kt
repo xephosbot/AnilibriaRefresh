@@ -1,21 +1,25 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.xbot.domain.model.TitleModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -24,50 +28,43 @@ fun HomeScreen(
 ) {
     val lazyTitlesItems = viewModel.titles.collectAsLazyPagingItems()
 
+    HomeScreenContent(
+        modifier = modifier,
+        items = lazyTitlesItems
+    )
+}
+
+@Composable
+private fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    items: LazyPagingItems<TitleModel>
+) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
-        modifier = modifier
+        modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding
         ) {
             items(
-                count = lazyTitlesItems.itemCount,
-                key = lazyTitlesItems.itemKey()
+                count = items.itemCount,
+                key = items.itemKey()
             ) { index ->
-                when (val title = lazyTitlesItems[index]) {
-                    null -> {
-                        ListItem(
-                            modifier = Modifier.clickable {
-
-                            },
-                            headlineContent = {
-                                Text("Загрузка")
-                            },
-                            supportingContent = {
-                                Text("Загрузка")
-                            }
-                        )
+                TitleItem(
+                    title = items[index],
+                    onClick = { index ->
+                        //TODO: действие по клику
                     }
-                    else -> {
-                        ListItem(
-                            modifier = Modifier.clickable {
-
-                            },
-                            headlineContent = {
-                                Text(title.name)
-                            },
-                            supportingContent = {
-                                Text(
-                                    text = title.description,
-                                    maxLines = 3
-                                )
-                            }
-                        )
-                    }
-                }
+                )
             }
 
-            with(lazyTitlesItems) {
+            //TODO: переделать
+            with(items) {
                 when {
                     loadState.refresh is LoadState.Loading -> {
                         item { LoadingItem() }
@@ -77,14 +74,28 @@ fun HomeScreen(
                     }
                     loadState.refresh is LoadState.Error -> {
                         val e = loadState.refresh as LoadState.Error
-                        item {
-                            ErrorItem(e.error.localizedMessage ?: "Неизвестная ошибка")
+                        scope.launch {
+                            when (snackbarHostState.showSnackbar(e.error.localizedMessage ?: "Ошибка", "Retry")) {
+                                SnackbarResult.Dismissed -> {
+                                    //TODO: On dismiss action
+                                }
+                                SnackbarResult.ActionPerformed -> {
+                                    //TODO: On action performed
+                                }
+                            }
                         }
                     }
                     loadState.append is LoadState.Error -> {
                         val e = loadState.append as LoadState.Error
-                        item {
-                            ErrorItem(e.error.localizedMessage ?: "Ошибка при загрузке следующей страницы")
+                        scope.launch {
+                            when (snackbarHostState.showSnackbar(e.error.localizedMessage ?: "Ошибка", "Retry")) {
+                                SnackbarResult.Dismissed -> {
+                                    //TODO: On dismiss action
+                                }
+                                SnackbarResult.ActionPerformed -> {
+                                    //TODO: On action performed
+                                }
+                            }
                         }
                     }
                 }
@@ -94,19 +105,8 @@ fun HomeScreen(
 }
 
 @Composable
-fun LoadingItem() {
+private fun LoadingItem() {
     Box(modifier = Modifier.fillMaxWidth()) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    }
-}
-
-@Composable
-fun ErrorItem(message: String) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = message,
-            modifier = Modifier.align(Alignment.Center),
-            color = Color.Red
-        )
     }
 }

@@ -18,8 +18,3 @@ class HomeViewModel @Inject constructor(
     val titles: Flow<PagingData<TitleModel>> = repository.getLatestTitles()
         .cachedIn(viewModelScope)
 }
-
-sealed interface UiState {
-    data object Loading : UiState
-    data class Ready(val data: List<Title>) : UiState
-}
