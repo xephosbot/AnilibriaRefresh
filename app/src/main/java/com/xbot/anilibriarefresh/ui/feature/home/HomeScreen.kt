@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.launch
@@ -53,7 +54,8 @@ private fun HomeScreenContent(
         ) {
             items(
                 count = items.itemCount,
-                key = items.itemKey()
+                key = items.itemKey(),
+                contentType = items.itemContentType { "TitleItem" }
             ) { index ->
                 TitleItem(
                     title = items[index],
@@ -80,7 +82,7 @@ private fun HomeScreenContent(
                                     //TODO: On dismiss action
                                 }
                                 SnackbarResult.ActionPerformed -> {
-                                    //TODO: On action performed
+                                    retry()
                                 }
                             }
                         }
@@ -93,7 +95,7 @@ private fun HomeScreenContent(
                                     //TODO: On dismiss action
                                 }
                                 SnackbarResult.ActionPerformed -> {
-                                    //TODO: On action performed
+                                    retry()
                                 }
                             }
                         }
