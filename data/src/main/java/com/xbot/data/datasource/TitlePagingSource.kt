@@ -3,7 +3,7 @@ package com.xbot.data.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.xbot.data.datasource.TitleDataSource.Companion.PAGE_SIZE
+import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -24,11 +24,11 @@ class TitlePagingSource @Inject constructor(
 
             val newCount = page.items.size
             val total = page.total
-            val itemsBefore = pageIndex * PAGE_SIZE
+            val itemsBefore = pageIndex * NETWORK_PAGE_SIZE
             val itemsAfter = total - (itemsBefore + newCount)
 
             val prevKey = if (pageIndex == 0) null else pageIndex - 1
-            val nextKey = if (itemsAfter == 0) null else pageIndex + 1
+            val nextKey = if (itemsAfter == 0) null else pageIndex + (params.loadSize / NETWORK_PAGE_SIZE)
 
             LoadResult.Page(
                 data = page.items,
@@ -44,7 +44,7 @@ class TitlePagingSource @Inject constructor(
 
     override fun getRefreshKey(state: PagingState<Int, TitleModel>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
-        val pageIndex = anchorPosition / PAGE_SIZE
+        val pageIndex = anchorPosition / NETWORK_PAGE_SIZE
         return pageIndex
     }
 }

@@ -22,7 +22,7 @@ class TitleDataSource @Inject constructor(
         val response = client.getTitleUpdates(
             limit = limit,
             page = page,
-            itemsPerPage = PAGE_SIZE,
+            itemsPerPage = NETWORK_PAGE_SIZE,
             filter = listOf("id", "names", "description", "posters", "updated")
         )
         response.suspendOnSuccess(SuccessTitleUpdatedMapper) {
@@ -37,6 +37,6 @@ class TitleDataSource @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     companion object {
-        const val PAGE_SIZE = 10
+        const val NETWORK_PAGE_SIZE = 10
     }
 }
