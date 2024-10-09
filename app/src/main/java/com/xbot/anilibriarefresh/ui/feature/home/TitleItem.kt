@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,13 +60,13 @@ private fun TitleItemContent(
             .fillMaxWidth()
             .height(170.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)) {
         Box(
             modifier
                 .size(height = 140.dp, width = 100.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color.LightGray)) {
+                .background(MaterialTheme.colorScheme.onSurface)) {
         }
         Column(
             modifier
@@ -95,14 +95,14 @@ private fun LoadingTitleItem(
             .fillMaxWidth()
             .height(170.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         Box(
             modifier
                 .size(height = 140.dp, width = 100.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.onSurface)
         ) {
         }
         Column(
@@ -115,7 +115,7 @@ private fun LoadingTitleItem(
                     .width(200.dp)
                     .height(20.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.onSurface)
             )
             Box(
                 modifier
@@ -123,21 +123,21 @@ private fun LoadingTitleItem(
                     .padding(top = 10.dp)
                     .height(16.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .background(Color.LightGray))
+                    .background(MaterialTheme.colorScheme.onSurface))
             Box(
                 modifier
                     .fillMaxWidth()
                     .padding(top = 5.dp)
                     .height(16.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .background(Color.LightGray))
+                    .background(MaterialTheme.colorScheme.onSurface))
             Box(
                 modifier
                     .fillMaxWidth()
                     .padding(top = 5.dp)
                     .height(16.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.onSurface)
             )
             Row(modifier.weight(1f)) {
                 Box(
@@ -146,7 +146,7 @@ private fun LoadingTitleItem(
                         .height(16.dp)
                         .align(Alignment.Bottom)
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color.LightGray)
+                        .background(MaterialTheme.colorScheme.onSurface)
                 )
                 Box(
                     modifier
@@ -155,7 +155,7 @@ private fun LoadingTitleItem(
                         .height(16.dp)
                         .align(Alignment.Bottom)
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color.LightGray)
+                        .background(MaterialTheme.colorScheme.onSurface)
                 )
             }
         }
