@@ -7,6 +7,7 @@ import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
+import kotlin.math.max
 
 class TitlePagingSource @Inject constructor(
     private val dataSource: TitleDataSource
@@ -23,7 +24,7 @@ class TitlePagingSource @Inject constructor(
             val newCount = page.items.size
             val total = page.total
             val itemsBefore = pageIndex * NETWORK_PAGE_SIZE
-            val itemsAfter = total - (itemsBefore + newCount)
+            val itemsAfter = max(total - (itemsBefore + newCount), 0)
 
             val prevKey = if (pageIndex == 0) null else pageIndex - 1
             val nextKey = if (itemsAfter == 0) null else pageIndex + (params.loadSize / NETWORK_PAGE_SIZE)
