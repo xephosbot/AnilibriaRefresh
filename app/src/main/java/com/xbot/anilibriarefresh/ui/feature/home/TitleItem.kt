@@ -5,23 +5,35 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.compose.CrossFade
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
+import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -35,16 +47,8 @@ fun TitleItem(
         label = "" //TODO: информативный label для перехода
     ) { state ->
         when (state) {
-            null -> {
-                LoadingTitleItem(modifier)
-            }
-            else -> {
-                TitleItemContent(
-                    modifier = modifier,
-                    title = state,
-                    onClick = onClick
-                )
-            }
+            null -> LoadingTitleItem(modifier)
+            else -> TitleItemContent(modifier, state, onClick)
         }
     }
 }
@@ -55,108 +59,123 @@ private fun TitleItemContent(
     title: TitleModel,
     onClick: (Int) -> Unit
 ) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .height(170.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)) {
-        Box(
-            modifier
-                .size(height = 140.dp, width = 100.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.onSurface)) {
-        }
-        Column(
-            modifier
-                .padding(start = 16.dp)
-                .fillMaxHeight()) {
-            Text(
-                text = title.name,
-                fontWeight = FontWeight.Bold
+    Surface(
+        modifier = modifier.height(192.dp),
+        onClick = { onClick(title.id) }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            PosterImage(
+                modifier = Modifier
+                    .height(160.dp)
+                    .aspectRatio(7f / 10f)
+                    .clip(RoundedCornerShape(8.dp)),
+                imageUrl = "https://anilibria.top${title.poster.src}",
+                thumbnailUrl = "https://anilibria.top${title.poster.thumbnail}"
             )
-            Text(text = title.description,
-                modifier
-                    .padding(top = 5.dp)
-                    .weight(1f),
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.fillMaxHeight()) {
+                Text(
+                    text = title.name,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = title.description,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun PosterImage(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    thumbnailUrl: String
+) {
+    val requestManager = LocalContext.current.let { remember(it) { Glide.with(it) } }
+
+    GlideImage(
+        model = imageUrl,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier,
+        transition = CrossFade,
+        loading = placeholder(ColorPainter(MaterialTheme.colorScheme.onSurface))
+    ) {
+        it.thumbnail(requestManager.asDrawable().load(thumbnailUrl)).override(10, 70)
+    }
+}
+
 
 @Composable
 private fun LoadingTitleItem(
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .height(170.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
+    Surface(
+        modifier = modifier.height(192.dp),
+        onClick = {}
     ) {
-        Box(
-            modifier
-                .size(height = 140.dp, width = 100.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.onSurface)
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-        }
-        Column(
-            modifier
-                .padding(start = 16.dp)
-                .fillMaxHeight()) {
             Box(
-                modifier
-                    .padding(top = 5.dp)
-                    .width(200.dp)
-                    .height(20.dp)
-                    .clip(RoundedCornerShape(5.dp))
+                modifier = Modifier
+                    .height(height = 160.dp)
+                    .aspectRatio(7f / 10f)
+                    .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.onSurface)
             )
-            Box(
-                modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .height(16.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(MaterialTheme.colorScheme.onSurface))
-            Box(
-                modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp)
-                    .height(16.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(MaterialTheme.colorScheme.onSurface))
-            Box(
-                modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp)
-                    .height(16.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(MaterialTheme.colorScheme.onSurface)
-            )
-            Row(modifier.weight(1f)) {
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.fillMaxHeight()) {
                 Box(
-                    modifier
-                        .width(70.dp)
-                        .height(16.dp)
-                        .align(Alignment.Bottom)
-                        .clip(RoundedCornerShape(15.dp))
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(20.dp)
+                        .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.onSurface)
                 )
-                Box(
-                    modifier
-                        .padding(start = 8.dp)
-                        .width(70.dp)
-                        .height(16.dp)
-                        .align(Alignment.Bottom)
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(MaterialTheme.colorScheme.onSurface)
-                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                repeat(2) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(16.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.onSurface)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+                Row(modifier = Modifier.weight(1f)) {
+                    repeat(2) {
+                        Box(
+                            modifier = Modifier
+                                .width(70.dp)
+                                .height(16.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.onSurface)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
             }
         }
     }
@@ -164,13 +183,19 @@ private fun LoadingTitleItem(
 
 @Preview
 @Composable
-private fun PreviewTitleItem() {
+private fun TitleItemPreview() {
     val titleModel = TitleModel(
         id = 1,
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        posterUrl = null,
-        uploadedTime = 0L
+        poster = PosterModel(
+            src = null,
+            thumbnail = null
+        ),
+        uploadedTime = null
     )
-    TitleItem(title = titleModel) { }
+    Column {
+        TitleItem(title = titleModel) { }
+        TitleItem(title = null) { }
+    }
 }

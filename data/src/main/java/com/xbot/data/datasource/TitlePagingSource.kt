@@ -14,7 +14,7 @@ class TitlePagingSource @Inject constructor(
 ) : PagingSource<Int, TitleModel>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TitleModel> {
-        val pageIndex = params.key ?: 0
+        val pageIndex = params.key ?: FIRST_PAGE_INDEX
         val loadSize = params.loadSize
         return try {
             val page = dataSource.getTitleUpdates(pageIndex + 1, loadSize).first()
@@ -26,7 +26,7 @@ class TitlePagingSource @Inject constructor(
             val itemsBefore = pageIndex * NETWORK_PAGE_SIZE
             val itemsAfter = max(total - (itemsBefore + newCount), 0)
 
-            val prevKey = if (pageIndex == 0) null else pageIndex - 1
+            val prevKey = if (pageIndex == FIRST_PAGE_INDEX) null else pageIndex - 1
             val nextKey = if (itemsAfter == 0) null else pageIndex + (params.loadSize / NETWORK_PAGE_SIZE)
 
             LoadResult.Page(
@@ -48,4 +48,8 @@ class TitlePagingSource @Inject constructor(
     }
 
     override val jumpingSupported: Boolean = true
+
+    companion object {
+        private const val FIRST_PAGE_INDEX = 0
+    }
 }

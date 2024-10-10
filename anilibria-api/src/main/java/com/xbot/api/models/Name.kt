@@ -1,11 +1,11 @@
-package com.xbot.api.models.common
+package com.xbot.api.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Names(
-    @SerialName("ru") val ru: String?,
-    @SerialName("en") val en: String?,
+data class Name(
+    @SerialName("main") val main: String,
+    @SerialName("english") val english: String,
     @SerialName("alternative") val alternative: String?
 )

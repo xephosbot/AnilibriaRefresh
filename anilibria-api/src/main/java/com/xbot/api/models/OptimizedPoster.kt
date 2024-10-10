@@ -1,10 +1,10 @@
-package com.xbot.api.models.misc
+package com.xbot.api.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Preview(
+data class OptimizedPoster(
     @SerialName("src") val src: String,
     @SerialName("thumbnail") val thumbnail: String
 )

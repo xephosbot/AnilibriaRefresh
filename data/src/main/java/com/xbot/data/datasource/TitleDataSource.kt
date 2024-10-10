@@ -4,7 +4,7 @@ import android.util.Log
 import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.retrofit.serialization.onErrorDeserialize
 import com.skydoves.sandwich.suspendOnSuccess
-import com.xbot.api.models.misc.TitleUpdate
+import com.xbot.api.models.AnimeCatalogResponse
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessTitleUpdatedMapper
 import com.xbot.data.models.ErrorMessage
@@ -18,18 +18,17 @@ import javax.inject.Inject
 class TitleDataSource @Inject constructor(
     private val client: AnilibriaClient
 ) {
+    //TODO: Более подробная обработка ошибок
     fun getTitleUpdates(page: Int, limit: Int): Flow<TitlePage> = flow {
-        val response = client.getTitleUpdates(
-            limit = limit,
+        val response = client.getReleases(
             page = page,
-            itemsPerPage = NETWORK_PAGE_SIZE,
-            filter = listOf("id", "names", "description", "posters", "updated")
+            limit = limit
         )
         response.suspendOnSuccess(SuccessTitleUpdatedMapper) {
             emit(this)
-        }.onErrorDeserialize<TitleUpdate, ErrorMessage> { error ->
-            Log.e("TitleDataSource", error.error.message)
-            error("HTTP Code: ${error.error.code}, ${error.error.message}")
+        }.onErrorDeserialize<AnimeCatalogResponse, ErrorMessage> { error ->
+            Log.e("TitleDataSource", error.description)
+            error("HTTP Code: ${error.code}, ${error.description}")
         }.onException {
             Log.e("TitleDataSource", message ?: "")
             error(message ?: "")

@@ -1,150 +1,50 @@
 package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
-import com.xbot.api.models.external.YouTubeVideo
-import com.xbot.api.models.misc.FeedItem
-import com.xbot.api.models.misc.Schedule
-import com.xbot.api.models.misc.TitleUpdate
-import com.xbot.api.models.title.Title
+import com.xbot.api.models.AnimeCatalogResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Интерфейс для взаимодействия с API Anilibria для получения информации о релизах аниме.
+ * @see <a href="https://anilibria.top/api/docs/v1">Документация API Anilibria</a>
+ */
 interface AnilibriaService {
-    @GET("title")
-    suspend fun getTitle(
-        @Query("id") id: Int? = null,
-        @Query("code") code: String? = null,
-        @Query("torrent_id") torrentId: Int? = null,
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object"
-    ): ApiResponse<Title>
 
-    @GET("title/list")
-    suspend fun getTitleList(
-        @Query("id_list") idList: String? = null,
-        @Query("code_list") codeList: String? = null,
-        @Query("torrent_id_list") torrentIdList: String? = null,
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object",
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<List<Title>>
-
-    @GET("title/updates")
-    suspend fun getTitleUpdates(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("limit") limit: Int? = 5,
-        @Query("since") since: Int? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object",
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<TitleUpdate>
-
-    @GET("title/changes")
-    suspend fun getTitleChanges(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("limit") limit: Int? = 5,
-        @Query("since") since: Int? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object",
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<TitleUpdate>
-
-    @GET("title/schedule")
-    suspend fun getTitleSchedule(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("days") days: String? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object"
-    ): ApiResponse<List<Schedule>>
-
-    @GET("title/random")
-    suspend fun getRandomTitle(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("description_type") descriptionType: String? = "plain",
-        @Query("playlist_type") playlistType: String? = "object"
-    ): ApiResponse<Title>
-
-    @GET("youtube")
-    suspend fun getYouTubeVideos(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("limit") limit: Int? = 5,
-        @Query("since") since: Int? = null,
-        @Query("after") after: Int? = null,
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<List<YouTubeVideo>>
-
-    @GET("feed")
-    suspend fun getFeed(
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("limit") limit: Int? = 5,
-        @Query("since") since: Int? = null,
-        @Query("after") after: Int? = null,
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<List<FeedItem>>
-
-    @GET("title/search")
-    suspend fun searchTitles(
-        @Query("search") search: String? = null,
-        @Query("year") year: String? = null,
-        @Query("type") type: String? = null,
-        @Query("season_code") seasonCode: String? = null,
-        @Query("genres") genres: String? = null,
-        @Query("team") team: String? = null,
-        @Query("voice") voice: String? = null,
-        @Query("translator") translator: String? = null,
-        @Query("editing") editing: String? = null,
-        @Query("decor") decor: String? = null,
-        @Query("timing") timing: String? = null,
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("description_type") descriptionType: String = "plain",
-        @Query("playlist_type") playlistType: String = "object",
-        @Query("limit") limit: Int = 5,
-        @Query("after") after: Int? = null,
-        @Query("order_by") orderBy: String? = null,
-        @Query("sort_direction") sortDirection: Int = 0,
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<List<Title>>
-
-    @GET("title/search/advanced")
-    fun searchTitlesAdvanced(
-        @Query("query") query: String,
-        @Query("simple_query") simpleQuery: String? = null,
-        @Query("filter") filter: String? = null,
-        @Query("remove") remove: String? = null,
-        @Query("include") include: String? = null,
-        @Query("description_type") descriptionType: String = "plain",
-        @Query("playlist_type") playlistType: String = "object",
-        @Query("limit") limit: Int = 5,
-        @Query("after") after: Int? = null,
-        @Query("order_by") orderBy: String? = null,
-        @Query("sort_direction") sortDirection: Int = 0,
-        @Query("page") page: Int? = null,
-        @Query("items_per_page") itemsPerPage: Int? = null
-    ): ApiResponse<List<Title>>
+    /**
+     * Получение списка релизов аниме с различными фильтрами.
+     *
+     * @param page Страница в выдаче.
+     * @param limit Количество релизов в выдаче.
+     * @param genres Список идентификаторов жанров.
+     * @param types Список типов релизов (например, TV, OVA).
+     * @param seasons Список сезонов релизов (например, winter, spring, summer, autumn).
+     * @param fromYear Минимальный год выхода релиза.
+     * @param toYear Максимальный год выхода релиза.
+     * @param search Поиск запрос.
+     * @param sorting Тип сортировки.
+     * @param ageRatings Список возрастных рейтингов (например, R16_PLUS, R18_PLUS).
+     * @param publishStatuses Список статусов релизов.
+     * @param productionStatuses Список статусов релизов.
+     * @return [ApiResponse] содержащий список релизов аниме и метаданные.
+     */
+    @GET("anime/catalog/releases")
+    suspend fun getReleases(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("f[genres]") genres: String? = null,
+        @Query("f[types]") types: String? = null,
+        @Query("f[seasons]") seasons: String? = null,
+        @Query("f[years][from_year]") fromYear: Int? = null,
+        @Query("f[years][to_year]") toYear: Int? = null,
+        @Query("f[search]") search: String? = null,
+        @Query("f[sorting]") sorting: String? = null,
+        @Query("f[age_ratings]") ageRatings: String? = null,
+        @Query("f[publish_statuses]") publishStatuses: String? = null,
+        @Query("f[production_statuses]") productionStatuses: String? = null
+    ): ApiResponse<AnimeCatalogResponse>
 
     companion object {
-        const val BASE_URL: String = "https://api.anilibria.tv/v3/"
+        const val BASE_URL: String = "https://anilibria.top/api/v1/"
     }
 }

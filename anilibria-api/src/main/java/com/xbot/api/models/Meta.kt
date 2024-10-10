@@ -1,11 +1,9 @@
-package com.xbot.api.models.misc
+package com.xbot.api.models
 
-import com.xbot.api.models.title.Title
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TitleUpdate(
-    @SerialName("list") val list: List<Title>,
+data class Meta(
     @SerialName("pagination") val pagination: Pagination
 )
