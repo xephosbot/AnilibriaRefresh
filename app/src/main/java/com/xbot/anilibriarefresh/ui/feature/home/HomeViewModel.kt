@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.xbot.api.models.title.Title
 import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

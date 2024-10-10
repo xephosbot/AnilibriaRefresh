@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.glide.compose)
+    ksp(libs.glide.ksp)
 
     // Testing dependencies
     androidTestImplementation(libs.androidx.test.espresso.core)

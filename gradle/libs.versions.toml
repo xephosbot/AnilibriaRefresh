@@ -29,6 +29,8 @@ androidxUiAutomator = "2.3.0"
 androidxWindowManager = "1.2.0"
 androidxWork = "2.9.1"
 coil = "2.5.0"
+glideCompose = "1.0.0-beta01"
+glidKsp = "4.14.2"
 dependencyGuard = "0.4.3"
 firebaseBom = "32.4.0"
 firebaseCrashlyticsPlugin = "2.9.9"
@@ -107,6 +109,8 @@ androidx-work-testing = { group = "androidx.work", name = "work-testing", versio
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glideCompose" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glidKsp" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }

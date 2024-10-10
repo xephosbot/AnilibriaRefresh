@@ -58,6 +58,7 @@ private fun HomeScreenContent(
                 contentType = items.itemContentType { "TitleItem" }
             ) { index ->
                 TitleItem(
+                    modifier = Modifier.animateItem(),
                     title = items[index],
                     onClick = { index ->
                         //TODO: действие по клику
