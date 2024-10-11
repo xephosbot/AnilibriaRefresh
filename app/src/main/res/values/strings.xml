@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AnilibriaRefresh</string>
+    <string name="unknown_error">Какая-то ошибка</string>
+    <string name="retry_button">Повторить</string>
 </resources>
