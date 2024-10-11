@@ -12,24 +12,6 @@ import retrofit2.http.Query
  * @see <a href="https://anilibria.top/api/docs/v1">Документация API Anilibria</a>
  */
 interface AnilibriaService {
-
-    /**
-     * Получение списка релизов аниме с различными фильтрами.
-     *
-     * @param page Страница в выдаче.
-     * @param limit Количество релизов в выдаче.
-     * @param genres Список идентификаторов жанров.
-     * @param types Список типов релизов (например, TV, OVA).
-     * @param seasons Список сезонов релизов (например, winter, spring, summer, autumn).
-     * @param fromYear Минимальный год выхода релиза.
-     * @param toYear Максимальный год выхода релиза.
-     * @param search Поиск запрос.
-     * @param sorting Тип сортировки.
-     * @param ageRatings Список возрастных рейтингов (например, R16_PLUS, R18_PLUS).
-     * @param publishStatuses Список статусов релизов.
-     * @param productionStatuses Список статусов релизов.
-     * @return [ApiResponse] содержащий список релизов аниме и метаданные.
-     */
     @GET("anime/catalog/releases")
     suspend fun getReleases(
         @Query("page") page: Int,
