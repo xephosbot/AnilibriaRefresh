@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OptimizedPoster(
-    @SerialName("src") val src: String?,
-    @SerialName("thumbnail") val thumbnail: String?
+data class Codec(
+    @SerialName("value") val value: String,
+    @SerialName("description") val description: String
 )

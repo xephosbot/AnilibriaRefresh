@@ -17,7 +17,7 @@ object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<AnimeCatalogResponse, T
                 TitleModel(
                     id = title.id,
                     name = title.name.main,
-                    description = title.description,
+                    description = title.description ?: "",
                     poster = PosterModel(
                         src = title.poster.optimized.src,
                         thumbnail = title.poster.optimized.thumbnail

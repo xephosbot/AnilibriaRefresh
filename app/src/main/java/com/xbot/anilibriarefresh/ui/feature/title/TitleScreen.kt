@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.feature.home.PosterImage
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
@@ -28,6 +30,15 @@ fun TitleScreen(
     modifier: Modifier = Modifier,
     viewModel: TitleViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    state?.let {
+        TitleScreenContent(
+            modifier = modifier,
+            title = it,
+            onClick = {}
+        )
+    }
 }
 
 @Composable

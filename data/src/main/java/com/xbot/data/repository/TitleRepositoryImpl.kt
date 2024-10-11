@@ -25,4 +25,8 @@ class TitleRepositoryImpl @Inject constructor(
             pagingSourceFactory = { TitlePagingSource(dataSource) }
         ).flow
     }
+
+    override fun getTitle(id: Int): Flow<TitleModel> {
+        return dataSource.getTitle(id)
+    }
 }

@@ -11,14 +11,14 @@ data class Anime(
     @SerialName("name") val name: Name,
     @SerialName("alias") val alias: String,
     @SerialName("season") val season: Season,
-    @SerialName("poster") val poster: AnimePoster,
+    @SerialName("poster") val poster: Poster,
     @SerialName("fresh_at") val freshAt: String,
     @SerialName("created_at") val createdAt: String?,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("is_ongoing") val isOngoing: Boolean,
     @SerialName("age_rating") val ageRating: AgeRating,
     @SerialName("publish_day") val publishDay: PublishDay,
-    @SerialName("description") val description: String,
+    @SerialName("description") val description: String?,
     @SerialName("notification") val notification: String?,
     @SerialName("episodes_total") val episodesTotal: Int?,
     @SerialName("external_player") val externalPlayer: String?,
@@ -28,5 +28,9 @@ data class Anime(
     @SerialName("is_blocked_by_copyrights") val isBlockedByCopyrights: Boolean,
     @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
-    @SerialName("genres") val genres: List<Genre>
+    @SerialName("genres") val genres: List<Genre>,
+    @SerialName("members") val members: List<Member>? = null,
+    @SerialName("sponsor") val sponsor: String? = null,
+    @SerialName("episodes") val episodes: List<Episode>? = null,
+    @SerialName("torrents") val torrents: List<Torrent>? = null
 )

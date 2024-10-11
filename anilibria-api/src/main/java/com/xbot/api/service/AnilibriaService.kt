@@ -1,8 +1,10 @@
 package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
+import com.xbot.api.models.Anime
 import com.xbot.api.models.AnimeCatalogResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -43,6 +45,11 @@ interface AnilibriaService {
         @Query("f[publish_statuses]") publishStatuses: String? = null,
         @Query("f[production_statuses]") productionStatuses: String? = null
     ): ApiResponse<AnimeCatalogResponse>
+
+    @GET("anime/releases/{id}")
+    suspend fun getRelease(
+        @Path("id") id: Int
+    ): ApiResponse<Anime>
 
     companion object {
         const val BASE_URL: String = "https://anilibria.top/api/v1/"

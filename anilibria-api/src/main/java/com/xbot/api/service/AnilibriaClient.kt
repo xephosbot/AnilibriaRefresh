@@ -1,6 +1,7 @@
 package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
+import com.xbot.api.models.Anime
 import com.xbot.api.models.AnimeCatalogResponse
 import javax.inject.Inject
 
@@ -35,5 +36,9 @@ class AnilibriaClient @Inject constructor(
             publishStatuses = publishStatuses?.joinToString(","),
             productionStatuses = productionStatuses?.joinToString(",")
         )
+    }
+
+    suspend fun getRelease(id: Int): ApiResponse<Anime> {
+        return service.getRelease(id)
     }
 }

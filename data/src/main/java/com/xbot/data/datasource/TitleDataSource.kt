@@ -1,5 +1,6 @@
 package com.xbot.data.datasource
 
+import SuccessTitleMapper
 import android.util.Log
 import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.retrofit.serialization.onErrorDeserialize
@@ -9,6 +10,7 @@ import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessTitleUpdatedMapper
 import com.xbot.data.models.ErrorMessage
 import com.xbot.data.models.TitlePage
+import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -26,14 +28,21 @@ class TitleDataSource @Inject constructor(
         )
         response.suspendOnSuccess(SuccessTitleUpdatedMapper) {
             emit(this)
-        }.onErrorDeserialize<AnimeCatalogResponse, ErrorMessage> { error ->
-            Log.e("TitleDataSource", error.description)
-            error("HTTP Code: ${error.code}, ${error.description}")
         }.onException {
             Log.e("TitleDataSource", message ?: "")
             error(message ?: "")
         }
     }.flowOn(Dispatchers.IO)
+
+    fun getTitle(id: Int): Flow<TitleModel> = flow {
+        val response = client.getRelease(id)
+        response.suspendOnSuccess(SuccessTitleMapper) {
+            emit(this)
+        }.onException {
+            Log.e("TitleDataSource", message ?: "")
+            error(message ?: "")
+        }
+    }
 
     companion object {
         const val NETWORK_PAGE_SIZE = 10
