@@ -52,6 +52,7 @@ interface AnilibriaService {
     ): ApiResponse<Anime>
 
     companion object {
-        const val BASE_URL: String = "https://anilibria.top/api/v1/"
+        const val BASE_URL: String = "https://anilibria.top"
+        const val BASE_URL_API: String = "https://anilibria.top/api/v1/"
     }
 }

@@ -24,7 +24,7 @@ object NetworkModule {
             ignoreUnknownKeys = true
         }
         return Retrofit.Builder()
-            .baseUrl(AnilibriaService.BASE_URL)
+            .baseUrl(AnilibriaService.BASE_URL_API)
             .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
             .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .build()
@@ -40,5 +40,11 @@ object NetworkModule {
     @Singleton
     fun provideAnilibriaClient(service: AnilibriaService): AnilibriaClient {
         return AnilibriaClient(service)
+    }
+
+    @Provides
+    @BaseUrl
+    fun provideBaseUrl(): String {
+        return AnilibriaService.BASE_URL
     }
 }

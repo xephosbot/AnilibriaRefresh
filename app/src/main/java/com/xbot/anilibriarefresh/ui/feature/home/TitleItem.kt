@@ -73,8 +73,8 @@ private fun TitleItemContent(
                     .height(160.dp)
                     .aspectRatio(7f / 10f)
                     .clip(RoundedCornerShape(8.dp)),
-                imageUrl = "https://anilibria.top${title.poster.src}",
-                thumbnailUrl = "https://anilibria.top${title.poster.thumbnail}"
+                imageUrl = title.poster.src,
+                thumbnailUrl = title.poster.thumbnail
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -102,8 +102,8 @@ private fun TitleItemContent(
 @Composable
 fun PosterImage(
     modifier: Modifier = Modifier,
-    imageUrl: String,
-    thumbnailUrl: String
+    imageUrl: String?,
+    thumbnailUrl: String? = null
 ) {
     val requestManager = LocalContext.current.let { remember(it) { Glide.with(it) } }
 
