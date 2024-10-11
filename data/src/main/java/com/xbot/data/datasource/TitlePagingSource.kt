@@ -3,6 +3,7 @@ package com.xbot.data.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.xbot.data.BuildConfig
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.flow.first
@@ -19,8 +20,6 @@ class TitlePagingSource @Inject constructor(
         return try {
             val page = dataSource.getTitleUpdates(pageIndex + 1, loadSize).first()
 
-            Log.e("PagingSource", "$pageIndex")
-
             val newCount = page.items.size
             val total = page.total
             val itemsBefore = pageIndex * NETWORK_PAGE_SIZE
@@ -28,6 +27,10 @@ class TitlePagingSource @Inject constructor(
 
             val prevKey = if (pageIndex == FIRST_PAGE_INDEX) null else pageIndex - 1
             val nextKey = if (itemsAfter == 0) null else pageIndex + (params.loadSize / NETWORK_PAGE_SIZE)
+
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Current loaded page index: $pageIndex")
+            }
 
             LoadResult.Page(
                 data = page.items,
@@ -51,5 +54,6 @@ class TitlePagingSource @Inject constructor(
 
     companion object {
         private const val FIRST_PAGE_INDEX = 0
+        private const val TAG = "TitlePagingSource"
     }
 }
