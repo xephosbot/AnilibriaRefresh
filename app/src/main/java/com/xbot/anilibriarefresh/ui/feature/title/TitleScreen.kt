@@ -1,27 +1,82 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xbot.anilibriarefresh.ui.feature.home.PosterImage
+import com.xbot.domain.model.PosterModel
+import com.xbot.domain.model.TitleModel
 
 @Composable
 fun TitleScreen(
     modifier: Modifier = Modifier,
     viewModel: TitleViewModel = hiltViewModel()
 ) {
-    TitleScreenContent()
 }
 
 @Composable
 private fun TitleScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: TitleModel,
+    onClick: () -> Unit
 ) {
-    //TODO: реализовать title detail screen
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)) {
+        PosterImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            imageUrl = "https://anilibria.top${title.poster.src}",
+            thumbnailUrl = "https://anilibria.top${title.poster.thumbnail}"
+        )
+        Spacer(modifier.padding(16.dp))
+        Text(
+            text = title.name,
+            modifier.align(Alignment.CenterHorizontally),
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp
+        )
+        Spacer(modifier.padding(10.dp))
+        Text(
+            text = title.description,
+            modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(start = 16.dp, end = 16.dp)
+        )
+    }
 }
 
 @Preview
 @Composable
 private fun TitleScreenPreview() {
-    TitleScreenContent()
+    val titleModel = TitleModel(
+        id = 1,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        poster = PosterModel(
+            src = null,
+            thumbnail = null
+        ),
+        uploadedTime = null
+    )
+    TitleScreenContent(title = titleModel) {}
 }

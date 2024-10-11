@@ -100,7 +100,7 @@ private fun TitleItemContent(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun PosterImage(
+fun PosterImage(
     modifier: Modifier = Modifier,
     imageUrl: String,
     thumbnailUrl: String
@@ -115,7 +115,7 @@ private fun PosterImage(
         transition = CrossFade,
         loading = placeholder(ColorPainter(MaterialTheme.colorScheme.onSurface))
     ) {
-        it.thumbnail(requestManager.asDrawable().load(thumbnailUrl)).override(10, 70)
+        it.thumbnail(requestManager.asDrawable().load(thumbnailUrl).override(10, 70))
     }
 }
 
