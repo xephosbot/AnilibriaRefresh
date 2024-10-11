@@ -3,12 +3,9 @@ package com.xbot.data.datasource
 import SuccessTitleMapper
 import android.util.Log
 import com.skydoves.sandwich.onException
-import com.skydoves.sandwich.retrofit.serialization.onErrorDeserialize
 import com.skydoves.sandwich.suspendOnSuccess
-import com.xbot.api.models.AnimeCatalogResponse
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessTitleUpdatedMapper
-import com.xbot.data.models.ErrorMessage
 import com.xbot.data.models.TitlePage
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.Dispatchers

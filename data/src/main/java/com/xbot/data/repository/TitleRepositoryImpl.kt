@@ -11,7 +11,7 @@ import com.xbot.domain.repository.TitleRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TitleRepositoryImpl @Inject constructor(
+internal class TitleRepositoryImpl @Inject constructor(
     private val dataSource: TitleDataSource
 ) : TitleRepository {
     override fun getLatestTitles(): Flow<PagingData<TitleModel>> {
