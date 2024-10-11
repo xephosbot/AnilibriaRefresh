@@ -18,21 +18,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
+import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
@@ -53,6 +46,7 @@ fun TitleItem(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitleItemContent(
     modifier: Modifier = Modifier,
@@ -73,8 +67,7 @@ private fun TitleItemContent(
                     .height(160.dp)
                     .aspectRatio(7f / 10f)
                     .clip(RoundedCornerShape(8.dp)),
-                imageUrl = title.poster.src,
-                thumbnailUrl = title.poster.thumbnail
+                poster = title.poster
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -97,28 +90,6 @@ private fun TitleItemContent(
         }
     }
 }
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun PosterImage(
-    modifier: Modifier = Modifier,
-    imageUrl: String?,
-    thumbnailUrl: String? = null
-) {
-    val requestManager = LocalContext.current.let { remember(it) { Glide.with(it) } }
-
-    GlideImage(
-        model = imageUrl,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier,
-        transition = CrossFade,
-        loading = placeholder(ColorPainter(MaterialTheme.colorScheme.onSurface))
-    ) {
-        it.thumbnail(requestManager.asDrawable().load(thumbnailUrl).override(10, 70))
-    }
-}
-
 
 @Composable
 private fun LoadingTitleItem(
