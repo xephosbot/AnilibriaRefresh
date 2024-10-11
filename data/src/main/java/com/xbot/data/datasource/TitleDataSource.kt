@@ -39,20 +39,18 @@ class TitleDataSource @Inject constructor(
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    private fun <T> ApiResponse<T>.handleErrors() {
-        onException {
-            if (BuildConfig.DEBUG) {
-                Log.e(TAG, message ?: UNKNOWN_ERROR)
+    private fun <T> ApiResponse<T>.handleErrors() = onException {
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, message ?: UNKNOWN_ERROR)
+        }
+        when (throwable) {
+            is UnknownHostException -> {
+                throw NetworkException(throwable.message)
             }
-            when (throwable) {
-                is UnknownHostException -> {
-                    throw NetworkException(throwable.message)
-                }
-                is MissingFieldException -> {
-                    throw SerializationException(throwable.message, throwable)
-                }
-                else -> throw throwable
+            is MissingFieldException -> {
+                throw SerializationException(throwable.message, throwable)
             }
+            else -> throw throwable
         }
     }
 

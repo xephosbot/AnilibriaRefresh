@@ -1,12 +1,13 @@
 package com.xbot.anilibriarefresh.ui
 
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
 import com.xbot.anilibriarefresh.navigation.NavigationBar
+import com.xbot.anilibriarefresh.ui.components.Scaffold
 
 @Composable
 fun AnilibriaApp(modifier: Modifier = Modifier) {
@@ -19,7 +20,9 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
         }
     ) { innerPadding ->
         AnilibriaNavGraph(
-            modifier = Modifier.consumeWindowInsets(innerPadding),
+            modifier = Modifier
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding),
             navController = navController
         )
     }

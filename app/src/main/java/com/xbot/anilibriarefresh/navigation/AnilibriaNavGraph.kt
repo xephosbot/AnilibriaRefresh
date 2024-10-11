@@ -29,7 +29,9 @@ fun AnilibriaNavGraph(
         startDestination = startDestination
     ) {
         composable<HomeScreen> {
-            HomeScreen()
+            HomeScreen { titleId ->
+                navController.navigate(TitleScreen(titleId))
+            }
         }
         composable<TitleScreen> {
             TitleScreen()
