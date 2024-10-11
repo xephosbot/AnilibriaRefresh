@@ -4,7 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TimeRange(
-    @SerialName("stop") val stop: Int?,
-    @SerialName("start") val start: Int?
+data class Sponsor(
+    @SerialName("id") val id: String? = null
 )

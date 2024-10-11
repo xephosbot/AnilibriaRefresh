@@ -30,7 +30,7 @@ data class Anime(
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
     @SerialName("genres") val genres: List<Genre>,
     @SerialName("members") val members: List<Member>? = null,
-    @SerialName("sponsor") val sponsor: String? = null,
+    @SerialName("sponsor") val sponsor: Sponsor? = null,
     @SerialName("episodes") val episodes: List<Episode>? = null,
     @SerialName("torrents") val torrents: List<Torrent>? = null
 )

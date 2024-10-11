@@ -8,5 +8,5 @@ data class Member(
     @SerialName("id") val id: String,
     @SerialName("role") val role: Role,
     @SerialName("nickname") val nickname: String,
-    @SerialName("user") val user: String?
+    @SerialName("user") val user: User?
 )
