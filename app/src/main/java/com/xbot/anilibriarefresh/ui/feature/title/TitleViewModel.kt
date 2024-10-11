@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.domain.model.TitleModel
@@ -12,9 +13,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TitleViewModel @Inject constructor(
-    repository: TitleRepository
+    repository: TitleRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val state: StateFlow<TitleModel?> = repository.getTitle(9000)
+    val state: StateFlow<TitleModel?> = repository.getTitle(savedStateHandle["titleId"]!!)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),

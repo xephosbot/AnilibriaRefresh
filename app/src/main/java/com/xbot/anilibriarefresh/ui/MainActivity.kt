@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh
+package com.xbot.anilibriarefresh.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
