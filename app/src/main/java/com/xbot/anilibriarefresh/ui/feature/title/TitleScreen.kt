@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.anilibriarefresh.ui.feature.home.PosterImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
@@ -41,6 +42,7 @@ fun TitleScreen(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
@@ -56,8 +58,7 @@ private fun TitleScreenContent(
                 .fillMaxWidth()
                 .height(320.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            imageUrl = "https://anilibria.top${title.poster.src}",
-            thumbnailUrl = "https://anilibria.top${title.poster.thumbnail}"
+            poster = title.poster
         )
         Spacer(modifier.padding(16.dp))
         Text(
