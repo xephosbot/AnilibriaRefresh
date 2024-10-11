@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -22,7 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun NavigationBar(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    destinations: List<NavigationItem<out Any>> = NavigationItem.destinations,
+    destinations: List<NavigationItem> = NavigationItem.destinations,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -32,7 +33,7 @@ fun NavigationBar(
     ) {
         destinations.forEach { destination ->
             val isSelected = currentDestination?.hierarchy?.any {
-                it.route == destination.route::class.qualifiedName
+                it.hasRoute(destination.route::class)
             } == true
             NavigationBarItem(
                 selected = isSelected,
@@ -64,25 +65,25 @@ fun NavigationBar(
     }
 }
 
-sealed class NavigationItem<T>(
+sealed class NavigationItem(
     val title: String,
     val icon: ImageVector,
-    val route: T
+    val route: Screen
 ) {
-    data object Home : NavigationItem<HomeScreen>(
+    data object Home : NavigationItem(
         title = "Home",
         icon = Icons.Rounded.Home,
-        route = HomeScreen
+        route = Screen.Home
     )
-    data object Favorite : NavigationItem<FavoriteScreen>(
+    data object Favorite : NavigationItem(
         title = "Favorite",
         icon = Icons.Rounded.Favorite,
-        route = FavoriteScreen
+        route = Screen.Favorite
     )
-    data object Profile : NavigationItem<TitleScreen>(
+    data object Profile : NavigationItem(
         title = "Profile",
         icon = Icons.Rounded.Person,
-        route = TitleScreen(9000)
+        route = Screen.Profile
     )
 
     companion object {

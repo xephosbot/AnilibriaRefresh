@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
@@ -19,7 +20,7 @@ fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    startDestination: Any = HomeScreen
+    startDestination: Screen = Screen.Home
 ) {
     NavHost(
         modifier = modifier
@@ -28,25 +29,41 @@ fun AnilibriaNavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable<HomeScreen> {
-            HomeScreen { titleId ->
-                navController.navigate(TitleScreen(titleId))
+        navigation<Screen.Home>(
+            startDestination = Screen.Home.List
+        ) {
+            composable<Screen.Home.List> {
+                HomeScreen { titleId ->
+                    navController.navigate(Screen.Home.Detail(titleId))
+                }
+            }
+            composable<Screen.Home.Detail> {
+                TitleScreen()
             }
         }
-        composable<TitleScreen> {
-            TitleScreen()
+        composable<Screen.Favorite> {
+            FavoriteScreen()
         }
-        composable<FavoriteScreen> {
+        composable<Screen.Profile> {
             FavoriteScreen()
         }
     }
 }
 
 @Serializable
-object HomeScreen
+sealed class Screen {
+    @Serializable
+    data object Home : Screen() {
+        @Serializable
+        data object List
 
-@Serializable
-data class TitleScreen(val titleId: Int)
+        @Serializable
+        data class Detail(val titleId: Int)
+    }
 
-@Serializable
-object FavoriteScreen
+    @Serializable
+    data object Favorite : Screen()
+
+    @Serializable
+    data object Profile : Screen()
+}

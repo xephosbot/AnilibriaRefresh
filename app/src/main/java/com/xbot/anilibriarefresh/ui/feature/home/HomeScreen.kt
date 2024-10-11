@@ -1,4 +1,5 @@
 package com.xbot.anilibriarefresh.ui.feature.home
+
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -56,7 +57,7 @@ private fun HomeScreenContent(
         prependLoadState is LoadState.Error -> showErrorMessage(prependLoadState.error)
     }
 
-    Scaffold(modifier = modifier,) { innerPadding ->
+    Scaffold(modifier = modifier) { innerPadding ->
         Crossfade(
             targetState = refreshLoadState,
             label = "" //TODO: информативный label для перехода

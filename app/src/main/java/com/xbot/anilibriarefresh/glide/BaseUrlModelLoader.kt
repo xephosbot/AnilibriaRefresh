@@ -28,9 +28,7 @@ class BaseUrlModelLoader(
 
     override fun handles(model: String): Boolean = model.startsWith("/")
 
-    class Factory(
-        private val baseUrl: String
-    ) : ModelLoaderFactory<String, InputStream> {
+    class Factory(private val baseUrl: String) : ModelLoaderFactory<String, InputStream> {
 
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, InputStream> {
             val glideUrlLoader = multiFactory.build(GlideUrl::class.java, InputStream::class.java)
