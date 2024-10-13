@@ -4,8 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GenreImage(
+data class OptimizedImage(
     @SerialName("preview") val preview: String,
-    @SerialName("thumbnail") val thumbnail: String,
-    @SerialName("optimized") val optimized: OptimizedGenreImage
+    @SerialName("thumbnail") val thumbnail: String
 )

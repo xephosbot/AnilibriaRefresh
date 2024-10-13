@@ -17,7 +17,7 @@ data class Message(
 )
 
 data class MessageAction(
-    @StringRes val textId: Int,
+    val title: MessageContent,
     val action: () -> Unit = {}
 )
 

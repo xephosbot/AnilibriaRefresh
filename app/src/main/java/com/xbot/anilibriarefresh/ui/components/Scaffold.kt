@@ -293,8 +293,22 @@ class ScaffoldState(
                             )
                         }
                     }
-                    val actionLabel = message.action?.let {
-                        resources.getString(it.textId)
+                    val actionLabel = when (val title = message.action?.title) {
+                        is MessageContent.String -> title.value
+
+                        is MessageContent.Text -> {
+                            resources.getString(title.textId)
+                        }
+
+                        is MessageContent.Plurals -> {
+                            resources.getQuantityString(
+                                title.pluralsId,
+                                title.quantity,
+                                title.quantity
+                            )
+                        }
+
+                        else -> null
                     }
                     // Notify the SnackbarManager so it can remove the current message from the list
                     snackbarManager.setMessageShown(message.id)

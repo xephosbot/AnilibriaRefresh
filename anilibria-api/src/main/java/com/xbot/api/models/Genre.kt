@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class Genre(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
-    @SerialName("image") val image: GenreImage? = null,
+    @SerialName("image") val image: Image? = null,
     @SerialName("total_releases") val totalReleases: Int? = null
 )

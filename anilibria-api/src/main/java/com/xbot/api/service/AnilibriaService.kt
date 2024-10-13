@@ -2,7 +2,6 @@ package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
 import com.xbot.api.models.AgeRating
-import com.xbot.api.models.AllGenre
 import com.xbot.api.models.Anime
 import com.xbot.api.models.AnimeCatalogResponse
 import com.xbot.api.models.Franchise
@@ -85,17 +84,17 @@ interface AnilibriaService {
     ): ApiResponse<List<Franchise>>
 
     @GET("anime/genres")
-    suspend fun getAllGenres(): ApiResponse<List<AllGenre>>
+    suspend fun getAllGenres(): ApiResponse<List<Genre>>
 
     @GET("anime/genres/{genreId}")
     suspend fun getGenreById(
         @Path("genreId") id: Int
-    ): ApiResponse<AllGenre>
+    ): ApiResponse<Genre>
 
     @GET("anime/genres/random")
     suspend fun getRandomGenres(
         @Query("limit") limit: Int
-    ): ApiResponse<List<AllGenre>>
+    ): ApiResponse<List<Genre>>
 
     @GET("anime/genres/{genreId}/releases")
     suspend fun getAllReleasesByGenre(

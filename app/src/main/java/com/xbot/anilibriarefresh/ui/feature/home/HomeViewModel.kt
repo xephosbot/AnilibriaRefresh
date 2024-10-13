@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
                 snackbarManager.showMessage(
                     title = MessageContent.String(action.error.message ?: ""),
                     action = MessageAction(
-                        textId = R.string.retry_button,
+                        title = MessageContent.Text(R.string.retry_button),
                         action = action.onConfirmAction
                     )
                 )
