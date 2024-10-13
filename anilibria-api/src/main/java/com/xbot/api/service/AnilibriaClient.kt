@@ -65,6 +65,8 @@ class AnilibriaClient @Inject constructor(
         return service.getRelease(id)
     }
 
+
+
     enum class Type(private val type: String) {
         TV("TV"),
         ONA("ONA"),

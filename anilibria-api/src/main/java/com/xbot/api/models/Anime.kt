@@ -28,7 +28,7 @@ data class Anime(
     @SerialName("is_blocked_by_copyrights") val isBlockedByCopyrights: Boolean,
     @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
-    @SerialName("genres") val genres: List<Genre>,
+    @SerialName("genres") val genres: List<Genre>? = null,
     @SerialName("members") val members: List<Member>? = null,
     @SerialName("sponsor") val sponsor: Sponsor? = null,
     @SerialName("episodes") val episodes: List<Episode>? = null,

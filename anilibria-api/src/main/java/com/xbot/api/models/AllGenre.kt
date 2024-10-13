@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Genre(
+data class AllGenre(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
-    @SerialName("image") val image: GenreImage? = null,
-    @SerialName("total_releases") val totalReleases: Int? = null
+    @SerialName("total_releases") val totalReleases: Int,
+    @SerialName("image") val image: Image
 )
