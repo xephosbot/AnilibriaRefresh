@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.xbot.anilibriarefresh.navigation.Screen
-import com.xbot.anilibriarefresh.ui.components.MessageContent
-import com.xbot.anilibriarefresh.ui.components.SnackbarManager
+import com.xbot.anilibriarefresh.ui.utils.MessageContent
+import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

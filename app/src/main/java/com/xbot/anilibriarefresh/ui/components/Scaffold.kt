@@ -18,7 +18,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -41,6 +40,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
+import com.xbot.anilibriarefresh.ui.utils.MessageContent
+import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -201,7 +202,7 @@ private fun ScaffoldLayout(
                 top = if (topBarPlaceables.isEmpty()) {
                     insets.calculateTopPadding()
                 } else {
-                    0.dp
+                    topBarHeight.toDp()
                 },
                 bottom = if (bottomBarPlaceables.isEmpty() || bottomBarHeight == null) {
                     insets.calculateBottomPadding()
@@ -216,8 +217,8 @@ private fun ScaffoldLayout(
             it.measure(
                 constraints.copy(
                     minWidth = 0,
-                    minHeight = constraints.maxHeight - topBarHeight,
-                    maxHeight = constraints.maxHeight - topBarHeight
+                    minHeight = constraints.maxHeight,
+                    maxHeight = constraints.maxHeight
                 )
             )
         }
@@ -226,7 +227,7 @@ private fun ScaffoldLayout(
             // Placing to control drawing order to match default elevation of each placeable
 
             bodyContentPlaceables.fastForEach {
-                it.place(0, topBarHeight)
+                it.place(0, 0)
             }
             topBarPlaceables.fastForEach {
                 it.place(0, 0)

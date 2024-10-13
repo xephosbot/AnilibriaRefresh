@@ -14,17 +14,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.valentinilk.shimmer.Shimmer
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
@@ -33,14 +37,15 @@ import com.xbot.domain.model.TitleModel
 fun TitleItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
-    onClick: (Int) -> Unit
+    shimmer: Shimmer,
+    onClick: (Int) -> Unit = {}
 ) {
     Crossfade(
         targetState = title,
         label = "" //TODO: информативный label для перехода
     ) { state ->
         when (state) {
-            null -> LoadingTitleItem(modifier)
+            null -> LoadingTitleItem(modifier, shimmer)
             else -> TitleItemContent(modifier, state, onClick)
         }
     }
@@ -93,10 +98,13 @@ private fun TitleItemContent(
 
 @Composable
 private fun LoadingTitleItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shimmer: Shimmer
 ) {
     Surface(
-        modifier = modifier.height(192.dp),
+        modifier = modifier
+            .height(192.dp)
+            .shimmer(shimmer),
         onClick = {}
     ) {
         Row(
@@ -109,7 +117,7 @@ private fun LoadingTitleItem(
                     .height(height = 160.dp)
                     .aspectRatio(7f / 10f)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.onSurface)
+                    .background(Color.LightGray)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -120,7 +128,7 @@ private fun LoadingTitleItem(
                         .width(200.dp)
                         .height(20.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.onSurface)
+                        .background(Color.LightGray)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -131,7 +139,7 @@ private fun LoadingTitleItem(
                             .fillMaxWidth()
                             .height(16.dp)
                             .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.onSurface)
+                            .background(Color.LightGray)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                 }
@@ -142,7 +150,7 @@ private fun LoadingTitleItem(
                                 .width(70.dp)
                                 .height(16.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.onSurface)
+                                .background(Color.LightGray)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
@@ -165,8 +173,10 @@ private fun TitleItemPreview() {
         ),
         uploadedTime = null
     )
+    val shimmer = rememberShimmer(ShimmerBounds.Window)
+
     Column {
-        TitleItem(title = titleModel) { }
-        TitleItem(title = null) { }
+        TitleItem(title = titleModel, shimmer = shimmer) { }
+        TitleItem(title = null, shimmer = shimmer) { }
     }
 }

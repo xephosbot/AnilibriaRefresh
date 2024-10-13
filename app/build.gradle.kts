@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation("dev.chrisbanes.haze:haze:0.9.0-beta03")
+    implementation("dev.chrisbanes.haze:haze-materials:0.9.0-beta03")
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.1")
     implementation(libs.glide.compose)
     ksp(libs.glide.ksp)
 

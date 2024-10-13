@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.ui.components
+package com.xbot.anilibriarefresh.ui.utils
 
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes

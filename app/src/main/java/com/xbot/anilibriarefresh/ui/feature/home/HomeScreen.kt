@@ -1,33 +1,42 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
+import com.valentinilk.shimmer.unclippedBoundsInWindow
+import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.model.TitleModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
+    paddingValues: PaddingValues,
     onNavigate: (Int) -> Unit
 ) {
     val lazyTitlesItems = viewModel.titles.collectAsLazyPagingItems()
 
     HomeScreenContent(
         modifier = modifier,
+        paddingValues = paddingValues,
         items = lazyTitlesItems,
         refreshLoadState = lazyTitlesItems.loadState.refresh,
         appendLoadState = lazyTitlesItems.loadState.append,
@@ -40,6 +49,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues,
     items: LazyPagingItems<TitleModel>,
     refreshLoadState: LoadState,
     appendLoadState: LoadState,
@@ -63,10 +73,12 @@ private fun HomeScreenContent(
             label = "" //TODO: информативный label для перехода
         ) { state ->
             when(state) {
-                is LoadState.Loading -> LoadingScreen()
+                is LoadState.Loading -> LoadingScreen(
+                    contentPadding = innerPadding.union(paddingValues)
+                )
                 else -> TitleList(
                     items = items,
-                    contentPadding = innerPadding,
+                    contentPadding = innerPadding.union(paddingValues),
                     onTitleClick = onNavigate
                 )
             }
@@ -81,8 +93,14 @@ private fun TitleList(
     contentPadding: PaddingValues,
     onTitleClick: (Int) -> Unit
 ) {
+    val shimmer = rememberShimmer(ShimmerBounds.Custom)
+
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier
+            .onGloballyPositioned { layoutCoordinates ->
+                val position = layoutCoordinates.unclippedBoundsInWindow()
+                shimmer.updateBounds(position)
+            },
         contentPadding = contentPadding
     ) {
         items(
@@ -91,8 +109,8 @@ private fun TitleList(
             contentType = items.itemContentType { "TitleItem" }
         ) { index ->
             TitleItem(
-                modifier = Modifier.animateItem(),
                 title = items[index],
+                shimmer = shimmer,
                 onClick = onTitleClick
             )
         }
@@ -100,8 +118,23 @@ private fun TitleList(
 }
 
 @Composable
-private fun LoadingScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+private fun LoadingScreen(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
+) {
+    val shimmer = rememberShimmer(ShimmerBounds.Window)
+
+    Column (
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = contentPadding.calculateTopPadding())
+            .verticalScroll(rememberScrollState(), enabled = false),
+    ) {
+        repeat(5) {
+            TitleItem(
+                title = null,
+                shimmer = shimmer
+            )
+        }
     }
 }

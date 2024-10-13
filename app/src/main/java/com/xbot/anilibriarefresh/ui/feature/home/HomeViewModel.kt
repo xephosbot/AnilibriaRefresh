@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.ui.components.MessageAction
-import com.xbot.anilibriarefresh.ui.components.MessageContent
-import com.xbot.anilibriarefresh.ui.components.SnackbarManager
+import com.xbot.anilibriarefresh.ui.utils.MessageAction
+import com.xbot.anilibriarefresh.ui.utils.MessageContent
+import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

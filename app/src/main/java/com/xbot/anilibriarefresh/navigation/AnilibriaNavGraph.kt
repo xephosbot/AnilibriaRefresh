@@ -1,6 +1,7 @@
 package com.xbot.anilibriarefresh.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import kotlinx.serialization.Serializable
 fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    paddingValues: PaddingValues,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     startDestination: Screen = Screen.Home
 ) {
@@ -33,7 +35,9 @@ fun AnilibriaNavGraph(
             startDestination = Screen.Home.List
         ) {
             composable<Screen.Home.List> {
-                HomeScreen { titleId ->
+                HomeScreen(
+                    paddingValues = paddingValues
+                ) { titleId ->
                     navController.navigate(Screen.Home.Detail(titleId))
                 }
             }

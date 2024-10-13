@@ -1,6 +1,6 @@
 package com.xbot.anilibriarefresh.di
 
-import com.xbot.anilibriarefresh.ui.components.SnackbarManager
+import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
