@@ -68,7 +68,10 @@ private fun TitleItemContent(
             .height(TitleItemContainerHeight)
             .padding(TitleItemContainerPadding),
         headlineContent = {
-            Text(text = title.name)
+            Text(
+                text = title.name,
+                overflow = TextOverflow.Ellipsis
+            )
         },
         supportingContent = {
             Text(
@@ -84,7 +87,11 @@ private fun TitleItemContent(
         },
         tags = {
             title.tags.forEachIndexed { index, tag ->
-                Text(text = tag)
+                Text(
+                    text = tag,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
                 if (index != title.tags.lastIndex) Text("•")
             }
         }
@@ -130,7 +137,7 @@ private fun LoadingTitleItem(
             )
         },
         tags = {
-            val tagsCount = 2
+            val tagsCount = 5
             repeat(tagsCount) { index ->
                 Box(
                     modifier = Modifier
@@ -203,14 +210,6 @@ private fun TitleItemLayout(
             (constraints.maxWidth - leadingPlaceable.width - leadingPadding).coerceAtLeast(0)
         }
 
-        val headlinePlaceable = headlineMeasurable.first()
-            .measure(
-                constraints = constraints.copy(
-                    maxWidth = contentWidth,
-                    minHeight = 0
-                )
-            )
-
         val tagsPlaceable = tagsMeasurable.first()
             .measure(
                 constraints = constraints.copy(
@@ -220,6 +219,17 @@ private fun TitleItemLayout(
             )
 
         val headlinePadding = TitleItemContentPadding.roundToPx()
+        val headlineHeight = (constraints.maxHeight - tagsPlaceable.height - headlinePadding).coerceAtLeast(0)
+
+        val headlinePlaceable = headlineMeasurable.first()
+            .measure(
+                constraints = constraints.copy(
+                    maxWidth = contentWidth,
+                    minHeight = 0,
+                    maxHeight = headlineHeight
+                )
+            )
+
         val headlineOffset = headlinePlaceable.height + headlinePadding
         val tagsOffset = headlineOffset + tagsPlaceable.height + headlinePadding
         val supportingHeight = (constraints.maxHeight - tagsOffset).coerceAtLeast(0)
@@ -249,10 +259,13 @@ private fun TitleItemLayout(
                 x = leadingWidth + leadingPadding,
                 y = headlineOffset
             )
-            supportingPlaceable.placeRelative(
-                x = leadingWidth + leadingPadding,
-                y = tagsOffset
-            )
+            //Place content only if it has a size of at least 1 line.
+            if (supportingPlaceable.height > TitleItemMinContentSize.roundToPx()) {
+                supportingPlaceable.placeRelative(
+                    x = leadingWidth + leadingPadding,
+                    y = tagsOffset
+                )
+            }
         }
     }
 }
@@ -282,4 +295,5 @@ val LocalShimmer = compositionLocalOf<Shimmer?> { null }
 
 private val TitleItemContainerPadding = 16.dp
 private val TitleItemContainerHeight = 192.dp
-private val TitleItemContentPadding = 8.dp
+private val TitleItemContentPadding = 4.dp
+private val TitleItemMinContentSize = 16.dp
