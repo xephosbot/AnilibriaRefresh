@@ -222,7 +222,7 @@ private fun TitleItemLayout(
         val headlinePadding = TitleItemContentPadding.roundToPx()
         val headlineOffset = headlinePlaceable.height + headlinePadding
         val tagsOffset = headlineOffset + tagsPlaceable.height + headlinePadding
-        val supportingHeight = constraints.maxHeight - tagsOffset
+        val supportingHeight = (constraints.maxHeight - tagsOffset).coerceAtLeast(0)
 
         val supportingPlaceable = supportingMeasurable.first()
             .measure(
