@@ -4,6 +4,7 @@ data class TitleModel(
     val id: Int,
     val name: String,
     val description: String,
+    val tags: List<String>,
     val poster: PosterModel,
     val uploadedTime: String?
 )

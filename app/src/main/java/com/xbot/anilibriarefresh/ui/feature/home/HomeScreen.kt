@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,8 +21,9 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.valentinilk.shimmer.shimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
+import com.xbot.anilibriarefresh.ui.components.LocalShimmer
+import com.xbot.anilibriarefresh.ui.components.TitleItem
 import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.model.TitleModel
 
@@ -95,24 +97,25 @@ private fun TitleList(
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
-    LazyColumn(
-        modifier = modifier
-            .onGloballyPositioned { layoutCoordinates ->
-                val position = layoutCoordinates.unclippedBoundsInWindow()
-                shimmer.updateBounds(position)
-            },
-        contentPadding = contentPadding
-    ) {
-        items(
-            count = items.itemCount,
-            key = items.itemKey(),
-            contentType = items.itemContentType { "TitleItem" }
-        ) { index ->
-            TitleItem(
-                title = items[index],
-                shimmer = shimmer,
-                onClick = onTitleClick
-            )
+    CompositionLocalProvider(LocalShimmer provides shimmer) {
+        LazyColumn(
+            modifier = modifier
+                .onGloballyPositioned { layoutCoordinates ->
+                    val position = layoutCoordinates.unclippedBoundsInWindow()
+                    shimmer.updateBounds(position)
+                },
+            contentPadding = contentPadding
+        ) {
+            items(
+                count = items.itemCount,
+                key = items.itemKey(),
+                contentType = items.itemContentType { "TitleItem" }
+            ) { index ->
+                TitleItem(
+                    title = items[index],
+                    onClick = onTitleClick
+                )
+            }
         }
     }
 }
@@ -124,17 +127,16 @@ private fun LoadingScreen(
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
-    Column (
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = contentPadding.calculateTopPadding())
-            .verticalScroll(rememberScrollState(), enabled = false),
-    ) {
-        repeat(5) {
-            TitleItem(
-                title = null,
-                shimmer = shimmer
-            )
+    CompositionLocalProvider(LocalShimmer provides shimmer) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = contentPadding.calculateTopPadding())
+                .verticalScroll(rememberScrollState(), enabled = false),
+        ) {
+            repeat(5) {
+                TitleItem(title = null)
+            }
         }
     }
 }

@@ -84,6 +84,7 @@ private fun TitleScreenPreview() {
         id = 1,
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
         poster = PosterModel(
             src = null,
             thumbnail = null
