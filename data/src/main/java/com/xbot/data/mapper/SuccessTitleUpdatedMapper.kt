@@ -18,7 +18,7 @@ object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<AnimeCatalogResponse, T
                     id = title.id,
                     name = title.name.main,
                     description = title.description ?: "",
-                    tags = listOf("2024", "TV", "Приключения"),
+                    tags = listOf(title.year.toString(), title.type.description ?: "", title.genres?.get(0)?.name ?: ""),
                     poster = PosterModel(
                         src = title.poster.optimized.src,
                         thumbnail = title.poster.optimized.thumbnail
