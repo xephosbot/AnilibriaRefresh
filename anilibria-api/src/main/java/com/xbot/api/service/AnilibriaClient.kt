@@ -11,8 +11,6 @@ import com.xbot.api.models.PublishStatus
 import com.xbot.api.models.Season
 import com.xbot.api.models.SortingType
 import com.xbot.api.models.Type
-import retrofit2.http.Path
-import retrofit2.http.Query
 import javax.inject.Inject
 
 class AnilibriaClient @Inject constructor(
@@ -24,7 +22,7 @@ class AnilibriaClient @Inject constructor(
      * @param page Номер страницы в выдаче.
      * @param limit Количество релизов на странице.
      * @param genres Список [Int] идентификаторов жанров для фильтрации.
-     * @param typeEnums Список типов релизов [TypeEnum] (например, TV, OVA) для фильтрации.
+     * @param type Список типов релизов [TypeEnum] (например, TV, OVA) для фильтрации.
      * @param seasons Список сезонов релизов [SeasonEnum] (например, winter, spring, summer, autumn) для фильтрации.
      * @param fromYear Минимальный год выхода релиза для фильтрации.
      * @param toYear Максимальный год выхода релиза для фильтрации.
