@@ -37,7 +37,7 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
 import com.xbot.anilibriarefresh.ui.components.LocalShimmer
-import com.xbot.anilibriarefresh.ui.components.TitleItem
+import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.model.TitleModel
 
@@ -160,7 +160,7 @@ private fun TitleList(
                 onClick = {} //TODO: On click action
             )
             pagingItems(items) { title ->
-                TitleItem(
+                TitleListItem(
                     title = title,
                     onClick = onTitleClick
                 )
@@ -180,12 +180,13 @@ private fun LoadingScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
+                //TODO: переделать
                 .padding(top = contentPadding.calculateTopPadding())
                 .verticalScroll(rememberScrollState(), enabled = false),
         ) {
             //TODO: добавить в загрузочный placeholder все элементы как на главном экране
             repeat(5) {
-                TitleItem(title = null)
+                TitleListItem(title = null)
             }
         }
     }

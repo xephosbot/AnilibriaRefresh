@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +36,7 @@ import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
 @Composable
-fun TitleItem(
+fun TitleListItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
     onClick: (Int) -> Unit = {}
@@ -50,8 +49,8 @@ fun TitleItem(
             label = "" //TODO: информативный label для перехода
         ) { state ->
             when (state) {
-                null -> LoadingTitleItem(modifier)
-                else -> TitleItemContent(modifier, state)
+                null -> LoadingTitleListItem(modifier)
+                else -> TitleListItemContent(modifier, state)
             }
         }
     }
@@ -59,7 +58,7 @@ fun TitleItem(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun TitleItemContent(
+private fun TitleListItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel
 ) {
@@ -99,7 +98,7 @@ private fun TitleItemContent(
 }
 
 @Composable
-private fun LoadingTitleItem(
+private fun LoadingTitleListItem(
     modifier: Modifier = Modifier
 ) {
     val shimmer = LocalShimmer.current
@@ -141,7 +140,8 @@ private fun LoadingTitleItem(
             repeat(tagsCount) { index ->
                 Box(
                     modifier = Modifier
-                        .size(width = 60.dp, 16.dp)
+                        .height(16.dp)
+                        .weight(1f)
                         .clip(RoundedCornerShape(4.dp))
                         .background(Color.LightGray)
                 )
@@ -286,8 +286,8 @@ private fun TitleItemPreview() {
     )
 
     Column {
-        TitleItem(title = titleModel)
-        TitleItem(title = null)
+        TitleListItem(title = titleModel)
+        TitleListItem(title = null)
     }
 }
 
