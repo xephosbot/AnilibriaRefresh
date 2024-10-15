@@ -81,22 +81,22 @@ fun NavigationBar(
 sealed class NavigationItem(
     val title: String,
     val icon: ImageVector,
-    val route: Screen
+    val route: Route
 ) {
     data object Home : NavigationItem(
         title = "Home",
         icon = Icons.Rounded.Home,
-        route = Screen.Home
+        route = Route.Home
     )
     data object Favorite : NavigationItem(
         title = "Favorite",
         icon = Icons.Rounded.Favorite,
-        route = Screen.Favorite
+        route = Route.Favorite
     )
     data object Profile : NavigationItem(
         title = "Profile",
         icon = Icons.Rounded.Person,
-        route = Screen.Profile
+        route = Route.Profile
     )
 
     companion object {

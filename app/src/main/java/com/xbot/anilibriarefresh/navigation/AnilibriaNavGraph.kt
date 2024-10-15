@@ -7,6 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +24,7 @@ fun AnilibriaNavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    startDestination: Screen = Screen.Home
+    startDestination: Route = Route.Home
 ) {
     NavHost(
         modifier = modifier
@@ -31,33 +33,34 @@ fun AnilibriaNavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        navigation<Screen.Home>(
-            startDestination = Screen.Home.List
+        navigation<Route.Home>(
+            startDestination = Route.Home.List
         ) {
-            composable<Screen.Home.List> {
+            composable<Route.Home.List> { backStackEntry ->
                 HomeScreen(
                     paddingValues = paddingValues
                 ) { titleId ->
-                    navController.navigate(Screen.Home.Detail(titleId))
+                    if (backStackEntry.lifecycleIsResumed()) {
+                        navController.navigate(Route.Home.Detail(titleId))
+                    }
                 }
             }
-            composable<Screen.Home.Detail> {
+            composable<Route.Home.Detail> {
                 TitleScreen()
             }
         }
-        composable<Screen.Favorite> {
+        composable<Route.Favorite> {
             FavoriteScreen()
         }
-        composable<Screen.Profile> {
+        composable<Route.Profile> {
             FavoriteScreen()
         }
     }
 }
 
-@Serializable
-sealed class Screen {
+sealed interface Route {
     @Serializable
-    data object Home : Screen() {
+    data object Home : Route {
         @Serializable
         data object List
 
@@ -66,8 +69,15 @@ sealed class Screen {
     }
 
     @Serializable
-    data object Favorite : Screen()
+    data object Favorite : Route
 
     @Serializable
-    data object Profile : Screen()
+    data object Profile : Route
 }
+
+/**
+ * Это обходной путь для устранения дублирования событий навигации.
+ * @see <a href="https://github.com/android/compose-samples/blob/081721ad44dfb29b55b1bc34f83d693b6b8dc9dd/Jetsnack/app/src/main/java/com/example/jetsnack/ui/JetsnackAppState.kt#L141-L147">Jetsnack Sample</a>
+ */
+private fun NavBackStackEntry.lifecycleIsResumed() =
+    this.lifecycle.currentState == Lifecycle.State.RESUMED

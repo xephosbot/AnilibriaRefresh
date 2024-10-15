@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.xbot.anilibriarefresh.navigation.Screen
+import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.domain.model.TitleModel
@@ -22,7 +22,7 @@ class TitleViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     snackbarManager: SnackbarManager
 ) : ViewModel() {
-    private val titleId = savedStateHandle.toRoute<Screen.Home.Detail>().titleId
+    private val titleId = savedStateHandle.toRoute<Route.Home.Detail>().titleId
     val state: StateFlow<TitleModel?> = repository.getTitle(titleId)
         .catch { error ->
             //TODO: информативные сообщения для разного типа ошибок
