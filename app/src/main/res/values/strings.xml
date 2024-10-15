@@ -2,4 +2,6 @@
     <string name="app_name">AnilibriaRefresh</string>
     <string name="unknown_error">Какая-то ошибка</string>
     <string name="retry_button">Повторить</string>
+    <string name="text_favorites_btn">Всё</string>
+
 </resources>

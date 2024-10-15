@@ -1,10 +1,16 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -17,15 +23,23 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -36,9 +50,13 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
+import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.ui.components.HeaderComponent
 import com.xbot.anilibriarefresh.ui.components.LocalShimmer
+import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.utils.union
+import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -152,8 +170,11 @@ private fun TitleList(
                 title = "Избранное",
                 onClick = {} //TODO: On click action
             )
-            horizontalItems(listOf()) { title ->
-                //TODO: Horizontal list item element
+            horizontalItems(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                items = listAnime
+            ) { title ->
+                TitleCardItem(title = title)
             }
             header(
                 title = "Обновления",
@@ -184,6 +205,18 @@ private fun LoadingScreen(
                 .padding(top = contentPadding.calculateTopPadding())
                 .verticalScroll(rememberScrollState(), enabled = false),
         ) {
+            HeaderComponent("Избранное") { }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .horizontalScroll(rememberScrollState(), enabled = false)
+            ) {
+                repeat(4) {
+                    TitleCardItem(title = null)
+                }
+            }
+            HeaderComponent("Обновления") { }
             //TODO: добавить в загрузочный placeholder все элементы как на главном экране
             repeat(5) {
                 TitleListItem(title = null)
@@ -200,7 +233,10 @@ private fun LazyListScope.horizontalItems(
     item(
         contentType = { "HorizontalList" }
     ) {
-        LazyRow(contentPadding = contentPadding) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = contentPadding
+        ) {
             items(
                 items = items,
                 key = { it.id }
@@ -218,7 +254,7 @@ private fun LazyListScope.header(
     item(
         contentType = { "Header" }
     ) {
-        //TODO: Header
+        HeaderComponent(title = title, onClick = onClick)
     }
 }
 
@@ -248,3 +284,81 @@ private fun LazyListScope.pagingItems(
         itemContent(items[it])
     }
 }
+
+val listAnime = listOf(TitleModel(
+    id = 1,
+    name = "Атака титанов",
+    description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+    tags = listOf("2024", "TV", "Приключения"),
+    poster = PosterModel(
+        src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+        thumbnail = null
+    ),
+    uploadedTime = null
+),
+    TitleModel(
+        id = 2,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ),
+    TitleModel(
+        id = 3,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ),
+    TitleModel(
+        id = 4,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ),
+    TitleModel(
+        id = 5,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ),
+    TitleModel(
+        id = 6,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ),
+    TitleModel(
+        id = 7,
+        name = "Атака титанов",
+        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
+        tags = listOf("2024", "TV", "Приключения"),
+        poster = PosterModel(
+            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            thumbnail = null
+        ),
+        uploadedTime = null
+    ))
