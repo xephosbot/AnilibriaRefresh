@@ -1,23 +1,35 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.xbot.anilibriarefresh.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemHorizontalPadding
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -37,7 +49,7 @@ fun NavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    androidx.compose.material3.NavigationBar (
+    NavigationBar (
         modifier = modifier,
         containerColor = containerColor,
         contentColor = contentColor,
@@ -66,15 +78,38 @@ fun NavigationBar(
                     )
                 },
                 label = {
-                    Text(
-                        text = destination.title,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                    )
+                    Text(text = destination.title)
                 }
             )
         }
+    }
+}
+
+@Composable
+fun NavigationBar(
+    modifier: Modifier = Modifier,
+    containerColor: Color = NavigationBarDefaults.containerColor,
+    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
+    tonalElevation: Dp = NavigationBarDefaults.Elevation,
+    windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
+    content: @Composable RowScope.() -> Unit
+) {
+    Surface(
+        color = containerColor,
+        contentColor = contentColor,
+        tonalElevation = tonalElevation,
+        modifier = modifier
+    ) {
+        Row(
+            modifier =
+            Modifier.fillMaxWidth()
+                .windowInsetsPadding(windowInsets)
+                .defaultMinSize(minHeight = 64.dp)
+                .selectableGroup(),
+            horizontalArrangement = Arrangement.spacedBy(NavigationBarItemHorizontalPadding),
+            verticalAlignment = Alignment.CenterVertically,
+            content = content
+        )
     }
 }
 
@@ -93,6 +128,11 @@ sealed class NavigationItem(
         icon = Icons.Rounded.Favorite,
         route = Route.Favorite
     )
+    data object Search : NavigationItem(
+        title = "Search",
+        icon = Icons.Rounded.Search,
+        route = Route.Search
+    )
     data object Profile : NavigationItem(
         title = "Profile",
         icon = Icons.Rounded.Person,
@@ -100,6 +140,6 @@ sealed class NavigationItem(
     )
 
     companion object {
-        val destinations = listOf(Home, Favorite, Profile)
+        val destinations = listOf(Home, Favorite, Search, Profile)
     }
 }
