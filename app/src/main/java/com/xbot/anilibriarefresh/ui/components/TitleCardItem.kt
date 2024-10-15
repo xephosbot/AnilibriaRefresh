@@ -33,7 +33,7 @@ fun TitleCardItem(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TitleCardItemContent(
+private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel
 ) {
@@ -47,7 +47,7 @@ fun TitleCardItemContent(
 }
 
 @Composable
-fun LoadingTitleCardItem(
+private fun LoadingTitleCardItem(
     modifier: Modifier = Modifier
 ) {
     val shimmer = LocalShimmer.current
