@@ -137,7 +137,7 @@ private fun LoadingTitleItem(
             )
         },
         tags = {
-            val tagsCount = 5
+            val tagsCount = 3
             repeat(tagsCount) { index ->
                 Box(
                     modifier = Modifier

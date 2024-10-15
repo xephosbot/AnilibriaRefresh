@@ -27,7 +27,7 @@ fun PosterImage(
     poster: PosterModel,
     contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
-    contentScale: ContentScale = ContentScale.Fit,
+    contentScale: ContentScale = ContentScale.Crop,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     loading: Placeholder = placeholder(ColorPainter(MaterialTheme.colorScheme.onSurface)),
