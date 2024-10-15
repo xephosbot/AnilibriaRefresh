@@ -1,6 +1,7 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +16,14 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +60,7 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
@@ -73,19 +80,43 @@ private fun HomeScreenContent(
         (loadStates.prepend is LoadState.Error) -> showErrorMessage((loadStates.prepend as LoadState.Error).error)
     }
 
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = loadStates.refresh is LoadState.Loading,
+        onRefresh = items::refresh
+    )
+
     Scaffold(modifier = modifier) { innerPadding ->
-        Crossfade(
-            targetState = loadStates.refresh,
-            label = "" //TODO: информативный label для перехода
-        ) { state ->
-            when(state) {
-                is LoadState.Loading -> LoadingScreen(
-                    contentPadding = innerPadding.union(paddingValues)
-                )
-                else -> TitleList(
-                    items = items,
-                    contentPadding = innerPadding.union(paddingValues),
-                    onTitleClick = onNavigate
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
+        ) {
+            Crossfade(
+                targetState = loadStates.refresh,
+                label = "" //TODO: информативный label для перехода
+            ) { state ->
+                when (state) {
+                    is LoadState.Loading -> LoadingScreen(
+                        contentPadding = innerPadding.union(paddingValues)
+                    )
+                    else -> TitleList(
+                        items = items,
+                        contentPadding = innerPadding.union(paddingValues),
+                        onTitleClick = onNavigate
+                    )
+                }
+            }
+
+            //I wrapped it in a box because I needed to add padding.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding.union(paddingValues))
+            ) {
+                PullRefreshIndicator(
+                    refreshing = loadStates.refresh is LoadState.Loading,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
         }
@@ -100,7 +131,7 @@ private fun TitleList(
     onTitleClick: (Int) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val pagerState = rememberPagerState(pageCount = { 5 }) //TODO: update pager state
+    val pagerState = rememberPagerState(pageCount = { 0 }) //TODO: update pager state
 
     CompositionLocalProvider(LocalShimmer provides shimmer) {
         LazyColumn(
