@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Anime(
+data class Release(
     @SerialName("id") val id: Int,
     @SerialName("type") val type: Type,
     @SerialName("year") val year: Int,

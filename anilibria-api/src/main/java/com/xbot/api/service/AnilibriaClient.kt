@@ -2,8 +2,8 @@ package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
 import com.xbot.api.models.AgeRating
-import com.xbot.api.models.Anime
-import com.xbot.api.models.AnimeCatalogResponse
+import com.xbot.api.models.Release
+import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
 import com.xbot.api.models.ProductionStatus
@@ -31,7 +31,7 @@ class AnilibriaClient @Inject constructor(
      * @param ageRatings Список возрастных рейтингов [AgeRatingEnum] (например, R16_PLUS, R18_PLUS) для фильтрации.
      * @param publishStatuses Список статусов публикации релизов [PublishStatusEnum] (например, ongoing, completed) для фильтрации.
      * @param productionStatuses Список статусов производства релизов [ProductionStatusEnum] (например, inProduction, finished) для фильтрации.
-     * @return [ApiResponse] содержащий список релизов аниме [Anime] и метаданные.
+     * @return [ApiResponse] содержащий список релизов аниме [Release] и метаданные.
      */
     suspend fun getReleases(
         page: Int,
@@ -46,7 +46,7 @@ class AnilibriaClient @Inject constructor(
         ageRatings: List<AgeRatingEnum>? = null,
         publishStatuses: List<PublishStatusEnum>? = null,
         productionStatuses: List<ProductionStatusEnum>? = null
-    ): ApiResponse<AnimeCatalogResponse> {
+    ): ApiResponse<ReleaseCatalogResponse> {
         return service.getReleases(
             page = page,
             limit = limit,
@@ -67,9 +67,9 @@ class AnilibriaClient @Inject constructor(
      * Получение информации о релизе аниме по его идентификатору.
      *
      * @param id [Int] Идентификатор релиза аниме для получения информации.
-     * @return [ApiResponse] содержащий информацию о релизе аниме [Anime].
+     * @return [ApiResponse] содержащий информацию о релизе аниме [Release].
      */
-    suspend fun getRelease(id: Int): ApiResponse<Anime> {
+    suspend fun getRelease(id: Int): ApiResponse<Release> {
         return service.getRelease(id)
     }
 
@@ -213,13 +213,13 @@ class AnilibriaClient @Inject constructor(
      * @param id [Int] Идентификатор жанра для получения информации.
      * @param page Страница в выдаче.
      * @param limit Количество релизов в выдаче.
-     * @return [ApiResponse] содержащий информацию о релизе [AnimeCatalogResponse].
+     * @return [ApiResponse] содержащий информацию о релизе [ReleaseCatalogResponse].
      */
     suspend fun getAllReleasesByGenre(
         id: Int,
         page: Int,
         limit: Int
-    ): ApiResponse<AnimeCatalogResponse> {
+    ): ApiResponse<ReleaseCatalogResponse> {
         return service.getAllReleasesByGenre(
             id = id,
             page = page,

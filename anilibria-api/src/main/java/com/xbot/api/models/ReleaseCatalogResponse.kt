@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AnimeCatalogResponse(
-    @SerialName("data") val data: List<Anime>,
+data class ReleaseCatalogResponse(
+    @SerialName("data") val data: List<Release>,
     @SerialName("meta") val meta: Meta
 )

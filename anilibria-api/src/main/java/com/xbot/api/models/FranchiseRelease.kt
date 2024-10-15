@@ -9,5 +9,5 @@ data class FranchiseRelease(
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("release_id") val releaseId: Int,
     @SerialName("franchise_id") val franchiseId: String,
-    @SerialName("release") val release: Anime
+    @SerialName("release") val release: Release
 )

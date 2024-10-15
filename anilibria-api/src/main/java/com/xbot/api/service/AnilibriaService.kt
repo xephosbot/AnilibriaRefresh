@@ -2,8 +2,8 @@ package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
 import com.xbot.api.models.AgeRating
-import com.xbot.api.models.Anime
-import com.xbot.api.models.AnimeCatalogResponse
+import com.xbot.api.models.Release
+import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
 import com.xbot.api.models.ProductionStatus
@@ -34,12 +34,12 @@ interface AnilibriaService {
         @Query("f[age_ratings]") ageRatings: String? = null,
         @Query("f[publish_statuses]") publishStatuses: String? = null,
         @Query("f[production_statuses]") productionStatuses: String? = null
-    ): ApiResponse<AnimeCatalogResponse>
+    ): ApiResponse<ReleaseCatalogResponse>
 
     @GET("anime/releases/{id}")
     suspend fun getRelease(
         @Path("id") id: Int
-    ): ApiResponse<Anime>
+    ): ApiResponse<Release>
 
     @GET("anime/catalog/references/age-ratings")
     suspend fun getAgeRatings(): ApiResponse<List<AgeRating>>
@@ -101,7 +101,7 @@ interface AnilibriaService {
         @Path("genreId") id: Int,
         @Query("page") page: Int,
         @Query("limit") limit: Int
-    ): ApiResponse<AnimeCatalogResponse>
+    ): ApiResponse<ReleaseCatalogResponse>
 
     companion object {
         const val BASE_URL: String = "https://anilibria.top"
