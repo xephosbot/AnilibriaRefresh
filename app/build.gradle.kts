@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.3")
     implementation(libs.haze.compose)
     implementation(libs.haze.compose.materials)
     implementation(libs.shimmer.compose)

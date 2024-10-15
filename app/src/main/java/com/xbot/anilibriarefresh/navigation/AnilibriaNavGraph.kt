@@ -52,6 +52,9 @@ fun AnilibriaNavGraph(
         composable<Route.Favorite> {
             FavoriteScreen()
         }
+        composable<Route.Search> {
+            FavoriteScreen()
+        }
         composable<Route.Profile> {
             FavoriteScreen()
         }
@@ -70,6 +73,9 @@ sealed interface Route {
 
     @Serializable
     data object Favorite : Route
+
+    @Serializable
+    data object Search : Route
 
     @Serializable
     data object Profile : Route
