@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +31,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.CombinedLoadStates
@@ -187,13 +190,18 @@ private fun LoadingScreen(
     contentPadding: PaddingValues
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
+    val layoutDirection = LocalLayoutDirection.current
 
     CompositionLocalProvider(LocalShimmer provides shimmer) {
         Column(
             modifier = modifier
                 .fillMaxSize()
                 //TODO: переделать
-                .padding(top = contentPadding.calculateTopPadding())
+                .padding(
+                    top = contentPadding.calculateTopPadding(),
+                    start = contentPadding.calculateStartPadding(layoutDirection),
+                    end = contentPadding.calculateEndPadding(layoutDirection)
+                )
                 .verticalScroll(rememberScrollState(), enabled = false),
         ) {
             TitlePagerItem(title = null)
