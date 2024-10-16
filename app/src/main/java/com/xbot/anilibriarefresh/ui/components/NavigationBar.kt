@@ -1,19 +1,32 @@
-package com.xbot.anilibriarefresh.navigation
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
+package com.xbot.anilibriarefresh.ui.components
 
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -31,13 +44,95 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.xbot.anilibriarefresh.navigation.TOP_LEVEL_DESTINATIONS
+import com.xbot.anilibriarefresh.navigation.TopLevelDestination
+import com.xbot.anilibriarefresh.navigation.hasRoute
 import kotlin.math.max
 import kotlin.math.roundToInt
 
+@Composable
+fun AnilibriaNavigationBar(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    destinations: List<TopLevelDestination> = TOP_LEVEL_DESTINATIONS
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    NavigationBar (
+        modifier = modifier,
+    ) {
+        destinations.forEach { destination ->
+            val isSelected = currentDestination.hasRoute(destination)
+            NavigationBarItem(
+                selected = isSelected,
+                onClick = {
+                    navController.navigate(destination.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = destination.icon,
+                        contentDescription = destination.text
+                    )
+                },
+                label = {
+                    Text(
+                        text = destination.text,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun NavigationBar(
+    modifier: Modifier = Modifier,
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    tonalElevation: Dp = NavigationBarDefaults.Elevation,
+    windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
+    content: @Composable RowScope.() -> Unit
+) {
+    Surface(
+        color = containerColor,
+        contentColor = contentColor,
+        tonalElevation = tonalElevation,
+        modifier = modifier
+    ) {
+        Row(
+            modifier =
+            Modifier.fillMaxWidth()
+                .windowInsetsPadding(windowInsets)
+                .defaultMinSize(minHeight = 64.dp)
+                .selectableGroup(),
+            horizontalArrangement = Arrangement.spacedBy(NavigationBarItemHorizontalPadding),
+            verticalAlignment = Alignment.CenterVertically,
+            content = content
+        )
+    }
+}
+
+/**
+ * Implementation from source androidx.compose.material adapted for material3 color scheme
+ */
 @Composable
 fun RowScope.NavigationBarItem(
     selected: Boolean,
@@ -121,7 +216,8 @@ private fun BottomNavigationItemBaselineLayout(
         Box(Modifier.layoutId("icon")) { icon() }
         if (label != null) {
             Box(
-                Modifier.layoutId("label")
+                Modifier
+                    .layoutId("label")
                     .alpha(iconPositionAnimationProgress)
                     .padding(horizontal = BottomNavigationItemHorizontalPadding)
             ) {
@@ -161,7 +257,7 @@ private fun MeasureScope.placeIcon(
     iconPlaceable: Placeable,
     constraints: Constraints
 ): MeasureResult {
-    val height = constraints.constrainHeight(BottomNavigationHeight.roundToPx())
+    val height = constraints.constrainHeight(NavigationBarHeight.roundToPx())
     val iconY = (height - iconPlaceable.height) / 2
     return layout(iconPlaceable.width, height) { iconPlaceable.placeRelative(0, iconY) }
 }
@@ -177,7 +273,7 @@ private fun MeasureScope.placeLabelAndIcon(
     val netBaselineAdjustment = baselineOffset - firstBaseline
 
     val contentHeight = iconPlaceable.height + labelPlaceable.height + netBaselineAdjustment
-    val height = constraints.constrainHeight(max(contentHeight, BottomNavigationHeight.roundToPx()))
+    val height = constraints.constrainHeight(max(contentHeight, NavigationBarHeight.roundToPx()))
     val contentVerticalPadding = ((height - contentHeight) / 2).coerceAtLeast(0)
 
     val unselectedIconY = (height - iconPlaceable.height) / 2
@@ -208,11 +304,11 @@ private fun MeasureScope.placeLabelAndIcon(
     }
 }
 
+private val NavigationBarItemHorizontalPadding: Dp = 8.dp
+
 private val BottomNavigationAnimationSpec =
     TweenSpec<Float>(durationMillis = 300, easing = FastOutSlowInEasing)
-
-private val BottomNavigationHeight = 56.dp
-
+private val NavigationBarHeight = 64.dp
 private val BottomNavigationItemHorizontalPadding = 12.dp
 
 private val CombinedItemTextBaseline = 12.dp

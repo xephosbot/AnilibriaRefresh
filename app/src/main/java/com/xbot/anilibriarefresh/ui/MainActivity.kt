@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AnilibriaTheme {
-                AnilibriaApp()
+                AnilibriaApp2()
             }
         }
     }

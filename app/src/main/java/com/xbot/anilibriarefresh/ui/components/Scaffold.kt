@@ -40,6 +40,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.util.fastMap
+import androidx.compose.ui.util.fastMapNotNull
+import androidx.compose.ui.util.fastMaxBy
 import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +51,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -65,7 +67,7 @@ fun Scaffold(
         contentColor = contentColor
     ) {
         ScaffoldLayout(
-            modifier = contentModifier.windowInsetsPadding(
+            modifier = Modifier.windowInsetsPadding(
                 WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal)
             ),
             fabPosition = floatingActionButtonPosition,
@@ -103,14 +105,13 @@ private fun ScaffoldLayout(
 
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
-
-        val topBarPlaceables = subcompose(ScaffoldLayoutContent.TopBar, topBar).map {
+        val topBarPlaceables = subcompose(ScaffoldLayoutContent.TopBar, topBar).fastMap {
             it.measure(looseConstraints)
         }
 
-        val topBarHeight = topBarPlaceables.maxByOrNull { it.height }?.height ?: 0
+        val topBarHeight = topBarPlaceables.fastMaxBy { it.height }?.height ?: 0
 
-        val snackbarPlaceables = subcompose(ScaffoldLayoutContent.Snackbar, snackbar).map {
+        val snackbarPlaceables = subcompose(ScaffoldLayoutContent.Snackbar, snackbar).fastMap {
             // respect only bottom and horizontal for snackbar and fab
             val leftInset = contentWindowInsets
                 .getLeft(this@SubcomposeLayout, layoutDirection)
@@ -126,11 +127,11 @@ private fun ScaffoldLayout(
             )
         }
 
-        val snackbarHeight = snackbarPlaceables.maxByOrNull { it.height }?.height ?: 0
-        val snackbarWidth = snackbarPlaceables.maxByOrNull { it.width }?.width ?: 0
+        val snackbarHeight = snackbarPlaceables.fastMaxBy { it.height }?.height ?: 0
+        val snackbarWidth = snackbarPlaceables.fastMaxBy { it.width }?.width ?: 0
 
         val fabPlaceables =
-            subcompose(ScaffoldLayoutContent.Fab, fab).mapNotNull { measurable ->
+            subcompose(ScaffoldLayoutContent.Fab, fab).fastMapNotNull { measurable ->
                 // respect only bottom and horizontal for snackbar and fab
                 val leftInset =
                     contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection)
@@ -147,8 +148,8 @@ private fun ScaffoldLayout(
             }
 
         val fabPlacement = if (fabPlaceables.isNotEmpty()) {
-            val fabWidth = fabPlaceables.maxByOrNull { it.width }!!.width
-            val fabHeight = fabPlaceables.maxByOrNull { it.height }!!.height
+            val fabWidth = fabPlaceables.fastMaxBy { it.width }!!.width
+            val fabHeight = fabPlaceables.fastMaxBy { it.height }!!.height
             // FAB distance from the left of the layout, taking into account LTR / RTL
             val fabLeftOffset = if (fabPosition == FabPosition.End) {
                 if (layoutDirection == LayoutDirection.Ltr) {
@@ -213,14 +214,8 @@ private fun ScaffoldLayout(
                 end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
             )
             content(innerPadding)
-        }.map {
-            it.measure(
-                constraints.copy(
-                    minWidth = 0,
-                    minHeight = constraints.maxHeight,
-                    maxHeight = constraints.maxHeight
-                )
-            )
+        }.fastMap {
+            it.measure(looseConstraints)
         }
 
         layout(layoutWidth, layoutHeight) {

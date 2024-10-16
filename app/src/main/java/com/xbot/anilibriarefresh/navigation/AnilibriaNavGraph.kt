@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -59,6 +62,9 @@ fun AnilibriaNavGraph(
         }
     }
 }
+
+fun NavDestination?.hasRoute(destination: TopLevelDestination) =
+    this?.hierarchy?.any { it.hasRoute(destination.route::class) } == true
 
 /**
  * Это обходной путь для устранения дублирования событий навигации.
