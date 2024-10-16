@@ -279,7 +279,7 @@ private fun LazyListScope.pagingItems(
 
 val listAnime = listOf(TitleModel(
     id = 1,
-    name = "Атака титанов",
+    name = "Клинок, рассекающий демонов",
     description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
     tags = listOf("2024", "TV", "Приключения"),
     poster = PosterModel(
@@ -292,7 +292,7 @@ val listAnime = listOf(TitleModel(
         id = 2,
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
+        tags = listOf("2023", "TV", "Экшен"),
         poster = PosterModel(
             src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
             thumbnail = null
@@ -303,7 +303,7 @@ val listAnime = listOf(TitleModel(
         id = 3,
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
+        tags = listOf("2024", "TV", "Романтика"),
         poster = PosterModel(
             src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
             thumbnail = null
