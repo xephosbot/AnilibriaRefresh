@@ -3,5 +3,5 @@
     <string name="unknown_error">Какая-то ошибка</string>
     <string name="retry_button">Повторить</string>
     <string name="text_favorites_btn">Всё</string>
-
+    <string name="text_pager_item">Смотреть с 1 эпизода</string>
 </resources>
