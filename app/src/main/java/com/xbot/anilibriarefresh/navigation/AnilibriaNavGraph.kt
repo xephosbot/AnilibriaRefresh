@@ -16,7 +16,6 @@ import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
-import kotlinx.serialization.Serializable
 
 @Composable
 fun AnilibriaNavGraph(
@@ -59,26 +58,6 @@ fun AnilibriaNavGraph(
             FavoriteScreen()
         }
     }
-}
-
-sealed interface Route {
-    @Serializable
-    data object Home : Route {
-        @Serializable
-        data object List
-
-        @Serializable
-        data class Detail(val titleId: Int)
-    }
-
-    @Serializable
-    data object Favorite : Route
-
-    @Serializable
-    data object Search : Route
-
-    @Serializable
-    data object Profile : Route
 }
 
 /**
