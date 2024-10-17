@@ -12,7 +12,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.valentinilk.shimmer.shimmer
+import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
+import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -56,10 +57,7 @@ private fun LoadingTitleCardItem(
         modifier
             .height(186.dp)
             .aspectRatio(7f / 10f)
-            .then(
-                if (shimmer != null) Modifier.shimmer(shimmer)
-                else Modifier
-            )
+            .shimmerSafe(shimmer)
             .clip(RoundedCornerShape(8.dp))
             .background(Color.LightGray)
 

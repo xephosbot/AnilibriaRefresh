@@ -27,7 +27,6 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -44,10 +43,10 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
 import com.xbot.anilibriarefresh.ui.components.HeaderComponent
-import com.xbot.anilibriarefresh.ui.components.LocalShimmer
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
+import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
@@ -144,7 +143,7 @@ private fun TitleList(
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val pagerState = rememberPagerState(pageCount = { listAnime.size }) //TODO: update pager state
 
-    CompositionLocalProvider(LocalShimmer provides shimmer) {
+    ProvideShimmer(shimmer) {
         LazyColumn(
             modifier = modifier
                 .onGloballyPositioned { layoutCoordinates ->
@@ -192,7 +191,7 @@ private fun LoadingScreen(
     val shimmer = rememberShimmer(ShimmerBounds.Window)
     val layoutDirection = LocalLayoutDirection.current
 
-    CompositionLocalProvider(LocalShimmer provides shimmer) {
+    ProvideShimmer(shimmer) {
         Column(
             modifier = modifier
                 .fillMaxSize()

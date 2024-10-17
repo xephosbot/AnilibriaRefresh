@@ -18,7 +18,6 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.valentinilk.shimmer.Shimmer
-import com.valentinilk.shimmer.shimmer
+import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
+import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
@@ -107,10 +106,7 @@ private fun LoadingTitleListItem(
         modifier = modifier
             .height(TitleItemContainerHeight)
             .padding(TitleItemContainerPadding)
-            .then(
-                if (shimmer != null) Modifier.shimmer(shimmer)
-                else Modifier
-            ),
+            .shimmerSafe(shimmer),
         headlineContent = {
             Box(
                 modifier = Modifier
@@ -290,8 +286,6 @@ private fun TitleItemPreview() {
         TitleListItem(title = null)
     }
 }
-
-val LocalShimmer = compositionLocalOf<Shimmer?> { null }
 
 private val TitleItemContainerPadding = 16.dp
 private val TitleItemContainerHeight = 192.dp
