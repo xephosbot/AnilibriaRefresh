@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -33,6 +34,11 @@ class HomeViewModel @Inject constructor(
         HomeScreenState.Success(
             recommendedTitles = recommendedTitles,
             favoriteTitles = favoriteTitles
+        )
+    }.catch { error ->
+        //TODO: информативные сообщения для разного типа ошибок
+        snackbarManager.showMessage(
+            title = MessageContent.String(error.message ?: "")
         )
     }.stateIn(
         scope = viewModelScope,
