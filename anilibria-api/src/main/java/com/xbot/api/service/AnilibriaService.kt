@@ -103,6 +103,16 @@ interface AnilibriaService {
         @Query("limit") limit: Int
     ): ApiResponse<ReleaseCatalogResponse>
 
+    @GET("anime/releases/latest")
+    suspend fun getLatestReleases(
+        @Query("limit") limit: Int
+    ): ApiResponse<List<Release>>
+
+    @GET("anime/releases/random")
+    suspend fun getRandomReleases(
+        @Query("limit") limit: Int
+    ): ApiResponse<List<Release>>
+
     companion object {
         const val BASE_URL: String = "https://anilibria.top"
         const val BASE_URL_API: String = "https://anilibria.top/api/v1/"

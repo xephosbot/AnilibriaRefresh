@@ -26,6 +26,14 @@ internal class TitleRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override fun getRecommendedTitles(): Flow<List<TitleModel>> {
+        return dataSource.getRecommendedTitles(10)
+    }
+
+    override fun getFavoriteTitles(): Flow<List<TitleModel>> {
+        return dataSource.getFavoriteTitles(10)
+    }
+
     override fun getTitle(id: Int): Flow<TitleModel> {
         return dataSource.getTitle(id)
     }

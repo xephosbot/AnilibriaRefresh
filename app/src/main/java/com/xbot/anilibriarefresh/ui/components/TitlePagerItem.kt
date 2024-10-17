@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.ui.feature.home.listAnime
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
@@ -196,6 +195,7 @@ private fun LoadingTitlePagerContent(
 @Preview
 @Composable
 private fun PrevTitleItem123() {
-    TitlePagerItemContent(title = listAnime[0], sizeListTitles = 1) {}
+
+    //TitlePagerItemContent(title = listAnime[0], sizeListTitles = 1) {}
 
 }

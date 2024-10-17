@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TitleRepository {
     fun getLatestTitles(): Flow<PagingData<TitleModel>>
+    fun getRecommendedTitles(): Flow<List<TitleModel>>
+    fun getFavoriteTitles(): Flow<List<TitleModel>>
     fun getTitle(id: Int): Flow<TitleModel>
 }

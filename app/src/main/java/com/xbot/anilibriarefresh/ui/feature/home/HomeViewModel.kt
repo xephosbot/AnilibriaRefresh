@@ -12,6 +12,10 @@ import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +25,20 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val titles: Flow<PagingData<TitleModel>> = repository.getLatestTitles()
         .cachedIn(viewModelScope)
+
+    val state: StateFlow<HomeScreenState> = combine(
+        repository.getRecommendedTitles(),
+        repository.getFavoriteTitles()
+    ) { recommendedTitles, favoriteTitles ->
+        HomeScreenState.Success(
+            recommendedTitles = recommendedTitles,
+            favoriteTitles = favoriteTitles
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = HomeScreenState.Loading
+    )
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
@@ -36,6 +54,14 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+}
+
+sealed interface HomeScreenState {
+    data object Loading: HomeScreenState
+    data class Success(
+        val recommendedTitles: List<TitleModel>,
+        val favoriteTitles: List<TitleModel>
+    ): HomeScreenState
 }
 
 sealed interface HomeScreenAction {

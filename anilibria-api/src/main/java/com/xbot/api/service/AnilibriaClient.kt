@@ -227,6 +227,20 @@ class AnilibriaClient @Inject constructor(
         )
     }
 
+    //TODO: comment
+    suspend fun getLatestReleases(
+        limit: Int
+    ): ApiResponse<List<Release>> {
+        return service.getLatestReleases(limit = limit)
+    }
+
+    //TODO: comment
+    suspend fun getRandomReleases(
+        limit: Int
+    ): ApiResponse<List<Release>> {
+        return service.getRandomReleases(limit = limit)
+    }
+
     enum class TypeEnum(private val type: String) {
         TV("TV"),
         ONA("ONA"),

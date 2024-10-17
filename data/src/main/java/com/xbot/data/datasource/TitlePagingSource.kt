@@ -18,7 +18,7 @@ class TitlePagingSource @Inject constructor(
         val pageIndex = params.key ?: FIRST_PAGE_INDEX
         val loadSize = params.loadSize
         return try {
-            val page = dataSource.getTitleUpdates(pageIndex + 1, loadSize).first()
+            val page = dataSource.getLatestTitles(pageIndex + 1, loadSize).first()
 
             val newCount = page.items.size
             val total = page.total

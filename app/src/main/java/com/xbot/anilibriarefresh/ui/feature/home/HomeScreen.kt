@@ -27,12 +27,14 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -48,7 +50,6 @@ import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.union
-import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -58,13 +59,15 @@ fun HomeScreen(
     paddingValues: PaddingValues,
     onNavigate: (Int) -> Unit
 ) {
-    val lazyTitlesItems = viewModel.titles.collectAsLazyPagingItems()
+    val items = viewModel.titles.collectAsLazyPagingItems()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         modifier = modifier,
         paddingValues = paddingValues,
-        items = lazyTitlesItems,
-        loadStates = lazyTitlesItems.loadState,
+        state = state,
+        items = items,
+        loadStates = items.loadState,
         onAction = viewModel::onAction,
         onNavigate = onNavigate
     )
@@ -75,6 +78,7 @@ fun HomeScreen(
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
+    state: HomeScreenState,
     items: LazyPagingItems<TitleModel>,
     loadStates: CombinedLoadStates,
     onAction: (HomeScreenAction) -> Unit,
@@ -102,18 +106,23 @@ private fun HomeScreenContent(
                 .pullRefresh(pullRefreshState)
         ) {
             Crossfade(
-                targetState = loadStates.refresh,
+                targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
                 label = "" //TODO: информативный label для перехода
-            ) { state ->
-                when (state) {
-                    is LoadState.Loading -> LoadingScreen(
+            ) { targetState ->
+                when (targetState) {
+                    true -> LoadingScreen(
                         contentPadding = innerPadding.union(paddingValues)
                     )
-                    else -> TitleList(
-                        items = items,
-                        contentPadding = innerPadding.union(paddingValues),
-                        onTitleClick = onNavigate
-                    )
+                    else -> {
+                        val successState = state as HomeScreenState.Success
+                        TitleList(
+                            items = items,
+                            recommendedList = successState.recommendedTitles,
+                            favoriteList = successState.favoriteTitles,
+                            contentPadding = innerPadding.union(paddingValues),
+                            onTitleClick = onNavigate
+                        )
+                    }
                 }
             }
 
@@ -137,11 +146,13 @@ private fun HomeScreenContent(
 private fun TitleList(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<TitleModel>,
+    recommendedList: List<TitleModel>,
+    favoriteList: List<TitleModel>,
     contentPadding: PaddingValues,
     onTitleClick: (Int) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val pagerState = rememberPagerState(pageCount = { listAnime.size }) //TODO: update pager state
+    val pagerState = rememberPagerState(pageCount = { recommendedList.size })
 
     ProvideShimmer(shimmer) {
         LazyColumn(
@@ -153,11 +164,10 @@ private fun TitleList(
             contentPadding = contentPadding
         ) {
             horizontalPagerItems(
-                items = listAnime,
+                items = recommendedList,
                 state = pagerState
             ) { title ->
-                //TODO: Pager item element
-                TitlePagerItem(title = title, sizeListTitles = listAnime.size)
+                TitlePagerItem(title = title, sizeListTitles = recommendedList.size)
             }
             header(
                 title = "Избранное",
@@ -165,7 +175,7 @@ private fun TitleList(
             )
             horizontalItems(
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                items = listAnime
+                items = favoriteList
             ) { title ->
                 TitleCardItem(title = title)
             }
@@ -216,7 +226,6 @@ private fun LoadingScreen(
                 }
             }
             HeaderComponent("Обновления") { }
-            //TODO: добавить в загрузочный placeholder все элементы как на главном экране
             repeat(5) {
                 TitleListItem(title = null)
             }
@@ -283,48 +292,3 @@ private fun LazyListScope.pagingItems(
         itemContent(items[it])
     }
 }
-
-val listAnime = listOf(TitleModel(
-    id = 1,
-    name = "Клинок, рассекающий демонов",
-    description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-    tags = listOf("2024", "TV", "Приключения"),
-    poster = PosterModel(
-        src = "/storage/releases/posters/8325/nCaLGeaSAbDMzqOOppaCuEoq60DnZCVf.jpg",
-        thumbnail = null
-    ),
-    uploadedTime = null
-),
-    TitleModel(
-        id = 2,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2023", "TV", "Экшен"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/9114/QXA877CKZj9I5jH8Uz1ZOjyruADBgU6D.webp",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ),
-    TitleModel(
-        id = 3,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Романтика"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ),
-    TitleModel(
-        id = 4,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ))
