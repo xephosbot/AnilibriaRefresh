@@ -40,7 +40,7 @@ import com.xbot.anilibriarefresh.ui.components.rememberScaffoldState
 fun AnilibriaNavigationSuiteScaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
-    navigationSuite: @Composable (NavigationSuiteType) -> Unit,
+    navigationSuite: @Composable NavigationSuiteScope.() -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
@@ -84,7 +84,7 @@ fun AnilibriaNavigationSuiteScaffold(
                 }
             },
             navigationSuite = {
-                navigationSuite(navLayoutType)
+                NavigationSuiteScopeImpl(navLayoutType, navContentPosition).navigationSuite()
             },
             content = content,
             contentWindowInsets = contentWindowInsets
@@ -214,6 +214,16 @@ private fun NavigationSuiteScaffoldLayout(
         }
     }
 }
+
+interface NavigationSuiteScope {
+    val layoutType: NavigationSuiteType
+    val contentPosition: NavigationContentPosition
+}
+
+private class NavigationSuiteScopeImpl(
+    override val layoutType: NavigationSuiteType,
+    override val contentPosition: NavigationContentPosition
+) : NavigationSuiteScope
 
 private enum class ScaffoldLayoutContent { MainContent, Navigation, TopBar, Snackbar }
 
