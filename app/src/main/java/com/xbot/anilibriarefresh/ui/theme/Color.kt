@@ -1,5 +1,7 @@
 package com.xbot.anilibriarefresh.ui.theme
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF904A48)
@@ -218,9 +220,24 @@ val surfaceContainerDarkHighContrast = Color(0xFF271D1D)
 val surfaceContainerHighDarkHighContrast = Color(0xFF322827)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF3D3231)
 
+/**
+    Цвета приложения
+ */
+
+val buttonPagerContentColorDarkRed = Color(0xFFE01938)
+val buttonPagerContentColorLightRed = Color(0xFFFF3857)
+
+val colorStopsButtonPagerContent = arrayOf(
+    0.0f to buttonPagerContentColorDarkRed,
+    0.7f to buttonPagerContentColorLightRed,
+    1f to buttonPagerContentColorLightRed
+)
 
 
-
-
-
+val colorStopsTitleBackgroundPager @Composable
+get() = arrayOf(
+    0.0f to Color.Transparent,
+    0.4f to Color.Transparent,
+    1f to MaterialTheme.colorScheme.surface
+)
 

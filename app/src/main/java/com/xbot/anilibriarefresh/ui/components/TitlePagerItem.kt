@@ -2,7 +2,6 @@ package com.xbot.anilibriarefresh.ui.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
+import com.xbot.anilibriarefresh.ui.theme.colorStopsTitleBackgroundPager
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
@@ -38,7 +39,6 @@ import com.xbot.domain.model.TitleModel
 fun TitlePagerItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
-    sizeListTitles: Int?
 ) {
     Crossfade(
         targetState = title,
@@ -46,7 +46,7 @@ fun TitlePagerItem(
     ) { state ->
         when (state) {
             null -> LoadingTitlePagerContent(modifier)
-            else -> TitlePagerItemContent(modifier, state, sizeListTitles ?: 0) {
+            else -> TitlePagerItemContent(modifier, state) {
                 //TODO: переход по клику на экран тайтла
             }
         }
@@ -58,15 +58,8 @@ fun TitlePagerItem(
 private fun TitlePagerItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel,
-    sizeListTitles: Int,
     onClick: () -> Unit,
 ) {
-    val colorStops = arrayOf(
-        0.0f to Color.Transparent,
-        0.4f to Color.Transparent,
-        1f to MaterialTheme.colorScheme.surface
-    )
-
     Box {
         PosterImage(
             poster = title.poster,
@@ -78,7 +71,7 @@ private fun TitlePagerItemContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(7f / 10f)
-                .background(Brush.verticalGradient(colorStops = colorStops))
+                .background(Brush.verticalGradient(colorStops = colorStopsTitleBackgroundPager))
                 .align(Alignment.BottomCenter)
         )
         Column(modifier = modifier
@@ -88,7 +81,6 @@ private fun TitlePagerItemContent(
             PagerContent(title = title)
             Spacer(Modifier.padding(bottom = 8.dp))
             PagerButton(onClick = onClick)
-            ProgressBarElements(title = title, sizeList = sizeListTitles)
         }
     }
 }
@@ -117,13 +109,13 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel) {
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 12.dp)
         ) {
-            title.tags.subList(0, 3).forEachIndexed { index, tag ->
+            title.tags.forEachIndexed { index, tag ->
                 Text(
                     text = tag,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                 )
-                if (index != 2) Text(" • ")
+                if (index != title.tags.lastIndex) Text(" • ")
             }
         }
     }
@@ -134,47 +126,16 @@ private fun PagerButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val colorStops = arrayOf(
-        0.0f to Color(0xFFE01938),
-        0.7f to Color(0xFFFF3857),
-        1f to Color(0xFFFF3857)
-    )
-
     ButtonComponent(
         text = stringResource(R.string.text_pager_button),
         icon = Icons.Default.PlayArrow,
         onClick = onClick,
-        colorStops = colorStops,
+        colorStops = colorStopsButtonPagerContent,
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 50.dp, end = 50.dp)
             .clip(RoundedCornerShape(12.dp))
     )
-}
-
-
-@Composable
-fun ProgressBarElements(title: TitleModel, sizeList: Int) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(top = 28.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        for (i in 1..sizeList) {
-            if (i == title.id) {
-                ProgressBarComponent(
-                    color = Color.Red,
-                    modifier = Modifier.padding(start = 2.dp, end = 2.dp)
-                )
-            } else {
-                ProgressBarComponent(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(start = 2.dp, end = 2.dp)
-                )
-            }
-        }
-    }
 }
 
 @Composable
@@ -195,7 +156,5 @@ private fun LoadingTitlePagerContent(
 @Preview
 @Composable
 private fun PrevTitleItem123() {
-
-    //TitlePagerItemContent(title = listAnime[0], sizeListTitles = 1) {}
 
 }

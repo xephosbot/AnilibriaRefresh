@@ -14,7 +14,7 @@ object SuccessTitlesMapper : ApiSuccessModelMapper<List<Release>, List<TitleMode
                 id = title.id,
                 name = title.name.main,
                 description = title.description ?: "",
-                tags = listOf(title.year.toString(), title.type.description ?: "", title.genres?.get(0)?.name ?: ""),
+                tags = listOf(title.year.toString(), title.type.description ?: "", title.ageRating.label),
                 poster = PosterModel(
                     src = title.poster.optimized.src,
                     thumbnail = title.poster.optimized.thumbnail

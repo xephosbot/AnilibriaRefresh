@@ -46,6 +46,7 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.HeaderComponent
+import com.xbot.anilibriarefresh.ui.components.PagerItemWithProgress
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
@@ -166,7 +167,7 @@ private fun TitleList(
                 items = recommendedList,
                 state = pagerState
             ) { title ->
-                TitlePagerItem(title = title, sizeListTitles = recommendedList.size)
+                TitlePagerItem(title = title)
             }
             header(
                 title = "Избранное",
@@ -212,7 +213,7 @@ private fun LoadingScreen(
                 )
                 .verticalScroll(rememberScrollState(), enabled = false),
         ) {
-            TitlePagerItem(title = null, sizeListTitles = null)
+            TitlePagerItem(title = null)
             HeaderComponent("Избранное") { }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -276,8 +277,11 @@ private fun LazyGridScope.horizontalPagerItems(
         span = { GridItemSpan(maxLineSpan) },
         contentType = { "PagerItems" }
     ) {
-        HorizontalPager(state = state) { page ->
-            itemContent(items[page])
+        Box {
+            HorizontalPager(state = state) { page ->
+                itemContent(items[page])
+            }
+            PagerItemWithProgress(state = state)
         }
     }
 }
