@@ -158,7 +158,7 @@ private fun TitleList(
                 state = pagerState
             ) { title ->
                 //TODO: Pager item element
-                TitlePagerItem(title = title)
+                TitlePagerItem(title = title, sizeListTitles = listAnime.size)
             }
             header(
                 title = "Избранное",
@@ -204,7 +204,7 @@ private fun LoadingScreen(
                 )
                 .verticalScroll(rememberScrollState(), enabled = false),
         ) {
-            TitlePagerItem(title = null)
+            TitlePagerItem(title = null, sizeListTitles = null)
             HeaderComponent("Избранное") { }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -302,7 +302,7 @@ val listAnime = listOf(TitleModel(
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
         tags = listOf("2023", "TV", "Экшен"),
         poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
+            src = "/storage/releases/posters/9114/QXA877CKZj9I5jH8Uz1ZOjyruADBgU6D.webp",
             thumbnail = null
         ),
         uploadedTime = null
@@ -320,39 +320,6 @@ val listAnime = listOf(TitleModel(
     ),
     TitleModel(
         id = 4,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ),
-    TitleModel(
-        id = 5,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ),
-    TitleModel(
-        id = 6,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
-        poster = PosterModel(
-            src = "/storage/releases/posters/7439/QdCyM3mdXsUIfXtR.jpg",
-            thumbnail = null
-        ),
-        uploadedTime = null
-    ),
-    TitleModel(
-        id = 7,
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
         tags = listOf("2024", "TV", "Приключения"),

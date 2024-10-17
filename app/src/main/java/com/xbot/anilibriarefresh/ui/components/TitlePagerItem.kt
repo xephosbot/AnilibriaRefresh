@@ -1,17 +1,15 @@
 package com.xbot.anilibriarefresh.ui.components
 
-import android.graphics.Paint.Align
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,18 +22,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.valentinilk.shimmer.shimmer
@@ -46,7 +43,8 @@ import com.xbot.domain.model.TitleModel
 @Composable
 fun TitlePagerItem(
     modifier: Modifier = Modifier,
-    title: TitleModel?
+    title: TitleModel?,
+    sizeListTitles: Int?
 ) {
     Crossfade(
         targetState = title,
@@ -54,7 +52,9 @@ fun TitlePagerItem(
     ) { state ->
         when (state) {
             null -> LoadingTitlePagerContent(modifier)
-            else -> TitlePagerItemContent(modifier, state)
+            else -> TitlePagerItemContent(modifier, state, sizeListTitles ?: 0) {
+                //TODO: переход по клику на экран тайтла
+            }
         }
     }
 }
@@ -63,7 +63,9 @@ fun TitlePagerItem(
 @Composable
 private fun TitlePagerItemContent(
     modifier: Modifier = Modifier,
-    title: TitleModel
+    title: TitleModel,
+    sizeListTitles: Int,
+    onClick: () -> Unit,
 ) {
     val colorStops = arrayOf(
         0.0f to Color.Transparent,
@@ -88,8 +90,11 @@ private fun TitlePagerItemContent(
         Column(modifier = modifier
             .align(Alignment.BottomCenter)
             .padding(bottom = 80.dp)) {
+
             PagerContent(title = title)
-            PagerButton { }
+            Spacer(Modifier.padding(bottom = 8.dp))
+            PagerButton(onClick = onClick)
+            ProgressBarElements(title = title, sizeList = sizeListTitles)
         }
     }
 }
@@ -135,24 +140,46 @@ private fun PagerButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Button(
+    val colorStops = arrayOf(
+        0.0f to Color(0xFFE01938),
+        0.7f to Color(0xFFFF3857),
+        1f to Color(0xFFFF3857)
+    )
+
+    ButtonComponent(
+        text = stringResource(R.string.text_pager_button),
+        icon = Icons.Default.PlayArrow,
         onClick = onClick,
-        modifier
+        colorStops = colorStops,
+        modifier = modifier
             .fillMaxWidth()
             .padding(start = 50.dp, end = 50.dp)
-            .padding(top = 12.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = ""
-            )
-            Spacer(Modifier.padding(end = 12.dp))
-            Text(
-                text = stringResource(R.string.text_pager_item)
-            )
-        }
+            .clip(RoundedCornerShape(12.dp))
+    )
+}
 
+
+@Composable
+fun ProgressBarElements(title: TitleModel, sizeList: Int) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 28.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        for (i in 1..sizeList) {
+            if (i == title.id) {
+                ProgressBarComponent(
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 2.dp, end = 2.dp)
+                )
+            } else {
+                ProgressBarComponent(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(start = 2.dp, end = 2.dp)
+                )
+            }
+        }
     }
 }
 
@@ -177,6 +204,6 @@ private fun LoadingTitlePagerContent(
 @Preview
 @Composable
 private fun PrevTitleItem123() {
-    TitlePagerItemContent(title = listAnime[0])
+    TitlePagerItemContent(title = listAnime[0], sizeListTitles = 1) {}
 
 }
