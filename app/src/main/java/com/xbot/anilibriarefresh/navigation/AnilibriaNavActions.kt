@@ -1,11 +1,6 @@
 package com.xbot.anilibriarefresh.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.anilibriarefresh.R
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -30,29 +25,34 @@ sealed interface Route {
 
 data class TopLevelDestination(
     val route: Route,
-    val icon: ImageVector,
+    val iconCurrent: Int,
+    val iconInactive: Int,
     val text: String
 )
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     TopLevelDestination(
         text = "Home",
-        icon = Icons.Rounded.Home,
+        iconCurrent = R.drawable.icon_home_filled,
+        iconInactive = R.drawable.icon_home_outlined,
         route = Route.Home
     ),
     TopLevelDestination(
         text = "Favorite",
-        icon = Icons.Rounded.Favorite,
+        iconCurrent = R.drawable.icon_heart_filled,
+        iconInactive = R.drawable.icon_favorites_outlined,
         route = Route.Favorite
     ),
     TopLevelDestination(
         text = "Search",
-        icon = Icons.Rounded.Search,
+        iconCurrent = R.drawable.icon_search_filled,
+        iconInactive = R.drawable.icon_search_outlined,
         route = Route.Search
     ),
     TopLevelDestination(
         text = "Profile",
-        icon = Icons.Rounded.Person,
+        iconCurrent = R.drawable.icon_person_filled,
+        iconInactive = R.drawable.icon_person_outlined,
         route = Route.Profile
     )
 )

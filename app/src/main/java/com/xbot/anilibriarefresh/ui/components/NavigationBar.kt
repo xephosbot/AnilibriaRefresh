@@ -36,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -86,7 +88,8 @@ fun AnilibriaNavigationBar(
                 },
                 icon = {
                     Icon(
-                        imageVector = destination.icon,
+                        imageVector = if (isSelected) ImageVector.vectorResource(destination.iconCurrent)
+                        else ImageVector.vectorResource(destination.iconInactive),
                         contentDescription = destination.text
                     )
                 },
@@ -119,7 +122,8 @@ private fun NavigationBar(
     ) {
         Row(
             modifier =
-            Modifier.fillMaxWidth()
+            Modifier
+                .fillMaxWidth()
                 .windowInsetsPadding(windowInsets)
                 .defaultMinSize(minHeight = 64.dp)
                 .selectableGroup(),
@@ -143,7 +147,7 @@ fun RowScope.NavigationBarItem(
     label: @Composable (() -> Unit)? = null,
     alwaysShowLabel: Boolean = true,
     colors: NavigationBarItemColors = NavigationBarItemDefaults.colors(
-        selectedIconColor = MaterialTheme.colorScheme.primary,
+        selectedIconColor = Color.Red,
         unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.76f)
     ),
     interactionSource: MutableInteractionSource? = null

@@ -104,7 +104,8 @@ fun AnilibriaNavigationRail(
                 },
                 icon = {
                     Icon(
-                        imageVector = destination.icon,
+                        //TODO: исправить imageVector
+                        imageVector = ImageVector.vectorResource(destination.iconCurrent),
                         contentDescription = destination.text
                     )
                 }
