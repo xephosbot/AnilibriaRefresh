@@ -98,6 +98,7 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel) {
             text = title.name,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
+            overflow = TextOverflow.Ellipsis,
             maxLines = 2,
             textAlign = TextAlign.Center,
             modifier = Modifier

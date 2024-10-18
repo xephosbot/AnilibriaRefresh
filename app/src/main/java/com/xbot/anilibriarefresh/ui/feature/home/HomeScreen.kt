@@ -177,7 +177,7 @@ private fun TitleList(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 items = favoriteList
             ) { title ->
-                TitleCardItem(title = title)
+                TitleCardItem(title = title) {} //TODO: On click action
             }
             header(
                 title = "Обновления",
@@ -222,7 +222,7 @@ private fun LoadingScreen(
                     .horizontalScroll(rememberScrollState(), enabled = false)
             ) {
                 repeat(4) {
-                    TitleCardItem(title = null)
+                    TitleCardItem(title = null) {}
                 }
             }
             HeaderComponent("Обновления") { }

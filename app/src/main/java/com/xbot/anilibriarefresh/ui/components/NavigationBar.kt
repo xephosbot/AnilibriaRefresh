@@ -58,6 +58,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.xbot.anilibriarefresh.navigation.TOP_LEVEL_DESTINATIONS
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.hasRoute
+import com.xbot.anilibriarefresh.ui.theme.colorIconIsSelected
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -147,7 +148,7 @@ fun RowScope.NavigationBarItem(
     label: @Composable (() -> Unit)? = null,
     alwaysShowLabel: Boolean = true,
     colors: NavigationBarItemColors = NavigationBarItemDefaults.colors(
-        selectedIconColor = Color.Red,
+        selectedIconColor = colorIconIsSelected,
         unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.76f)
     ),
     interactionSource: MutableInteractionSource? = null

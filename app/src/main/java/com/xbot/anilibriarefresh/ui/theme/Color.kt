@@ -227,12 +227,13 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF3D3231)
 val buttonPagerContentColorDarkRed = Color(0xFFE01938)
 val buttonPagerContentColorLightRed = Color(0xFFFF3857)
 
+val colorIconIsSelected = Color(0xFFEA374F)
+
 val colorStopsButtonPagerContent = arrayOf(
     0.0f to buttonPagerContentColorDarkRed,
     0.7f to buttonPagerContentColorLightRed,
     1f to buttonPagerContentColorLightRed
 )
-
 
 val colorStopsTitleBackgroundPager @Composable
 get() = arrayOf(

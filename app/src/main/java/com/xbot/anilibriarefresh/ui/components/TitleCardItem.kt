@@ -2,6 +2,7 @@ package com.xbot.anilibriarefresh.ui.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
@@ -19,7 +20,8 @@ import com.xbot.domain.model.TitleModel
 @Composable
 fun TitleCardItem(
     modifier: Modifier = Modifier,
-    title: TitleModel?
+    title: TitleModel?,
+    onClickFavorite: () -> Unit
 ) {
     Crossfade(
         targetState = title,
@@ -27,7 +29,7 @@ fun TitleCardItem(
     ) { state ->
         when (state) {
             null -> LoadingTitleCardItem(modifier)
-            else -> TitleCardItemContent(modifier, state)
+            else -> TitleCardItemContent(modifier, state, onClickFavorite)
         }
     }
 }
@@ -36,7 +38,8 @@ fun TitleCardItem(
 @Composable
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
-    title: TitleModel
+    title: TitleModel,
+    onClickFavorite: () -> Unit
 ) {
     PosterImage(
         poster = title.poster,
@@ -44,6 +47,7 @@ private fun TitleCardItemContent(
             .height(186.dp)
             .aspectRatio(7f / 10f)
             .clip(RoundedCornerShape(8.dp))
+            .clickable { onClickFavorite() }
     )
 }
 
