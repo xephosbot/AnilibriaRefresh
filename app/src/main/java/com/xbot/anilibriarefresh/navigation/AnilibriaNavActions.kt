@@ -35,6 +35,7 @@ data class TopLevelDestination(
     val text: String
 )
 
+//TODO: move string to resources
 val TOP_LEVEL_DESTINATIONS = listOf(
     TopLevelDestination(
         text = "Home",
