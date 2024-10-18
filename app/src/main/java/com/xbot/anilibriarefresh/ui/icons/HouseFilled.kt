@@ -1,65 +1,60 @@
 package com.xbot.anilibriarefresh.ui.icons
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
+import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-/*
-* Converted using https://composables.com/svgtocompose
-*/
 val AnilibriaIcons.Filled.House: ImageVector
-	get() {
-		if (_house != null) {
-			return _house!!
-		}
-		_house = ImageVector.Builder(
+    get() {
+        if (_house != null) {
+            return _house!!
+        }
+        _house = ImageVector.Builder(
             name = "Filled.House",
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 24f,
             viewportHeight = 24f
         ).apply {
-			path(
-    			fill = SolidColor(Color(0xFFFFFFFF)),
-    			fillAlpha = 1.0f,
-    			stroke = null,
-    			strokeAlpha = 1.0f,
-    			strokeLineWidth = 1.0f,
-    			strokeLineCap = StrokeCap.Butt,
-    			strokeLineJoin = StrokeJoin.Miter,
-    			strokeLineMiter = 1.0f,
-    			pathFillType = PathFillType.NonZero
-			) {
-				moveTo(4f, 11.4522f)
-				verticalLineTo(16.8002f)
-				curveTo(40f, 17.92030f, 40f, 18.48070f, 4.2180f, 18.90860f)
-				curveTo(4.40970f, 19.28490f, 4.71550f, 19.59060f, 5.09180f, 19.78230f)
-				curveTo(5.51920f, 20.00010f, 6.0790f, 20.00010f, 7.19690f, 20.00010f)
-				horizontalLineTo(16.8031f)
-				curveTo(17.9210f, 20.00010f, 18.480f, 20.00010f, 18.90740f, 19.78230f)
-				curveTo(19.28370f, 19.59060f, 19.59050f, 19.28490f, 19.78220f, 18.90860f)
-				curveTo(200f, 18.48110f, 200f, 17.92160f, 200f, 16.80370f)
-				verticalLineTo(11.4522f)
-				curveTo(200f, 10.91790f, 19.99950f, 10.65060f, 19.93460f, 10.40190f)
-				curveTo(19.8770f, 10.18160f, 19.78250f, 9.97310f, 19.65460f, 9.78460f)
-				curveTo(19.51020f, 9.5720f, 19.30960f, 9.39570f, 18.90740f, 9.04380f)
-				lineTo(14.1074f, 4.84383f)
-				curveTo(13.36080f, 4.19050f, 12.98750f, 3.86410f, 12.56740f, 3.73980f)
-				curveTo(12.19720f, 3.63030f, 11.80260f, 3.63030f, 11.43240f, 3.73980f)
-				curveTo(11.01260f, 3.8640f, 10.63980f, 4.19010f, 9.89440f, 4.84240f)
-				lineTo(5.09277f, 9.04383f)
-				curveTo(4.69060f, 9.39570f, 4.490f, 9.5720f, 4.34570f, 9.78460f)
-				curveTo(4.21780f, 9.97310f, 4.12260f, 10.18160f, 4.0650f, 10.40190f)
-				curveTo(40f, 10.65060f, 40f, 10.91790f, 40f, 11.45220f)
-				close()
-			}
-		}.build()
-		return _house!!
-	}
+            path(
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = SolidColor(Color(0xFFffffff)),
+                strokeLineWidth = 2.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                moveTo(4.0f, 11.4522f)
+                verticalLineTo(16.8002f)
+                curveTo(4.0f, 17.9203f, 4.0f, 18.4807f, 4.218f, 18.9086f)
+                curveTo(4.4097f, 19.2849f, 4.7155f, 19.5906f, 5.0918f, 19.7823f)
+                curveTo(5.5192f, 20.0001f, 6.079f, 20.0001f, 7.1969f, 20.0001f)
+                horizontalLineTo(16.8031f)
+                curveTo(17.921f, 20.0001f, 18.48f, 20.0001f, 18.9074f, 19.7823f)
+                curveTo(19.2837f, 19.5906f, 19.5905f, 19.2849f, 19.7822f, 18.9086f)
+                curveTo(20.0f, 18.4811f, 20.0f, 17.9216f, 20.0f, 16.8037f)
+                verticalLineTo(11.4522f)
+                curveTo(20.0f, 10.9179f, 19.9995f, 10.6506f, 19.9346f, 10.4019f)
+                curveTo(19.877f, 10.1816f, 19.7825f, 9.9731f, 19.6546f, 9.7846f)
+                curveTo(19.5102f, 9.572f, 19.3096f, 9.3957f, 18.9074f, 9.0438f)
+                lineTo(14.1074f, 4.8438f)
+                curveTo(13.3608f, 4.1905f, 12.9875f, 3.8641f, 12.5674f, 3.7398f)
+                curveTo(12.1972f, 3.6304f, 11.8026f, 3.6304f, 11.4324f, 3.7398f)
+                curveTo(11.0126f, 3.864f, 10.6398f, 4.1901f, 9.8944f, 4.8424f)
+                lineTo(5.0928f, 9.0438f)
+                curveTo(4.6906f, 9.3957f, 4.49f, 9.572f, 4.3457f, 9.7846f)
+                curveTo(4.2178f, 9.9731f, 4.1226f, 10.1816f, 4.065f, 10.4019f)
+                curveTo(4.0f, 10.6506f, 4.0f, 10.9179f, 4.0f, 11.4522f)
+                close()
+            }
+        }.build()
+        return _house!!
+    }
 
 private var _house: ImageVector? = null

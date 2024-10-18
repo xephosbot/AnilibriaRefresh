@@ -1,17 +1,14 @@
 package com.xbot.anilibriarefresh.ui.icons
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeCap.Companion.Round
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-/*
-* Converted using https://composables.com/svgtocompose
-*/
 val AnilibriaIcons.Outlined.Search: ImageVector
 	get() {
 		if (_search != null) {
@@ -25,23 +22,22 @@ val AnilibriaIcons.Outlined.Search: ImageVector
             viewportHeight = 24f
         ).apply {
 			path(
-    			fill = null,
-    			fillAlpha = 1.0f,
-    			stroke = SolidColor(Color(0xFFFFFFFF)),
-    			strokeAlpha = 1.0f,
-    			strokeLineWidth = 2f,
-    			strokeLineCap = StrokeCap.Round,
-    			strokeLineJoin = StrokeJoin.Round,
-    			strokeLineMiter = 1.0f,
-    			pathFillType = PathFillType.NonZero
+				fill = SolidColor(Color(0x00000000)),
+				stroke = SolidColor(Color(0xFFffffff)),
+				strokeLineWidth = 2.0f,
+				strokeLineCap = Round,
+				strokeLineJoin =
+				StrokeJoin.Companion.Round,
+				strokeLineMiter = 4.0f,
+				pathFillType = NonZero
 			) {
-				moveTo(15f, 15f)
-				lineTo(21f, 21f)
-				moveTo(10f, 17f)
-				curveTo(6.1340f, 170f, 30f, 13.8660f, 30f, 100f)
-				curveTo(30f, 6.1340f, 6.1340f, 30f, 100f, 30f)
-				curveTo(13.8660f, 30f, 170f, 6.1340f, 170f, 100f)
-				curveTo(170f, 13.8660f, 13.8660f, 170f, 100f, 170f)
+				moveTo(15.0f, 15.0f)
+				lineTo(21.0f, 21.0f)
+				moveTo(10.0f, 17.0f)
+				curveTo(6.134f, 17.0f, 3.0f, 13.866f, 3.0f, 10.0f)
+				curveTo(3.0f, 6.134f, 6.134f, 3.0f, 10.0f, 3.0f)
+				curveTo(13.866f, 3.0f, 17.0f, 6.134f, 17.0f, 10.0f)
+				curveTo(17.0f, 13.866f, 13.866f, 17.0f, 10.0f, 17.0f)
 				close()
 			}
 		}.build()
