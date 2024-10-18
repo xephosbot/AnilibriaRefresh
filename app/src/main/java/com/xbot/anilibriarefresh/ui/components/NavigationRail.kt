@@ -7,6 +7,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -23,8 +24,10 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -87,6 +90,10 @@ fun AnilibriaNavigationRail(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+        },
+        contentArrangement = when (navContentPosition) {
+            NavigationContentPosition.TOP -> Arrangement.Top
+            NavigationContentPosition.CENTER -> Arrangement.Center
         }
     ) {
         destinations.forEach { destination ->
@@ -104,8 +111,10 @@ fun AnilibriaNavigationRail(
                 },
                 icon = {
                     Icon(
-                        //TODO: исправить imageVector
-                        imageVector = ImageVector.vectorResource(destination.iconCurrent),
+                        imageVector = when (isSelected) {
+                            true -> destination.iconSelected
+                            else -> destination.iconDeselected
+                        },
                         contentDescription = destination.text
                     )
                 }
@@ -123,6 +132,7 @@ fun NavigationRail(
     windowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout).only(
         WindowInsetsSides.Vertical + WindowInsetsSides.Start
     ),
+    contentArrangement: Arrangement.Vertical = Arrangement.Bottom,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(
@@ -143,7 +153,13 @@ fun NavigationRail(
                 header()
                 Spacer(Modifier.height(HeaderPadding))
             }
-            content()
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = contentArrangement,
+                content = content
+            )
         }
     }
 }

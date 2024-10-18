@@ -1,6 +1,11 @@
 package com.xbot.anilibriarefresh.navigation
 
-import com.xbot.anilibriarefresh.R
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Heart
+import com.xbot.anilibriarefresh.ui.icons.House
+import com.xbot.anilibriarefresh.ui.icons.Person
+import com.xbot.anilibriarefresh.ui.icons.Search
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -25,34 +30,34 @@ sealed interface Route {
 
 data class TopLevelDestination(
     val route: Route,
-    val iconCurrent: Int,
-    val iconInactive: Int,
+    val iconSelected: ImageVector,
+    val iconDeselected: ImageVector,
     val text: String
 )
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     TopLevelDestination(
         text = "Home",
-        iconCurrent = R.drawable.icon_home_filled,
-        iconInactive = R.drawable.icon_home_outlined,
+        iconSelected = AnilibriaIcons.Filled.House,
+        iconDeselected = AnilibriaIcons.Outlined.House,
         route = Route.Home
     ),
     TopLevelDestination(
         text = "Favorite",
-        iconCurrent = R.drawable.icon_heart_filled,
-        iconInactive = R.drawable.icon_favorites_outlined,
+        iconSelected = AnilibriaIcons.Filled.Heart,
+        iconDeselected = AnilibriaIcons.Outlined.Heart,
         route = Route.Favorite
     ),
     TopLevelDestination(
         text = "Search",
-        iconCurrent = R.drawable.icon_search_filled,
-        iconInactive = R.drawable.icon_search_outlined,
+        iconSelected = AnilibriaIcons.Outlined.Search,
+        iconDeselected = AnilibriaIcons.Outlined.Search,
         route = Route.Search
     ),
     TopLevelDestination(
         text = "Profile",
-        iconCurrent = R.drawable.icon_person_filled,
-        iconInactive = R.drawable.icon_person_outlined,
+        iconSelected = AnilibriaIcons.Outlined.Person,
+        iconDeselected = AnilibriaIcons.Outlined.Person,
         route = Route.Profile
     )
 )
