@@ -7,9 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -19,19 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
-import com.xbot.anilibriarefresh.ui.theme.colorStopsTitleBackgroundPager
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
@@ -61,23 +61,29 @@ private fun TitlePagerItemContent(
     title: TitleModel,
     onClick: () -> Unit,
 ) {
-    Box {
+    val fadeGradientBrush = Brush.verticalGradient(colorStops = colorStopsTitleBackgroundPager)
+
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .clipToBounds()
+    ) {
         PosterImage(
-            poster = title.poster,
             modifier = modifier
                 .fillMaxWidth()
-                .aspectRatio(7f / 10f)
+                .aspectRatio(7f / 10f),
+            poster = title.poster
         )
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(7f / 10f)
-                .background(Brush.verticalGradient(colorStops = colorStopsTitleBackgroundPager))
+                .fillMaxSize()
+                .background(fadeGradientBrush)
         )
-        Column(modifier = modifier
-            .align(Alignment.BottomCenter)
-            .padding(bottom = 80.dp)) {
-
+        Column(
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+        ) {
             PagerContent(title = title)
             Spacer(Modifier.padding(bottom = 8.dp))
             PagerButton(onClick = onClick)
@@ -95,15 +101,15 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel) {
             .background(MaterialTheme.colorScheme.surface.copy(0.7f))
     ) {
         Text(
+            modifier = Modifier
+                .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 10.dp)
+                .align(Alignment.CenterHorizontally),
             text = title.name,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 10.dp)
-                .align(Alignment.CenterHorizontally)
         )
         Row(
             modifier = Modifier
@@ -128,14 +134,14 @@ private fun PagerButton(
     onClick: () -> Unit
 ) {
     ButtonComponent(
-        text = stringResource(R.string.text_pager_button),
-        icon = Icons.Default.PlayArrow,
-        onClick = onClick,
-        colorStops = colorStopsButtonPagerContent,
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 50.dp, end = 50.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp)),
+        text = stringResource(R.string.text_pager_button),
+        icon = Icons.Default.PlayArrow,
+        onClick = onClick,
+        colorStops = colorStopsButtonPagerContent
     )
 }
 
@@ -154,8 +160,10 @@ private fun LoadingTitlePagerContent(
     )
 }
 
-@Preview
-@Composable
-private fun PrevTitleItem123() {
-
-}
+val colorStopsTitleBackgroundPager
+    @Composable
+    get() = arrayOf(
+        0.0f to Color.Transparent,
+        0.4f to Color.Transparent,
+        1f to MaterialTheme.colorScheme.surface
+    )

@@ -26,8 +26,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -183,10 +181,7 @@ private fun TitleList(
             ) { title ->
                 TitleCardItem(title = title) {} //TODO: On click action
             }
-            header(
-                title = "Обновления",
-                onClick = {} //TODO: On click action
-            )
+            header(title = "Новые эпизоды")
             pagingItems(items) { title ->
                 TitleListItem(
                     title = title,
@@ -229,7 +224,7 @@ private fun LoadingScreen(
                     TitleCardItem(title = null) {}
                 }
             }
-            Header(title = "Обновления")
+            Header(title = "Новые эпизоды")
             repeat(5) {
                 TitleListItem(title = null)
             }
@@ -262,7 +257,7 @@ private fun LazyGridScope.horizontalItems(
 
 private fun LazyGridScope.header(
     title: String,
-    onClick: () -> Unit
+    onClick: (() -> Unit)? = null
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
