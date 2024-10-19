@@ -2,12 +2,15 @@ package com.xbot.anilibriarefresh.ui.feature.title
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +32,8 @@ import com.xbot.domain.model.TitleModel
 @Composable
 fun TitleScreen(
     modifier: Modifier = Modifier,
-    viewModel: TitleViewModel = hiltViewModel()
+    viewModel: TitleViewModel = hiltViewModel(),
+    paddingValues: PaddingValues
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -37,7 +41,8 @@ fun TitleScreen(
         TitleScreenContent(
             modifier = modifier,
             title = it,
-            onClick = {}
+            onClick = {},
+            paddingValues = paddingValues
         )
     }
 }
@@ -47,12 +52,15 @@ fun TitleScreen(
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     title: TitleModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    paddingValues: PaddingValues
 ) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)) {
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(paddingValues = paddingValues)
+            .verticalScroll(rememberScrollState())) {
         PosterImage(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,5 +99,5 @@ private fun TitleScreenPreview() {
         ),
         uploadedTime = null
     )
-    TitleScreenContent(title = titleModel) {}
+    TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {})
 }

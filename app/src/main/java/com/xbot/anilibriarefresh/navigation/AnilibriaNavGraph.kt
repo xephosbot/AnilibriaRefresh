@@ -48,7 +48,9 @@ fun AnilibriaNavGraph(
                 }
             }
             composable<Route.Home.Detail> {
-                TitleScreen()
+                TitleScreen(
+                    paddingValues = paddingValues
+                )
             }
         }
         composable<Route.Favorite> {

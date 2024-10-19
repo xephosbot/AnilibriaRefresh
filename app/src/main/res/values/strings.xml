@@ -4,4 +4,5 @@
     <string name="retry_button">Повторить</string>
     <string name="text_favorites_btn">Всё</string>
     <string name="text_pager_button">Смотреть с 1 эпизода</string>
+    <string name="content_desc_btn_component">Кнопка компонент</string>
 </resources>
