@@ -11,7 +11,12 @@ import com.xbot.api.models.PublishStatus
 import com.xbot.api.models.Season
 import com.xbot.api.models.SortingType
 import com.xbot.api.models.Type
+import com.xbot.api.models.login.LoginRequest
+import com.xbot.api.models.login.LoginResponse
+import com.xbot.api.models.login.LoginSocialNetwork
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -20,6 +25,25 @@ import retrofit2.http.Query
  * @see <a href="https://anilibria.top/api/docs/v1">Документация API Anilibria</a>
  */
 interface AnilibriaService {
+
+    @POST("accounts/users/auth/login")
+    suspend fun loginUser(
+        @Body loginRequest: LoginRequest
+    ): ApiResponse<LoginResponse>
+
+    @POST("accounts/users/auth/logout")
+    suspend fun logoutUser(): ApiResponse<LoginResponse>
+
+    @GET("accounts/users/auth/social/{provider}/login")
+    suspend fun loginWithSocialNetwork(
+        @Path("provider") provider: String
+    ): ApiResponse<LoginSocialNetwork>
+
+    @GET("accounts/users/auth/social/authenticate")
+    suspend fun authenticateWithSocialNetwork(
+        @Query("state") state: String
+    ): ApiResponse<LoginResponse>
+
     @GET("anime/catalog/releases")
     suspend fun getReleases(
         @Query("page") page: Int,

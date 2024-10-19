@@ -11,11 +11,54 @@ import com.xbot.api.models.PublishStatus
 import com.xbot.api.models.Season
 import com.xbot.api.models.SortingType
 import com.xbot.api.models.Type
+import com.xbot.api.models.login.LoginRequest
+import com.xbot.api.models.login.LoginResponse
+import com.xbot.api.models.login.LoginSocialNetwork
 import javax.inject.Inject
 
 class AnilibriaClient @Inject constructor(
     private val service: AnilibriaService
 ) {
+
+    /**
+     * Авторизация пользователя по логину и паролю. Создание сессии пользователя, выдача токена авторизации для использования в cookies или в Bearer Token.
+     *
+     * @param loginRequest [LoginRequest] Объект, содержащий логин и пароль.
+     * @return [ApiResponse] содержащий информацию об авторизации [LoginResponse].
+     */
+    suspend fun loginUser(loginRequest: LoginRequest): ApiResponse<LoginResponse> {
+        return service.loginUser(loginRequest = loginRequest)
+    }
+
+    /**
+     * Деавторизация пользователя.
+     *
+     * @return [ApiResponse] содержащий информацию о деавторизации [LoginResponse].
+     */
+    suspend fun logoutUser(): ApiResponse<LoginResponse> {
+        return service.logoutUser()
+    }
+
+    /**
+     * Авторизация пользователя через некоторые социальные сети: VK, Google, Discord, Patreon.
+     *
+     * @param provider [String] Провайдер социальной сети.
+     * @return [ApiResponse] содержащий информацию о ключе, используемом для авторизации [LoginSocialNetwork].
+     */
+    suspend fun loginWithSocialNetwork(provider: String): ApiResponse<LoginSocialNetwork> {
+        return service.loginWithSocialNetwork(provider = provider)
+    }
+
+    /**
+     * Позволяет аутентифицировать авторизованного через социальную сеть пользователя.
+     *
+     * @param state [String] Ключ аутентификации.
+     * @return [ApiResponse] содержащий информацию об авторизации [LoginResponse].
+     */
+    suspend fun authenticateWithSocialNetwork(state: String): ApiResponse<LoginResponse> {
+        return service.authenticateWithSocialNetwork(state = state)
+    }
+
     /**
      * Получение списка релизов аниме с применением различных фильтров.
      *
