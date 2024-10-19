@@ -55,8 +55,10 @@ class AnilibriaClient @Inject constructor(
      * @param state [String] Ключ аутентификации.
      * @return [ApiResponse] содержащий информацию об авторизации [LoginResponse].
      */
-    suspend fun authenticateWithSocialNetwork(state: String): ApiResponse<LoginResponse> {
-        return service.authenticateWithSocialNetwork(state = state)
+    suspend fun authenticateWithSocialNetwork(
+        state: AuthWithNetworkEnum
+    ): ApiResponse<LoginResponse> {
+        return service.authenticateWithSocialNetwork(state = state.toString())
     }
 
     /**
@@ -270,18 +272,37 @@ class AnilibriaClient @Inject constructor(
         )
     }
 
-    //TODO: comment
+    /**Возвращает данные по последним релизам.
+     *
+     * @param limit Количество релизов в выдаче.
+     * @return [ApiResponse] содержащий информацию о последних релизах [Release].
+     */
     suspend fun getLatestReleases(
         limit: Int
     ): ApiResponse<List<Release>> {
         return service.getLatestReleases(limit = limit)
     }
 
-    //TODO: comment
+    /**Возвращает данные по случайным релизам.
+     *
+     * @param limit Количество релизов в выдаче.
+     * @return [ApiResponse] содержащий информацию о случайных релизах [Release].
+     */
     suspend fun getRandomReleases(
         limit: Int
     ): ApiResponse<List<Release>> {
         return service.getRandomReleases(limit = limit)
+    }
+
+    enum class AuthWithNetworkEnum(private val provider: String) {
+        VK("vk"),
+        GOOGLE("google"),
+        PATREON("patreon"),
+        DISCORD("discord");
+
+        override fun toString(): String {
+            return provider
+        }
     }
 
     enum class TypeEnum(private val type: String) {
