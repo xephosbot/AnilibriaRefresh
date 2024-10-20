@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
-import com.xbot.anilibriarefresh.navigation.AnilibriaNavigationSuiteScaffold
+import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationBar
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationRail
 import com.xbot.anilibriarefresh.ui.components.AnilibriaTopAppBar

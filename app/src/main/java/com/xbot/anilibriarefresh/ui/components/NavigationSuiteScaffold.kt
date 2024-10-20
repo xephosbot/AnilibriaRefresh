@@ -1,6 +1,6 @@
 @file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
 
-package com.xbot.anilibriarefresh.navigation
+package com.xbot.anilibriarefresh.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,8 +33,7 @@ import androidx.compose.ui.util.fastMaxBy
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.xbot.anilibriarefresh.ui.components.ScaffoldState
-import com.xbot.anilibriarefresh.ui.components.rememberScaffoldState
+import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
 
 @Composable
 fun AnilibriaNavigationSuiteScaffold(
@@ -105,13 +104,13 @@ private fun NavigationSuiteScaffoldLayout(
     SubcomposeLayout { constraints ->
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
-        val topBarPlaceables = subcompose(ScaffoldLayoutContent.TopBar, topBar).fastMap {
+        val topBarPlaceables = subcompose(NavigationSuiteScaffoldLayoutContent.TopBar, topBar).fastMap {
             it.measure(looseConstraints)
         }
 
         val topBarHeight = topBarPlaceables.fastMaxBy { it.height }?.height ?: 0
 
-        val snackbarPlaceables = subcompose(ScaffoldLayoutContent.Snackbar, snackbar).fastMap {
+        val snackbarPlaceables = subcompose(NavigationSuiteScaffoldLayoutContent.Snackbar, snackbar).fastMap {
             // respect only bottom and horizontal for snackbar and fab
             val leftInset = contentWindowInsets
                 .getLeft(this@SubcomposeLayout, layoutDirection)
@@ -132,7 +131,7 @@ private fun NavigationSuiteScaffoldLayout(
 
         // Find the navigation suite composable
         val navigationPlaceables =
-            subcompose(ScaffoldLayoutContent.Navigation) { navigationSuite() }
+            subcompose(NavigationSuiteScaffoldLayoutContent.Navigation) { navigationSuite() }
                 .fastMap { it.measure(looseConstraints) }
 
         val navigationBarHeight = navigationPlaceables.fastMaxBy { it.height }?.height
@@ -149,7 +148,7 @@ private fun NavigationSuiteScaffoldLayout(
             0
         }
 
-        val contentPlaceables = subcompose(ScaffoldLayoutContent.MainContent) {
+        val contentPlaceables = subcompose(NavigationSuiteScaffoldLayoutContent.MainContent) {
             val insets = contentWindowInsets.asPaddingValues(this@SubcomposeLayout)
             val innerPadding = PaddingValues(
                 top = if (!isNavigationBar || topBarPlaceables.isEmpty()) {
@@ -225,6 +224,6 @@ private class NavigationSuiteScopeImpl(
     override val contentPosition: NavigationContentPosition
 ) : NavigationSuiteScope
 
-private enum class ScaffoldLayoutContent { MainContent, Navigation, TopBar, Snackbar }
+private enum class NavigationSuiteScaffoldLayoutContent { MainContent, Navigation, TopBar, Snackbar }
 
 private fun WindowSizeClass.isCompact() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT
