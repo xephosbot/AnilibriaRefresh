@@ -3,6 +3,7 @@ package com.xbot.anilibriarefresh.ui.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -55,7 +57,6 @@ fun TitlePagerItem(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitlePagerItemContent(
     modifier: Modifier = Modifier,
@@ -64,14 +65,48 @@ private fun TitlePagerItemContent(
 ) {
     val fadeGradientBrush = Brush.verticalGradient(colorStops = FadeGradientColorStops)
 
+    // TODO: подумать над размерами Box в горизонтальной ориентации (пока тестово накидал)
+    BoxWithConstraints {
+        when (this.maxWidth) {
+            in (0.dp..500.dp) -> {
+                BoxContent(
+                    title = title,
+                    modifier = Modifier.heightIn(max = TitlePagerItemMaxHeight),
+                    onClick = onClick,
+                    fadeGradientBrush = fadeGradientBrush,
+                )
+            }
+            else -> {
+                BoxContent(
+                    title = title,
+                    modifier = Modifier
+                        .heightIn(max = 350.dp)
+                        .padding(start = 100.dp, end = 100.dp),
+                    onClick = onClick,
+                    fadeGradientBrush = fadeGradientBrush,
+                    padding = 100.dp
+                )
+            }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun BoxContent(modifier: Modifier = Modifier,
+               title: TitleModel,
+               onClick: () -> Unit,
+               fadeGradientBrush: Brush,
+               padding: Dp? = null
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize()
-            .heightIn(max = TitlePagerItemMaxHeight)
             .clipToBounds()
     ) {
         PosterImage(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(7f / 10f),
             poster = title.poster
@@ -82,23 +117,23 @@ private fun TitlePagerItemContent(
                 .background(fadeGradientBrush)
         )
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
         ) {
-            PagerContent(title = title)
+            PagerContent(title = title, padding = padding ?: 0.dp)
             Spacer(Modifier.padding(bottom = 8.dp))
-            PagerButton(onClick = onClick)
+            PagerButton(onClick = onClick, padding = padding ?: 0.dp)
         }
     }
 }
 
 @Composable
-private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel) {
+private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel, padding: Dp) {
     Column(
         modifier
             .fillMaxWidth()
-            .padding(start = 50.dp, end = 50.dp)
+            .padding(start = 50.dp + padding, end = 50.dp + padding)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface.copy(0.7f))
     ) {
@@ -133,12 +168,13 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel) {
 @Composable
 private fun PagerButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    padding: Dp
 ) {
     ButtonComponent(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 50.dp, end = 50.dp)
+            .padding(start = 50.dp + padding, end = 50.dp + padding)
             .clip(RoundedCornerShape(12.dp)),
         text = stringResource(R.string.text_pager_button),
         icon = Icons.Default.PlayArrow,
@@ -172,4 +208,4 @@ private val FadeGradientColorStops
         1f to MaterialTheme.colorScheme.surface
     )
 
-private val TitlePagerItemMaxHeight = 400.dp
+private val TitlePagerItemMaxHeight = 600.dp
