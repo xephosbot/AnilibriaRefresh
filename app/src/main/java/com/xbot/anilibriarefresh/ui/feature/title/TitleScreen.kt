@@ -1,9 +1,11 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.ui.components.PosterImage
+import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
@@ -37,13 +41,19 @@ fun TitleScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    state?.let {
-        TitleScreenContent(
-            modifier = modifier,
-            title = it,
-            onClick = {},
-            paddingValues = paddingValues
-        )
+    Crossfade(targetState = state) { s ->
+        when (s) {
+            //TODO: Loading screen
+            is TitleScreenState.Loading -> Surface(modifier = Modifier.fillMaxSize()) { }
+            is TitleScreenState.Success -> {
+                TitleScreenContent(
+                    modifier = modifier,
+                    title = s.title,
+                    onClick = {},
+                    paddingValues = paddingValues.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                )
+            }
+        }
     }
 }
 
