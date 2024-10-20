@@ -34,7 +34,8 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                     .hazeChild(
                         state = hazeState,
                         style = hazeStyle
-                    )
+                    ),
+                navController = navController
             )
         },
         navigationSuite = {
