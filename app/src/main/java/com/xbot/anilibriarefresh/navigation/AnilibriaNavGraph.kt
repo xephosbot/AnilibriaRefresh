@@ -1,25 +1,31 @@
 package com.xbot.anilibriarefresh.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
+import soup.compose.material.motion.animation.materialSharedAxisZIn
+import soup.compose.material.motion.animation.materialSharedAxisZOut
 
 @Composable
 fun AnilibriaNavGraph(
@@ -34,7 +40,11 @@ fun AnilibriaNavGraph(
             .fillMaxSize()
             .background(containerColor),
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = { materialSharedAxisZIn(forward = true) },
+        exitTransition = { materialSharedAxisZOut(forward = true) },
+        popEnterTransition = { materialSharedAxisZIn(forward = false) },
+        popExitTransition = { materialSharedAxisZOut(forward = false) }
     ) {
         navigation<Route.Home>(
             startDestination = Route.Home.List
@@ -69,14 +79,22 @@ fun AnilibriaNavGraph(
 fun NavDestination?.hasRoute(route: Route) =
     this?.hierarchy?.any { it.hasRoute(route::class) } == true
 
-fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
-    navigate(destination.route) {
-        popUpTo(graph.findStartDestination().id) {
-            saveState = true
-        }
-        launchSingleTop = true
-        restoreState = true
-    }
+@Composable
+fun NavController.isTopLevelDestination(): Boolean {
+    currentBackStackEntryAsState().value
+    return previousBackStackEntry == null
+}
+
+/**
+ * Это временное решение, пока не будет доступен публичный API.
+ * Используется внутренний API Jetpack Compose Navigations, отсюда и подавление предупреждений.
+ *
+ * @return состояние, представляющее currentBackStack.
+ */
+@SuppressLint("RestrictedApi")
+@Composable
+fun NavController.currentBackStackAsState(): State<List<NavBackStackEntry>?> {
+    return currentBackStack.collectAsState(null)
 }
 
 /**

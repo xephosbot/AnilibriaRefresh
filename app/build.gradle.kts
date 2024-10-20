@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.google.fonts)
     implementation(libs.haze.compose)
     implementation(libs.haze.compose.materials)
+    implementation(libs.material.motion.compose.core)
     implementation(libs.shimmer.compose)
     implementation(libs.glide.compose)
     ksp(libs.glide.ksp)

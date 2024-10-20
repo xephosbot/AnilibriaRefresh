@@ -58,7 +58,11 @@ enum class TopLevelDestination(
         selectedIcon = AnilibriaIcons.Outlined.Person,
         unselectedIcon = AnilibriaIcons.Outlined.Person,
         route = Route.Profile
-    )
+    );
+
+    companion object {
+        val classNames = entries.map { it::route::class.qualifiedName }
+    }
 }
 
 enum class NavigationContentPosition {

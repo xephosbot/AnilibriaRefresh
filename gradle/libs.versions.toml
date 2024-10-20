@@ -30,6 +30,7 @@ androidxWindowManager = "1.2.0"
 materialAdaptive = "1.1.0-alpha05"
 androidxWork = "2.9.1"
 coil = "2.5.0"
+materialMotionComposeCore = "1.2.1"
 shimmer = "1.3.1"
 glideCompose = "1.0.0-beta01"
 glideKsp = "4.14.2"
@@ -116,6 +117,7 @@ androidx-work-testing = { group = "androidx.work", name = "work-testing", versio
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+material-motion-compose-core = { module = "io.github.fornewid:material-motion-compose-core", version.ref = "materialMotionComposeCore" }
 shimmer-compose = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
 glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glideCompose" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideKsp" }

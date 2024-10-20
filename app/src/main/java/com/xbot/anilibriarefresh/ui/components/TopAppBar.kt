@@ -1,6 +1,6 @@
 package com.xbot.anilibriarefresh.ui.components
 
-import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.navigation.isTopLevelDestination
 
-@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnilibriaTopAppBar(
@@ -29,10 +29,7 @@ fun AnilibriaTopAppBar(
     onNavigationClick: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
-    //TODO: Реализовать проверку нахождения в top level destination
-    val isTopLevel = true
-
-    if (isTopLevel) {
+    AnimatedVisibility(navController.isTopLevelDestination()) {
         TopAppBar(
             modifier = modifier,
             navigationIcon = {

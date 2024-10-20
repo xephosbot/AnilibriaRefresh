@@ -63,8 +63,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
+import com.xbot.anilibriarefresh.navigation.currentBackStackAsState
 import com.xbot.anilibriarefresh.navigation.hasRoute
-import com.xbot.anilibriarefresh.navigation.navigateToTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -76,6 +76,8 @@ fun AnilibriaNavigationRail(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    val navBackStack by navController.currentBackStackAsState()
 
     NavigationRail(
         modifier = modifier,
@@ -100,7 +102,20 @@ fun AnilibriaNavigationRail(
             NavigationRailItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigateToTopLevelDestination(destination)
+                    val firstTopLevelDestination = navBackStack
+                        ?.firstOrNull { TopLevelDestination.classNames.contains(it.destination.route) }
+                        ?.destination
+
+                    navController.navigate(destination.route) {
+                        if (firstTopLevelDestination != null) {
+                            popUpTo(firstTopLevelDestination.id) {
+                                inclusive = true
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     Icon(
