@@ -1,6 +1,10 @@
 package com.xbot.anilibriarefresh.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +33,11 @@ fun AnilibriaTopAppBar(
     onNavigationClick: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
-    AnimatedVisibility(navController.isTopLevelDestination()) {
+    AnimatedVisibility(
+        visible = navController.isTopLevelDestination(),
+        enter = fadeIn() + expandVertically(),
+        exit = shrinkVertically() + fadeOut()
+    ) {
         TopAppBar(
             modifier = modifier,
             navigationIcon = {
