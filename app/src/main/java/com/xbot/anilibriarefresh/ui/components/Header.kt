@@ -36,6 +36,7 @@ fun Header(
             .padding(contentPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        //TODO: Use MaterialTheme.typography style
         Text(
             text = title,
             fontSize = 18.sp,
@@ -44,6 +45,7 @@ fun Header(
 
         if (onClick != null) {
             Spacer(Modifier.weight(1f))
+            //TODO: Use MaterialTheme.typography style
             Text(
                 text = stringResource(R.string.text_favorites_btn),
                 fontSize = 18.sp,
