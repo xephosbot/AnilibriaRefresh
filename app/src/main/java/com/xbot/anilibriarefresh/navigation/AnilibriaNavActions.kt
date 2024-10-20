@@ -28,41 +28,43 @@ sealed interface Route {
     data object Profile : Route
 }
 
-data class TopLevelDestination(
-    val route: Route,
-    val iconSelected: ImageVector,
-    val iconDeselected: ImageVector,
-    val text: String
-)
-
 //TODO: move string to resources
-val TOP_LEVEL_DESTINATIONS = listOf(
-    TopLevelDestination(
+enum class TopLevelDestination(
+    val text: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val route: Route
+) {
+    Home(
         text = "Home",
-        iconSelected = AnilibriaIcons.Filled.House,
-        iconDeselected = AnilibriaIcons.Outlined.House,
+        selectedIcon = AnilibriaIcons.Filled.House,
+        unselectedIcon = AnilibriaIcons.Outlined.House,
         route = Route.Home
     ),
-    TopLevelDestination(
+    Favorite(
         text = "Favorite",
-        iconSelected = AnilibriaIcons.Filled.Heart,
-        iconDeselected = AnilibriaIcons.Outlined.Heart,
+        selectedIcon = AnilibriaIcons.Filled.Heart,
+        unselectedIcon = AnilibriaIcons.Outlined.Heart,
         route = Route.Favorite
     ),
-    TopLevelDestination(
+    Search(
         text = "Search",
-        iconSelected = AnilibriaIcons.Outlined.Search,
-        iconDeselected = AnilibriaIcons.Outlined.Search,
+        selectedIcon = AnilibriaIcons.Outlined.Search,
+        unselectedIcon = AnilibriaIcons.Outlined.Search,
         route = Route.Search
     ),
-    TopLevelDestination(
+    Profile(
         text = "Profile",
-        iconSelected = AnilibriaIcons.Outlined.Person,
-        iconDeselected = AnilibriaIcons.Outlined.Person,
+        selectedIcon = AnilibriaIcons.Outlined.Person,
+        unselectedIcon = AnilibriaIcons.Outlined.Person,
         route = Route.Profile
     )
-)
+}
 
 enum class NavigationContentPosition {
     TOP, CENTER
+}
+
+enum class NavigationSuiteType {
+    NavigationBar, NavigationRail
 }

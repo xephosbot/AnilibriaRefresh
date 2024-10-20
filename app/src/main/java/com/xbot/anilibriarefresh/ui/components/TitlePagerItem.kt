@@ -137,6 +137,7 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel, paddi
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface.copy(0.7f))
     ) {
+        //TODO: Use MaterialTheme.typography style
         Text(
             modifier = Modifier
                 .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 10.dp)

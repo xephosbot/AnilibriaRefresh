@@ -158,6 +158,7 @@ private fun TitleItemLayout(
 ) {
     val headlineBox = @Composable {
         Box {
+            //TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
                 value = LocalTextStyle.current.copy(fontWeight = FontWeight.Bold),
                 content = headlineContent
@@ -166,6 +167,7 @@ private fun TitleItemLayout(
     }
     val supportingBox = @Composable {
         Box {
+            //TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
                 value = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                 content = supportingContent
@@ -173,6 +175,7 @@ private fun TitleItemLayout(
         }
     }
     val tagsRow = @Composable {
+        //TODO: Use MaterialTheme.typography style
         ProvideTextStyle(
             value = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
         ) {

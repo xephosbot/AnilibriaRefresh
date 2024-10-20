@@ -2,13 +2,13 @@ package com.xbot.anilibriarefresh.ui
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
-import com.xbot.anilibriarefresh.navigation.AnilibriaNavigationSuiteScaffold
+import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
+import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationBar
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationRail
 import com.xbot.anilibriarefresh.ui.components.AnilibriaTopAppBar
@@ -34,7 +34,8 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                     .hazeChild(
                         state = hazeState,
                         style = hazeStyle
-                    )
+                    ),
+                navController = navController
             )
         },
         navigationSuite = {

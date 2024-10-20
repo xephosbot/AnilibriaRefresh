@@ -50,21 +50,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.xbot.anilibriarefresh.navigation.TOP_LEVEL_DESTINATIONS
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.hasRoute
-import com.xbot.anilibriarefresh.ui.theme.colorIconIsSelected
+import com.xbot.anilibriarefresh.navigation.navigateToTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 @Composable
 fun AnilibriaNavigationBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    destinations: List<TopLevelDestination> = TOP_LEVEL_DESTINATIONS
+    navController: NavHostController
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -72,24 +69,18 @@ fun AnilibriaNavigationBar(
     NavigationBar (
         modifier = modifier,
     ) {
-        destinations.forEach { destination ->
-            val isSelected = currentDestination.hasRoute(destination)
+        TopLevelDestination.entries.forEach { destination ->
+            val isSelected = currentDestination.hasRoute(destination.route)
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.navigateToTopLevelDestination(destination)
                 },
                 icon = {
                     Icon(
                         imageVector = when (isSelected) {
-                            true -> destination.iconSelected
-                            else -> destination.iconDeselected
+                            true -> destination.selectedIcon
+                            else -> destination.unselectedIcon
                         },
                         contentDescription = destination.text
                     )
@@ -148,8 +139,8 @@ fun RowScope.NavigationBarItem(
     label: @Composable (() -> Unit)? = null,
     alwaysShowLabel: Boolean = true,
     colors: NavigationBarItemColors = NavigationBarItemDefaults.colors(
-        selectedIconColor = colorIconIsSelected,
-        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.76f)
+        selectedIconColor = MaterialTheme.colorScheme.onSurface,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f)
     ),
     interactionSource: MutableInteractionSource? = null
 ) {

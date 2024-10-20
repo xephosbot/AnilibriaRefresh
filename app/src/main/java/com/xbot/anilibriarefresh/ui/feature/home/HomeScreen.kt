@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +46,7 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.Header
+import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
 import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
@@ -181,7 +180,10 @@ private fun TitleList(
             ) { title ->
                 TitleCardItem(title = title) {} //TODO: On click action
             }
-            header(title = "Новые эпизоды")
+            header(
+                title = "Новые эпизоды",
+                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+            )
             pagingItems(items) { title ->
                 TitleListItem(
                     title = title,
@@ -224,7 +226,10 @@ private fun LoadingScreen(
                     TitleCardItem(title = null) {}
                 }
             }
-            Header(title = "Новые эпизоды")
+            Header(
+                title = "Новые эпизоды",
+                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+            )
             repeat(5) {
                 TitleListItem(title = null)
             }
@@ -257,13 +262,18 @@ private fun LazyGridScope.horizontalItems(
 
 private fun LazyGridScope.header(
     title: String,
+    contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
     onClick: (() -> Unit)? = null
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
         contentType = { "Header" }
     ) {
-        Header(title = title, onClick = onClick)
+        Header(
+            title = title,
+            contentPadding = contentPadding,
+            onClick = onClick
+        )
     }
 }
 

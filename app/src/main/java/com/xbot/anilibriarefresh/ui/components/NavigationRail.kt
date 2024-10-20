@@ -34,6 +34,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRailItemColors
 import androidx.compose.material3.NavigationRailItemDefaults
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -57,14 +58,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
-import com.xbot.anilibriarefresh.navigation.TOP_LEVEL_DESTINATIONS
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.hasRoute
+import com.xbot.anilibriarefresh.navigation.navigateToTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -72,8 +72,7 @@ import kotlin.math.roundToInt
 fun AnilibriaNavigationRail(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP,
-    destinations: List<TopLevelDestination> = TOP_LEVEL_DESTINATIONS
+    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -96,24 +95,18 @@ fun AnilibriaNavigationRail(
             NavigationContentPosition.CENTER -> Arrangement.Center
         }
     ) {
-        destinations.forEach { destination ->
-            val isSelected = currentDestination.hasRoute(destination)
+        TopLevelDestination.entries.forEach { destination ->
+            val isSelected = currentDestination.hasRoute(destination.route)
             NavigationRailItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.navigateToTopLevelDestination(destination)
                 },
                 icon = {
                     Icon(
                         imageVector = when (isSelected) {
-                            true -> destination.iconSelected
-                            else -> destination.iconDeselected
+                            true -> destination.selectedIcon
+                            else -> destination.unselectedIcon
                         },
                         contentDescription = destination.text
                     )
@@ -174,17 +167,16 @@ fun NavigationRailItem(
     label: @Composable (() -> Unit)? = null,
     alwaysShowLabel: Boolean = true,
     colors: NavigationRailItemColors = NavigationRailItemDefaults.colors(
-        selectedIconColor = MaterialTheme.colorScheme.primary,
-        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.76f)
+        selectedIconColor = MaterialTheme.colorScheme.onSurface,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f)
     ),
     interactionSource: MutableInteractionSource? = null
 ) {
     val styledLabel: @Composable (() -> Unit)? =
         label?.let {
             @Composable {
-                val style =
-                    androidx.compose.material.MaterialTheme.typography.caption.copy(textAlign = TextAlign.Center)
-                androidx.compose.material.ProvideTextStyle(style, content = label)
+                val style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center)
+                ProvideTextStyle(style, content = label)
             }
         }
     // Default to compact size when the item has no label, or a regular size when it does.
