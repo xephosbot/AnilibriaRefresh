@@ -12,6 +12,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -65,8 +66,18 @@ fun AnilibriaNavGraph(
     }
 }
 
-fun NavDestination?.hasRoute(destination: TopLevelDestination) =
-    this?.hierarchy?.any { it.hasRoute(destination.route::class) } == true
+fun NavDestination?.hasRoute(route: Route) =
+    this?.hierarchy?.any { it.hasRoute(route::class) } == true
+
+fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
+    navigate(destination.route) {
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
 
 /**
  * Это обходной путь для устранения дублирования событий навигации.

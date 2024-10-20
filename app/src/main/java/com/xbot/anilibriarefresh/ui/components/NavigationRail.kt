@@ -58,13 +58,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.hasRoute
+import com.xbot.anilibriarefresh.navigation.navigateToTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -96,17 +96,11 @@ fun AnilibriaNavigationRail(
         }
     ) {
         TopLevelDestination.entries.forEach { destination ->
-            val isSelected = currentDestination.hasRoute(destination)
+            val isSelected = currentDestination.hasRoute(destination.route)
             NavigationRailItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.navigateToTopLevelDestination(destination)
                 },
                 icon = {
                     Icon(
