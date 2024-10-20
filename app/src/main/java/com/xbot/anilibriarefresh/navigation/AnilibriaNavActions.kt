@@ -64,3 +64,7 @@ enum class TopLevelDestination(
 enum class NavigationContentPosition {
     TOP, CENTER
 }
+
+enum class NavigationSuiteType {
+    NavigationBar, NavigationRail
+}

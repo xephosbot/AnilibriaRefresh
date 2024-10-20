@@ -17,8 +17,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.internal.MutableWindowInsets
 import androidx.compose.runtime.Composable
@@ -34,6 +32,7 @@ import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
+import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
 
 @Composable
 fun AnilibriaNavigationSuiteScaffold(
@@ -96,8 +95,7 @@ private fun NavigationSuiteScaffoldLayout(
     navigationSuite: @Composable () -> Unit,
     topBar: @Composable () -> Unit = {},
     snackbar: @Composable () -> Unit,
-    layoutType: NavigationSuiteType =
-        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
+    layoutType: NavigationSuiteType,
     content: @Composable (PaddingValues) -> Unit = {},
     contentWindowInsets: WindowInsets,
 ) {
