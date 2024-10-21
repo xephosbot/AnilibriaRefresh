@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -33,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -203,27 +200,20 @@ private fun LoadingScreen(
     contentPadding: PaddingValues
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
-    val layoutDirection = LocalLayoutDirection.current
 
     ProvideShimmer(shimmer) {
         Column(
             modifier = modifier
-                .fillMaxSize()
-                //TODO: переделать
-                .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    start = contentPadding.calculateStartPadding(layoutDirection),
-                    end = contentPadding.calculateEndPadding(layoutDirection)
-                )
-                .verticalScroll(rememberScrollState(), enabled = false),
+                .verticalScroll(rememberScrollState(), enabled = false)
+                .padding(contentPadding),
         ) {
             TitlePagerItem(title = null)
-            Header(title = "Избранное") { }
+            Header(title = "Избранное")
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
-                    .padding(start = 16.dp)
                     .horizontalScroll(rememberScrollState(), enabled = false)
+                    .padding(horizontal = 16.dp)
             ) {
                 repeat(6) {
                     TitleCardItem(title = null) {}

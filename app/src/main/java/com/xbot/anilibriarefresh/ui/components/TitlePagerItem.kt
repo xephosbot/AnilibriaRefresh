@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -22,20 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
@@ -45,6 +38,7 @@ import com.xbot.domain.model.TitleModel
 fun TitlePagerItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
+    onClick: (TitleModel) -> Unit = {}
 ) {
     Crossfade(
         targetState = title,
@@ -52,9 +46,11 @@ fun TitlePagerItem(
     ) { state ->
         when (state) {
             null -> LoadingTitlePagerContent(modifier = modifier)
-            else -> TitlePagerItemContent(modifier = modifier, title = state) {
-                //TODO: переход по клику на экран тайтла
-            }
+            else -> TitlePagerItemContent(
+                modifier = modifier,
+                title = state,
+                onClick = onClick
+            )
         }
     }
 }
@@ -63,48 +59,34 @@ fun TitlePagerItem(
 private fun TitlePagerItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel,
-    onClick: () -> Unit,
+    onClick: (TitleModel) -> Unit,
 ) {
-    val fadeGradientBrush = Brush.verticalGradient(colorStops = FadeGradientColorStops)
-
     BoxWithConstraints {
-        when (this.maxWidth) {
-            in (0.dp..500.dp) -> {
-                BoxContent(
-                    title = title,
-                    modifier = Modifier.heightIn(max = TitlePagerItemMaxHeightInVertical),
-                    onClick = onClick,
-                    fadeGradientBrush = fadeGradientBrush,
-                )
-            }
-            else -> {
-                BoxContent(
-                    title = title,
-                    modifier = Modifier
-                        .heightIn(max = TitlePagerItemMaxHeightInHorizontal)
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    onClick = onClick,
-                    fadeGradientBrush = fadeGradientBrush,
-                    padding = 100.dp
-                )
-            }
+        if (maxWidth < 600.dp) {
+            TitlePagerItemCompactLayout(
+                modifier = modifier,
+                title = title,
+                onClick = { onClick(title) }
+            )
+        } else {
+            TitlePagerItemLargeLayout(
+                modifier = modifier,
+                title = title,
+                onClick = { onClick(title) }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun BoxContent(modifier: Modifier = Modifier,
-               title: TitleModel,
-               onClick: () -> Unit,
-               fadeGradientBrush: Brush,
-               padding: Dp? = null
+private fun TitlePagerItemCompactLayout(
+    modifier: Modifier = Modifier,
+    title: TitleModel,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
-            .wrapContentSize()
-            .clipToBounds()
     ) {
         PosterImage(
             modifier = Modifier
@@ -112,29 +94,54 @@ private fun BoxContent(modifier: Modifier = Modifier,
                 .aspectRatio(7f / 10f),
             poster = title.poster
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(fadeGradientBrush)
-        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
         ) {
-            PagerContent(title = title, padding = padding ?: 0.dp)
-            Spacer(Modifier.padding(bottom = 8.dp))
-            PagerButton(onClick = onClick, padding = padding ?: 0.dp)
+            PagerContent(title = title)
+            Spacer(modifier = Modifier.height(8.dp))
+            PagerButton(onClick = onClick)
         }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel, padding: Dp) {
+private fun TitlePagerItemLargeLayout(
+    modifier: Modifier = Modifier,
+    title: TitleModel,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.Top
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            PagerContent(title = title)
+            Spacer(modifier = Modifier.height(8.dp))
+            PagerButton(onClick = onClick)
+        }
+        PosterImage(
+            modifier = Modifier
+                .height(TitlePagerItemLargeLayoutHeight)
+                .aspectRatio(7f / 10f),
+            poster = title.poster
+        )
+    }
+}
+
+@Composable
+private fun PagerContent(
+    modifier: Modifier = Modifier,
+    title: TitleModel
+) {
     Column(
-        modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(start = 50.dp + padding, end = 50.dp + padding)
+            .padding(start = 50.dp, end = 50.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface.copy(0.7f))
     ) {
@@ -170,13 +177,12 @@ private fun PagerContent(modifier: Modifier = Modifier, title: TitleModel, paddi
 @Composable
 private fun PagerButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    padding: Dp
+    onClick: () -> Unit
 ) {
     ButtonComponent(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 50.dp + padding, end = 50.dp + padding)
+            .padding(start = 50.dp, end = 50.dp)
             .clip(RoundedCornerShape(12.dp)),
         text = stringResource(R.string.text_pager_button),
         icon = Icons.Default.PlayArrow,
@@ -190,38 +196,33 @@ private fun LoadingTitlePagerContent(
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints {
-        when (this.maxWidth) {
-            in (0.dp..500.dp) -> {
-                LoadingBoxContainer(modifier = Modifier
-                    .heightIn(max = TitlePagerItemMaxHeightInVertical)
-                )
-            }
-            else -> {
-                LoadingBoxContainer(
-                    modifier = Modifier
-                        .heightIn(max = TitlePagerItemMaxHeightInHorizontal)
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-            }
+        if (maxWidth < 600.dp) {
+            LoadingBoxPlaceholder(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .aspectRatio(7f / 10f)
+            )
+        } else {
+            LoadingBoxPlaceholder(
+                modifier = modifier
+                    .height(TitlePagerItemLargeLayoutHeight)
+            )
         }
     }
 }
 
 @Composable
-private fun LoadingBoxContainer(modifier: Modifier = Modifier) {
+private fun LoadingBoxPlaceholder(
+    modifier: Modifier = Modifier
+) {
     val shimmer = LocalShimmer.current
 
     Box(
         modifier = modifier
-            .clipToBounds()
-            .fillMaxWidth()
-            .aspectRatio(7f / 10f)
             .shimmerSafe(shimmer)
             .background(Color.LightGray)
     )
 }
 
-private val TitlePagerItemMaxHeightInVertical = 600.dp
-private val TitlePagerItemMaxHeightInHorizontal = 350.dp
+private val TitlePagerItemLargeLayoutHeight = 350.dp
 
