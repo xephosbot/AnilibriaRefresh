@@ -54,7 +54,8 @@ fun TitleScreen(
                     modifier = modifier,
                     title = s.title,
                     onClick = {},
-                    paddingValues = paddingValues.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+                    paddingValues = paddingValues
+                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
                     fadeGradient = fadeGradientBrush
                 )
             }
@@ -121,10 +122,6 @@ fun BoxTitleScreen(
                 .aspectRatio(7f / 10f)
                 .background(fadeGradient)
         )
-        /*IconComponent(
-            modifier = Modifier.padding(start = 16.dp, top = 56.dp),
-            icon = Icons.AutoMirrored.Default.KeyboardArrowLeft
-        ) { }*/
     }
 }
 
