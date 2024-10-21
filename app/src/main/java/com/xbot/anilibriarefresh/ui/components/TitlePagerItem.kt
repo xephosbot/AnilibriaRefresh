@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
@@ -190,25 +191,29 @@ private fun LoadingTitlePagerContent(
     BoxWithConstraints {
         when (this.maxWidth) {
             in (0.dp..500.dp) -> {
-                LoadingBoxContainer(heightIn = TitlePagerItemMaxHeightInVertical)
+                LoadingBoxContainer(modifier = Modifier
+                    .heightIn(max = TitlePagerItemMaxHeightInVertical)
+                )
             }
             else -> {
-                LoadingBoxContainer(heightIn = TitlePagerItemMaxHeightInHorizontal)
+                LoadingBoxContainer(
+                    modifier = Modifier
+                        .heightIn(max = TitlePagerItemMaxHeightInHorizontal)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
             }
         }
     }
 }
 
 @Composable
-private fun LoadingBoxContainer(modifier: Modifier = Modifier, heightIn: Dp) {
+private fun LoadingBoxContainer(modifier: Modifier = Modifier) {
     val shimmer = LocalShimmer.current
 
     Box(
-        modifier = Modifier
-            .heightIn(max = heightIn)
+        modifier = modifier
             .clipToBounds()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
             .fillMaxWidth()
             .aspectRatio(7f / 10f)
             .shimmerSafe(shimmer)
