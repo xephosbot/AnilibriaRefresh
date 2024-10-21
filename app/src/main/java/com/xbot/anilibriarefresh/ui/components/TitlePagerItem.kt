@@ -31,6 +31,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
+import com.xbot.anilibriarefresh.ui.utils.drawFadingEdge
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
 
@@ -45,9 +46,11 @@ fun TitlePagerItem(
         label = "" //TODO: информативный label для перехода
     ) { state ->
         when (state) {
-            null -> LoadingTitlePagerContent(modifier = modifier)
+            null -> LoadingTitlePagerContent(
+                modifier = modifier.drawFadingEdge()
+            )
             else -> TitlePagerItemContent(
-                modifier = modifier,
+                modifier = modifier.drawFadingEdge(),
                 title = state,
                 onClick = onClick
             )
