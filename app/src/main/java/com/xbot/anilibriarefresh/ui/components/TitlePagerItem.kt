@@ -93,7 +93,7 @@ private fun TitlePagerItemContent(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun BoxContent(modifier: Modifier = Modifier,
+private fun BoxContent(modifier: Modifier = Modifier,
                title: TitleModel,
                onClick: () -> Unit,
                fadeGradientBrush: Brush,
@@ -200,7 +200,7 @@ private fun LoadingTitlePagerContent(
 }
 
 @Composable
-fun LoadingBoxContainer(modifier: Modifier = Modifier, heightIn: Dp) {
+private fun LoadingBoxContainer(modifier: Modifier = Modifier, heightIn: Dp) {
     val shimmer = LocalShimmer.current
 
     Box(
