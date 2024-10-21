@@ -161,12 +161,10 @@ private fun TitleList(
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding
         ) {
-            horizontalPagerItems(
+            testTitleCarousel(
                 items = recommendedList,
                 state = pagerState
-            ) { title ->
-                TitlePagerItem(title = title)
-            }
+            )
             header(
                 title = "Избранное",
                 onClick = {} //TODO: On click action

@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.components
 
+import android.graphics.drawable.Drawable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.Placeholder
+import com.bumptech.glide.integration.compose.RequestBuilderTransform
 import com.bumptech.glide.integration.compose.Transition
 import com.bumptech.glide.integration.compose.placeholder
 import com.xbot.domain.model.PosterModel
@@ -32,7 +34,8 @@ fun PosterImage(
     colorFilter: ColorFilter? = null,
     loading: Placeholder = placeholder(ColorPainter(MaterialTheme.colorScheme.onSurface)),
     failure: Placeholder = placeholder(ColorPainter(MaterialTheme.colorScheme.errorContainer)),
-    transition: Transition.Factory = CrossFade
+    transition: Transition.Factory = CrossFade,
+    requestBuilderTransform: RequestBuilderTransform<Drawable> = { it },
 ) {
     val requestManager: RequestManager = LocalContext.current.let { remember(it) { Glide.with(it) } }
 
@@ -48,7 +51,7 @@ fun PosterImage(
         failure = failure,
         transition = transition
     ) {
-        it.thumbnail(
+        requestBuilderTransform(it).thumbnail(
             requestManager.asDrawable()
                 .load(poster.thumbnail)
                 .override(10, 70)
