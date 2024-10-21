@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
@@ -220,14 +221,6 @@ private fun LoadingBoxContainer(modifier: Modifier = Modifier) {
             .background(Color.LightGray)
     )
 }
-
-private val FadeGradientColorStops
-    @Composable
-    get() = arrayOf(
-        0.0f to Color.Transparent,
-        0.4f to Color.Transparent,
-        1f to MaterialTheme.colorScheme.surface
-    )
 
 private val TitlePagerItemMaxHeightInVertical = 600.dp
 private val TitlePagerItemMaxHeightInHorizontal = 350.dp

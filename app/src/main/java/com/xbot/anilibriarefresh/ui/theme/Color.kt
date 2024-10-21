@@ -234,3 +234,11 @@ val colorStopsButtonPagerContent = arrayOf(
     0.7f to buttonPagerContentColorLightRed,
     1f to buttonPagerContentColorLightRed
 )
+
+val FadeGradientColorStops
+    @Composable
+    get() = arrayOf(
+        0.0f to Color.Transparent,
+        0.4f to Color.Transparent,
+        1f to MaterialTheme.colorScheme.surface
+    )

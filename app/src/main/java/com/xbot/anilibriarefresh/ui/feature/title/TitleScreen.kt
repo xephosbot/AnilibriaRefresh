@@ -2,17 +2,25 @@ package com.xbot.anilibriarefresh.ui.feature.title
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +39,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.xbot.anilibriarefresh.ui.components.IconComponent
 import com.xbot.anilibriarefresh.ui.components.PosterImage
+import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
 import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
@@ -40,6 +53,7 @@ fun TitleScreen(
     paddingValues: PaddingValues
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val fadeGradientBrush = Brush.verticalGradient(colorStops = FadeGradientColorStops)
 
     Crossfade(targetState = state, label = "") { s ->
         when (s) {
@@ -50,34 +64,31 @@ fun TitleScreen(
                     modifier = modifier,
                     title = s.title,
                     onClick = {},
-                    paddingValues = paddingValues.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                    paddingValues = paddingValues.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+                    fadeGradient = fadeGradientBrush
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     title: TitleModel,
     onClick: () -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    fadeGradient: Brush
 ) {
     Column(
-        Modifier
+        modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .padding(paddingValues = paddingValues)
             .verticalScroll(rememberScrollState())) {
-        PosterImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(320.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            poster = title.poster
-        )
+
+        BoxTitleScreen(title = title, fadeGradient = fadeGradient)
+
         Spacer(modifier.padding(16.dp))
         Text(
             text = title.name,
@@ -95,6 +106,37 @@ private fun TitleScreenContent(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun BoxTitleScreen(
+    modifier: Modifier = Modifier,
+    title: TitleModel,
+    fadeGradient: Brush
+) {
+    Box(
+        modifier = modifier
+            .wrapContentSize()
+            .clipToBounds()
+    ) {
+        PosterImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(7f / 10f),
+            poster = title.poster
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(7f / 10f)
+                .background(fadeGradient)
+        )
+        IconComponent(
+            modifier = Modifier.padding(start = 16.dp, top = 56.dp),
+            icon = Icons.AutoMirrored.Default.KeyboardArrowLeft
+        ) { }
+    }
+}
+
 @Preview
 @Composable
 private fun TitleScreenPreview() {
@@ -109,5 +151,5 @@ private fun TitleScreenPreview() {
         ),
         uploadedTime = null
     )
-    TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {})
+    TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {}, fadeGradient = Brush.verticalGradient(colorStops = FadeGradientColorStops))
 }
