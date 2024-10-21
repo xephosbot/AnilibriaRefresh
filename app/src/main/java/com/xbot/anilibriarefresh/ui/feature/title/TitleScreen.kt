@@ -34,6 +34,7 @@ import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
 import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.domain.model.PosterModel
+import com.xbot.domain.model.TitleDetailModel
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -66,7 +67,7 @@ fun TitleScreen(
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
-    title: TitleModel,
+    title: TitleDetailModel,
     onClick: () -> Unit,
     paddingValues: PaddingValues,
     fadeGradient: Brush
@@ -102,7 +103,7 @@ private fun TitleScreenContent(
 @Composable
 fun BoxTitleScreen(
     modifier: Modifier = Modifier,
-    title: TitleModel,
+    title: TitleDetailModel,
     fadeGradient: Brush
 ) {
     Box(
@@ -139,5 +140,5 @@ private fun TitleScreenPreview() {
         ),
         uploadedTime = null
     )
-    TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {}, fadeGradient = Brush.verticalGradient(colorStops = FadeGradientColorStops))
+    //TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {}, fadeGradient = Brush.verticalGradient(colorStops = FadeGradientColorStops))
 }

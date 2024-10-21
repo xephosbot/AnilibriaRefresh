@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.xbot.data.datasource.TitleDataSource
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.data.datasource.TitlePagingSource
+import com.xbot.domain.model.TitleDetailModel
 import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +35,7 @@ internal class TitleRepositoryImpl @Inject constructor(
         return dataSource.getFavoriteTitles(10)
     }
 
-    override fun getTitle(id: Int): Flow<TitleModel> {
+    override fun getTitle(id: Int): Flow<TitleDetailModel> {
         return dataSource.getTitle(id)
     }
 }

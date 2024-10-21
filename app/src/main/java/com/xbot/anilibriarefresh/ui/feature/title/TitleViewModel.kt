@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
-import com.xbot.domain.model.TitleModel
+import com.xbot.domain.model.TitleDetailModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,7 +47,7 @@ class TitleViewModel @Inject constructor(
 sealed interface TitleScreenState {
     data object Loading: TitleScreenState
     data class Success (
-        val title: TitleModel
+        val title: TitleDetailModel
     ): TitleScreenState
 }
 

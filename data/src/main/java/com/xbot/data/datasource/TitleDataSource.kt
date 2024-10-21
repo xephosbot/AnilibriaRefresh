@@ -7,6 +7,7 @@ import com.xbot.data.mapper.SuccessTitleUpdatedMapper
 import com.xbot.data.mapper.SuccessTitlesMapper
 import com.xbot.data.models.TitlePage
 import com.xbot.data.utils.handleErrors
+import com.xbot.domain.model.TitleDetailModel
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +43,7 @@ class TitleDataSource @Inject constructor(
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getTitle(id: Int): Flow<TitleModel> = flow {
+    fun getTitle(id: Int): Flow<TitleDetailModel> = flow {
         val response = client.getRelease(id)
         response.suspendOnSuccess(SuccessTitleMapper) {
             emit(this)
