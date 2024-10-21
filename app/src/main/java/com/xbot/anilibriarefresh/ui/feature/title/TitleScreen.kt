@@ -41,7 +41,7 @@ fun TitleScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    Crossfade(targetState = state) { s ->
+    Crossfade(targetState = state, label = "") { s ->
         when (s) {
             //TODO: Loading screen
             is TitleScreenState.Loading -> Surface(modifier = Modifier.fillMaxSize()) { }

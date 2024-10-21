@@ -49,8 +49,8 @@ fun TitlePagerItem(
         label = "" //TODO: информативный label для перехода
     ) { state ->
         when (state) {
-            null -> LoadingTitlePagerContent(modifier)
-            else -> TitlePagerItemContent(modifier, state) {
+            null -> LoadingTitlePagerContent(modifier = modifier)
+            else -> TitlePagerItemContent(modifier = modifier, title = state) {
                 //TODO: переход по клику на экран тайтла
             }
         }
@@ -65,13 +65,12 @@ private fun TitlePagerItemContent(
 ) {
     val fadeGradientBrush = Brush.verticalGradient(colorStops = FadeGradientColorStops)
 
-    // TODO: подумать над размерами Box в горизонтальной ориентации (пока тестово накидал)
     BoxWithConstraints {
         when (this.maxWidth) {
             in (0.dp..500.dp) -> {
                 BoxContent(
                     title = title,
-                    modifier = Modifier.heightIn(max = TitlePagerItemMaxHeight),
+                    modifier = Modifier.heightIn(max = TitlePagerItemMaxHeightInVertical),
                     onClick = onClick,
                     fadeGradientBrush = fadeGradientBrush,
                 )
@@ -80,8 +79,9 @@ private fun TitlePagerItemContent(
                 BoxContent(
                     title = title,
                     modifier = Modifier
-                        .heightIn(max = 350.dp)
-                        .padding(start = 100.dp, end = 100.dp),
+                        .heightIn(max = TitlePagerItemMaxHeightInHorizontal)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp)),
                     onClick = onClick,
                     fadeGradientBrush = fadeGradientBrush,
                     padding = 100.dp
@@ -89,7 +89,6 @@ private fun TitlePagerItemContent(
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -188,12 +187,28 @@ private fun PagerButton(
 private fun LoadingTitlePagerContent(
     modifier: Modifier = Modifier
 ) {
+    BoxWithConstraints {
+        when (this.maxWidth) {
+            in (0.dp..500.dp) -> {
+                LoadingBoxContainer(heightIn = TitlePagerItemMaxHeightInVertical)
+            }
+            else -> {
+                LoadingBoxContainer(heightIn = TitlePagerItemMaxHeightInHorizontal)
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingBoxContainer(modifier: Modifier = Modifier, heightIn: Dp) {
     val shimmer = LocalShimmer.current
 
     Box(
-        modifier = modifier
-            .heightIn(max = TitlePagerItemMaxHeight)
+        modifier = Modifier
+            .heightIn(max = heightIn)
             .clipToBounds()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp))
             .fillMaxWidth()
             .aspectRatio(7f / 10f)
             .shimmerSafe(shimmer)
@@ -209,4 +224,6 @@ private val FadeGradientColorStops
         1f to MaterialTheme.colorScheme.surface
     )
 
-private val TitlePagerItemMaxHeight = 600.dp
+private val TitlePagerItemMaxHeightInVertical = 600.dp
+private val TitlePagerItemMaxHeightInHorizontal = 350.dp
+

@@ -222,7 +222,7 @@ private fun LoadingScreen(
                     .padding(start = 16.dp)
                     .horizontalScroll(rememberScrollState(), enabled = false)
             ) {
-                repeat(4) {
+                repeat(6) {
                     TitleCardItem(title = null) {}
                 }
             }
@@ -230,7 +230,7 @@ private fun LoadingScreen(
                 title = "Новые эпизоды",
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
             )
-            repeat(5) {
+            repeat(6) {
                 TitleListItem(title = null)
             }
         }
