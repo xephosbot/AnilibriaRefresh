@@ -21,7 +21,7 @@ import com.xbot.domain.model.TitleModel
 fun TitleCardItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
-    onClickFavorite: () -> Unit
+    onClick: (TitleModel) -> Unit
 ) {
     Crossfade(
         targetState = title,
@@ -29,7 +29,7 @@ fun TitleCardItem(
     ) { state ->
         when (state) {
             null -> LoadingTitleCardItem(modifier)
-            else -> TitleCardItemContent(modifier, state, onClickFavorite)
+            else -> TitleCardItemContent(modifier, state, onClick)
         }
     }
 }
@@ -39,15 +39,15 @@ fun TitleCardItem(
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel,
-    onClickFavorite: () -> Unit
+    onClick: (TitleModel) -> Unit
 ) {
     PosterImage(
-        poster = title.poster,
         modifier = modifier
-            .height(186.dp)
+            .height(TitleCardHeight)
             .aspectRatio(7f / 10f)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onClickFavorite() }
+            .clickable { onClick(title) },
+        poster = title.poster
     )
 }
 
@@ -58,12 +58,13 @@ private fun LoadingTitleCardItem(
     val shimmer = LocalShimmer.current
 
     Box(
-        modifier
-            .height(186.dp)
+        modifier = modifier
+            .height(TitleCardHeight)
             .aspectRatio(7f / 10f)
             .shimmerSafe(shimmer)
             .clip(RoundedCornerShape(8.dp))
             .background(Color.LightGray)
-
     )
 }
+
+private val TitleCardHeight = 186.dp

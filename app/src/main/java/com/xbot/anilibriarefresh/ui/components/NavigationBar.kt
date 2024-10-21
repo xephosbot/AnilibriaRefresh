@@ -83,7 +83,6 @@ fun AnilibriaNavigationBar(
                     navController.navigate(destination.route) {
                         if (firstTopLevelDestination != null) {
                             popUpTo(firstTopLevelDestination.id) {
-                                inclusive = true
                                 saveState = true
                             }
                         }

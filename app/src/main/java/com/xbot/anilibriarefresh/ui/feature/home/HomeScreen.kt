@@ -61,7 +61,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     paddingValues: PaddingValues,
-    onNavigate: (Int) -> Unit
+    onNavigate: (Int, String) -> Unit
 ) {
     val items = viewModel.titles.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,7 +86,7 @@ private fun HomeScreenContent(
     items: LazyPagingItems<TitleModel>,
     loadStates: CombinedLoadStates,
     onAction: (HomeScreenAction) -> Unit,
-    onNavigate: (Int) -> Unit
+    onNavigate: (Int, String) -> Unit
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
         onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
@@ -124,7 +124,7 @@ private fun HomeScreenContent(
                             recommendedList = successState.recommendedTitles,
                             favoriteList = successState.favoriteTitles,
                             contentPadding = innerPadding.union(paddingValues),
-                            onTitleClick = onNavigate
+                            onTitleClick = { onNavigate(it.id, it.name) }
                         )
                     }
                 }
@@ -153,7 +153,7 @@ private fun TitleList(
     recommendedList: List<TitleModel>,
     favoriteList: List<TitleModel>,
     contentPadding: PaddingValues,
-    onTitleClick: (Int) -> Unit
+    onTitleClick: (TitleModel) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val pagerState = rememberPagerState(pageCount = { recommendedList.size })
@@ -178,7 +178,10 @@ private fun TitleList(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 items = favoriteList
             ) { title ->
-                TitleCardItem(title = title) {} //TODO: On click action
+                TitleCardItem(
+                    title = title,
+                    onClick = onTitleClick
+                )
             }
             header(
                 title = "Новые эпизоды",

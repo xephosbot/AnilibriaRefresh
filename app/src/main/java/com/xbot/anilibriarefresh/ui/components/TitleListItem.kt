@@ -38,10 +38,10 @@ import com.xbot.domain.model.TitleModel
 fun TitleListItem(
     modifier: Modifier = Modifier,
     title: TitleModel?,
-    onClick: (Int) -> Unit = {}
+    onClick: (TitleModel) -> Unit = {}
 ) {
     Surface(
-        onClick = { title?.let { onClick(it.id) } }
+        onClick = { title?.let { onClick(it) } }
     ) {
         Crossfade(
             targetState = title,

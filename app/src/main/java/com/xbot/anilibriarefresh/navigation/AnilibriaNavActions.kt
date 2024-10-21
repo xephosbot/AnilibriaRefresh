@@ -15,7 +15,10 @@ sealed interface Route {
         data object List
 
         @Serializable
-        data class Detail(val titleId: Int)
+        data class Detail(
+            val titleId: Int,
+            val titleName: String
+        )
     }
 
     @Serializable

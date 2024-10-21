@@ -28,6 +28,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -65,6 +67,7 @@ import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.currentBackStackAsState
 import com.xbot.anilibriarefresh.navigation.hasRoute
+import com.xbot.anilibriarefresh.navigation.isTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -78,18 +81,30 @@ fun AnilibriaNavigationRail(
     val currentDestination = navBackStackEntry?.destination
 
     val navBackStack by navController.currentBackStackAsState()
+    val isTopLevel = navController.isTopLevelDestination()
 
     NavigationRail(
         modifier = modifier,
         header = {
             IconButton(
-                onClick = {},
+                onClick = {
+                    when (isTopLevel) {
+                        true -> {}
+                        else -> navController.navigateUp()
+                    }
+                },
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                when (isTopLevel) {
+                    true -> Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    else -> Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null
+                    )
+                }
             }
         },
         contentArrangement = when (navContentPosition) {
@@ -109,7 +124,6 @@ fun AnilibriaNavigationRail(
                     navController.navigate(destination.route) {
                         if (firstTopLevelDestination != null) {
                             popUpTo(firstTopLevelDestination.id) {
-                                inclusive = true
                                 saveState = true
                             }
                         }

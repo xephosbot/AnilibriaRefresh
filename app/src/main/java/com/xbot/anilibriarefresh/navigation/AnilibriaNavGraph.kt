@@ -24,8 +24,8 @@ import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
-import soup.compose.material.motion.animation.materialSharedAxisZIn
-import soup.compose.material.motion.animation.materialSharedAxisZOut
+import soup.compose.material.motion.animation.materialFadeThroughIn
+import soup.compose.material.motion.animation.materialFadeThroughOut
 
 @Composable
 fun AnilibriaNavGraph(
@@ -41,10 +41,8 @@ fun AnilibriaNavGraph(
             .background(containerColor),
         navController = navController,
         startDestination = startDestination,
-        enterTransition = { materialSharedAxisZIn(forward = true) },
-        exitTransition = { materialSharedAxisZOut(forward = true) },
-        popEnterTransition = { materialSharedAxisZIn(forward = false) },
-        popExitTransition = { materialSharedAxisZOut(forward = false) }
+        enterTransition = { materialFadeThroughIn() },
+        exitTransition = { materialFadeThroughOut() }
     ) {
         navigation<Route.Home>(
             startDestination = Route.Home.List
@@ -52,9 +50,9 @@ fun AnilibriaNavGraph(
             composable<Route.Home.List> { backStackEntry ->
                 HomeScreen(
                     paddingValues = paddingValues
-                ) { titleId ->
+                ) { titleId, titleName ->
                     if (backStackEntry.lifecycleIsResumed()) {
-                        navController.navigate(Route.Home.Detail(titleId))
+                        navController.navigate(Route.Home.Detail(titleId, titleName))
                     }
                 }
             }
