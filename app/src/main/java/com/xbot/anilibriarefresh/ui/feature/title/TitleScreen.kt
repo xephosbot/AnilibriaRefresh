@@ -1,21 +1,23 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,8 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +37,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.ui.components.PosterImage
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
+import com.xbot.anilibriarefresh.ui.theme.buttonPagerContentColorLightRed
 import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.EpisodeModel
@@ -69,6 +75,7 @@ fun TitleScreen(
     }
 }
 
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
@@ -77,30 +84,69 @@ private fun TitleScreenContent(
     paddingValues: PaddingValues,
     fadeGradient: Brush
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .verticalScroll(rememberScrollState())
             .padding(paddingValues = paddingValues)
+            .verticalScroll(scrollState)
     ) {
 
-        BoxTitleScreen(title = title, fadeGradient = fadeGradient)
+        BoxTitleScreen(
+            modifier = Modifier.graphicsLayer {
+                alpha = 1f-(scrollState.value.toFloat() / size.height).coerceIn(0f, 1f)
+                translationY = scrollState.value.toFloat()
+            },
+            title = title,
+            fadeGradient = fadeGradient
+        )
+        
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            Text(
+                text = title.name,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+            TitleShortInfo(title = title)
+            Spacer(modifier.padding(10.dp))
 
-//        Spacer(modifier.padding(16.dp))
-        Text(
-            text = title.name,
-            modifier.align(Alignment.CenterHorizontally),
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
-        )
-        Spacer(modifier.padding(10.dp))
-        Text(
-            text = title.description,
-            modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(start = 16.dp, end = 16.dp)
-        )
+            Text(
+                text = "Описание",
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 4.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                text = title.description,
+                modifier = modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+            Text(
+                text = title.description,
+                modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+            Text(
+                text = title.description,
+                modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+        }
+
     }
 }
 
@@ -119,8 +165,7 @@ fun BoxTitleScreen(
         PosterImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(7f / 10f)
-                .border(BorderStroke(1.dp, Color.Red)),
+                .aspectRatio(7f / 10f),
             poster = title.poster
         )
         Box(
@@ -129,6 +174,48 @@ fun BoxTitleScreen(
                 .aspectRatio(7f / 10f)
                 .background(fadeGradient)
         )
+    }
+}
+
+@Composable
+fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailModel) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title.addedInUsersFavorites.toString()
+            )
+            Spacer(modifier = Modifier.padding(1.dp))
+            Icon(
+                imageVector = AnilibriaIcons.Filled.Heart,
+                contentDescription = "",
+                tint = buttonPagerContentColorLightRed,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+        Row {
+            Text(
+                text = title.year.toString() + ", "
+            )
+            Spacer(modifier = Modifier.padding())
+            title.genres.forEachIndexed { index, item  ->
+                Text(
+                    text = item
+                )
+                if (index != title.genres.size - 1) {
+                    Text(", ")
+                }
+            }
+        }
+        Row {
+            Text(text = title.episodesTotal.toString() + " эпизода, ")
+            Text(text = title.type + ", ")
+            Text(text = title.ageRating)
+        }
     }
 }
 
