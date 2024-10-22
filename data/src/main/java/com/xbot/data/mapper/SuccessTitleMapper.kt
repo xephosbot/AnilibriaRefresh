@@ -1,3 +1,5 @@
+package com.xbot.data.mapper
+
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
 import com.xbot.api.models.Release

@@ -1,10 +1,10 @@
 package com.xbot.data.datasource
 
-import SuccessTitleMapper
 import com.skydoves.sandwich.suspendOnSuccess
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessTitleUpdatedMapper
 import com.xbot.data.mapper.SuccessTitlesMapper
+import com.xbot.data.mapper.SuccessTitleMapper
 import com.xbot.data.models.TitlePage
 import com.xbot.data.utils.handleErrors
 import com.xbot.domain.model.TitleDetailModel
