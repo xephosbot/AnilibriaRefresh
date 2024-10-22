@@ -49,7 +49,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                         src = it.preview.optimized.src,
                         thumbnail = it.preview.optimized.thumbnail
                     ),
-                    ordinal = it.ordinal
+                    ordinal = it.ordinal.toInt()
                 )
             } ?: listOf()
         )
