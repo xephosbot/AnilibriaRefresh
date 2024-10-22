@@ -1,16 +1,18 @@
 package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
-import com.xbot.api.models.AgeRating
-import com.xbot.api.models.Release
-import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
-import com.xbot.api.models.ProductionStatus
-import com.xbot.api.models.PublishStatus
-import com.xbot.api.models.Season
-import com.xbot.api.models.SortingType
-import com.xbot.api.models.Type
+import com.xbot.api.models.Release
+import com.xbot.api.models.ReleaseCatalogResponse
+import com.xbot.api.models.ValDesc
+import com.xbot.api.models.enums.AgeRatingEnum
+import com.xbot.api.models.enums.ProductionStatusEnum
+import com.xbot.api.models.enums.PublishStatusEnum
+import com.xbot.api.models.enums.ReleaseTypeEnum
+import com.xbot.api.models.enums.SeasonEnum
+import com.xbot.api.models.enums.SocialNetworkEnum
+import com.xbot.api.models.enums.SortingTypeEnum
 import com.xbot.api.models.login.LoginRequest
 import com.xbot.api.models.login.LoginResponse
 import com.xbot.api.models.login.LoginSocialNetwork
@@ -19,7 +21,6 @@ import javax.inject.Inject
 class AnilibriaClient @Inject constructor(
     private val service: AnilibriaService
 ) {
-
     /**
      * Авторизация пользователя по логину и паролю. Создание сессии пользователя, выдача токена авторизации для использования в cookies или в Bearer Token.
      *
@@ -45,7 +46,9 @@ class AnilibriaClient @Inject constructor(
      * @param provider [String] Провайдер социальной сети.
      * @return [ApiResponse] содержащий информацию о ключе, используемом для авторизации [LoginSocialNetwork].
      */
-    suspend fun loginWithSocialNetwork(provider: String): ApiResponse<LoginSocialNetwork> {
+    suspend fun loginWithSocialNetwork(
+        provider: SocialNetworkEnum
+    ): ApiResponse<LoginSocialNetwork> {
         return service.loginWithSocialNetwork(provider = provider)
     }
 
@@ -56,9 +59,9 @@ class AnilibriaClient @Inject constructor(
      * @return [ApiResponse] содержащий информацию об авторизации [LoginResponse].
      */
     suspend fun authenticateWithSocialNetwork(
-        state: AuthWithNetworkEnum
+        state: String
     ): ApiResponse<LoginResponse> {
-        return service.authenticateWithSocialNetwork(state = state.toString())
+        return service.authenticateWithSocialNetwork(state = state)
     }
 
     /**
@@ -67,12 +70,12 @@ class AnilibriaClient @Inject constructor(
      * @param page Номер страницы в выдаче.
      * @param limit Количество релизов на странице.
      * @param genres Список [Int] идентификаторов жанров для фильтрации.
-     * @param type Список типов релизов [TypeEnum] (например, TV, OVA) для фильтрации.
+     * @param type Список типов релизов [ReleaseTypeEnum] (например, TV, OVA) для фильтрации.
      * @param seasons Список сезонов релизов [SeasonEnum] (например, winter, spring, summer, autumn) для фильтрации.
      * @param fromYear Минимальный год выхода релиза для фильтрации.
      * @param toYear Максимальный год выхода релиза для фильтрации.
      * @param search Строка поиска для фильтрации релизов по названию.
-     * @param sorting Тип сортировки [SortingEnum] результатов (например, по дате или популярности).
+     * @param sorting Тип сортировки [SortingTypeEnum] результатов (например, по дате или популярности).
      * @param ageRatings Список возрастных рейтингов [AgeRatingEnum] (например, R16_PLUS, R18_PLUS) для фильтрации.
      * @param publishStatuses Список статусов публикации релизов [PublishStatusEnum] (например, ongoing, completed) для фильтрации.
      * @param productionStatuses Список статусов производства релизов [ProductionStatusEnum] (например, inProduction, finished) для фильтрации.
@@ -82,12 +85,12 @@ class AnilibriaClient @Inject constructor(
         page: Int,
         limit: Int,
         genres: List<Int>? = null,
-        type: List<TypeEnum>? = null,
+        type: List<ReleaseTypeEnum>? = null,
         seasons: List<SeasonEnum>? = null,
         fromYear: Int? = null,
         toYear: Int? = null,
         search: String? = null,
-        sorting: SortingEnum? = null,
+        sorting: SortingTypeEnum? = null,
         ageRatings: List<AgeRatingEnum>? = null,
         publishStatuses: List<PublishStatusEnum>? = null,
         productionStatuses: List<ProductionStatusEnum>? = null
@@ -123,7 +126,7 @@ class AnilibriaClient @Inject constructor(
      *
      * @return [ApiResponse] содержащий информацию о возрастных рейтингах [AgeRatingEnum]
      */
-    suspend fun getAgeRatings(): ApiResponse<List<AgeRating>> {
+    suspend fun getAgeRatings(): ApiResponse<List<ValDesc<AgeRatingEnum>>> {
         return service.getAgeRatings()
     }
 
@@ -141,7 +144,7 @@ class AnilibriaClient @Inject constructor(
      *
      * @return [ApiResponse] содержащий информацию о статусах озвучки релиза [ProductionStatusEnum]
      */
-    suspend fun getProductionStatuses(): ApiResponse<List<ProductionStatus>> {
+    suspend fun getProductionStatuses(): ApiResponse<List<ValDesc<ProductionStatusEnum>>> {
         return service.getProductionStatuses()
     }
 
@@ -150,7 +153,7 @@ class AnilibriaClient @Inject constructor(
      *
      * @return [ApiResponse] содержащий информацию о статусах выхода релиза [PublishStatusEnum]
      */
-    suspend fun getPublishStatuses(): ApiResponse<List<PublishStatus>> {
+    suspend fun getPublishStatuses(): ApiResponse<List<ValDesc<PublishStatusEnum>>> {
         return service.getPublishStatuses()
     }
 
@@ -159,25 +162,25 @@ class AnilibriaClient @Inject constructor(
      *
      * @return [ApiResponse] содержащий информацию о сезоне [SeasonEnum]
      */
-    suspend fun getSeasons(): ApiResponse<List<Season>> {
+    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum?>>> {
         return service.getSeasons()
     }
 
     /**
      * Возвращает список возможных типов релизов в каталоге.
      *
-     * @return [ApiResponse] содержащий информацию о типах сортировки [SortingType]
+     * @return [ApiResponse] содержащий информацию о типах сортировки [SortingTypeEnum]
      */
-    suspend fun getSortingTypes(): ApiResponse<List<SortingType>> {
+    suspend fun getSortingTypes(): ApiResponse<List<ValDesc<SortingTypeEnum>>> {
         return service.getSortingTypes()
     }
 
     /**
      * Возвращает список возможных типов релизов в каталоге.
      *
-     * @return [ApiResponse] содержащий информацию о типах релизов [Type]
+     * @return [ApiResponse] содержащий информацию о типах релизов [ReleaseTypeEnum]
      */
-    suspend fun getTypeReleases(): ApiResponse<List<Type>> {
+    suspend fun getTypeReleases(): ApiResponse<List<ValDesc<ReleaseTypeEnum>>> {
         return service.getTypeReleases()
     }
 
@@ -292,85 +295,5 @@ class AnilibriaClient @Inject constructor(
         limit: Int
     ): ApiResponse<List<Release>> {
         return service.getRandomReleases(limit = limit)
-    }
-
-    enum class AuthWithNetworkEnum(private val provider: String) {
-        VK("vk"),
-        GOOGLE("google"),
-        PATREON("patreon"),
-        DISCORD("discord");
-
-        override fun toString(): String {
-            return provider
-        }
-    }
-
-    enum class TypeEnum(private val type: String) {
-        TV("TV"),
-        ONA("ONA"),
-        WEB("WEB"),
-        OVA("OVA"),
-        OAD("OAD"),
-        MOVIE("MOVIE"),
-        DORAMA("DORAMA"),
-        SPECIAL("SPECIAL");
-
-        override fun toString(): String {
-            return type
-        }
-    }
-
-    enum class SeasonEnum(private val season: String) {
-        WINTER("winter"),
-        SPRING("spring"),
-        SUMMER("summer"),
-        AUTUMN("autumn");
-
-        override fun toString(): String {
-            return season
-        }
-    }
-
-    enum class SortingEnum(private val value: String) {
-        FRESH_AT_DESC("FRESH_AT_DESC"),
-        FRESH_AT_ASC("FRESH_AT_ASC"),
-        RATING_DESC("RATING_DESC"),
-        RATING_ASC("RATING_ASC"),
-        YEAR_DESC("YEAR_DESC"),
-        YEAR_ASC("YEAR_ASC");
-
-        override fun toString(): String {
-            return value
-        }
-    }
-
-    enum class AgeRatingEnum(private val value: String) {
-        R0_PLUS("R0_PLUS"),
-        R6_PLUS("R6_PLUS"),
-        R12_PLUS("R12_PLUS"),
-        R16_PLUS("R16_PLUS"),
-        R18_PLUS("R18_PLUS");
-
-        override fun toString(): String {
-            return value
-        }
-    }
-
-    enum class PublishStatusEnum(private val value: String) {
-        IS_ONGOING("IS_ONGOING"),
-        IS_NOT_ONGOING("IS_NOT_ONGOING");
-
-        override fun toString(): String {
-            return value
-        }
-    }
-
-    enum class ProductionStatusEnum(private val value: String) {
-        IS_IN_PRODUCTION("IS_IN_PRODUCTION"),
-        IS_NOT_IN_PRODUCTION("IS_NOT_IN_PRODUCTION");
-
-        override fun toString(): String {
-            return value
-        }
     }
 }

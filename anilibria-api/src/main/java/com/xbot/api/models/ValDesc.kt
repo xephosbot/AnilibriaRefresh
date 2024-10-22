@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProductionStatus(
-    @SerialName("value") val value: String,
-    @SerialName("description") val description: String
+data class ValDesc<T>(
+    @SerialName("value") val value: T,
+    @SerialName("description") val description: String?
 )

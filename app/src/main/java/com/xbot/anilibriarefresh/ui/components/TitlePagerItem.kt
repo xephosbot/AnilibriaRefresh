@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -47,10 +48,10 @@ fun TitlePagerItem(
     ) { state ->
         when (state) {
             null -> LoadingTitlePagerContent(
-                modifier = modifier.drawFadingEdge()
+                //modifier = modifier.drawFadingEdge()
             )
             else -> TitlePagerItemContent(
-                modifier = modifier.drawFadingEdge(),
+                //modifier = modifier.drawFadingEdge(),
                 title = state,
                 onClick = onClick
             )
@@ -116,23 +117,35 @@ private fun TitlePagerItemLargeLayout(
     title: TitleModel,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.Top
+    Box(
+        modifier = modifier
     ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            PagerContent(title = title)
-            Spacer(modifier = Modifier.height(8.dp))
-            PagerButton(onClick = onClick)
-        }
         PosterImage(
             modifier = Modifier
+                .fillMaxWidth()
                 .height(TitlePagerItemLargeLayoutHeight)
-                .aspectRatio(7f / 10f),
+                .blur(15.dp),
             poster = title.poster
-        )
+        ) {
+            it.override(20, 20)
+        }
+        Row(
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                PagerContent(title = title)
+                Spacer(modifier = Modifier.height(8.dp))
+                PagerButton(onClick = onClick)
+            }
+            PosterImage(
+                modifier = Modifier
+                    .height(TitlePagerItemLargeLayoutHeight)
+                    .aspectRatio(7f / 10f),
+                poster = title.poster
+            )
+        }
     }
 }
 

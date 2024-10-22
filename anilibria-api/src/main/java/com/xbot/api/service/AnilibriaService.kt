@@ -1,19 +1,21 @@
 package com.xbot.api.service
 
 import com.skydoves.sandwich.ApiResponse
-import com.xbot.api.models.AgeRating
-import com.xbot.api.models.Release
-import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
-import com.xbot.api.models.ProductionStatus
-import com.xbot.api.models.PublishStatus
-import com.xbot.api.models.Season
-import com.xbot.api.models.SortingType
-import com.xbot.api.models.Type
+import com.xbot.api.models.Release
+import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.login.LoginRequest
 import com.xbot.api.models.login.LoginResponse
 import com.xbot.api.models.login.LoginSocialNetwork
+import com.xbot.api.models.enums.AgeRatingEnum
+import com.xbot.api.models.enums.ProductionStatusEnum
+import com.xbot.api.models.enums.PublishStatusEnum
+import com.xbot.api.models.enums.ReleaseTypeEnum
+import com.xbot.api.models.enums.SeasonEnum
+import com.xbot.api.models.enums.SocialNetworkEnum
+import com.xbot.api.models.enums.SortingTypeEnum
+import com.xbot.api.models.ValDesc
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -36,7 +38,7 @@ interface AnilibriaService {
 
     @GET("accounts/users/auth/social/{provider}/login")
     suspend fun loginWithSocialNetwork(
-        @Path("provider") provider: String
+        @Path("provider") provider: SocialNetworkEnum
     ): ApiResponse<LoginSocialNetwork>
 
     @GET("accounts/users/auth/social/authenticate")
@@ -66,25 +68,25 @@ interface AnilibriaService {
     ): ApiResponse<Release>
 
     @GET("anime/catalog/references/age-ratings")
-    suspend fun getAgeRatings(): ApiResponse<List<AgeRating>>
+    suspend fun getAgeRatings(): ApiResponse<List<ValDesc<AgeRatingEnum>>>
 
     @GET("anime/catalog/references/genres")
     suspend fun getGenres(): ApiResponse<List<Genre>>
 
     @GET("anime/catalog/references/production-statuses")
-    suspend fun getProductionStatuses(): ApiResponse<List<ProductionStatus>>
+    suspend fun getProductionStatuses(): ApiResponse<List<ValDesc<ProductionStatusEnum>>>
 
     @GET("anime/catalog/references/publish-statuses")
-    suspend fun getPublishStatuses(): ApiResponse<List<PublishStatus>>
+    suspend fun getPublishStatuses(): ApiResponse<List<ValDesc<PublishStatusEnum>>>
 
     @GET("anime/catalog/references/seasons")
-    suspend fun getSeasons(): ApiResponse<List<Season>>
+    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum?>>>
 
     @GET("anime/catalog/references/sorting")
-    suspend fun getSortingTypes(): ApiResponse<List<SortingType>>
+    suspend fun getSortingTypes(): ApiResponse<List<ValDesc<SortingTypeEnum>>>
 
     @GET("anime/catalog/references/types")
-    suspend fun getTypeReleases(): ApiResponse<List<Type>>
+    suspend fun getTypeReleases(): ApiResponse<List<ValDesc<ReleaseTypeEnum>>>
 
     @GET("anime/catalog/references/years")
     suspend fun getYears(): ApiResponse<List<Int>>

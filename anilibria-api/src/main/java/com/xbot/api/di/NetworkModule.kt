@@ -22,6 +22,7 @@ object NetworkModule {
         val json = Json {
             coerceInputValues = true
             ignoreUnknownKeys = true
+            isLenient = true
         }
         return Retrofit.Builder()
             .baseUrl(AnilibriaService.BASE_URL_API)

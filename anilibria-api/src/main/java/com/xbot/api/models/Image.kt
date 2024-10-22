@@ -9,3 +9,9 @@ data class Image(
     @SerialName("thumbnail") val thumbnail: String,
     @SerialName("optimized") val optimized: OptimizedImage
 )
+
+@Serializable
+data class OptimizedImage(
+    @SerialName("preview") val preview: String,
+    @SerialName("thumbnail") val thumbnail: String
+)

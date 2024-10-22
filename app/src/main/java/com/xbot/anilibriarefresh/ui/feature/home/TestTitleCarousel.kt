@@ -2,6 +2,8 @@ package com.xbot.anilibriarefresh.ui.feature.home
 
 import android.graphics.RenderEffect
 import android.graphics.Shader
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

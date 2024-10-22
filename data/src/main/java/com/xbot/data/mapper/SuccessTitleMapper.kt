@@ -15,7 +15,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             type = title.type.description ?: "",
             year = title.year,
             name = title.name.main,
-            season = title.description ?: "",
+            season = title.season.description ?: "",
             description = title.description ?: "",
             poster = PosterModel(
                 src = title.poster.optimized.src,
@@ -25,8 +25,8 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             createdAt = title.createdAt ?: "",
             updatedAt = title.updatedAt ?: "",
             isOngoing = title.isOngoing,
-            ageRating = title.ageRating.label,
-            publishDay = DayOfWeek.fromInt(title.publishDay.value),
+            ageRating = title.ageRating.value.name,
+            publishDay = DayOfWeek.fromInt(title.publishDay.value.value),
             notification = title.notification ?: "",
             episodesTotal = title.episodesTotal,
             isInProduction = title.isInProduction,
@@ -37,7 +37,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                 MemberModel(
                     id = it.id,
                     name = it.nickname,
-                    role = it.role.description
+                    role = it.role.description ?: ""
                 )
             } ?: listOf(),
             episodes = title.episodes?.map {

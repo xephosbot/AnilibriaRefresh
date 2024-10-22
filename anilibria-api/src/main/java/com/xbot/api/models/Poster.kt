@@ -9,3 +9,9 @@ data class Poster(
     @SerialName("thumbnail") val thumbnail: String?,
     @SerialName("optimized") val optimized: OptimizedPoster
 )
+
+@Serializable
+data class OptimizedPoster(
+    @SerialName("src") val src: String?,
+    @SerialName("thumbnail") val thumbnail: String?
+)
