@@ -10,5 +10,7 @@ enum class MemberRoleEnum(val value: String) {
     @SerialName("voicing") VOICING("voicing"),
     @SerialName("editing") EDITING("editing"),
     @SerialName("decorating") DECORATING("decorating"),
-    @SerialName("translating") TRANSLATING("translating")
+    @SerialName("translating") TRANSLATING("translating");
+
+    override fun toString(): String = value
 }
