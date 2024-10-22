@@ -151,7 +151,7 @@ private fun TitleScreenPreview() {
         updatedAt = "2023-08-20T15:08:20+00:00",
         isOngoing = false,
         ageRating = "16+",
-        publishDay = DayOfWeek.fromInt(7),
+        publishDay = DayOfWeek.SUNDAY,
         notification = "Серии выходят по воскресеньям",
         episodesTotal = 34,
         isInProduction = false,

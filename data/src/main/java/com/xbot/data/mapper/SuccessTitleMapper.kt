@@ -1,6 +1,7 @@
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
 import com.xbot.api.models.Release
+import com.xbot.api.models.enums.PublishDayEnum
 import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.EpisodeModel
 import com.xbot.domain.model.MemberModel
@@ -26,32 +27,42 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             updatedAt = title.updatedAt ?: "",
             isOngoing = title.isOngoing,
             ageRating = title.ageRating.value.name,
-            publishDay = DayOfWeek.fromInt(title.publishDay.value.value),
+            publishDay = title.publishDay.value.toDayOfWeek(),
             notification = title.notification ?: "",
             episodesTotal = title.episodesTotal,
             isInProduction = title.isInProduction,
             addedInUsersFavorites = title.addedInUsersFavorites,
             averageDurationOfEpisode = title.averageDurationOfEpisode,
             genres = title.genres?.map { it.name } ?: listOf(),
-            members = title.members?.map {
+            members = title.members?.map { member ->
                 MemberModel(
-                    id = it.id,
-                    name = it.nickname,
-                    role = it.role.description ?: ""
+                    id = member.id,
+                    name = member.nickname,
+                    role = member.role.description ?: ""
                 )
             } ?: listOf(),
-            episodes = title.episodes?.map {
+            episodes = title.episodes?.map { episode ->
                 EpisodeModel(
-                    id = it.id,
-                    name = it.name,
-                    duration = it.duration,
+                    id = episode.id,
+                    name = episode.name,
+                    duration = episode.duration,
                     preview = PosterModel(
-                        src = it.preview.optimized.src,
-                        thumbnail = it.preview.optimized.thumbnail
+                        src = episode.preview.optimized.src,
+                        thumbnail = episode.preview.optimized.thumbnail
                     ),
-                    ordinal = it.ordinal.toInt()
+                    ordinal = episode.ordinal.toInt()
                 )
             } ?: listOf()
         )
+    }
+
+    private fun PublishDayEnum.toDayOfWeek(): DayOfWeek = when(this) {
+        PublishDayEnum.MONDAY -> DayOfWeek.MONDAY
+        PublishDayEnum.TUESDAY -> DayOfWeek.TUESDAY
+        PublishDayEnum.WEDNESDAY -> DayOfWeek.WEDNESDAY
+        PublishDayEnum.THURSDAY -> DayOfWeek.THURSDAY
+        PublishDayEnum.FRIDAY -> DayOfWeek.FRIDAY
+        PublishDayEnum.SATURDAY -> DayOfWeek.SATURDAY
+        PublishDayEnum.SUNDAY -> DayOfWeek.SUNDAY
     }
 }

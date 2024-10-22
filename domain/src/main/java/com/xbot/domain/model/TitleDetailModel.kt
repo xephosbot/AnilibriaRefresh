@@ -24,8 +24,7 @@ data class TitleDetailModel(
     val episodes: List<EpisodeModel>
 )
 
-enum class DayOfWeek(private val value: Int) {
-    NONE(0),
+enum class DayOfWeek(val value: Int) {
     MONDAY(1),
     TUESDAY(2),
     WEDNESDAY(3),
@@ -33,10 +32,4 @@ enum class DayOfWeek(private val value: Int) {
     FRIDAY(5),
     SATURDAY(6),
     SUNDAY(7);
-
-    companion object {
-        fun fromInt(value: Int): DayOfWeek {
-            return entries.find { it.value == value } ?: NONE
-        }
-    }
 }
