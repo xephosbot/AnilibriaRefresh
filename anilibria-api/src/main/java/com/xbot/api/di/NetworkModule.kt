@@ -9,6 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.brotli.BrotliInterceptor
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
@@ -18,7 +21,19 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideOkHttpClient(): OkHttpClient {
+        val logging = HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BASIC)
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(BrotliInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val json = Json {
             coerceInputValues = true
             ignoreUnknownKeys = true
@@ -28,6 +43,7 @@ object NetworkModule {
             .baseUrl(AnilibriaService.BASE_URL_API)
             .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
             .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
+            .client(okHttpClient)
             .build()
     }
 
