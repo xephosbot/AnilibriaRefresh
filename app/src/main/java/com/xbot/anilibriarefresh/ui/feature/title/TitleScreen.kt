@@ -1,8 +1,11 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,21 +15,32 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +50,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.xbot.anilibriarefresh.ui.components.ButtonComponent
 import com.xbot.anilibriarefresh.ui.components.PosterImage
+import com.xbot.anilibriarefresh.ui.components.TextEnding
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
@@ -47,6 +63,7 @@ import com.xbot.domain.model.EpisodeModel
 import com.xbot.domain.model.MemberModel
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleDetailModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun TitleScreen(
@@ -102,57 +119,51 @@ private fun TitleScreenContent(
             title = title,
             fadeGradient = fadeGradient
         )
-        
+
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = title.name,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
             )
             TitleShortInfo(title = title)
             Spacer(modifier.padding(10.dp))
 
             Text(
-                text = "Описание",
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 4.dp),
-                fontSize = 18.sp,
+                text = "Описание",
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
 
-            Text(
+            DescriptionBox(
+                modifier = modifier,
                 text = title.description,
-                modifier = modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 16.dp, end = 16.dp)
-            )
-            Text(
-                text = title.description,
-                modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 16.dp, end = 16.dp)
-            )
-            Text(
-                text = title.description,
-                modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 16.dp, end = 16.dp)
-            )
-        }
+                scrollState = scrollState)
 
+            Spacer(modifier = Modifier.padding(16.dp))
+
+            Text(text = "Эпизоды")
+//            LazyColumn(contentPadding = PaddingValues(16.dp)) {
+//                items(title.episodes) { item ->
+//                    EpisodeItem(item = item)
+//                }
+//            }
+        }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun BoxTitleScreen(
+private fun BoxTitleScreen(
     modifier: Modifier = Modifier,
     title: TitleDetailModel,
     fadeGradient: Brush
@@ -178,9 +189,11 @@ fun BoxTitleScreen(
 }
 
 @Composable
-fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailModel) {
+private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailModel) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -197,25 +210,83 @@ fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailModel) {
                 modifier = Modifier.size(18.dp)
             )
         }
-        Row {
+        Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
             Text(
                 text = title.year.toString() + ", "
             )
             Spacer(modifier = Modifier.padding())
-            title.genres.forEachIndexed { index, item  ->
-                Text(
-                    text = item
-                )
-                if (index != title.genres.size - 1) {
-                    Text(", ")
+            LazyRow(modifier = Modifier.width(200.dp)) {
+                title.genres.forEachIndexed { index, item ->
+                    item {
+                        Text(
+                            text = if (index != title.genres.size - 1) "$item, " else item
+                        )
+                    }
                 }
             }
         }
         Row {
-            Text(text = title.episodesTotal.toString() + " эпизода, ")
-            Text(text = title.type + ", ")
+            TextEnding(episodes = title.episodesTotal ?: 0, str = ", ")
+            Text(text = "${title.type}, ")
             Text(text = title.ageRating)
         }
+    }
+}
+
+@Composable
+private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollState: ScrollState) {
+    var expanded by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(modifier = modifier.padding(start = 16.dp, end = 16.dp)) {
+        LaunchedEffect(expanded) {
+            coroutineScope.launch {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+        }
+        AnimatedVisibility(
+            visible = true,
+//            enter = slideInVertically(initialOffsetY = {it}),
+//            exit = slideOutVertically(targetOffsetY = {it})
+        ) {
+            Text(text = text,
+                maxLines = if (expanded) Int.MAX_VALUE else 3
+            )
+        }
+        Spacer(modifier = Modifier.padding(4.dp))
+        ButtonComponent(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .border(
+                    width = 1.dp,
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color.LightGray
+                ),
+            onClick = {
+                expanded = !expanded
+            },
+            text = if (expanded) "Скрыть описание" else "Показать описание",
+        )
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun EpisodeItem(modifier: Modifier = Modifier,item: EpisodeModel) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
+    ) {
+//        PosterImage(
+//            modifier = Modifier.height(70.dp).width(120.dp),
+//            poster = item.preview
+//            )
+        Box(modifier = Modifier.height(70.dp).width(120.dp))
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(text = item.ordinal.toString())
+        Text(text = item.name ?: "Имя не найдено")
     }
 }
 
