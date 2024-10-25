@@ -6,8 +6,12 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +35,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,6 +49,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -103,6 +111,7 @@ private fun TitleScreenContent(
     fadeGradient: Brush
 ) {
     val scrollState = rememberScrollState()
+    val flowRowSize = remember { mutableIntStateOf(Int.MIN_VALUE) }
 
     Column(
         modifier = modifier
@@ -134,9 +143,9 @@ private fun TitleScreenContent(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
             )
-            TitleShortInfo(title = title)
+            TitleShortInfo(title = title, flowRowSize = flowRowSize)
             Spacer(modifier.padding(10.dp))
-
+            //TODO: вынести текст в ресурсы
             Text(
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 4.dp),
@@ -148,16 +157,24 @@ private fun TitleScreenContent(
             DescriptionBox(
                 modifier = modifier,
                 text = title.description,
-                scrollState = scrollState)
+                scrollState = scrollState,
+                flowRowSize = flowRowSize
+                )
 
             Spacer(modifier = Modifier.padding(16.dp))
-
-            Text(text = "Эпизоды")
-//            LazyColumn(contentPadding = PaddingValues(16.dp)) {
-//                items(title.episodes) { item ->
-//                    EpisodeItem(item = item)
-//                }
-//            }
+            //TODO: вынести текст в ресурсы
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 16.dp),
+                text = "Эпизоды",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            LazyRow {
+                items(title.episodes) { item ->
+                    EpisodeItem(item = item) {}
+                }
+            }
         }
     }
 }
@@ -189,8 +206,13 @@ private fun BoxTitleScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailModel) {
+private fun TitleShortInfo(
+    modifier: Modifier = Modifier,
+    title: TitleDetailModel,
+    flowRowSize: MutableIntState
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -201,6 +223,9 @@ private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailMode
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                text = "${title.year}, "
+            )
+            Text(
                 text = title.addedInUsersFavorites.toString()
             )
             Spacer(modifier = Modifier.padding(1.dp))
@@ -210,19 +235,20 @@ private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailMode
                 tint = buttonPagerContentColorLightRed,
                 modifier = Modifier.size(18.dp)
             )
+            Spacer(modifier = Modifier.padding(5.dp))
         }
         Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-            Text(
-                text = title.year.toString() + ", "
-            )
-            Spacer(modifier = Modifier.padding())
-            LazyRow(modifier = Modifier.width(200.dp)) {
+            FlowRow(modifier = Modifier
+                .width(250.dp)
+                .onGloballyPositioned { coordinates ->
+                    flowRowSize.intValue = coordinates.size.height
+                },
+                horizontalArrangement = Arrangement.Center) {
                 title.genres.forEachIndexed { index, item ->
-                    item {
-                        Text(
-                            text = if (index != title.genres.size - 1) "$item, " else item
-                        )
-                    }
+                    Text(
+                        text = if (index != title.genres.size - 1) "$item, " else item
+                    )
+
                 }
             }
         }
@@ -235,18 +261,25 @@ private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailMode
 }
 
 @Composable
-private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollState: ScrollState) {
+private fun DescriptionBox(
+    modifier: Modifier = Modifier,
+    text: String,
+    scrollState: ScrollState,
+    flowRowSize: MutableIntState
+) {
     var expanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val textLayoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
 
     Column(modifier = modifier.padding(start = 16.dp, end = 16.dp)) {
-
-        LaunchedEffect(expanded) {
-            coroutineScope.launch {
-                textLayoutResult.value?.let { layoutResult ->
-                    val scrollTo = layoutResult.size.height
-                    scrollState.animateScrollTo(scrollTo)
+        //TODO: переделать
+        if (expanded) {
+            LaunchedEffect(true) {
+                coroutineScope.launch {
+                    textLayoutResult.value?.let { layoutResult ->
+                        val scrollTo = layoutResult.size.height + flowRowSize.intValue
+                        scrollState.animateScrollTo(scrollTo)
+                    }
                 }
             }
         }
@@ -275,6 +308,7 @@ private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollSt
             onClick = {
                 expanded = !expanded
             },
+            //TODO: добавить в ресурсы
             text = if (expanded) "Скрыть описание" else "Показать описание",
         )
     }
@@ -282,20 +316,32 @@ private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollSt
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun EpisodeItem(modifier: Modifier = Modifier,item: EpisodeModel) {
+fun EpisodeItem(
+    modifier: Modifier = Modifier,
+    item: EpisodeModel,
+    onClick: () -> Unit
+) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(8.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .width(400.dp)
+            .padding(8.dp)
     ) {
-//        PosterImage(
-//            modifier = Modifier.height(70.dp).width(120.dp),
-//            poster = item.preview
-//            )
-        Box(modifier = Modifier.height(70.dp).width(120.dp))
+        PosterImage(
+            modifier = Modifier
+                .height(100.dp)
+                .width(150.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            poster = item.preview
+            )
         Spacer(modifier = Modifier.padding(5.dp))
-        Text(text = item.ordinal.toString())
-        Text(text = item.name ?: "Имя не найдено")
+        Text(
+            text = "${item.ordinal}. ${item.name ?: "Имя не найдено"}",
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp
+        )
     }
 }
 
