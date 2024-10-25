@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -237,11 +238,16 @@ private fun TitleShortInfo(modifier: Modifier = Modifier, title: TitleDetailMode
 private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollState: ScrollState) {
     var expanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val textLayoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
 
     Column(modifier = modifier.padding(start = 16.dp, end = 16.dp)) {
+
         LaunchedEffect(expanded) {
             coroutineScope.launch {
-                scrollState.animateScrollTo(scrollState.maxValue)
+                textLayoutResult.value?.let { layoutResult ->
+                    val scrollTo = layoutResult.size.height
+                    scrollState.animateScrollTo(scrollTo)
+                }
             }
         }
         AnimatedVisibility(
@@ -250,7 +256,10 @@ private fun DescriptionBox(modifier: Modifier = Modifier, text: String, scrollSt
 //            exit = slideOutVertically(targetOffsetY = {it})
         ) {
             Text(text = text,
-                maxLines = if (expanded) Int.MAX_VALUE else 3
+                maxLines = if (expanded) Int.MAX_VALUE else 3,
+                onTextLayout = { layoutResult ->
+                    textLayoutResult.value = layoutResult
+                }
             )
         }
         Spacer(modifier = Modifier.padding(4.dp))
