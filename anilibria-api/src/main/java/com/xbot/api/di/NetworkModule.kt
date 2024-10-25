@@ -1,8 +1,10 @@
 package com.xbot.api.di
 
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
+import com.xbot.api.BuildConfig
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.api.service.AnilibriaService
+import com.xbot.api.utils.conditional
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +28,9 @@ object NetworkModule {
             setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
         return OkHttpClient.Builder()
-            .addInterceptor(logging)
+            .conditional(BuildConfig.DEBUG) {
+                addInterceptor(logging)
+            }
             .addInterceptor(BrotliInterceptor)
             .build()
     }
@@ -64,4 +68,6 @@ object NetworkModule {
     fun provideBaseUrl(): String {
         return AnilibriaService.BASE_URL
     }
+
+
 }

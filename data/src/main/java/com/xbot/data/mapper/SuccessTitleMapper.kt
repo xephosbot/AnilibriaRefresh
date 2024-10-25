@@ -3,6 +3,7 @@ package com.xbot.data.mapper
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
 import com.xbot.api.models.Release
+import com.xbot.api.models.enums.AgeRatingEnum
 import com.xbot.api.models.enums.PublishDayEnum
 import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.EpisodeModel
@@ -28,7 +29,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             createdAt = title.createdAt ?: "",
             updatedAt = title.updatedAt ?: "",
             isOngoing = title.isOngoing,
-            ageRating = title.ageRating.value.name,
+            ageRating = title.ageRating.value.toLabelString(),
             publishDay = title.publishDay.value.toDayOfWeek(),
             notification = title.notification ?: "",
             episodesTotal = title.episodesTotal,
@@ -56,6 +57,14 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                 )
             } ?: listOf()
         )
+    }
+
+    private fun AgeRatingEnum.toLabelString(): String = when(this) {
+        AgeRatingEnum.R0_PLUS -> "0+"
+        AgeRatingEnum.R6_PLUS -> "6+"
+        AgeRatingEnum.R12_PLUS -> "12+"
+        AgeRatingEnum.R16_PLUS -> "16+"
+        AgeRatingEnum.R18_PLUS -> "18+"
     }
 
     private fun PublishDayEnum.toDayOfWeek(): DayOfWeek = when(this) {
