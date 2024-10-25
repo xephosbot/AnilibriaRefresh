@@ -8,9 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
 import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
-import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
+import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationBar
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationRail
+import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.anilibriarefresh.ui.components.AnilibriaTopAppBar
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -35,7 +36,11 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                         state = hazeState,
                         style = hazeStyle
                     ),
-                navController = navController
+                navController = navController,
+                //TODO: Delete it after testing
+                onNavigationClick = {
+                    navController.navigate(Route.Player)
+                }
             )
         },
         navigationSuite = {
