@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
+import com.xbot.anilibriarefresh.ui.AnilibriaPlayerScreen
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
@@ -70,6 +71,10 @@ fun AnilibriaNavGraph(
         }
         composable<Route.Profile> {
             FavoriteScreen()
+        }
+        //TODO: Just for testing
+        composable<Route.Player> {
+            AnilibriaPlayerScreen()
         }
     }
 }
