@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
-import com.xbot.media.service.PlayerProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,11 +27,5 @@ object MediaModule {
         player: Player
     ): MediaSession {
         return MediaSession.Builder(context, player).build()
-    }
-
-    @Provides
-    @Singleton
-    fun providePlayerProvider(@ApplicationContext context: Context): PlayerProvider {
-        return PlayerProvider(context)
     }
 }

@@ -31,11 +31,12 @@
         <activity
             android:name=".ui.PlayerActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/NightAdjusted.Theme.AnilibriaRefresh">
         </activity>
 
         <service
-            android:name="com.xbot.media.service.PlaybackService"
+            android:name=".service.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true"
             android:permission="android.permission.FOREGROUND_SERVICE">

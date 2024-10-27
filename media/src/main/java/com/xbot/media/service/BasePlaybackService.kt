@@ -1,5 +1,6 @@
 package com.xbot.media.service
 
+import android.app.PendingIntent
 import android.content.Intent
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -7,9 +8,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PlaybackService : MediaSessionService() {
+open class BasePlaybackService : MediaSessionService() {
     @Inject
     lateinit var mediaSession: MediaSession
+
+    protected open fun getSingleTopActivity(): PendingIntent? = null
+
+    protected open fun getBackStackedActivity(): PendingIntent? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        getSingleTopActivity()?.let { mediaSession.setSessionActivity(it) }
+    }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         val player = mediaSession.player
@@ -39,10 +49,9 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onDestroy() {
-        mediaSession.run {
-            player.release()
-            release()
-        }
+        getBackStackedActivity()?.let { mediaSession.setSessionActivity(it) }
+        mediaSession.player.release()
+        mediaSession.release()
         super.onDestroy()
     }
 
