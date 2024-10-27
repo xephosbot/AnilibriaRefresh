@@ -31,6 +31,7 @@ open class BasePlaybackService : MediaSessionService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         val player = mediaSession.player
         if (intent?.action == STOP_ACTION) {
             // Stop the foreground service and allow it to be stopped

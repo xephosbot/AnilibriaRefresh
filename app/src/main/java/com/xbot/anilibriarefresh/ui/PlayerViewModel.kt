@@ -45,15 +45,15 @@ class PlayerViewModel @Inject constructor(
             .setMimeType(MimeTypes.APPLICATION_M3U8)
             .build()
 
-        addMediaItem(mediaItem)
+        if (mediaItemCount == 0) addMediaItem(mediaItem)
         prepare()
         play()
     }
 
     companion object {
-        private const val TEST_METADATA_TITLE = "Истории Ран. Часть 3: Холодная кровь"
+        private const val TEST_METADATA_TITLE = "Дандадан"
         private const val TEST_METADATA_SUBTITLE = "Серия 1"
-        private const val TEST_ARTWORK_URL = "https://anilibria.top/storage/releases/posters/9000/r0mP183P0RBXF6POpeZbiqg8lXnGZkwb.webp"
-        private const val TEST_HLS_URI = "https://cache-rfn.libria.fun/videos/media/ts/9000/1/1080/7f3c1729ebd24b93d4e0918510004606.m3u8?isWithAds=1&countryIso=RU&isAuthorized=0"
+        private const val TEST_ARTWORK_URL = "https://anilibria.top/storage/releases/posters/9789/X23LsN6aamdmQlFsKA6Er2sYnwcmoMzQ.webp"
+        private const val TEST_HLS_URI = "https://cache-rfn.libria.fun/videos/media/ts/9789/1/1080/572da4181b9e639b2728b5e34ec484b9.m3u8?isWithAds=1&countryIso=RU&isAuthorized=0"
     }
 }
