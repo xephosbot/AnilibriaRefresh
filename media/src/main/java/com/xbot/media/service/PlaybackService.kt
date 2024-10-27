@@ -20,6 +20,20 @@ class PlaybackService : MediaSessionService() {
         stopSelf()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val player = mediaSession.player
+        if (intent?.action == STOP_ACTION) {
+            // Stop the foreground service and allow it to be stopped
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            player.stop()
+            stopSelf()
+        } else {
+            // Start the foreground service
+            // Perform other necessary operations
+        }
+        return START_STICKY
+    }
+
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
         return mediaSession
     }
@@ -30,5 +44,9 @@ class PlaybackService : MediaSessionService() {
             release()
         }
         super.onDestroy()
+    }
+
+    companion object {
+        const val STOP_ACTION = "STOP_SERVICE"
     }
 }

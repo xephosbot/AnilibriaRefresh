@@ -1,7 +1,9 @@
 package com.xbot.anilibriarefresh.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.theme.AnilibriaTheme
+import com.xbot.media.service.PlaybackService
 import com.xbot.media.ui.PlayerSurface
 import com.xbot.media.ui.SURFACE_TYPE_SURFACE_VIEW
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +50,13 @@ class PlayerActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+            val stopIntent = Intent(this@PlayerActivity, PlaybackService::class.java)
+            stopIntent.action = PlaybackService.STOP_ACTION
+            startService(stopIntent)
+            finish()
         }
     }
 }
