@@ -28,8 +28,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.PlayerActivity"
+            android:exported="true"
+            android:theme="@style/NightAdjusted.Theme.AnilibriaRefresh">
+        </activity>
+
         <service
-            android:name=".media.PlaybackService"
+            android:name="com.xbot.media.service.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true"
             android:permission="android.permission.FOREGROUND_SERVICE">

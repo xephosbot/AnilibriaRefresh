@@ -39,6 +39,7 @@ dependencies {
     // Project-level dependencies
     implementation(projects.domain)
     implementation(projects.data)
+    implementation(projects.media)
     implementation(projects.anilibriaApi)
     baselineProfile(projects.baselineprofile)
 

@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.media
+package com.xbot.media
 
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-suspend fun <T> ListenableFuture<T>.await(): T {
+internal suspend fun <T> ListenableFuture<T>.await(): T {
     try {
         if (isDone) return Uninterruptibles.getUninterruptibly(this)
     } catch (e: ExecutionException) {

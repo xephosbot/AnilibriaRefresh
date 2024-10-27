@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.media.ui
+package com.xbot.media.ui
 
 import android.view.Surface
 import androidx.annotation.IntDef

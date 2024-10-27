@@ -1,14 +1,15 @@
 package com.xbot.anilibriarefresh.ui
 
+import android.content.Intent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
 import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
-import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationBar
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationRail
 import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
@@ -27,6 +28,8 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
     val hazeState = remember { HazeState() }
     val hazeStyle = HazeMaterials.thin(MaterialTheme.colorScheme.surface)
 
+    val context = LocalContext.current
+
     AnilibriaNavigationSuiteScaffold(
         modifier = modifier,
         topBar = {
@@ -39,7 +42,10 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                 navController = navController,
                 //TODO: Delete it after testing
                 onNavigationClick = {
-                    navController.navigate(Route.Player)
+                    val intent = Intent(context, PlayerActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
                 }
             )
         },

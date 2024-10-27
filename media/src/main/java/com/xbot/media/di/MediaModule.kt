@@ -1,9 +1,10 @@
-package com.xbot.anilibriarefresh.di
+package com.xbot.media.di
 
 import android.content.Context
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.xbot.anilibriarefresh.media.PlaybackController
+import androidx.media3.session.MediaSession
+import com.xbot.media.service.PlayerProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object MediaModule {
     @Provides
     @Singleton
     fun providePlayer(@ApplicationContext context: Context): Player {
@@ -22,7 +23,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMediaController(@ApplicationContext context: Context): PlaybackController {
-        return PlaybackController(context)
+    fun provideMediaSession(
+        @ApplicationContext context: Context,
+        player: Player
+    ): MediaSession {
+        return MediaSession.Builder(context, player).build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePlayerProvider(@ApplicationContext context: Context): PlayerProvider {
+        return PlayerProvider(context)
     }
 }
