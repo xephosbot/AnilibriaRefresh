@@ -1,5 +1,6 @@
 package com.xbot.media.ui
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.text.CueGroup
+import androidx.media3.common.util.UnstableApi
 
 /**
  * Determines when the buffering indicator is shown.
@@ -83,6 +85,7 @@ enum class ShowBuffering {
  * @param controller The controller. Since a controller is always a subject to be customized,
  * default is null. The [Media] only provides logic for controller visibility controlling.
  */
+@OptIn(UnstableApi::class)
 @Composable
 fun Media(
     state: MediaState,
@@ -113,7 +116,9 @@ fun Media(
     LaunchedEffect(Unit) {
         snapshotFlow { state.contentAspectRatioRaw }
             .collect { contentAspectRatioRaw ->
-                state.contentAspectRatio = contentAspectRatioRaw
+                if (contentAspectRatioRaw != 0f) {
+                    state.contentAspectRatio = contentAspectRatioRaw
+                }
             }
     }
 
@@ -143,10 +148,10 @@ fun Media(
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .run {
-                    if (state.contentAspectRatio <= 0) fillMaxSize()
-                    else resize(state.contentAspectRatio, resizeMode)
-                }
+                .then(
+                    if (state.contentAspectRatio <= 0) Modifier.fillMaxSize()
+                    else Modifier.resize(state.contentAspectRatio, resizeMode)
+                )
         ) {
             PlayerSurface(
                 modifier = Modifier

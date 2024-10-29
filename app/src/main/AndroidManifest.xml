@@ -32,8 +32,7 @@
             android:name=".ui.PlayerActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/NightAdjusted.Theme.AnilibriaRefresh">
-        </activity>
+            android:theme="@style/NightAdjusted.Theme.AnilibriaRefresh" />
 
         <service
             android:name=".service.PlaybackService"

@@ -62,7 +62,13 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
 
                 NavigationSuiteType.NavigationRail -> AnilibriaNavigationRail(
                     navController = navController,
-                    navContentPosition = contentPosition
+                    navContentPosition = contentPosition,
+                    onNavigationClick = {
+                        val intent = Intent(context, PlayerActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        context.startActivity(intent)
+                    }
                 )
             }
         }

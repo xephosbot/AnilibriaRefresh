@@ -75,7 +75,8 @@ import kotlin.math.roundToInt
 fun AnilibriaNavigationRail(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP
+    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP,
+    onNavigationClick: () -> Unit = {}
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -89,7 +90,7 @@ fun AnilibriaNavigationRail(
             IconButton(
                 onClick = {
                     when (isTopLevel) {
-                        true -> {}
+                        true -> onNavigationClick()
                         else -> navController.navigateUp()
                     }
                 },

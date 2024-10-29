@@ -4,8 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,25 +14,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.movableContentOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +45,7 @@ import com.xbot.anilibriarefresh.ui.theme.AnilibriaTheme
 import com.xbot.media.service.BasePlaybackService
 import com.xbot.media.ui.Media
 import com.xbot.media.ui.MediaState
+import com.xbot.media.ui.PlayerController
 import com.xbot.media.ui.ShowBuffering
 import com.xbot.media.ui.rememberMediaState
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,16 +64,15 @@ class PlayerActivity : ComponentActivity() {
             AnilibriaTheme {
                 val player by viewModel.controller.collectAsStateWithLifecycle()
 
-                FullscreenToggle(
+                FullscreenPlayer(
                     player = player
                 )
             }
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun FullscreenToggle(
+    private fun FullscreenPlayer(
         player: Player?
     ) {
         val configuration = LocalConfiguration.current
@@ -85,76 +81,85 @@ class PlayerActivity : ComponentActivity() {
         HideSystemBars(isLandscape)
 
         val mediaState = rememberMediaState(player)
-        val mediaContent = remember {
-            // TODO movableContentOf here doesn't avoid Media from recreating its surface view when
-            // screen rotation changed. Seems like a bug of Compose.
-            // see: https://kotlinlang.slack.com/archives/CJLTWPH7S/p1654734644676989
-            movableContentOf { isLandscape: Boolean, modifier: Modifier ->
-                MediaContent(mediaState, isLandscape, modifier)
-            }
-        }
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Fullscreen Toggle") },
-                    navigationIcon = {
-                        IconButton(onClick = { closeActivity() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
-                        }
-                    }
-                )
-            }
-        ) { padding ->
-            if (!isLandscape) {
-                mediaContent(
-                    false,
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
-            }
-        }
-        if (isLandscape) {
-            mediaContent(
-                true,
-                Modifier
+
+        CompositionLocalProvider(LocalContentColor provides Color.White) {
+            MediaContent(
+                modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black)
+                    then(
+                        if (!isLandscape) Modifier.systemBarsPadding()
+                        else Modifier
+                    ),
+                mediaState = mediaState,
+                isLandscape = isLandscape,
             )
         }
     }
 
     @Composable
     private fun MediaContent(
+        modifier: Modifier = Modifier,
         mediaState: MediaState,
-        isLandscape: Boolean,
-        modifier: Modifier = Modifier
+        isLandscape: Boolean
     ) {
         val activity = LocalContext.current.findActivity()!!
         val enterFullscreen = {
-            activity.requestedOrientation = SCREEN_ORIENTATION_USER_LANDSCAPE
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
         }
         val exitFullscreen = {
-            activity.requestedOrientation = SCREEN_ORIENTATION_USER_PORTRAIT
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
         }
-        Box(modifier) {
+        Box(modifier = modifier) {
             Media(
-                mediaState,
                 modifier = Modifier.fillMaxSize(),
+                state = mediaState,
                 showBuffering = ShowBuffering.Always,
                 buffering = {
                     Box(Modifier.fillMaxSize(), Alignment.Center) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = LocalContentColor.current)
                     }
+                },
+                controller = { state, isBuffering ->
+                    PlayerController(
+                        mediaState = state,
+                        isBuffering = isBuffering,
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    closeActivity()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        bottomActions = {
+                            IconButton(
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
+                            IconButton(
+                                onClick = if (isLandscape) exitFullscreen else enterFullscreen
+                            ) {
+                                Icon(
+                                    imageVector = when(isLandscape) {
+                                        true -> Icons.Default.FullscreenExit
+                                        else -> Icons.Default.Fullscreen
+                                    },
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
                 }
             )
-            Button(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                onClick = if (isLandscape) exitFullscreen else enterFullscreen
-            ) {
-                Text(text = if (isLandscape) "Exit Fullscreen" else "Enter Fullscreen")
-            }
         }
 
         BackHandler(isLandscape) {
@@ -163,6 +168,10 @@ class PlayerActivity : ComponentActivity() {
 
         BackHandler(!isLandscape) {
             closeActivity()
+        }
+
+        SideEffect {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
         }
     }
 
@@ -200,6 +209,14 @@ class PlayerActivity : ComponentActivity() {
         }
     }
 
+    private fun closeActivity() {
+        Intent(this@PlayerActivity, PlaybackService::class.java).apply {
+            action = BasePlaybackService.STOP_ACTION
+            startService(this)
+        }
+        finish()
+    }
+
     private fun Context.findActivity(): Activity? {
         var context = this
         while (context is ContextWrapper) {
@@ -207,12 +224,5 @@ class PlayerActivity : ComponentActivity() {
             context = context.baseContext
         }
         return null
-    }
-
-    private fun closeActivity() {
-        val stopIntent = Intent(this@PlayerActivity, PlaybackService::class.java)
-        stopIntent.action = BasePlaybackService.STOP_ACTION
-        startService(stopIntent)
-        finish()
     }
 }
