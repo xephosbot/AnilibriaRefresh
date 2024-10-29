@@ -278,6 +278,8 @@ private fun MediaMetadata?.toMediaInfo(): MediaInfo = MediaInfo(
 
 @SuppressLint("DefaultLocale")
 private fun Long.toTime(): String {
+    if (this < 0) return "--:--"
+
     val totalSeconds = this / 1000
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
