@@ -5,4 +5,9 @@
     <string name="text_favorites_btn">Всё</string>
     <string name="text_pager_button">Смотреть с 1 эпизода</string>
     <string name="content_desc_btn_component">Кнопка компонент</string>
+    <string name="episodes_title">Эпизоды</string>
+    <string name="hide_text_button">Скрыть описание</string>
+    <string name="show_text_button">Показать описание</string>
+    <string name="description_title">Описание</string>
+    <string name="name_episode_not_found_text">Имя не найдено</string>
 </resources>

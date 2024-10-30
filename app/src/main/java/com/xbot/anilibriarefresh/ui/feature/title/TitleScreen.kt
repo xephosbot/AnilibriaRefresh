@@ -1,14 +1,11 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -16,16 +13,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -45,11 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,9 +54,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.components.ButtonComponent
 import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.components.TextEnding
+import com.xbot.anilibriarefresh.ui.feature.title.components.BoxTitlePoster
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
@@ -101,107 +98,134 @@ fun TitleScreen(
     }
 }
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     title: TitleDetailModel,
     onClick: () -> Unit,
     paddingValues: PaddingValues,
-    fadeGradient: Brush
+    fadeGradient: Brush,
 ) {
     val scrollState = rememberScrollState()
     val flowRowSize = remember { mutableIntStateOf(Int.MIN_VALUE) }
 
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .padding(paddingValues = paddingValues)
-            .verticalScroll(scrollState)
     ) {
 
-        BoxTitleScreen(
-            modifier = Modifier.graphicsLayer {
-                alpha = 1f-(scrollState.value.toFloat() / size.height).coerceIn(0f, 1f)
-                translationY = scrollState.value.toFloat()
-            },
+        posterTitle(
             title = title,
-            fadeGradient = fadeGradient
+            fadeGradient = fadeGradient,
+            scrollState = scrollState
         )
-
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-        ) {
-            Text(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                text = title.name,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-            )
-            TitleShortInfo(title = title, flowRowSize = flowRowSize)
-            Spacer(modifier.padding(10.dp))
-            //TODO: вынести текст в ресурсы
-            Text(
-                modifier = Modifier
-                    .padding(start = 16.dp, bottom = 4.dp),
-                text = "Описание",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            DescriptionBox(
-                modifier = modifier,
-                text = title.description,
-                scrollState = scrollState,
-                flowRowSize = flowRowSize
+        shortInfoTitle(
+            title = title,
+            flowRowSize = flowRowSize
+        )
+        description(
+            title = title,
+            scrollState = scrollState,
+            flowRowSize = flowRowSize
+        )
+        episodes()
+        verticalItems(
+            items = title.episodes
+        ) { title ->
+            if (title != null) {
+                EpisodeItem(
+                    item = title,
+                    onClick = onClick
                 )
-
-            Spacer(modifier = Modifier.padding(16.dp))
-            //TODO: вынести текст в ресурсы
-            Text(
-                modifier = Modifier
-                    .padding(start = 16.dp, bottom = 16.dp),
-                text = "Эпизоды",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            LazyRow {
-                items(title.episodes) { item ->
-                    EpisodeItem(item = item) {}
-                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-private fun BoxTitleScreen(
-    modifier: Modifier = Modifier,
+private fun LazyListScope.posterTitle(
     title: TitleDetailModel,
-    fadeGradient: Brush
+    fadeGradient: Brush,
+    scrollState: ScrollState
 ) {
-    Box(
-        modifier = modifier
-            .wrapContentSize()
-            .clipToBounds()
+    item(
+        contentType = { "ImageTitle" }
     ) {
-        PosterImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(7f / 10f),
-            poster = title.poster
+        BoxTitlePoster(
+            title = title,
+            fadeGradient = fadeGradient,
+            scrollState = scrollState
         )
-        Box(
+    }
+}
+
+private fun LazyListScope.shortInfoTitle(
+    title: TitleDetailModel,
+    flowRowSize: MutableIntState
+) {
+    item(
+        contentType = { "ShortInfoTitle" }
+    ) {
+        Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(7f / 10f)
-                .background(fadeGradient)
+                .padding(16.dp),
+            text = title.name,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        )
+        TitleShortInfo(title = title, flowRowSize = flowRowSize)
+        Spacer(Modifier.padding(10.dp))
+        Text(
+            modifier = Modifier
+                .padding(start = 16.dp, bottom = 4.dp),
+            text = stringResource(R.string.description_title),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+private fun LazyListScope.episodes() {
+    item(
+        contentType = { "EpisodeText" }
+    ) {
+        Spacer(modifier = Modifier.padding(16.dp))
+        Text(
+            modifier = Modifier
+                .padding(start = 16.dp),
+            text = stringResource(R.string.episodes_title),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+private fun LazyListScope.verticalItems(
+    items: List<EpisodeModel>,
+    itemContent: @Composable LazyItemScope.(EpisodeModel?) -> Unit
+) {
+    items(
+        count = items.size - 1
+    ) {
+        itemContent(items[it])
+    }
+}
+
+private fun LazyListScope.description(
+    title: TitleDetailModel,
+    scrollState: ScrollState,
+    flowRowSize: MutableIntState
+) {
+    item(
+        contentType = { "DescriptionBox" }
+    ) {
+        DescriptionBox(
+            text = title.description,
+            scrollState = scrollState,
+            flowRowSize = flowRowSize
         )
     }
 }
@@ -238,17 +262,18 @@ private fun TitleShortInfo(
             Spacer(modifier = Modifier.padding(5.dp))
         }
         Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-            FlowRow(modifier = Modifier
-                .width(250.dp)
-                .onGloballyPositioned { coordinates ->
-                    flowRowSize.intValue = coordinates.size.height
-                },
-                horizontalArrangement = Arrangement.Center) {
+            FlowRow(
+                modifier = Modifier
+                    .width(250.dp)
+                    .onGloballyPositioned { coordinates ->
+                        flowRowSize.intValue = coordinates.size.height
+                    },
+                horizontalArrangement = Arrangement.Center
+            ) {
                 title.genres.forEachIndexed { index, item ->
                     Text(
                         text = if (index != title.genres.size - 1) "$item, " else item
                     )
-
                 }
             }
         }
@@ -273,28 +298,22 @@ private fun DescriptionBox(
 
     Column(modifier = modifier.padding(start = 16.dp, end = 16.dp)) {
         //TODO: переделать
-        if (expanded) {
-            LaunchedEffect(true) {
-                coroutineScope.launch {
-                    textLayoutResult.value?.let { layoutResult ->
-                        val scrollTo = layoutResult.size.height + flowRowSize.intValue
-                        scrollState.animateScrollTo(scrollTo)
-                    }
-                }
+//        if (expanded) {
+//            LaunchedEffect(true) {
+//                coroutineScope.launch {
+//                    textLayoutResult.value?.let { layoutResult ->
+//                        val scrollTo = layoutResult.size.height + flowRowSize.intValue
+//                        scrollState.animateScrollTo(scrollTo)
+//                    }
+//                }
+//            }
+//        }
+        Text(text = text,
+            maxLines = if (expanded) Int.MAX_VALUE else 3,
+            onTextLayout = { layoutResult ->
+                textLayoutResult.value = layoutResult
             }
-        }
-        AnimatedVisibility(
-            visible = true,
-//            enter = slideInVertically(initialOffsetY = {it}),
-//            exit = slideOutVertically(targetOffsetY = {it})
-        ) {
-            Text(text = text,
-                maxLines = if (expanded) Int.MAX_VALUE else 3,
-                onTextLayout = { layoutResult ->
-                    textLayoutResult.value = layoutResult
-                }
-            )
-        }
+        )
         Spacer(modifier = Modifier.padding(4.dp))
         ButtonComponent(
             modifier = Modifier
@@ -308,8 +327,9 @@ private fun DescriptionBox(
             onClick = {
                 expanded = !expanded
             },
-            //TODO: добавить в ресурсы
-            text = if (expanded) "Скрыть описание" else "Показать описание",
+            text = stringResource(
+                if (expanded) R.string.hide_text_button else R.string.show_text_button
+            ),
         )
     }
 }
@@ -338,7 +358,7 @@ fun EpisodeItem(
             )
         Spacer(modifier = Modifier.padding(5.dp))
         Text(
-            text = "${item.ordinal}. ${item.name ?: "Имя не найдено"}",
+            text = "${item.ordinal}. ${item.name ?: "Серия ${item.ordinal}"}",
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp
         )
