@@ -1,14 +1,12 @@
 package com.xbot.anilibriarefresh.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -27,24 +25,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import com.xbot.anilibriarefresh.service.PlaybackService
 import com.xbot.anilibriarefresh.ui.theme.AnilibriaTheme
+import com.xbot.anilibriarefresh.ui.utils.rememberSystemUiController
 import com.xbot.media.service.BasePlaybackService
 import com.xbot.media.ui.Media
-import com.xbot.media.ui.MediaState
 import com.xbot.media.ui.PlayerController
 import com.xbot.media.ui.ShowBuffering
 import com.xbot.media.ui.rememberMediaState
@@ -58,153 +52,95 @@ class PlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Устанавливаем флаг для предотвращения затухания экрана
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         enableEdgeToEdge()
 
         setContent {
             AnilibriaTheme {
                 val player by viewModel.controller.collectAsStateWithLifecycle()
-
-                FullscreenPlayer(
-                    player = player
-                )
+                FullscreenPlayer(player = player)
             }
+        }
+
+        onBackPressedDispatcher.addCallback {
+            closeActivity()
         }
     }
 
     @Composable
-    private fun FullscreenPlayer(
-        player: Player?
-    ) {
-        val configuration = LocalConfiguration.current
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    private fun FullscreenPlayer(player: Player?) {
+        val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val systemUiController = rememberSystemUiController()
 
-        HideSystemBars(isLandscape)
+        SideEffect {
+            systemUiController.isSystemBarsVisible = !isLandscape
+            systemUiController.systemBarsBehavior = if (isLandscape) {
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            } else {
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            }
+        }
 
         val mediaState = rememberMediaState(player)
 
         CompositionLocalProvider(LocalContentColor provides Color.White) {
-            MediaContent(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black)
                     then(
                         if (!isLandscape) Modifier.systemBarsPadding()
                         else Modifier
-                    ),
-                mediaState = mediaState,
-                isLandscape = isLandscape,
-            )
-        }
-    }
-
-    @Composable
-    private fun MediaContent(
-        modifier: Modifier = Modifier,
-        mediaState: MediaState,
-        isLandscape: Boolean
-    ) {
-        val activity = LocalContext.current.findActivity()!!
-        val enterFullscreen = {
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
-        }
-        val exitFullscreen = {
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
-        }
-        Box(modifier = modifier) {
-            Media(
-                modifier = Modifier.fillMaxSize(),
-                state = mediaState,
-                showBuffering = ShowBuffering.Always,
-                buffering = {
-                    Box(Modifier.fillMaxSize(), Alignment.Center) {
-                        CircularProgressIndicator(color = LocalContentColor.current)
-                    }
-                },
-                controller = { state, isBuffering ->
-                    PlayerController(
-                        mediaState = state,
-                        isBuffering = isBuffering,
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    closeActivity()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        bottomActions = {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = null
-                                )
-                            }
-                            IconButton(
-                                onClick = if (isLandscape) exitFullscreen else enterFullscreen
-                            ) {
-                                Icon(
-                                    imageVector = when(isLandscape) {
-                                        true -> Icons.Default.FullscreenExit
-                                        else -> Icons.Default.Fullscreen
-                                    },
-                                    contentDescription = null
-                                )
-                            }
-                        }
                     )
-                }
-            )
-        }
-
-        BackHandler(isLandscape) {
-            exitFullscreen()
-        }
-
-        BackHandler(!isLandscape) {
-            closeActivity()
-        }
-
-        SideEffect {
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
-        }
-    }
-
-    @Composable
-    fun HideSystemBars(isLandscape: Boolean) {
-        val context = LocalContext.current
-
-        DisposableEffect(isLandscape) {
-            val window = context.findActivity()?.window ?: return@DisposableEffect onDispose {}
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-
-            when (isLandscape) {
-                true -> insetsController.apply {
-                    hide(WindowInsetsCompat.Type.statusBars())
-                    hide(WindowInsetsCompat.Type.navigationBars())
-                    systemBarsBehavior =
-                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                }
-                else -> {
-                    insetsController.apply {
-                        show(WindowInsetsCompat.Type.statusBars())
-                        show(WindowInsetsCompat.Type.navigationBars())
-                        systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            ) {
+                Media(
+                    modifier = Modifier.fillMaxSize(),
+                    state = mediaState,
+                    showBuffering = ShowBuffering.Always,
+                    buffering = {
+                        Box(Modifier.fillMaxSize(), Alignment.Center) {
+                            CircularProgressIndicator(color = LocalContentColor.current)
+                        }
+                    },
+                    controller = { state, isBuffering ->
+                        PlayerController(
+                            mediaState = state,
+                            isBuffering = isBuffering,
+                            navigationIcon = {
+                                IconButton(onClick = { closeActivity() }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            bottomActions = {
+                                IconButton(onClick = {}) {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = null
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    if (isLandscape) {
+                                        systemUiController.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                                    } else {
+                                        systemUiController.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                                    }
+                                }) {
+                                    Icon(
+                                        imageVector = when(isLandscape) {
+                                            true -> Icons.Default.FullscreenExit
+                                            else -> Icons.Default.Fullscreen
+                                        },
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        )
                     }
-                }
-            }
-
-            onDispose {
-                insetsController.apply {
-                    show(WindowInsetsCompat.Type.statusBars())
-                    show(WindowInsetsCompat.Type.navigationBars())
-                    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-                }
+                )
             }
         }
     }
@@ -215,14 +151,5 @@ class PlayerActivity : ComponentActivity() {
             startService(this)
         }
         finish()
-    }
-
-    private fun Context.findActivity(): Activity? {
-        var context = this
-        while (context is ContextWrapper) {
-            if (context is Activity) return context
-            context = context.baseContext
-        }
-        return null
     }
 }

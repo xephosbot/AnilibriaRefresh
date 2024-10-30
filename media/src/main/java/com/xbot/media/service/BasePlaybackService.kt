@@ -2,15 +2,21 @@ package com.xbot.media.service
 
 import android.app.PendingIntent
 import android.content.Intent
+import androidx.annotation.OptIn
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@OptIn(UnstableApi::class)
 @AndroidEntryPoint
 open class BasePlaybackService : MediaSessionService() {
     @Inject
-    lateinit var mediaSession: MediaSession
+    lateinit var player: Player
+
+    private var mediaSession: MediaSession? = null
 
     protected open fun getSingleTopActivity(): PendingIntent? = null
 
@@ -18,25 +24,27 @@ open class BasePlaybackService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
-        getSingleTopActivity()?.let { mediaSession.setSessionActivity(it) }
+        mediaSession = MediaSession.Builder(this, player).build()
+        getSingleTopActivity()?.let { mediaSession?.setSessionActivity(it) }
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        val player = mediaSession.player
+        val player = mediaSession?.player!!
         if (player.playWhenReady) {
             // Make sure the service is not in foreground.
             player.pause()
         }
+        mediaSession?.release()
+        mediaSession = null
         stopSelf()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        val player = mediaSession.player
         if (intent?.action == STOP_ACTION) {
             // Stop the foreground service and allow it to be stopped
             stopForeground(STOP_FOREGROUND_REMOVE)
-            player.stop()
+            mediaSession?.player?.stop()
             stopSelf()
         } else {
             // Start the foreground service
@@ -50,9 +58,12 @@ open class BasePlaybackService : MediaSessionService() {
     }
 
     override fun onDestroy() {
-        getBackStackedActivity()?.let { mediaSession.setSessionActivity(it) }
-        mediaSession.player.release()
-        mediaSession.release()
+        getBackStackedActivity()?.let { mediaSession?.setSessionActivity(it) }
+        mediaSession?.run {
+            player.release()
+            release()
+            mediaSession = null
+        }
         super.onDestroy()
     }
 

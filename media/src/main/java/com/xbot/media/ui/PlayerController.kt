@@ -75,11 +75,21 @@ fun PlayerController(
         if (isShowing) {
             val controllerState = rememberControllerState(mediaState)
             var dragging by remember { mutableStateOf(false) }
-            val hideOnTimeout = shouldHideController(mediaState, dragging)
+            val hideOnTimeout = !mediaState.shouldShowControllerIndefinitely && !dragging
             var hideEffectTrigger by remember { mutableIntStateOf(0) }
 
-            HideControllerEffect(hideOnTimeout, hideEffectTrigger) {
-                mediaState.isControllerShowing = false
+            LaunchedEffect(hideOnTimeout, hideEffectTrigger) {
+                if (hideOnTimeout) {
+                    delay(3000)
+                    mediaState.isControllerShowing = false
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    controllerState.triggerPositionUpdate()
+                    delay(200)
+                }
             }
 
             ControllerLayout(
@@ -102,20 +112,6 @@ fun PlayerController(
                     hideEffectTrigger++
                 }
             )
-        }
-    }
-}
-
-@Composable
-private fun HideControllerEffect(
-    hideWhenTimeout: Boolean,
-    resetTrigger: Int,
-    onHide: () -> Unit
-) {
-    LaunchedEffect(hideWhenTimeout, resetTrigger) {
-        if (hideWhenTimeout) {
-            delay(3000)
-            onHide()
         }
     }
 }
@@ -147,11 +143,6 @@ private fun ControllerLayout(
                 isPlaying = controllerState.showPause,
                 onClick = onPlayPauseClicked
             )
-        }
-
-        LaunchedEffect(Unit) {
-            controllerState.triggerPositionUpdate()
-            delay(200)
         }
 
         PlayerControllerBottomBar(
@@ -195,16 +186,8 @@ private fun PlayerControllerBottomBar(
     bottomActions: @Composable RowScope.() -> Unit,
     windowInsets: PaddingValues
 ) {
-    //TODO: Fix text not updated without recomposition
-    var positionText by remember { mutableStateOf(controllerState.positionMs.toTime()) }
-    val durationText = remember { controllerState.durationMs.toTime() }
-
-    LaunchedEffect(controllerState.positionMs) {
-        snapshotFlow { controllerState.positionMs }
-            .collect { positionMs ->
-                positionText = positionMs.toTime()
-            }
-    }
+    val durationText by remember { derivedStateOf { controllerState.durationMs.toTime() } }
+    val positionText by remember { derivedStateOf { controllerState.positionMs.toTime() } }
 
     Column(
         modifier = modifier
@@ -291,10 +274,6 @@ private fun Long.toTime(): String {
         String.format("%02d:%02d", minutes, seconds)
     }
 }
-
-// Determines whether to hide the controller based on mediaState and scrubbing state.
-private fun shouldHideController(mediaState: MediaState, scrubbing: Boolean): Boolean =
-    !mediaState.shouldShowControllerIndefinitely && !scrubbing
 
 // Simplifies horizontal padding calculations for insets.
 @Composable

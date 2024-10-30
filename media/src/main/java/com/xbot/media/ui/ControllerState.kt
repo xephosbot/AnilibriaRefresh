@@ -1,5 +1,6 @@
 package com.xbot.media.ui
 
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -11,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.common.util.UnstableApi
 
 /**
  * Create and [remember] a [ControllerState] instance.
@@ -143,6 +145,7 @@ class ControllerState internal constructor(
             }
         }
     private val Timeline.canShowMultiWindowTimeBar: Boolean
+        @OptIn(UnstableApi::class)
         get() = windowCount <= MAX_WINDOWS_FOR_MULTI_WINDOW_TIME_BAR
                 && windows.all { it.durationUs != C.TIME_UNSET }
     private val multiWindowTimeBar: Boolean by derivedStateOf {
