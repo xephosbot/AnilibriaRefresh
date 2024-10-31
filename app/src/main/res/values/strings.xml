@@ -10,4 +10,5 @@
     <string name="show_text_button">Показать описание</string>
     <string name="description_title">Описание</string>
     <string name="name_episode_not_found_text">Имя не найдено</string>
+    <string name="genres_title">Жанры</string>
 </resources>
