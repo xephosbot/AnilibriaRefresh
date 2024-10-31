@@ -25,9 +25,7 @@ dependencies {
     // Jetpack Media 3 dependencies
     implementation("androidx.media3:media3-exoplayer:1.5.0-alpha01")
     implementation("androidx.media3:media3-exoplayer-hls:1.5.0-alpha01")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.5.0-alpha01")
     implementation("androidx.media3:media3-common-ktx:1.5.0-alpha01")
-    implementation("androidx.media3:media3-datasource-okhttp:1.5.0-alpha01")
     implementation("androidx.media3:media3-session:1.5.0-alpha01")
 
     // Testing dependencies

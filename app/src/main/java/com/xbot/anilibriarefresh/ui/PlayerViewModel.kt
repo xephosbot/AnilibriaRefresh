@@ -1,6 +1,7 @@
 package com.xbot.anilibriarefresh.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,23 +9,40 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
+import androidx.navigation.toRoute
+import com.xbot.anilibriarefresh.navigation.Route
+import com.xbot.domain.model.TitleDetailModel
+import com.xbot.domain.repository.TitleRepository
 import com.xbot.media.service.PlayerProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
+    repository: TitleRepository,
     playerProvider: PlayerProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
+    private val titleId = savedStateHandle.toRoute<Route.Player>().titleId
+    private val titleFlow = repository.getTitle(titleId)
+        .catch {
+            //TODO: Реализовать обработку ошибок подключения
+            Log.e("PlayerViewModel", it.message ?: "")
+        }
     val controller: StateFlow<Player?> = playerProvider.player
         .onEach { player ->
-            player.playHls()
+            titleFlow.collect { title ->
+                with(player) {
+                    if (mediaItemCount == 0) addMediaItem(title.toMediaItem())
+                    prepare()
+                    play()
+                }
+            }
         }
         .stateIn(
             scope = viewModelScope,
@@ -32,28 +50,17 @@ class PlayerViewModel @Inject constructor(
             initialValue = null
         )
 
-    private fun Player.playHls() {
+    private fun TitleDetailModel.toMediaItem(): MediaItem {
         val mediaMetadata = MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
-            .setTitle(TEST_METADATA_TITLE)
-            .setArtist(TEST_METADATA_SUBTITLE)
-            .setArtworkUri(Uri.parse(TEST_ARTWORK_URL))
+            .setTitle(name)
+            .setArtist(type)
+            .setArtworkUri(Uri.parse("https://anilibria.top${poster.src}"))
             .build()
-        val mediaItem = MediaItem.Builder()
+        return MediaItem.Builder()
             .setMediaMetadata(mediaMetadata)
-            .setUri(TEST_HLS_URI)
+            .setUri(episodes[3].hls1080)
             .setMimeType(MimeTypes.APPLICATION_M3U8)
             .build()
-
-        if (mediaItemCount == 0) addMediaItem(mediaItem)
-        prepare()
-        play()
-    }
-
-    companion object {
-        private const val TEST_METADATA_TITLE = "Дандадан"
-        private const val TEST_METADATA_SUBTITLE = "Серия 1"
-        private const val TEST_ARTWORK_URL = "https://anilibria.top/storage/releases/posters/9789/X23LsN6aamdmQlFsKA6Er2sYnwcmoMzQ.webp"
-        private const val TEST_HLS_URI = "https://cache-rfn.libria.fun/videos/media/ts/9789/1/1080/572da4181b9e639b2728b5e34ec484b9.m3u8?isWithAds=1&countryIso=RU&isAuthorized=0"
     }
 }

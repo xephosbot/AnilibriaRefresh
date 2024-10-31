@@ -53,6 +53,9 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                         src = episode.preview.optimized.src,
                         thumbnail = episode.preview.optimized.thumbnail
                     ),
+                    hls480 = episode.hls480,
+                    hls720 = episode.hls720,
+                    hls1080 = episode.hls1080,
                     ordinal = episode.ordinal.toInt()
                 )
             } ?: listOf()

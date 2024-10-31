@@ -16,6 +16,8 @@ object MediaModule {
     @Provides
     @Singleton
     fun providePlayer(@ApplicationContext context: Context): Player {
-        return ExoPlayer.Builder(context).build()
+        return ExoPlayer.Builder(context)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
     }
 }

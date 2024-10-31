@@ -40,11 +40,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -233,8 +233,8 @@ private fun PlayerControllerTopBar(
         modifier = modifier.padding(horizontal = contentPadding.calculateMaxPadding()),
         title = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = mediaInfo.title, fontSize = 20.sp)
-                Text(text = mediaInfo.subtitle, fontSize = 12.sp)
+                Text(text = mediaInfo.title, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = mediaInfo.subtitle, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         },
         navigationIcon = navigationIcon,

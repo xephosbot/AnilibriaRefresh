@@ -29,6 +29,9 @@ sealed interface Route {
 
     @Serializable
     data object Profile : Route
+
+    @Serializable
+    data class Player (val titleId: Int) : Route
 }
 
 //TODO: move string to resources

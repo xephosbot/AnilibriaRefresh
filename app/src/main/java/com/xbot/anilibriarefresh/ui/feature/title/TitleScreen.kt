@@ -422,6 +422,9 @@ private fun TitleScreenPreview() {
                     src = null,
                     thumbnail = null
                 ),
+                hls480 = "",
+                hls720 = "",
+                hls1080 = "",
                 ordinal = 1
             ),
             EpisodeModel(
@@ -432,6 +435,9 @@ private fun TitleScreenPreview() {
                     src = null,
                     thumbnail = null
                 ),
+                hls480 = "",
+                hls720 = "",
+                hls1080 = "",
                 ordinal = 2
             ),
             EpisodeModel(
@@ -442,6 +448,9 @@ private fun TitleScreenPreview() {
                     src = null,
                     thumbnail = null
                 ),
+                hls480 = "",
+                hls720 = "",
+                hls1080 = "",
                 ordinal = 3
             ),
             EpisodeModel(
@@ -452,6 +461,9 @@ private fun TitleScreenPreview() {
                     src = null,
                     thumbnail = null
                 ),
+                hls480 = "",
+                hls720 = "",
+                hls1080 = "",
                 ordinal = 4
             ),
             EpisodeModel(
@@ -462,6 +474,9 @@ private fun TitleScreenPreview() {
                     src = null,
                     thumbnail = null
                 ),
+                hls480 = "",
+                hls720 = "",
+                hls1080 = "",
                 ordinal = 5
             ),
         )
