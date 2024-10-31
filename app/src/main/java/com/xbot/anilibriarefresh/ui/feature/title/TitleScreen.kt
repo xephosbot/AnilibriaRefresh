@@ -89,8 +89,7 @@ fun TitleScreen(
                     modifier = modifier,
                     title = s.title,
                     onClick = {},
-                    paddingValues = paddingValues
-                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+                    paddingValues = paddingValues,
                     fadeGradient = fadeGradientBrush
                 )
             }
@@ -112,8 +111,8 @@ private fun TitleScreenContent(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(paddingValues = paddingValues)
+            .background(MaterialTheme.colorScheme.surface),
+        contentPadding = paddingValues
     ) {
 
         posterTitle(

@@ -2,9 +2,12 @@ package com.xbot.anilibriarefresh.ui
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.rememberNavController
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
 import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
@@ -26,9 +29,10 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
 
     val hazeState = remember { HazeState() }
     val hazeStyle = HazeMaterials.thin(MaterialTheme.colorScheme.surface)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     AnilibriaNavigationSuiteScaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             AnilibriaTopAppBar(
                 modifier = Modifier
@@ -40,7 +44,8 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                 //TODO: Delete it after testing
                 onNavigationClick = {
                     navController.navigate(Route.Player(9789))
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         },
         navigationSuite = {
