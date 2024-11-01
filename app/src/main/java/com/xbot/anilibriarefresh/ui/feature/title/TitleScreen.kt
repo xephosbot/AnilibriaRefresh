@@ -1,32 +1,40 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.outlined.LiveTv
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,11 +44,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.PosterImage
-import com.xbot.anilibriarefresh.ui.feature.title.components.BoxTitlePoster
-import com.xbot.anilibriarefresh.ui.feature.title.components.DescriptionBox
-import com.xbot.anilibriarefresh.ui.feature.title.components.Genres
-import com.xbot.anilibriarefresh.ui.theme.FadeGradientColorStops
+import com.xbot.anilibriarefresh.ui.components.TextWithIcon
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.EpisodeModel
 import com.xbot.domain.model.MemberModel
@@ -54,17 +62,33 @@ fun TitleScreen(
     paddingValues: PaddingValues
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val fadeGradientBrush = Brush.verticalGradient(colorStops = FadeGradientColorStops)
 
-    Crossfade(targetState = state, label = "") { s ->
-        when (s) {
+    TitleScreenContent(
+        modifier = modifier,
+        state = state,
+        onAction = viewModel::onAction,
+        paddingValues = paddingValues
+    )
+}
+
+@Composable
+private fun TitleScreenContent(
+    modifier: Modifier = Modifier,
+    state: TitleScreenState,
+    onAction: (TitleScreenAction) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Crossfade(
+        targetState = state,
+        label = "" //TODO: информативный label для перехода
+    ) { targetState ->
+        when (targetState) {
             //TODO: Loading screen
-            is TitleScreenState.Loading -> Surface(modifier = Modifier.fillMaxSize()) { }
+            is TitleScreenState.Loading -> Box(modifier = Modifier.fillMaxSize())
             is TitleScreenState.Success -> {
-                TitleScreenContent(
+                TitleDetail(
                     modifier = modifier,
-                    title = s.title,
-                    onClick = {},
+                    title = targetState.title,
                     paddingValues = paddingValues,
                 )
             }
@@ -73,78 +97,94 @@ fun TitleScreen(
 }
 
 @Composable
-private fun TitleScreenContent(
+private fun TitleDetail(
     modifier: Modifier = Modifier,
     title: TitleDetailModel,
-    onClick: () -> Unit,
     paddingValues: PaddingValues,
 ) {
-    val scrollState = rememberScrollState()
-    val flowRowSize = remember { mutableIntStateOf(Int.MIN_VALUE) }
-
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+            .fillMaxSize(),
         contentPadding = paddingValues
     ) {
-        posterTitle(
-            title = title,
-            scrollState = scrollState
+        mainContent(
+            title = title
         )
-        headerTitle(
-            textId = R.string.genres_title
-        )
-        genres(
-            title = title,
-            flowRowSize = flowRowSize
-        )
-        headerTitle(
-            textId = R.string.description_title
-        )
+        header(R.string.genres_title)
+        horizontalItems(
+            items = title.genres,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) { genre ->
+            AssistChip(
+                onClick = {},
+                label = { Text(text = genre) }
+            )
+        }
+        header(R.string.description_title)
         description(
-            title = title,
-            scrollState = scrollState,
-            flowRowSize = flowRowSize
+            text = title.description
         )
-        headerTitle(
-            textId = R.string.episodes_title
-        )
+        header(R.string.episodes_title)
         verticalItems(
             items = title.episodes
-        ) { title ->
-            if (title != null) {
+        ) { episode ->
+            if (episode != null) {
                 EpisodeItem(
-                    item = title,
-                    onClick = onClick
+                    episode = episode,
+                    onClick = {}
                 )
             }
         }
     }
 }
 
-private fun LazyListScope.posterTitle(
-    title: TitleDetailModel,
-    scrollState: ScrollState
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun LazyListScope.mainContent(
+    title: TitleDetailModel
 ) {
     item(
-        contentType = { "ImageTitle" }
+        contentType = { "MainContent" }
     ) {
-        BoxTitlePoster(
-            title = title,
-            scrollState = scrollState
-        )
-    }
-}
-
-private fun LazyListScope.genres(
-    title: TitleDetailModel,
-    flowRowSize: MutableIntState
-) {
-    item(
-        contentType = { "GenresTitle" }
-    ) {
-        Genres(title = title, flowRowSize = flowRowSize)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            PosterImage(
+                modifier = Modifier
+                    .height(164.dp)
+                    .aspectRatio(7f / 10f)
+                    .clip(RoundedCornerShape(8.dp)),
+                poster = title.poster
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = title.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                TextWithIcon(
+                    text = title.type,
+                    imageVector = Icons.Outlined.LiveTv
+                )
+                TextWithIcon(
+                    text = title.year.toString(),
+                    imageVector = Icons.Default.CalendarMonth
+                )
+                TextWithIcon(
+                    text = title.addedInUsersFavorites.toString(),
+                    imageVector = AnilibriaIcons.Filled.Heart
+                )
+                TextWithIcon(
+                    text = "Eposides ${title.episodesTotal ?: 0}",
+                    imageVector = Icons.Outlined.Timer
+                )
+            }
+        }
     }
 }
 
@@ -153,50 +193,76 @@ private fun LazyListScope.verticalItems(
     itemContent: @Composable LazyItemScope.(EpisodeModel?) -> Unit
 ) {
     items(
-        count = items.size - 1,
-        contentType = { "EpisodeItems" }
+        items = items,
+        key = { it.id }
     ) {
-        itemContent(items[it])
+        itemContent(it)
+    }
+}
+
+private fun LazyListScope.horizontalItems(
+    items: List<String>,
+    contentPadding: PaddingValues = PaddingValues(),
+    itemContent: @Composable LazyItemScope.(String) -> Unit
+) {
+    item(
+        contentType = { "HorizontalList" }
+    ) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = contentPadding
+        ) {
+            items(
+                items = items,
+                key = { it }
+            ) {
+                itemContent(it)
+            }
+        }
     }
 }
 
 private fun LazyListScope.description(
-    title: TitleDetailModel,
-    scrollState: ScrollState,
-    flowRowSize: MutableIntState
+    text: String
 ) {
     item(
         contentType = { "Description" }
     ) {
-        DescriptionBox(
-            text = title.description,
-            scrollState = scrollState,
-            flowRowSize = flowRowSize
-        )
+        var expanded by remember { mutableStateOf(false) }
+
+        Box (
+            modifier = Modifier
+                .clickable {
+                    expanded = !expanded
+                }
+                .padding(16.dp)
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                text = text,
+                maxLines = if (expanded) Int.MAX_VALUE else 3
+            )
+        }
     }
 }
 
-private fun LazyListScope.headerTitle(
-    textId: Int
+private fun LazyListScope.header(
+    @StringRes textId: Int
 ) {
     item(
-        contentType = { "HeaderTitle" }
+        contentType = { "Header" }
     ) {
-        Text(
-            modifier = Modifier
-                .padding(start = 16.dp),
-            text = stringResource(textId),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        Header(title = stringResource(textId))
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun EpisodeItem(
+private fun EpisodeItem(
     modifier: Modifier = Modifier,
-    item: EpisodeModel,
+    episode: EpisodeModel,
     onClick: () -> Unit
 ) {
     Row(
@@ -212,11 +278,11 @@ fun EpisodeItem(
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = item.preview
-            )
+            poster = episode.preview
+        )
         Spacer(modifier = Modifier.padding(5.dp))
         Text(
-            text = "${item.ordinal}. ${item.name ?: "Серия ${item.ordinal}"}",
+            text = "${episode.ordinal}. ${episode.name ?: "Серия ${episode.ordinal}"}",
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp
         )
@@ -339,5 +405,5 @@ private fun TitleScreenPreview() {
             ),
         )
     )
-    TitleScreenContent(title = titleModel, paddingValues = PaddingValues(0.dp), onClick = {})
+    TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
 }
