@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,6 +19,9 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerScope
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -42,10 +47,12 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
+import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
 import com.xbot.anilibriarefresh.ui.components.LoadingPagerItem
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
-import com.xbot.anilibriarefresh.ui.components.horizontalPagerItems
+import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
+import com.xbot.anilibriarefresh.ui.components.pagerItemTransition
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
@@ -159,12 +166,15 @@ private fun TitleList(
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding
         ) {
-            horizontalPagerItems(
-                items = recommendedList,
-                state = pagerState
-            )
+            horizontalPagerItems(state = pagerState) { page ->
+                TitlePagerItem(
+                    modifier = Modifier.pagerItemTransition(page, pagerState),
+                    title = recommendedList[page],
+                    onClick = onTitleClick
+                )
+            }
             header(
-                title = "Избранное",
+                title = "Избранное", //TODO: Move to string resources
                 onClick = {} //TODO: On click action
             )
             horizontalItems(
@@ -177,7 +187,7 @@ private fun TitleList(
                 )
             }
             header(
-                title = "Новые эпизоды",
+                title = "Новые эпизоды", //TODO: Move to string resources
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
             )
             pagingItems(items) { title ->
@@ -204,7 +214,9 @@ private fun LoadingScreen(
                 .padding(contentPadding),
         ) {
             LoadingPagerItem()
-            Header(title = "Избранное")
+            Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
+            Spacer(modifier = Modifier.height(16.dp))
+            Header(title = "Избранное") //TODO: Move to string resources
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
@@ -216,7 +228,7 @@ private fun LoadingScreen(
                 }
             }
             Header(
-                title = "Новые эпизоды",
+                title = "Новые эпизоды", //TODO: Move to string resources
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
             )
             repeat(6) {
@@ -245,6 +257,29 @@ private fun LazyGridScope.horizontalItems(
             ) {
                 itemContent(it)
             }
+        }
+    }
+}
+
+private fun LazyGridScope.horizontalPagerItems(
+    state: PagerState,
+    pageContent: @Composable PagerScope.(page: Int) -> Unit
+) {
+    item(
+        span = { GridItemSpan(maxLineSpan) },
+        contentType = { "PagerItems" }
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            HorizontalPager(
+                state = state,
+                beyondViewportPageCount = 1
+            ) { page ->
+                pageContent(page)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalPagerIndicator(state = state)
         }
     }
 }

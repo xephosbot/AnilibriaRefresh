@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -36,44 +32,25 @@ import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
 
-fun LazyGridScope.horizontalPagerItems(
-    items: List<TitleModel>,
-    state: PagerState
+@Composable
+fun TitlePagerItem(
+    modifier: Modifier = Modifier,
+    title: TitleModel,
+    onClick: (TitleModel) -> Unit
 ) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { "PagerItems" }
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            HorizontalPager(
-                state = state,
-                beyondViewportPageCount = 3
-            ) { page ->
-                val pagerItemModifier = Modifier
-                    .padding(horizontal = HorizontalPadding)
-                    .pagerItemTransition(page, state)
-                    .clip(RoundedCornerShape(16.dp))
-
-                BoxWithConstraints {
-                    if (maxWidth < 600.dp) {
-                        CompactItemLayout(
-                            modifier = pagerItemModifier,
-                            title = items[page],
-                            onClick = { /*TODO: On click action*/ }
-                        )
-                    } else {
-                        LargeItemLayout(
-                            modifier = pagerItemModifier,
-                            title = items[page],
-                            onClick = { /*TODO: On click action*/ }
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalPagerIndicator(state = state)
+    BoxWithConstraints {
+        if (maxWidth < 600.dp) {
+            CompactItemLayout(
+                modifier = modifier,
+                title = title,
+                onClick = onClick
+            )
+        } else {
+            LargeItemLayout(
+                modifier = modifier,
+                title = title,
+                onClick = onClick
+            )
         }
     }
 }
@@ -84,32 +61,28 @@ fun LoadingPagerItem(
 ) {
     val shimmer = LocalShimmer.current
 
-    Column {
-        BoxWithConstraints {
-            if (maxWidth < 600.dp) {
-                Box(
-                    modifier = modifier
-                        .padding(horizontal = HorizontalPadding)
-                        .fillMaxWidth()
-                        .aspectRatio(7f / 10f)
-                        .shimmerSafe(shimmer)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.LightGray)
-                )
-            } else {
-                Box(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(LargeItemHeight)
-                        .padding(horizontal = HorizontalPadding)
-                        .shimmerSafe(shimmer)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.LightGray)
-                )
-            }
+    BoxWithConstraints {
+        if (maxWidth < 600.dp) {
+            Box(
+                modifier = modifier
+                    .padding(horizontal = HorizontalPadding)
+                    .fillMaxWidth()
+                    .aspectRatio(7f / 10f)
+                    .shimmerSafe(shimmer)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.LightGray)
+            )
+        } else {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(LargeItemHeight)
+                    .padding(horizontal = HorizontalPadding)
+                    .shimmerSafe(shimmer)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.LightGray)
+            )
         }
-        Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -121,7 +94,10 @@ private fun CompactItemLayout(
     onClick: (TitleModel) -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = Modifier
+            .padding(horizontal = HorizontalPadding)
+            .then(modifier)
+            .clip(PagerItemShape),
         contentAlignment = Alignment.Center
     ) {
         PosterImage(
@@ -142,9 +118,13 @@ private fun LargeItemLayout(
     onClick: (TitleModel) -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .padding(horizontal = HorizontalPadding)
+            .then(modifier)
             .clickable { onClick(title) }
             .height(LargeItemHeight)
+            .clip(PagerItemShape)
+            //TODO: Temporary background until final design
             .background(MaterialTheme.colorScheme.tertiaryContainer),
         contentAlignment = Alignment.Center
     ) {
@@ -190,7 +170,7 @@ private fun LargeItemLayout(
     }
 }
 
-private fun Modifier.pagerItemTransition(
+fun Modifier.pagerItemTransition(
     page: Int,
     state: PagerState
 ) = zIndex(page * 10f)
@@ -212,3 +192,4 @@ private fun PagerState.startOffsetForPage(page: Int): Float {
 
 private val HorizontalPadding = 32.dp
 private val LargeItemHeight = 300.dp
+private val PagerItemShape = RoundedCornerShape(16.dp)
