@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.components.Header
+import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
 import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.components.TextWithIcon
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
@@ -103,14 +104,15 @@ private fun TitleDetail(
     paddingValues: PaddingValues,
 ) {
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier,
         contentPadding = paddingValues
     ) {
         mainContent(
             title = title
         )
-        header(R.string.genres_title)
+        header(
+            textId = R.string.genres_title
+        )
         horizontalItems(
             items = title.genres,
             contentPadding = PaddingValues(horizontal = 16.dp)
@@ -120,11 +122,17 @@ private fun TitleDetail(
                 label = { Text(text = genre) }
             )
         }
-        header(R.string.description_title)
+        header(
+            textId = R.string.description_title,
+            contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+        )
         description(
             text = title.description
         )
-        header(R.string.episodes_title)
+        header(
+            textId = R.string.episodes_title,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        )
         verticalItems(
             items = title.episodes
         ) { episode ->
@@ -185,6 +193,35 @@ private fun LazyListScope.mainContent(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun EpisodeItem(
+    modifier: Modifier = Modifier,
+    episode: EpisodeModel,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        PosterImage(
+            modifier = Modifier
+                .height(100.dp)
+                .width(150.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            poster = episode.preview
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = "Серия ${episode.ordinal}" + if (episode.name != null) " • ${episode.name}" else "",
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp
+        )
     }
 }
 
@@ -249,42 +286,15 @@ private fun LazyListScope.description(
 }
 
 private fun LazyListScope.header(
-    @StringRes textId: Int
+    @StringRes textId: Int,
+    contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
 ) {
     item(
         contentType = { "Header" }
     ) {
-        Header(title = stringResource(textId))
-    }
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-private fun EpisodeItem(
-    modifier: Modifier = Modifier,
-    episode: EpisodeModel,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .padding(8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick() }
-            .width(400.dp)
-            .padding(8.dp)
-    ) {
-        PosterImage(
-            modifier = Modifier
-                .height(100.dp)
-                .width(150.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview
-        )
-        Spacer(modifier = Modifier.padding(5.dp))
-        Text(
-            text = "${episode.ordinal}. ${episode.name ?: "Серия ${episode.ordinal}"}",
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp
+        Header(
+            title = stringResource(textId),
+            contentPadding = contentPadding
         )
     }
 }

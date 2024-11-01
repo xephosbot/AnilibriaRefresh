@@ -1,6 +1,5 @@
 package com.xbot.anilibriarefresh.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -24,7 +23,7 @@ fun TextWithIcon(
 ) {
     val annotatedString = buildAnnotatedString {
         appendInlineContent(id = INLINE_CONTENT_ICON_ID)
-        append(" $text")
+        append("  $text")
     }
     val inlineContent = mapOf(
         INLINE_CONTENT_ICON_ID to InlineTextContent(
