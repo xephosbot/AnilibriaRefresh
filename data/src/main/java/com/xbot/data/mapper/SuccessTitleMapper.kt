@@ -40,7 +40,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             members = title.members?.map { member ->
                 MemberModel(
                     id = member.id,
-                    name = member.nickname,
+                    name = member.nickname ?: "",
                     role = member.role.description ?: ""
                 )
             } ?: listOf(),

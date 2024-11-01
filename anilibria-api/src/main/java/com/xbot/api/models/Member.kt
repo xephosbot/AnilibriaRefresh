@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 data class Member(
     @SerialName("id") val id: String,
     @SerialName("role") val role: ValDesc<MemberRoleEnum>,
-    @SerialName("nickname") val nickname: String,
+    @SerialName("nickname") val nickname: String?,
     @SerialName("user") val user: User?
 )
