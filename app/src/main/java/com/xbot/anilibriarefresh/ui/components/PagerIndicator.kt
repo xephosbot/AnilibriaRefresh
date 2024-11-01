@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.xbot.anilibriarefresh.ui.theme.colorIconIsSelected
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -27,7 +26,7 @@ fun HorizontalPagerIndicator(
     state: PagerState,
     modifier: Modifier = Modifier,
     pageIndexMapping: (Int) -> Int = { it },
-    activeColor: Color = colorIconIsSelected,
+    activeColor: Color = MaterialTheme.colorScheme.primary,
     inactiveColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.76f),
     indicatorWidth: Dp = 6.dp,
     indicatorHeight: Dp = indicatorWidth,

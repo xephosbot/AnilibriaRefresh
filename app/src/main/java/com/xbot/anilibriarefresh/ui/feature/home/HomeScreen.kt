@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -44,10 +42,10 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
-import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
+import com.xbot.anilibriarefresh.ui.components.LoadingPagerItem
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
-import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
+import com.xbot.anilibriarefresh.ui.components.horizontalPagerItems
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
@@ -161,7 +159,7 @@ private fun TitleList(
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding
         ) {
-            testTitleCarousel(
+            horizontalPagerItems(
                 items = recommendedList,
                 state = pagerState
             )
@@ -205,7 +203,7 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
                 .padding(contentPadding),
         ) {
-            TitlePagerItem(title = null)
+            LoadingPagerItem()
             Header(title = "Избранное")
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -265,29 +263,6 @@ private fun LazyGridScope.header(
             contentPadding = contentPadding,
             onClick = onClick
         )
-    }
-}
-
-private fun LazyGridScope.horizontalPagerItems(
-    items: List<TitleModel>,
-    state: PagerState,
-    itemContent: @Composable LazyGridItemScope.(TitleModel) -> Unit
-) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { "PagerItems" }
-    ) {
-        Box {
-            HorizontalPager(state = state) { page ->
-                itemContent(items[page])
-            }
-            HorizontalPagerIndicator(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.BottomCenter),
-                state = state
-            )
-        }
     }
 }
 

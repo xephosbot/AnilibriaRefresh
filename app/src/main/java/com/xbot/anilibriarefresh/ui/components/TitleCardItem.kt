@@ -67,4 +67,4 @@ private fun LoadingTitleCardItem(
     )
 }
 
-private val TitleCardHeight = 186.dp
+private val TitleCardHeight = 164.dp
