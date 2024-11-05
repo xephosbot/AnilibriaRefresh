@@ -25,6 +25,7 @@ import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
+import com.xbot.anilibriarefresh.ui.feature.search.SearchScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
@@ -68,7 +69,9 @@ fun AnilibriaNavGraph(
             FavoriteScreen()
         }
         composable<Route.Search> {
-            FavoriteScreen()
+            SearchScreen(
+                paddingValues = paddingValues
+            )
         }
         composable<Route.Profile> {
             FavoriteScreen()
