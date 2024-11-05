@@ -5,6 +5,7 @@ import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
 import com.xbot.api.models.Release
 import com.xbot.api.models.ReleaseCatalogResponse
+import com.xbot.api.models.Schedule
 import com.xbot.api.models.login.LoginRequest
 import com.xbot.api.models.login.LoginResponse
 import com.xbot.api.models.login.LoginSocialNetwork
@@ -138,6 +139,9 @@ interface AnilibriaService {
     suspend fun getRandomReleases(
         @Query("limit") limit: Int
     ): ApiResponse<List<Release>>
+
+    @GET("anime/schedule/week")
+    suspend fun getScheduleWeek(): ApiResponse<List<Schedule>>
 
     companion object {
         const val BASE_URL: String = "https://anilibria.top"

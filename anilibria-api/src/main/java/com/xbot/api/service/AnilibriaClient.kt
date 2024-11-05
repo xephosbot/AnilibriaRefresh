@@ -5,6 +5,7 @@ import com.xbot.api.models.Franchise
 import com.xbot.api.models.Genre
 import com.xbot.api.models.Release
 import com.xbot.api.models.ReleaseCatalogResponse
+import com.xbot.api.models.Schedule
 import com.xbot.api.models.ValDesc
 import com.xbot.api.models.enums.AgeRatingEnum
 import com.xbot.api.models.enums.ProductionStatusEnum
@@ -296,4 +297,11 @@ class AnilibriaClient @Inject constructor(
     ): ApiResponse<List<Release>> {
         return service.getRandomReleases(limit = limit)
     }
+
+    /**Возвращает данные по расписанию релизав на текущую неделю.
+     *
+     * @return [ApiResponse] содержащий информацию о расписании [Schedule] релизов на текущую неделю.
+     */
+    suspend fun getScheduleWeek(): ApiResponse<List<Schedule>> =
+        service.getScheduleWeek()
 }

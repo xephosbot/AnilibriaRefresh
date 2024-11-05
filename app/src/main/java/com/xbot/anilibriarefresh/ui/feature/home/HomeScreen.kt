@@ -30,6 +30,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
 import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
+import com.xbot.anilibriarefresh.ui.components.LazyRowWithStickyHeader
 import com.xbot.anilibriarefresh.ui.components.LoadingPagerItem
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
@@ -56,6 +58,7 @@ import com.xbot.anilibriarefresh.ui.components.pagerItemTransition
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
+import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.TitleModel
 
 @Composable
@@ -124,7 +127,7 @@ private fun HomeScreenContent(
                         TitleList(
                             items = items,
                             recommendedList = successState.recommendedTitles,
-                            favoriteList = successState.favoriteTitles,
+                            scheduleList = successState.scheduleTitles,
                             contentPadding = innerPadding.union(paddingValues),
                             onTitleClick = { onNavigate(it.id, it.name) }
                         )
@@ -153,7 +156,7 @@ private fun TitleList(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<TitleModel>,
     recommendedList: List<TitleModel>,
-    favoriteList: List<TitleModel>,
+    scheduleList: Map<DayOfWeek, List<TitleModel>>,
     contentPadding: PaddingValues,
     onTitleClick: (TitleModel) -> Unit
 ) {
@@ -174,18 +177,26 @@ private fun TitleList(
                 )
             }
             header(
-                title = "Избранное", //TODO: Move to string resources
-                onClick = {} //TODO: On click action
+                title = "Расписание", //TODO: Move to string resources
             )
             horizontalItems(
+                items = scheduleList,
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                items = favoriteList
-            ) { title ->
-                TitleCardItem(
-                    title = title,
-                    onClick = onTitleClick
-                )
-            }
+                stickyHeader = { dayOfWeek ->
+                    Column {
+                        Text(
+                            text = dayOfWeek.toStringRes()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                },
+                itemContent = { title ->
+                    TitleCardItem(
+                        title = title,
+                        onClick = onTitleClick
+                    )
+                }
+            )
             header(
                 title = "Новые эпизоды", //TODO: Move to string resources
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
@@ -216,7 +227,8 @@ private fun LoadingScreen(
             LoadingPagerItem()
             Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
             Spacer(modifier = Modifier.height(16.dp))
-            Header(title = "Избранное") //TODO: Move to string resources
+            Header(title = "Расписание") //TODO: Move to string resources
+            //TODO: Add extra spacing for way of week title
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
@@ -258,6 +270,26 @@ private fun LazyGridScope.horizontalItems(
                 itemContent(it)
             }
         }
+    }
+}
+
+private fun LazyGridScope.horizontalItems(
+    items: Map<DayOfWeek, List<TitleModel>>,
+    contentPadding: PaddingValues = PaddingValues(),
+    stickyHeader: @Composable (DayOfWeek) -> Unit,
+    itemContent: @Composable LazyItemScope.(TitleModel) -> Unit
+) {
+    item(
+        span = { GridItemSpan(maxLineSpan) },
+        contentType = { "HorizontalList" }
+    ) {
+        LazyRowWithStickyHeader(
+            items = items,
+            contentPadding = contentPadding,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            stickyHeader = stickyHeader,
+            itemContent = itemContent
+        )
     }
 }
 
@@ -312,4 +344,15 @@ private fun LazyGridScope.pagingItems(
     ) {
         itemContent(items[it])
     }
+}
+
+//TODO: Move to string resources
+private fun DayOfWeek.toStringRes(): String = when(this) {
+    DayOfWeek.MONDAY -> "Понедельник"
+    DayOfWeek.TUESDAY -> "Вторник"
+    DayOfWeek.WEDNESDAY -> "Среда"
+    DayOfWeek.THURSDAY -> "Четверг"
+    DayOfWeek.FRIDAY -> "Пятница"
+    DayOfWeek.SATURDAY -> "Суббота"
+    DayOfWeek.SUNDAY -> "Воскресенье"
 }

@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,6 +9,7 @@ import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
+import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.TitleModel
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,11 +31,11 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeScreenState> = combine(
         repository.getRecommendedTitles(),
-        repository.getFavoriteTitles()
+        repository.getScheduleTitles()
     ) { recommendedTitles, favoriteTitles ->
         HomeScreenState.Success(
             recommendedTitles = recommendedTitles,
-            favoriteTitles = favoriteTitles
+            scheduleTitles = favoriteTitles
         )
     }.catch { error ->
         //TODO: информативные сообщения для разного типа ошибок
@@ -62,11 +64,12 @@ class HomeViewModel @Inject constructor(
     }
 }
 
+@Stable
 sealed interface HomeScreenState {
     data object Loading: HomeScreenState
     data class Success(
         val recommendedTitles: List<TitleModel>,
-        val favoriteTitles: List<TitleModel>
+        val scheduleTitles: Map<DayOfWeek, List<TitleModel>>
     ): HomeScreenState
 }
 

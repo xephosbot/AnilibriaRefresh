@@ -2,11 +2,13 @@ package com.xbot.data.datasource
 
 import com.skydoves.sandwich.suspendOnSuccess
 import com.xbot.api.service.AnilibriaClient
+import com.xbot.data.mapper.SuccessScheduleMapper
 import com.xbot.data.mapper.SuccessTitleUpdatedMapper
 import com.xbot.data.mapper.SuccessTitlesMapper
 import com.xbot.data.mapper.SuccessTitleMapper
 import com.xbot.data.models.TitlePage
 import com.xbot.data.utils.handleErrors
+import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.TitleDetailModel
 import com.xbot.domain.model.TitleModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,10 +37,9 @@ class TitleDataSource @Inject constructor(
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getFavoriteTitles(limit: Int): Flow<List<TitleModel>> = flow {
-        //TODO: просто заглушка выдающая рандомные релизы
-        val response = client.getRandomReleases(limit)
-        response.suspendOnSuccess(SuccessTitlesMapper) {
+    fun getScheduleTitles(): Flow<Map<DayOfWeek, List<TitleModel>>> = flow {
+        val response = client.getScheduleWeek()
+        response.suspendOnSuccess(SuccessScheduleMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)

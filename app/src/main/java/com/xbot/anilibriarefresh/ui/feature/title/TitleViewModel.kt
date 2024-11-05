@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,7 @@ class TitleViewModel @Inject constructor(
     }
 }
 
+@Stable
 sealed interface TitleScreenState {
     data object Loading: TitleScreenState
     data class Success (
