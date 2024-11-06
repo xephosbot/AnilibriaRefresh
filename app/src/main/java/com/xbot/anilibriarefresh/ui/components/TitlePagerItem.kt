@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
@@ -86,7 +85,6 @@ fun LoadingPagerItem(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun CompactItemLayout(
     modifier: Modifier,
@@ -110,7 +108,6 @@ private fun CompactItemLayout(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun LargeItemLayout(
     modifier: Modifier,

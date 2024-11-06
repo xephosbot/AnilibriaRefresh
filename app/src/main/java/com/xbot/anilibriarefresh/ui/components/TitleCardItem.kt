@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.TitleModel
@@ -34,7 +33,6 @@ fun TitleCardItem(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
@@ -67,4 +65,4 @@ private fun LoadingTitleCardItem(
     )
 }
 
-private val TitleCardHeight = 164.dp
+private val TitleCardHeight = 192.dp

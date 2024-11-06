@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.PosterModel
@@ -55,7 +54,6 @@ fun TitleListItem(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun TitleListItemContent(
     modifier: Modifier = Modifier,

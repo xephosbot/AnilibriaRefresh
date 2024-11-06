@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.interpolator)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
@@ -67,12 +68,12 @@ dependencies {
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.google.fonts)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.haze.compose)
     implementation(libs.haze.compose.materials)
     implementation(libs.material.motion.compose.core)
     implementation(libs.shimmer.compose)
-    implementation(libs.glide.compose)
-    ksp(libs.glide.ksp)
 
     // Jetpack Media 3 dependencies
     implementation("androidx.media3:media3-common-ktx:1.5.0-alpha01")
