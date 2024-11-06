@@ -87,7 +87,11 @@ private fun TitleListItemContent(
         tags = {
             tags.forEachIndexed { index, tag ->
                 when(tag) {
-                    is TagData.Text -> Text(text = tag.text,)
+                    is TagData.Text -> Text(
+                        text = tag.text,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
                     is TagData.TextWithIcon -> TextWithIcon(
                         text = tag.text,
                         imageVector = tag.icon,

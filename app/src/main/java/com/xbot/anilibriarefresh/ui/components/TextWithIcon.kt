@@ -15,6 +15,7 @@ import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -26,9 +27,11 @@ fun TextWithIcon(
     text: String,
     imageVector: ImageVector,
     iconPosition: IconPosition = IconPosition.START,
+    iconPadding: Dp = 4.dp,
     style: TextStyle = LocalTextStyle.current,
     fontSize: TextUnit = TextUnit.Unspecified,
-    iconPadding: Dp = 4.dp,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    maxLines: Int = 1
 ) {
     val fontSizeStyled = when {
         fontSize != TextUnit.Unspecified -> fontSize
@@ -78,7 +81,9 @@ fun TextWithIcon(
         style = style.merge(
             fontSize = fontSize
         ),
-        inlineContent = inlineContent
+        inlineContent = inlineContent,
+        overflow = overflow,
+        maxLines = maxLines
     )
 }
 
