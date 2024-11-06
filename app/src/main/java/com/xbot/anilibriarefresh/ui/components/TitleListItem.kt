@@ -75,8 +75,6 @@ private fun TitleListItemContent(
         supportingContent = {
             Text(
                 text = title.description.lines().joinToString(" "),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
                 overflow = TextOverflow.Ellipsis
             )
         },
@@ -89,23 +87,14 @@ private fun TitleListItemContent(
         tags = {
             tags.forEachIndexed { index, tag ->
                 when(tag) {
-                    is TagData.Text -> Text(
-                        text = tag.text,
-                        fontSize = 14.sp
-                    )
+                    is TagData.Text -> Text(text = tag.text,)
                     is TagData.TextWithIcon -> TextWithIcon(
                         text = tag.text,
                         imageVector = tag.icon,
-                        iconPosition = IconPosition.END,
-                        fontSize = 14.sp
+                        iconPosition = IconPosition.END
                     )
                 }
-                if (index < tags.lastIndex) {
-                    Text(
-                        text = "•",
-                        fontSize = 14.sp
-                    )
-                }
+                if (index != tags.lastIndex) Text(text = "•")
             }
         }
     )
@@ -184,7 +173,11 @@ private fun TitleItemLayout(
         Box {
             //TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
-                value = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                value = LocalTextStyle.current.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                ),
                 content = supportingContent
             )
         }
@@ -192,14 +185,15 @@ private fun TitleItemLayout(
     val tagsRow = @Composable {
         //TODO: Use MaterialTheme.typography style
         ProvideTextStyle(
-            value = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            value = LocalTextStyle.current.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp
+            )
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(TitleItemContentPadding),
                 verticalAlignment = Alignment.CenterVertically,
-                content = {
-                    tags()
-                }
+                content = tags
             )
         }
     }

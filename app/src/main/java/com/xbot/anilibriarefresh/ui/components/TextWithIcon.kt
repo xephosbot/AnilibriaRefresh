@@ -6,13 +6,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,9 +26,15 @@ fun TextWithIcon(
     text: String,
     imageVector: ImageVector,
     iconPosition: IconPosition = IconPosition.START,
-    fontSize: TextUnit = 18.sp,
-    iconPadding: TextUnit = 4.sp
+    style: TextStyle = LocalTextStyle.current,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    iconPadding: Dp = 4.dp,
 ) {
+    val fontSizeStyled = when {
+        fontSize != TextUnit.Unspecified -> fontSize
+        else -> style.fontSize
+    }
+
     val annotatedString = when(iconPosition) {
         IconPosition.START -> buildAnnotatedString {
             appendInlineContent(id = INLINE_CONTENT_ICON_ID)
@@ -41,8 +50,8 @@ fun TextWithIcon(
     val inlineContent = mapOf(
         INLINE_CONTENT_ICON_ID to InlineTextContent(
             Placeholder(
-                width = fontSize,
-                height = fontSize,
+                width = fontSizeStyled,
+                height = fontSizeStyled,
                 placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
             )
         ) {
@@ -54,19 +63,21 @@ fun TextWithIcon(
         },
         INLINE_CONTENT_SPACER_ID to InlineTextContent(
             Placeholder(
-                width = iconPadding,
-                height = fontSize,
+                width = iconPadding.value.sp,
+                height = fontSizeStyled,
                 placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
             )
         ) {
-            Spacer(modifier = Modifier.size(iconPadding.value.dp))
+            Spacer(modifier = Modifier.size(iconPadding))
         }
     )
 
     Text(
         modifier = modifier,
         text = annotatedString,
-        fontSize = fontSize,
+        style = style.merge(
+            fontSize = fontSize
+        ),
         inlineContent = inlineContent
     )
 }
