@@ -3,6 +3,7 @@ package com.xbot.anilibriarefresh.di
 import android.content.Context
 import coil3.ImageLoader
 import coil3.map.Mapper
+import coil3.request.CachePolicy
 import coil3.request.crossfade
 import com.xbot.api.di.BaseUrl
 import com.xbot.domain.model.PosterModel
@@ -27,7 +28,7 @@ object CoilModule {
             .components {
                 add(Mapper<PosterModel, String> { data, _ -> "$baseUrl${data.src}" })
             }
+            .diskCachePolicy(CachePolicy.ENABLED)
             .build()
-
     }
 }

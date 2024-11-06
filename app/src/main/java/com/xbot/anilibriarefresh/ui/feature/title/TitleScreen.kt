@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
@@ -146,7 +145,6 @@ private fun TitleDetail(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 private fun LazyListScope.mainContent(
     title: TitleDetailModel
 ) {
@@ -196,7 +194,6 @@ private fun LazyListScope.mainContent(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun EpisodeItem(
     modifier: Modifier = Modifier,
