@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.domain.model.PosterModel
@@ -59,6 +60,8 @@ private fun TitleListItemContent(
     modifier: Modifier = Modifier,
     title: TitleModel
 ) {
+    val tags = rememberTitleModelTags(title)
+
     TitleItemLayout(
         modifier = modifier
             .height(TitleItemContainerHeight)
@@ -72,6 +75,8 @@ private fun TitleListItemContent(
         supportingContent = {
             Text(
                 text = title.description.lines().joinToString(" "),
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
                 overflow = TextOverflow.Ellipsis
             )
         },
@@ -82,13 +87,25 @@ private fun TitleListItemContent(
             )
         },
         tags = {
-            title.tags.forEachIndexed { index, tag ->
-                Text(
-                    text = tag,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                if (index != title.tags.lastIndex) Text("•")
+            tags.forEachIndexed { index, tag ->
+                when(tag) {
+                    is TagData.Text -> Text(
+                        text = tag.text,
+                        fontSize = 14.sp
+                    )
+                    is TagData.TextWithIcon -> TextWithIcon(
+                        text = tag.text,
+                        imageVector = tag.icon,
+                        iconPosition = IconPosition.END,
+                        fontSize = 14.sp
+                    )
+                }
+                if (index < tags.lastIndex) {
+                    Text(
+                        text = "•",
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     )
@@ -272,14 +289,16 @@ private fun TitleItemLayout(
 private fun TitleItemPreview() {
     val titleModel = TitleModel(
         id = 1,
+        year = 2023,
+        type = "TV",
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf("2024", "TV", "Приключения"),
+        episodesCount = 12,
+        favoritesCount = 12495,
         poster = PosterModel(
             src = null,
             thumbnail = null
         ),
-        uploadedTime = null
     )
 
     Column {

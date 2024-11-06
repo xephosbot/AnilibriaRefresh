@@ -114,6 +114,8 @@ private fun LargeItemLayout(
     title: TitleModel,
     onClick: (TitleModel) -> Unit
 ) {
+    val tags = rememberTitleModelTags(title)
+
     Box(
         modifier = Modifier
             .padding(horizontal = HorizontalPadding)
@@ -148,13 +150,25 @@ private fun LargeItemLayout(
                     overflow = TextOverflow.Ellipsis
                 )
                 Row {
-                    title.tags.forEachIndexed { index, tag ->
-                        Text(
-                            text = tag,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
-                        if (index != title.tags.lastIndex) Text(" • ")
+                    tags.forEachIndexed { index, tag ->
+                        when(tag) {
+                            is TagData.Text -> Text(
+                                text = tag.text,
+                                fontSize = 14.sp
+                            )
+                            is TagData.TextWithIcon -> TextWithIcon(
+                                text = tag.text,
+                                imageVector = tag.icon,
+                                iconPosition = IconPosition.END,
+                                fontSize = 14.sp
+                            )
+                        }
+                        if (index < tags.lastIndex) {
+                            Text(
+                                text = "•",
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 }
                 Text(

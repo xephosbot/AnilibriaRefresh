@@ -2,14 +2,11 @@ package com.xbot.domain.model
 
 data class TitleModel(
     val id: Int,
+    val year: Int,
+    val type: String,
     val name: String,
     val description: String,
-    val tags: List<String>,
-    val poster: PosterModel,
-    val uploadedTime: String?
-)
-
-data class PosterModel(
-    val src: String?,
-    val thumbnail: String?
+    val episodesCount: Int?,
+    val favoritesCount: Int,
+    val poster: PosterModel
 )

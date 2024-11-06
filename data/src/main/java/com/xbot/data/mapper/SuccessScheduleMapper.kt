@@ -3,7 +3,6 @@ package com.xbot.data.mapper
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
 import com.xbot.api.models.Schedule
-import com.xbot.api.models.enums.AgeRatingEnum
 import com.xbot.api.models.enums.PublishDayEnum
 import com.xbot.domain.model.DayOfWeek
 import com.xbot.domain.model.PosterModel
@@ -19,25 +18,19 @@ object SuccessScheduleMapper : ApiSuccessModelMapper<List<Schedule>, Map<DayOfWe
             valueTransform = { title ->
                 TitleModel(
                     id = title.id,
+                    year = title.year,
+                    type = title.type.description ?: "",
                     name = title.name.main,
                     description = title.description ?: "",
-                    tags = listOf(title.year.toString(), title.type.description ?: "", title.ageRating.value.toLabelString()),
+                    episodesCount = title.episodesTotal,
+                    favoritesCount = title.addedInUsersFavorites,
                     poster = PosterModel(
                         src = title.poster.optimized.src,
                         thumbnail = title.poster.optimized.thumbnail
-                    ),
-                    uploadedTime = title.updatedAt
+                    )
                 )
             }
         ).toSortedMap(compareBy { it.value })
-    }
-
-    private fun AgeRatingEnum.toLabelString(): String = when(this) {
-        AgeRatingEnum.R0_PLUS -> "0+"
-        AgeRatingEnum.R6_PLUS -> "6+"
-        AgeRatingEnum.R12_PLUS -> "12+"
-        AgeRatingEnum.R16_PLUS -> "16+"
-        AgeRatingEnum.R18_PLUS -> "18+"
     }
 
     private fun PublishDayEnum.toDayOfWeek(): DayOfWeek = when(this) {

@@ -16,14 +16,16 @@ object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<ReleaseCatalogResponse,
             items = titles.map { title ->
                 TitleModel(
                     id = title.id,
+                    year = title.year,
+                    type = title.type.description ?: "",
                     name = title.name.main,
                     description = title.description ?: "",
-                    tags = listOf(title.year.toString(), title.type.description ?: "", title.genres?.get(0)?.name ?: ""),
+                    episodesCount = title.episodesTotal,
+                    favoritesCount = title.addedInUsersFavorites,
                     poster = PosterModel(
                         src = title.poster.optimized.src,
                         thumbnail = title.poster.optimized.thumbnail
-                    ),
-                    uploadedTime = title.updatedAt
+                    )
                 )
             },
             total = total
