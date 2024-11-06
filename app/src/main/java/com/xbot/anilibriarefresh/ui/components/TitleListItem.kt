@@ -179,8 +179,7 @@ private fun TitleItemLayout(
             ProvideTextStyle(
                 value = LocalTextStyle.current.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
+                    fontSize = 12.sp
                 ),
                 content = supportingContent
             )
