@@ -29,13 +29,18 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
@@ -178,6 +183,7 @@ private fun TitleList(
             }
             header(
                 title = "Расписание", //TODO: Move to string resources
+                onClick = {}, //TODO: On click action which should open schedule screen
             )
             horizontalItems(
                 items = scheduleList,
@@ -185,9 +191,18 @@ private fun TitleList(
                 stickyHeader = { dayOfWeek ->
                     Column {
                         Text(
-                            text = dayOfWeek.toStringRes()
+                            text = dayOfWeek.toStringRes(),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 14.sp,
+                            lineHeight = 14.sp,
+                            style = LocalTextStyle.current.copy(
+                                platformStyle = PlatformTextStyle(
+                                    includeFontPadding = false
+                                )
+                            ),
+                            fontWeight = FontWeight.SemiBold
                         )
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 },
                 itemContent = { title ->
@@ -227,7 +242,7 @@ private fun LoadingScreen(
             LoadingPagerItem()
             Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
             Spacer(modifier = Modifier.height(16.dp))
-            Header(title = "Расписание") //TODO: Move to string resources
+            Header(title = "Расписание", onClick = {}) //TODO: Move to string resources
             //TODO: Add extra spacing for way of week title
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),

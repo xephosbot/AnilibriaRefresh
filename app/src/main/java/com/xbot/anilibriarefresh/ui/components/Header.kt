@@ -7,6 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +44,7 @@ fun Header(
         //TODO: Use MaterialTheme.typography style
         Text(
             text = title,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
 
@@ -49,6 +54,7 @@ fun Header(
             Text(
                 text = stringResource(R.string.text_favorites_btn),
                 fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
         }
@@ -56,7 +62,7 @@ fun Header(
 }
 
 object HeaderDefaults {
-    val ContentPadding = PaddingValues(16.dp)
+    val ContentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp)
     val ContentPaddingExcludeBottom = ContentPadding
         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
 }
