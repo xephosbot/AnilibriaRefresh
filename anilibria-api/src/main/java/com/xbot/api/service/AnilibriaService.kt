@@ -81,7 +81,7 @@ interface AnilibriaService {
     suspend fun getPublishStatuses(): ApiResponse<List<ValDesc<PublishStatusEnum>>>
 
     @GET("anime/catalog/references/seasons")
-    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum?>>>
+    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum>>>
 
     @GET("anime/catalog/references/sorting")
     suspend fun getSortingTypes(): ApiResponse<List<ValDesc<SortingTypeEnum>>>

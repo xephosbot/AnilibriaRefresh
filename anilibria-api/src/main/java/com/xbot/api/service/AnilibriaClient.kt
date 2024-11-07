@@ -163,7 +163,7 @@ class AnilibriaClient @Inject constructor(
      *
      * @return [ApiResponse] содержащий информацию о сезоне [SeasonEnum]
      */
-    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum?>>> {
+    suspend fun getSeasons(): ApiResponse<List<ValDesc<SeasonEnum>>> {
         return service.getSeasons()
     }
 
