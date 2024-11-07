@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -155,22 +154,14 @@ fun Filters(
     ) {
         LazyColumn {
             item {
-                TitleName(text = "Жанры")
-                Items(list = allInfo.genres)
-                TitleName(text = "Возрастной рейтинг")
-                Items(list = allInfo.ageRating)
-                TitleName(text = "Статус озвучки")
-                Items(list = allInfo.productionStatuses)
-                TitleName(text = "Выход серий")
-                Items(list = allInfo.ongoingStatuses)
-                TitleName(text = "Сезон")
-                Items(list = allInfo.seasons)
-                TitleName(text = "Типы сортировки")
-                Items(list = allInfo.sortingTypes)
-                TitleName(text = "Тип релиза")
-                Items(list = allInfo.typeRelease)
+                ItemFilter(text = "Жанры", list = allInfo.genres)
+                ItemFilter(text = "Возрастной рейтинг", list = allInfo.ageRating)
+                ItemFilter(text = "Статус озвучки", list = allInfo.productionStatuses)
+                ItemFilter(text = "Выход серий", list = allInfo.ongoingStatuses)
+                ItemFilter(text = "Сезон", list = allInfo.seasons)
+                ItemFilter(text = "Типы сортировки", list = allInfo.sortingTypes)
+                ItemFilter(text = "Тип релиза", list = allInfo.typeRelease)
                 TitleName(text = "Год")
-//                Items(list = allInfo.years)
                 Slider()
                 ButtonComponent(
                     modifier = Modifier
@@ -183,6 +174,16 @@ fun Filters(
             }
         }
     }
+}
+
+@Composable
+fun ItemFilter(
+    modifier: Modifier = Modifier,
+    text: String,
+    list: List<String>
+) {
+    TitleName(text = text)
+    Items(list = list)
 }
 
 @Composable
@@ -220,7 +221,6 @@ fun Items(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Slider(modifier: Modifier = Modifier) {
     var sliderPosition by remember { mutableStateOf(0f..100f) }
