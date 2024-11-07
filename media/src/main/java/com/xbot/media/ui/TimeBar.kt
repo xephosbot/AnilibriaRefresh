@@ -8,7 +8,6 @@ import androidx.compose.foundation.gestures.DragScope
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -20,13 +19,11 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -38,6 +35,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -55,49 +53,32 @@ internal fun TimeBar(
     thumb: @Composable (enable: Boolean, dragging: Boolean) -> Unit = { enable, dragging ->
         Thumb(enable, dragging)
     },
-    track: @Composable (current: Float, dragged: Float, buffered: Float) -> Unit = { _, dragged, buffered ->
-        Track(played = dragged, buffered = buffered)
+    track: @Composable (current: Float, buffered: Float) -> Unit = { current, buffered ->
+        Track(played = current, buffered = buffered)
     }
 ) {
-    val currentPosition by rememberUpdatedState(positionMs)
-
-    var isDragging by remember { mutableStateOf(false) }
-    var dragPosition by remember { mutableLongStateOf(0L) }
-    if (!isDragging) dragPosition = positionMs
-    val thumbPosition by remember {
-        derivedStateOf { if (isDragging) dragPosition else currentPosition }
+    val state = remember {
+        TimeBarState(positionMs, durationMs, onPositionChange, onPositionChangeStart, onPositionChangeStop)
     }
-    val positionFraction by remember(durationMs) {
-        derivedStateOf { if (durationMs != 0L) thumbPosition.toFloat() / durationMs else 0f }
-    }
-
-    var trackWidth by remember { mutableIntStateOf(0) }
-    var thumbSize by remember { mutableIntStateOf(0) }
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    state.onPositionChange = onPositionChange
+    state.onPositionChangeStart = onPositionChangeStart
+    state.onPositionChangeStop = onPositionChangeStop
+    state.position = positionMs.toFloat() / durationMs
+    state.isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     val drag = Modifier.draggable(
         orientation = Orientation.Horizontal,
-        reverseDirection = isRtl,
+        reverseDirection = state.isRtl,
         enabled = enabled,
         interactionSource = interactionSource,
-        state = rememberDraggableState { delta ->
-            val targetProgress = ((positionFraction * trackWidth + delta) / trackWidth)
-                .coerceIn(0f, 1f)
-            dragPosition = (targetProgress * durationMs).roundToLong()
-            onPositionChange?.invoke(dragPosition)
-        },
-        onDragStarted = { startPosition ->
-            isDragging = true
-            val startX = startPosition.x - thumbSize
-            dragPosition =
-                (startX / trackWidth * durationMs).roundToLong().coerceIn(0L, durationMs)
-            onPositionChangeStart?.invoke(dragPosition)
+        onDragStarted = { startedPosition ->
+            state.gestureStartAction(startedPosition)
         },
         onDragStopped = {
-            onPositionChangeStop?.invoke(dragPosition)
-            isDragging = false
+            state.gestureEndAction()
         },
-        startDragImmediately = isDragging,
+        startDragImmediately = state.isDragging,
+        state = state
     )
 
     val thumbBox = @Composable {
@@ -105,23 +86,18 @@ internal fun TimeBar(
             modifier = Modifier
                 .wrapContentWidth()
                 .onSizeChanged {
-                    thumbSize = it.width
+                    state.thumbWidth = it.width.toFloat()
                 }
         ) {
-            thumb(enabled, isDragging)
+            thumb(enabled, state.isDragging)
         }
     }
     val trackBox = @Composable {
         Box(
-            modifier = Modifier
-                .wrapContentWidth()
-                .onSizeChanged {
-                    trackWidth = it.width
-                }
+            modifier = Modifier.wrapContentWidth()
         ) {
             track(
-                if (durationMs > 0) currentPosition.toFloat() / durationMs else 0f,
-                if (durationMs > 0) thumbPosition.toFloat() / durationMs else 0f,
+                if (durationMs > 0) state.position else 0f,
                 if (durationMs > 0) bufferedPositionMs.toFloat() / durationMs else 0f
             )
         }
@@ -129,7 +105,7 @@ internal fun TimeBar(
 
     TimeBarLayout(
         modifier = modifier.then(drag),
-        positionFraction = { positionFraction },
+        state = state,
         thumb = thumbBox,
         track = trackBox
     )
@@ -138,14 +114,15 @@ internal fun TimeBar(
 @Composable
 private fun TimeBarLayout(
     modifier: Modifier = Modifier,
-    positionFraction: () -> Float,
+    state: TimeBarState,
     thumb: @Composable () -> Unit,
     track: @Composable () -> Unit,
 ) {
     Layout(
         modifier = Modifier
             .requiredSizeIn(
-                minWidth = ThumbDefaultSize, minHeight = ThumbDefaultSize
+                minWidth = ThumbDefaultSize,
+                minHeight = ThumbDefaultSize
             )
             .then(modifier),
         contents = listOf(thumb, track)
@@ -158,8 +135,10 @@ private fun TimeBarLayout(
         val sliderWidth = constraints.maxWidth
         val sliderHeight = ThumbDraggingSize.roundToPx()
 
+        state.updateDimensions(trackPlaceable.height.toFloat(), sliderWidth)
+
         val trackOffsetX = 0
-        val thumbOffsetX = (positionFraction() * sliderWidth).roundToInt()
+        val thumbOffsetX = (state.position * sliderWidth).roundToInt()
         val trackOffsetY = (sliderHeight - trackPlaceable.height) / 2
         val thumbOffsetY = (sliderHeight - thumbPlaceable.height) / 2
 
@@ -240,43 +219,70 @@ internal fun Thumb(
     )
 }
 
-//TODO: Complete move component logic to TimeBarState
 @Stable
 class TimeBarState(
     position: Long,
-    duration: Long,
-    val onPositionChange: ((positionMs: Long) -> Unit)?,
-    val onPositionChangeStart: ((positionMs: Long) -> Unit)?,
-    val onPositionChangeStop: ((positionMs: Long) -> Unit)?
+    private val duration: Long,
+    var onPositionChange: ((positionMs: Long) -> Unit)?,
+    var onPositionChangeStart: ((positionMs: Long) -> Unit)?,
+    var onPositionChangeStop: ((positionMs: Long) -> Unit)?
 ): DraggableState {
-    private val valueRange: LongRange = 0L..duration
+    private val valueRange: ClosedFloatingPointRange<Float> = 0f..1f
 
-    private var positionState by mutableLongStateOf(position)
+    private var positionState by mutableFloatStateOf(position.toFloat() / duration)
+    private var dragPosition by mutableFloatStateOf(position.toFloat() / duration)
     internal var isDragging by mutableStateOf(false)
         private set
 
-    var position: Long
+    var position: Float
         set(newVal) {
-            val coercedValue = newVal.coerceIn(valueRange.first, valueRange.last)
+            val coercedValue = newVal.coerceIn(valueRange.start, valueRange.endInclusive)
             positionState = coercedValue
         }
-        get() = positionState
+        get() = if (isDragging) dragPosition else positionState
 
-    override suspend fun drag(dragPriority: MutatePriority, block: suspend DragScope.() -> Unit) {
+    private var totalWidth by mutableIntStateOf(0)
+    internal var isRtl = false
+    internal var trackHeight by mutableFloatStateOf(0f)
+    internal var thumbWidth by mutableFloatStateOf(0f)
+
+    override suspend fun drag(
+        dragPriority: MutatePriority,
+        block: suspend DragScope.() -> Unit
+    ): Unit = coroutineScope {
         isDragging = true
         scrollMutex.mutateWith(dragScope, dragPriority, block)
         isDragging = false
     }
 
     override fun dispatchRawDelta(delta: Float) {
-        TODO("Not yet implemented")
+        val targetProgress = ((position * totalWidth + delta) / totalWidth)
+            .coerceIn(0f, 1f)
+        dragPosition = targetProgress
+        if (onPositionChange != null) {
+            onPositionChange?.invoke((dragPosition * duration).roundToLong())
+        }
     }
 
+    internal fun updateDimensions(newTrackHeight: Float, newTotalWidth: Int) {
+        trackHeight = newTrackHeight
+        totalWidth = newTotalWidth
+    }
+
+    internal val gestureStartAction: (Offset) -> Unit = { startPosition ->
+        val startX = startPosition.x - thumbWidth
+        dragPosition = startX / totalWidth
+        onPositionChangeStart?.invoke((dragPosition * duration).roundToLong())
+    }
+
+    internal val gestureEndAction = {
+        onPositionChangeStop?.invoke((dragPosition * duration).roundToLong())
+    }
+
+    private val dragScope: DragScope = object : DragScope {
+        override fun dragBy(pixels: Float): Unit = dispatchRawDelta(pixels)
+    }
     private val scrollMutex = MutatorMutex()
-    private val dragScope: DragScope =
-        object : DragScope {
-            override fun dragBy(pixels: Float): Unit = dispatchRawDelta(pixels)
-        }
 }
 
 private val TrackHeight = 2.dp
