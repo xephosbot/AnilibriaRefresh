@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
+//TODO: Название класса источника не соотвесвует с названием класс репозитория (FiltersRepository)
 class FilterDataSource @Inject constructor(
     private val client: AnilibriaClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO

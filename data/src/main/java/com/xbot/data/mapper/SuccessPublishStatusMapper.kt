@@ -6,6 +6,7 @@ import com.xbot.api.models.ValDesc
 import com.xbot.api.models.enums.PublishStatusEnum
 import com.xbot.domain.model.PublishStatusEnumModel
 
+//TODO: Название маппера заменить на SuccessPublishStatusesMapper т.к. обрабатывем список
 object SuccessPublishStatusMapper: ApiSuccessModelMapper<List<ValDesc<PublishStatusEnum>>, List<PublishStatusEnumModel>> {
     override fun map(apiSuccessResponse: ApiResponse.Success<List<ValDesc<PublishStatusEnum>>>): List<PublishStatusEnumModel> {
         val publishStatuses = apiSuccessResponse.data.map { it.value }

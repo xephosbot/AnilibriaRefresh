@@ -6,6 +6,7 @@ import com.xbot.api.models.ValDesc
 import com.xbot.api.models.enums.SeasonEnum
 import com.xbot.domain.model.SeasonEnumModel
 
+//TODO: Название маппера заменить на SuccessSeasonsMapper т.к. обрабатывем список
 object SuccessSeasonMapper: ApiSuccessModelMapper<List<ValDesc<SeasonEnum>>, List<SeasonEnumModel>> {
     override fun map(apiSuccessResponse: ApiResponse.Success<List<ValDesc<SeasonEnum>>>): List<SeasonEnumModel> {
         val seasons = apiSuccessResponse.data.map { it.value }

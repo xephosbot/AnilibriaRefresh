@@ -14,6 +14,7 @@ object SuccessProductionStatusesMapper: ApiSuccessModelMapper<List<ValDesc<Produ
         }
     }
 
+    //TODO: заменить название на toProductionStatus
     private fun ProductionStatusEnum.toProductionStatuses(): ProductionStatusesEnumModel = when(this) {
         ProductionStatusEnum.IS_IN_PRODUCTION -> ProductionStatusesEnumModel.IS_IN_PRODUCTION
         ProductionStatusEnum.IS_NOT_IN_PRODUCTION -> ProductionStatusesEnumModel.IS_NOT_IN_PRODUCTION

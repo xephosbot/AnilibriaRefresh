@@ -3,7 +3,7 @@ package com.xbot.data.datasource
 import com.skydoves.sandwich.suspendOnSuccess
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessScheduleMapper
-import com.xbot.data.mapper.SuccessTitleUpdatedMapper
+import com.xbot.data.mapper.SuccessTitlesUpdatedMapper
 import com.xbot.data.mapper.SuccessTitlesMapper
 import com.xbot.data.mapper.SuccessTitleMapper
 import com.xbot.data.models.TitlePage
@@ -24,7 +24,7 @@ class TitleDataSource @Inject constructor(
 ) {
     fun getLatestTitles(page: Int, limit: Int): Flow<TitlePage> = flow {
         val response = client.getReleases(page, limit)
-        response.suspendOnSuccess(SuccessTitleUpdatedMapper) {
+        response.suspendOnSuccess(SuccessTitlesUpdatedMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)

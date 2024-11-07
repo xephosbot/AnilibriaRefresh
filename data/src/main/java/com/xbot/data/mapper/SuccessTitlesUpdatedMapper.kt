@@ -7,7 +7,7 @@ import com.xbot.data.models.TitlePage
 import com.xbot.domain.model.PosterModel
 import com.xbot.domain.model.TitleModel
 
-object SuccessTitleUpdatedMapper : ApiSuccessModelMapper<ReleaseCatalogResponse, TitlePage> {
+object SuccessTitlesUpdatedMapper : ApiSuccessModelMapper<ReleaseCatalogResponse, TitlePage> {
     override fun map(apiSuccessResponse: ApiResponse.Success<ReleaseCatalogResponse>): TitlePage {
         val titles = apiSuccessResponse.data.data
         val total = apiSuccessResponse.data.meta.pagination.total
