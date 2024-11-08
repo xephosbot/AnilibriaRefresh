@@ -27,6 +27,7 @@ import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.search.SearchScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
+import com.xbot.anilibriarefresh.ui.feature.title.TitleScreenTest
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
 
@@ -60,7 +61,7 @@ fun AnilibriaNavGraph(
                 }
             }
             composable<Route.Home.Detail> {
-                TitleScreen(
+                TitleScreenTest(
                     paddingValues = paddingValues
                 )
             }
