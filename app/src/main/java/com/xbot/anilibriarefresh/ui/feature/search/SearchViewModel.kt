@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.models.toStringResource
 import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
@@ -31,8 +32,8 @@ class SearchViewModel @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     val state: StateFlow<SearchScreenState> = combine(
-        repository.getAgeRatings(),
         repository.getGenres(),
+        repository.getAgeRatings(),
         repository.getProductionStatuses(),
         repository.getPublishStatuses(),
         repository.getSeason(),
@@ -41,13 +42,15 @@ class SearchViewModel @Inject constructor(
         repository.getYears()
     ) { valuesArray ->
         SearchScreenState.Success(
-            ageRatings = valuesArray[0] as List<AgeRating>,
-            genres = valuesArray[1] as List<GenreModel>,
-            productionStatuses = valuesArray[2] as List<ProductionStatus>,
-            publishStatuses = valuesArray[3] as List<PublishStatus>,
-            seasons = valuesArray[4] as List<Season>,
-            sortingTypes = valuesArray[5] as List<SortingTypes>,
-            typeReleases = valuesArray[6] as List<ReleaseType>,
+            filtersList = listOf(
+                "Жанры" to valuesArray[0].typedMap<GenreModel> { StringResource.String(it.name) },
+                "Возрастной рейтинг" to valuesArray[1].typedMap(AgeRating::toStringResource),
+                "Статус озвучки" to valuesArray[2].typedMap(ProductionStatus::toStringResource),
+                "Выход серий" to valuesArray[3].typedMap(PublishStatus::toStringResource),
+                "Сезон" to valuesArray[4].typedMap(Season::toStringResource),
+                "Типы сортировки" to valuesArray[5].typedMap(SortingTypes::toStringResource),
+                "Тип релиза" to valuesArray[6].typedMap(ReleaseType::toStringResource)
+            ),
             years = valuesArray[7] as List<Int>
         )
     }.catch { error ->
@@ -74,19 +77,18 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> List<Any>.typedMap(transform: (T) -> StringResource): List<StringResource> {
+        return (this as List<T>).map(transform)
+    }
 }
 
 @Stable
 sealed interface SearchScreenState {
     data object Loading: SearchScreenState
     data class Success(
-        val ageRatings: List<AgeRating>,
-        val genres: List<GenreModel>,
-        val productionStatuses: List<ProductionStatus>,
-        val publishStatuses: List<PublishStatus>,
-        val seasons: List<Season>,
-        val sortingTypes: List<SortingTypes>,
-        val typeReleases: List<ReleaseType>,
+        val filtersList: List<Pair<String, List<StringResource>>>,
         val years: List<Int>
     ): SearchScreenState
 }

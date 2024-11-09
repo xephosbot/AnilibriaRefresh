@@ -48,13 +48,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.components.ButtonComponent
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
-import com.xbot.domain.models.GenreModel
-import com.xbot.domain.models.enums.AgeRating
-import com.xbot.domain.models.enums.ProductionStatus
-import com.xbot.domain.models.enums.PublishStatus
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
+import com.xbot.anilibriarefresh.ui.utils.StringResource
+import com.xbot.anilibriarefresh.ui.utils.stringResource
 
 @Composable
 fun SearchScreen(
@@ -111,13 +106,7 @@ private fun SearchScreenContent(
                             else -> {
                                 val successState = state as SearchScreenState.Success
                                 Filters(
-                                    ageRating = successState.ageRatings,
-                                    genres = successState.genres,
-                                    productionStatus = successState.productionStatuses,
-                                    publishStatus = successState.publishStatuses,
-                                    season = successState.seasons,
-                                    sortingTypes = successState.sortingTypes,
-                                    typeReleases = successState.typeReleases,
+                                    filtersList = successState.filtersList,
                                     years = successState.years
                                 )
                             }
@@ -196,29 +185,11 @@ private fun SearchBar(
 @Composable
 private fun Filters(
     modifier: Modifier = Modifier,
-    ageRating: List<AgeRating>,
-    genres: List<GenreModel>,
-    productionStatus: List<ProductionStatus>,
-    publishStatus: List<PublishStatus>,
-    season: List<Season>,
-    sortingTypes: List<SortingTypes>,
-    typeReleases: List<ReleaseType>,
+    filtersList:  List<Pair<String, List<StringResource>>>,
     years: List<Int>
 ) {
-    val filters = remember {
-        listOf(
-            "Жанры" to genres.map { it.name },
-            "Возрастной рейтинг" to ageRating,
-            "Статус озвучки" to productionStatus,
-            "Выход серий" to publishStatus,
-            "Сезон" to season,
-            "Типы сортировки" to sortingTypes,
-            "Тип релиза" to typeReleases
-        )
-    }
-
     LazyColumn {
-        items(filters) { filter ->
+        items(filtersList) { filter ->
             ItemsFilter(
                 modifier = modifier,
                 text = filter.first,
@@ -253,7 +224,7 @@ private fun Filters(
 private fun ItemsFilter(
     modifier: Modifier = Modifier,
     text: String,
-    list: List<Any>? = null
+    list: List<StringResource>? = null
 ) {
     Text(
         modifier = modifier
@@ -272,7 +243,7 @@ private fun ItemsFilter(
             list.forEach { item ->
                 AssistChip(
                     onClick = {},
-                    label = { Text(text = item.toString()) }
+                    label = { Text(text = stringResource(item)) }
                 )
             }
         }

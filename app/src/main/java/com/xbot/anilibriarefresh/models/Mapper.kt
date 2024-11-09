@@ -55,7 +55,7 @@ private fun TitleModel.listOfTags(): List<TitleTag> {
     }
 }
 
-private fun ReleaseType.toStringResource(): StringResource {
+fun ReleaseType.toStringResource(): StringResource {
     val resId = when(this) {
         ReleaseType.TV -> R.string.release_type_tv
         ReleaseType.ONA -> R.string.release_type_ona
@@ -69,7 +69,7 @@ private fun ReleaseType.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun AgeRating.toStringResource(): StringResource {
+fun AgeRating.toStringResource(): StringResource {
     val resId = when(this) {
         AgeRating.R0_PLUS -> R.string.age_rating_0_plus
         AgeRating.R6_PLUS -> R.string.age_rating_6_plus
@@ -80,7 +80,7 @@ private fun AgeRating.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun ProductionStatus.toStringResource(): StringResource {
+fun ProductionStatus.toStringResource(): StringResource {
     val resId = when(this) {
         ProductionStatus.IS_IN_PRODUCTION -> R.string.production_status_is_in_production
         ProductionStatus.IS_NOT_IN_PRODUCTION -> R.string.production_status_is_not_in_production
@@ -88,7 +88,7 @@ private fun ProductionStatus.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun PublishStatus.toStringResource(): StringResource {
+fun PublishStatus.toStringResource(): StringResource {
     val resId = when(this) {
         PublishStatus.IS_ONGOING -> R.string.publish_status_is_ongoing
         PublishStatus.IS_NOT_ONGOING -> R.string.publish_status_is_not_ongoing
@@ -96,7 +96,7 @@ private fun PublishStatus.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun Season.toStringResource(): StringResource {
+fun Season.toStringResource(): StringResource {
     val resId = when(this) {
         Season.WINTER -> R.string.season_winter
         Season.SPRING -> R.string.season_spring
@@ -106,7 +106,7 @@ private fun Season.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun SortingTypes.toStringResource(): StringResource {
+fun SortingTypes.toStringResource(): StringResource {
     val resId = when(this) {
         SortingTypes.FRESH_AT_DESC -> R.string.sorting_types_fresh_at_desc
         SortingTypes.FRESH_AT_ASC -> R.string.sorting_types_fresh_at_asc
