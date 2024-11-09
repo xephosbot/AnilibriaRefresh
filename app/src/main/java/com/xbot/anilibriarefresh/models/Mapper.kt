@@ -88,7 +88,7 @@ private fun ProductionStatus.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-private fun PublishStatus.toStringResourse(): StringResource {
+private fun PublishStatus.toStringResource(): StringResource {
     val resId = when(this) {
         PublishStatus.IS_ONGOING -> R.string.publish_status_is_ongoing
         PublishStatus.IS_NOT_ONGOING -> R.string.publish_status_is_not_ongoing
