@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.feature.search
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material.icons.Icons
@@ -27,7 +29,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -44,8 +45,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.components.ButtonComponent
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
+import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingTypes
 
 @Composable
 fun SearchScreen(
@@ -54,6 +63,26 @@ fun SearchScreen(
     paddingValues: PaddingValues
 ) {
     val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(value = false) }
+    val state by searchViewModel.state.collectAsStateWithLifecycle()
+
+    SearchScreenContent(
+        modifier = modifier,
+        paddingValues = paddingValues,
+        state = state,
+        showBottomSheet = showBottomSheet,
+        onAction = searchViewModel::onAction
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchScreenContent(
+    modifier: Modifier = Modifier,
+    state: SearchScreenState,
+    paddingValues: PaddingValues,
+    showBottomSheet: MutableState<Boolean>,
+    onAction: (SearchScreenAction) -> Unit
+) {
 
     Surface(
         modifier = modifier
@@ -68,10 +97,33 @@ fun SearchScreen(
                 showBottomSheet = showBottomSheet
             )
             if (showBottomSheet.value) {
-                Filters(
-                    showBottomSheet = showBottomSheet,
-                    allInfo = allInfo
-                )
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet.value = false
+                    },
+                ) {
+                    Crossfade(
+                        targetState = state is SearchScreenState.Loading,
+                        label = ""
+                    ) { targetState ->
+                        when (targetState) {
+                            true -> LoadingSearchScreen()
+                            else -> {
+                                val successState = state as SearchScreenState.Success
+                                Filters(
+                                    ageRating = successState.ageRatings,
+                                    genres = successState.genres,
+                                    productionStatus = successState.productionStatuses,
+                                    publishStatus = successState.publishStatuses,
+                                    season = successState.seasons,
+                                    sortingTypes = successState.sortingTypes,
+                                    typeReleases = successState.typeReleases,
+                                    years = successState.years
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -79,9 +131,10 @@ fun SearchScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(
+private fun SearchBar(
     modifier: Modifier = Modifier,
-    showBottomSheet: MutableState<Boolean>) {
+    showBottomSheet: MutableState<Boolean>
+) {
     var textInput: String by rememberSaveable { mutableStateOf("") }
 
     Row(
@@ -140,70 +193,67 @@ fun SearchBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Filters(
+private fun Filters(
     modifier: Modifier = Modifier,
-    showBottomSheet: MutableState<Boolean>,
-    allInfo: AllInfo) {
-    val sheetState = rememberModalBottomSheetState()
+    ageRating: List<AgeRating>,
+    genres: List<GenreModel>,
+    productionStatus: List<ProductionStatus>,
+    publishStatus: List<PublishStatus>,
+    season: List<Season>,
+    sortingTypes: List<SortingTypes>,
+    typeReleases: List<ReleaseType>,
+    years: List<Int>
+) {
+    val filters = remember {
+        listOf(
+            "Жанры" to genres.map { it.name },
+            "Возрастной рейтинг" to ageRating,
+            "Статус озвучки" to productionStatus,
+            "Выход серий" to publishStatus,
+            "Сезон" to season,
+            "Типы сортировки" to sortingTypes,
+            "Тип релиза" to typeReleases
+        )
+    }
 
-    ModalBottomSheet(
-        onDismissRequest = {
-            showBottomSheet.value = false
-        },
-        sheetState = sheetState
-    ) {
-        LazyColumn {
-            item {
-                ItemFilter(text = "Жанры", list = allInfo.genres)
-                ItemFilter(text = "Возрастной рейтинг", list = allInfo.ageRating)
-                ItemFilter(text = "Статус озвучки", list = allInfo.productionStatuses)
-                ItemFilter(text = "Выход серий", list = allInfo.ongoingStatuses)
-                ItemFilter(text = "Сезон", list = allInfo.seasons)
-                ItemFilter(text = "Типы сортировки", list = allInfo.sortingTypes)
-                ItemFilter(text = "Тип релиза", list = allInfo.typeRelease)
-                TitleName(text = "Год")
-
-                val minYear = allInfo.years.first().toFloat()
-                val maxYear = allInfo.years.last().toFloat()
-
-                var yearRange by remember { mutableStateOf(minYear..maxYear) }
-
-                YearSlider(
-                    minValue = minYear,
-                    maxValue = maxYear,
-                    sliderPosition = yearRange,
-                    onValueChange = { newRange -> yearRange = newRange }
-                )
-
-                ButtonComponent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    text = "Поиск",
-                    onClick = {},
-                    colorStops = colorStopsButtonPagerContent)
-            }
+    LazyColumn {
+        items(filters) { filter ->
+            ItemsFilter(
+                modifier = modifier,
+                text = filter.first,
+                list = filter.second
+            )
+        }
+        item {
+            val minYear = years.first().toFloat()
+            val maxYear = years.last().toFloat()
+            var yearRange by remember { mutableStateOf(minYear..maxYear) }
+            YearSlider(
+                minValue = minYear,
+                maxValue = maxYear,
+                sliderPosition = yearRange,
+                onValueChange = { newRange -> yearRange = newRange }
+            )
+            ButtonComponent(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                text = "Поиск",
+                onClick = {},
+                colorStops = colorStopsButtonPagerContent
+            )
         }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ItemFilter(
+private fun ItemsFilter(
     modifier: Modifier = Modifier,
     text: String,
-    list: List<String>
-) {
-    TitleName(text = text)
-    Items(list = list)
-}
-
-@Composable
-fun TitleName(
-    modifier: Modifier = Modifier,
-    text: String
+    list: List<Any>? = null
 ) {
     Text(
         modifier = modifier
@@ -213,26 +263,21 @@ fun TitleName(
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp
     )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun Items(
-    modifier: Modifier = Modifier,
-    list: List<String>
-) {
-    FlowRow(
-        modifier = modifier
-            .padding(start = 16.dp, end = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        list.forEach { item ->
-            AssistChip(
-                onClick = {},
-                label = { Text(text = item) }
-            )
+    if (list != null) {
+        FlowRow(
+            modifier = modifier
+                .padding(start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            list.forEach { item ->
+                AssistChip(
+                    onClick = {},
+                    label = { Text(text = item.toString()) }
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -246,9 +291,10 @@ fun YearSlider(
 ) {
     val calculatedSteps = steps ?: ((maxValue - minValue).toInt() - 1).coerceAtLeast(0)
 
+    ItemsFilter(text = "Год")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -279,95 +325,8 @@ fun YearSlider(
 }
 
 @Composable
-fun Slider(modifier: Modifier = Modifier) {
-    var sliderPosition by remember { mutableStateOf(0f..100f) }
-
-    RangeSlider(
-        modifier = modifier.padding(start = 32.dp, end = 32.dp),
-        value = sliderPosition,
-        steps = 10,
-        onValueChange = {range -> sliderPosition = range},
-        valueRange = 0f..100f,
-        onValueChangeFinished = {},
-    )
+fun LoadingSearchScreen(modifier: Modifier = Modifier) {
+    Surface {
+        Column(modifier = modifier) {}
+    }
 }
-
-val allInfo = AllInfo(
-    genres = listOf(
-        "Боевые искусства",
-        "Вампиры",
-        "Гарем",
-        "Демоны",
-        "Детектив",
-        "Дзёсей",
-        "Драма",
-        "Игры",
-        "Исекай",
-        "Исторический",
-        "Киберпанк",
-        "Комедия",
-        "Магия"
-    ),
-    ageRating = listOf(
-        "0+",
-        "6+",
-        "12+",
-        "16+",
-        "18+"
-    ),
-    productionStatuses = listOf(
-        "Сейчас в озвучке",
-        "Озвучка завершена"
-    ),
-    ongoingStatuses = listOf(
-        "Онгоинг",
-        "Неонгоинг"
-    ),
-    seasons = listOf(
-        "Зима",
-        "Весна",
-        "Лето",
-        "Осень"
-    ),
-    sortingTypes = listOf(
-        "Обновлены недавно",
-        "Обновлены давно",
-        "Самый высокий рейтинг",
-        "Самый низкий рейтинг",
-        "Самые новые",
-        "Самые старые"
-    ),
-    typeRelease = listOf(
-        "ТВ",
-        "ОNA",
-        "WEB",
-        "OVA",
-        "OAD",
-        "Фильм",
-        "Дорама",
-        "Спешл"
-    ),
-    years = listOf(
-        "2015",
-        "2016",
-        "2017",
-        "2018",
-        "2019",
-        "2020",
-        "2021",
-        "2022",
-        "2023",
-        "2024"
-    )
-)
-
-data class AllInfo(
-    val genres: List<String>,
-    val ageRating: List<String>,
-    val productionStatuses: List<String>,
-    val ongoingStatuses: List<String>,
-    val seasons: List<String>,
-    val sortingTypes: List<String>,
-    val typeRelease: List<String>,
-    val years: List<String>
-)

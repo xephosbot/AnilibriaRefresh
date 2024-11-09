@@ -3,6 +3,8 @@ package com.xbot.anilibriarefresh.ui.feature.search
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.domain.models.GenreModel
@@ -57,6 +59,21 @@ class SearchViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = SearchScreenState.Loading
     )
+
+    fun onAction(action: SearchScreenAction) {
+        when(action) {
+            is SearchScreenAction.ShowErrorMessage -> {
+                //TODO: информативные сообщения для разного типа ошибок
+                snackbarManager.showMessage(
+                    title = StringResource.String(action.error.message ?: ""),
+                    action = MessageAction(
+                        title = StringResource.Text(R.string.retry_button),
+                        action = action.onConfirmAction
+                    )
+                )
+            }
+        }
+    }
 }
 
 @Stable
@@ -72,4 +89,11 @@ sealed interface SearchScreenState {
         val typeReleases: List<ReleaseType>,
         val years: List<Int>
     ): SearchScreenState
+}
+
+sealed interface SearchScreenAction {
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onConfirmAction: () -> Unit
+    ): SearchScreenAction
 }
