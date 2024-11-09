@@ -38,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -162,7 +164,19 @@ fun Filters(
                 ItemFilter(text = "Типы сортировки", list = allInfo.sortingTypes)
                 ItemFilter(text = "Тип релиза", list = allInfo.typeRelease)
                 TitleName(text = "Год")
-                Slider()
+
+                val minYear = allInfo.years.first().toFloat()
+                val maxYear = allInfo.years.last().toFloat()
+
+                var yearRange by remember { mutableStateOf(minYear..maxYear) }
+
+                YearSlider(
+                    minValue = minYear,
+                    maxValue = maxYear,
+                    sliderPosition = yearRange,
+                    onValueChange = { newRange -> yearRange = newRange }
+                )
+
                 ButtonComponent(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -216,6 +230,49 @@ fun Items(
             AssistChip(
                 onClick = {},
                 label = { Text(text = item) }
+            )
+        }
+    }
+}
+
+@Composable
+fun YearSlider(
+    modifier: Modifier = Modifier,
+    minValue: Float,
+    maxValue: Float,
+    steps: Int? = null,
+    sliderPosition: ClosedFloatingPointRange<Float>,
+    onValueChange: (ClosedFloatingPointRange<Float>) -> Unit
+) {
+    val calculatedSteps = steps ?: ((maxValue - minValue).toInt() - 1).coerceAtLeast(0)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text(
+                text = minValue.toInt().toString(),
+                modifier = Modifier.semantics { contentDescription = "Minimum Year" }
+            )
+
+            RangeSlider(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+                value = sliderPosition,
+                steps = calculatedSteps,
+                onValueChange = onValueChange,
+                valueRange = minValue..maxValue,
+                onValueChangeFinished = {}
+            )
+
+            Text(
+                text = maxValue.toInt().toString(),
+                modifier = Modifier.semantics { contentDescription = "Maximum Year" }
             )
         }
     }
