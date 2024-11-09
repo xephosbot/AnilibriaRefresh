@@ -22,10 +22,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.outlined.LiveTv
-import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,17 +39,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.R
+import com.xbot.anilibriarefresh.models.TitleDetail
+import com.xbot.anilibriarefresh.models.toPosterUi
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
 import com.xbot.anilibriarefresh.ui.components.PosterImage
-import com.xbot.anilibriarefresh.ui.components.TextWithIcon
-import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.ui.icons.Heart
-import com.xbot.domain.model.DayOfWeek
-import com.xbot.domain.model.EpisodeModel
-import com.xbot.domain.model.MemberModel
-import com.xbot.domain.model.PosterModel
-import com.xbot.domain.model.TitleDetailModel
+import com.xbot.domain.models.EpisodeModel
+import com.xbot.domain.models.MemberModel
+import com.xbot.domain.models.PosterModel
+import com.xbot.domain.models.TitleDetailModel
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.DayOfWeek
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
 
 @Composable
 fun TitleScreen(
@@ -99,7 +97,7 @@ private fun TitleScreenContent(
 @Composable
 private fun TitleDetail(
     modifier: Modifier = Modifier,
-    title: TitleDetailModel,
+    title: TitleDetail,
     paddingValues: PaddingValues,
 ) {
     LazyColumn(
@@ -113,7 +111,7 @@ private fun TitleDetail(
             textId = R.string.genres_title
         )
         horizontalItems(
-            items = title.genres,
+            items = title.genres.map { it.name },
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { genre ->
             AssistChip(
@@ -146,7 +144,7 @@ private fun TitleDetail(
 }
 
 private fun LazyListScope.mainContent(
-    title: TitleDetailModel
+    title: TitleDetail
 ) {
     item(
         contentType = { "MainContent" }
@@ -173,22 +171,6 @@ private fun LazyListScope.mainContent(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                TextWithIcon(
-                    text = title.type,
-                    imageVector = Icons.Outlined.LiveTv
-                )
-                TextWithIcon(
-                    text = title.year.toString(),
-                    imageVector = Icons.Default.CalendarMonth
-                )
-                TextWithIcon(
-                    text = title.addedInUsersFavorites.toString(),
-                    imageVector = AnilibriaIcons.Filled.Heart
-                )
-                TextWithIcon(
-                    text = "Eposides ${title.episodesTotal ?: 0}",
-                    imageVector = Icons.Outlined.Timer
-                )
             }
         }
     }
@@ -211,7 +193,7 @@ private fun EpisodeItem(
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview
+            poster = episode.preview.toPosterUi()
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
@@ -301,27 +283,23 @@ private fun LazyListScope.header(
 private fun TitleScreenPreview() {
     val titleModel = TitleDetailModel(
         id = 1,
-        type = "ТВ",
+        type = ReleaseType.MOVIE,
         year = 2020,
         name = "Целитель, которого исключили из группы, оказался сильнейшим",
-        season = "Лето",
+        season = Season.SUMMER,
         description = "Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра. Но амбиций Вельтора это не остановит. Пусть пока что наследие некогда могущественного демона сводится лишь к нескольким параграфам в учебниках истории, заблуждаться не стоит: очень скоро этот дивный новый мир будет снова у его ног. Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра.",
         poster = PosterModel(
             src = null,
             thumbnail = null
         ),
-        freshAt = "2019-12-29T23:06:39+00:00",
-        createdAt = "2019-12-29T23:06:39+00:00",
-        updatedAt = "2023-08-20T15:08:20+00:00",
         isOngoing = false,
-        ageRating = "16+",
+        ageRating = AgeRating.R16_PLUS,
         publishDay = DayOfWeek.SUNDAY,
         notification = "Серии выходят по воскресеньям",
-        episodesTotal = 34,
-        isInProduction = false,
-        addedInUsersFavorites = 35034,
-        averageDurationOfEpisode = 25,
-        genres = listOf("Приключения", "Фантастика", "Экшен", "Романтика"),
+        episodesCount = 34,
+        favoritesCount = 35034,
+        episodeDuration = 25,
+        genres = listOf(),
         members = listOf(
             MemberModel(
                 id = "e3d555b0",
@@ -356,7 +334,7 @@ private fun TitleScreenPreview() {
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 1
+                ordinal = 1f
             ),
             EpisodeModel(
                 id = "95c359d1",
@@ -369,7 +347,7 @@ private fun TitleScreenPreview() {
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 2
+                ordinal = 2f
             ),
             EpisodeModel(
                 id = "95c322d1",
@@ -382,7 +360,7 @@ private fun TitleScreenPreview() {
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 3
+                ordinal = 3f
             ),
             EpisodeModel(
                 id = "951159d1",
@@ -395,7 +373,7 @@ private fun TitleScreenPreview() {
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 4
+                ordinal = 4f
             ),
             EpisodeModel(
                 id = "9511444000",
@@ -408,9 +386,9 @@ private fun TitleScreenPreview() {
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 5
+                ordinal = 5f
             ),
         )
     )
-    TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
+    //TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
 }

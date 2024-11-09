@@ -1,22 +1,22 @@
 package com.xbot.data.repository
 
-import com.xbot.data.datasource.FilterDataSource
-import com.xbot.domain.model.AgeRatingEnumModel
-import com.xbot.domain.model.GenreModel
-import com.xbot.domain.model.ProductionStatusesEnumModel
-import com.xbot.domain.model.PublishStatusEnumModel
-import com.xbot.domain.model.ReleaseTypeEnumModel
-import com.xbot.domain.model.SeasonEnumModel
-import com.xbot.domain.model.SortingTypesEnumModel
+import com.xbot.data.datasource.FiltersDataSource
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingTypes
 import com.xbot.domain.repository.FiltersRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class FiltersRepositoryImpl @Inject constructor(
-    private val filterDataSource: FilterDataSource
+    private val filterDataSource: FiltersDataSource
 ): FiltersRepository {
 
-    override fun getAgeRatings(): Flow<List<AgeRatingEnumModel>> {
+    override fun getAgeRatings(): Flow<List<AgeRating>> {
         return filterDataSource.getAgeRatings()
     }
 
@@ -24,23 +24,23 @@ internal class FiltersRepositoryImpl @Inject constructor(
         return filterDataSource.getGenres()
     }
 
-    override fun getProductionStatuses(): Flow<List<ProductionStatusesEnumModel>> {
+    override fun getProductionStatuses(): Flow<List<ProductionStatus>> {
         return filterDataSource.getProductionStatuses()
     }
 
-    override fun getPublishStatuses(): Flow<List<PublishStatusEnumModel>> {
+    override fun getPublishStatuses(): Flow<List<PublishStatus>> {
         return filterDataSource.getPublishStatuses()
     }
 
-    override fun getSeason(): Flow<List<SeasonEnumModel>> {
+    override fun getSeason(): Flow<List<Season>> {
         return filterDataSource.getSeasons()
     }
 
-    override fun getSortingTypes(): Flow<List<SortingTypesEnumModel>> {
+    override fun getSortingTypes(): Flow<List<SortingTypes>> {
         return filterDataSource.getSortingTypes()
     }
 
-    override fun getTypeReleases(): Flow<List<ReleaseTypeEnumModel>> {
+    override fun getTypeReleases(): Flow<List<ReleaseType>> {
         return filterDataSource.getReleaseType()
     }
 

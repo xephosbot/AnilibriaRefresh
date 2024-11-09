@@ -5,7 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.xbot.data.BuildConfig
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
-import com.xbot.domain.model.TitleModel
+import com.xbot.domain.models.TitleModel
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import kotlin.math.max

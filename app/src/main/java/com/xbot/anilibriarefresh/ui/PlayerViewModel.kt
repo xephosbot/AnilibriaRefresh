@@ -11,7 +11,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.navigation.toRoute
 import com.xbot.anilibriarefresh.navigation.Route
-import com.xbot.domain.model.TitleDetailModel
+import com.xbot.domain.models.TitleDetailModel
 import com.xbot.domain.repository.TitleRepository
 import com.xbot.media.service.PlayerProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,7 +54,8 @@ class PlayerViewModel @Inject constructor(
         val mediaMetadata = MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
             .setTitle(name)
-            .setArtist(type)
+            //TODO:
+            .setArtist(type?.toString())
             .setArtworkUri(Uri.parse("https://anilibria.top${poster.src}"))
             .build()
         return MediaItem.Builder()

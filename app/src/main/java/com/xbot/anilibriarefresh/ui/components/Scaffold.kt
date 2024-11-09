@@ -26,7 +26,6 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,8 +33,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
@@ -43,8 +40,9 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
-import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
+import com.xbot.anilibriarefresh.ui.utils.resources
+import com.xbot.anilibriarefresh.ui.utils.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -273,38 +271,8 @@ class ScaffoldState(
             snackbarManager.messages.collect { currentMessages ->
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
-                    val text = when (message.title) {
-                        is MessageContent.String -> message.title.value
-
-                        is MessageContent.Text -> {
-                            resources.getString(message.title.textId)
-                        }
-
-                        is MessageContent.Plurals -> {
-                            resources.getQuantityString(
-                                message.title.pluralsId,
-                                message.title.quantity,
-                                message.title.quantity
-                            )
-                        }
-                    }
-                    val actionLabel = when (val title = message.action?.title) {
-                        is MessageContent.String -> title.value
-
-                        is MessageContent.Text -> {
-                            resources.getString(title.textId)
-                        }
-
-                        is MessageContent.Plurals -> {
-                            resources.getQuantityString(
-                                title.pluralsId,
-                                title.quantity,
-                                title.quantity
-                            )
-                        }
-
-                        else -> null
-                    }
+                    val text = resources.stringResource(message.title)
+                    val actionLabel = message.action?.title?.let { resources.stringResource(it) }
                     // Notify the SnackbarManager so it can remove the current message from the list
                     snackbarManager.setMessageShown(message.id)
                     // Display the snackbar on the screen. `showSnackbar` is a function
@@ -322,17 +290,6 @@ class ScaffoldState(
             }
         }
     }
-}
-
-/**
- * A composable function that returns the [Resources]. It will be recomposed when `Configuration`
- * gets updated.
- */
-@Composable
-@ReadOnlyComposable
-private fun resources(): Resources {
-    LocalConfiguration.current
-    return LocalContext.current.resources
 }
 
 /**

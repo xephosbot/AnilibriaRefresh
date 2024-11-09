@@ -11,4 +11,13 @@
     <string name="description_title">Описание</string>
     <string name="name_episode_not_found_text">Имя не найдено</string>
     <string name="genres_title">Жанры</string>
+    <string name="episodes_count_title">%1$d эп.</string>
+    <string name="release_type_tv">ТВ</string>
+    <string name="release_type_ona">ONA</string>
+    <string name="release_type_web">WEB</string>
+    <string name="release_type_ova">OVA</string>
+    <string name="release_type_oad">OAD</string>
+    <string name="release_type_movie">Фильм</string>
+    <string name="release_type_dorama">Дорама</string>
+    <string name="release_type_special">Спешл</string>
 </resources>

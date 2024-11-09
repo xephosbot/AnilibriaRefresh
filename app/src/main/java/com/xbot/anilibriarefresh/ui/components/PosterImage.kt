@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
+import com.xbot.anilibriarefresh.models.Poster
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
-import com.xbot.domain.model.PosterModel
 
 @Composable
 fun PosterImage(
     modifier: Modifier = Modifier,
-    poster: PosterModel,
+    poster: Poster,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop
 ) {

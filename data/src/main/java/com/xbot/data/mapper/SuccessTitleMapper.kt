@@ -3,45 +3,44 @@ package com.xbot.data.mapper
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
 import com.xbot.api.models.Release
-import com.xbot.api.models.enums.AgeRatingEnum
-import com.xbot.api.models.enums.PublishDayEnum
-import com.xbot.domain.model.DayOfWeek
-import com.xbot.domain.model.EpisodeModel
-import com.xbot.domain.model.MemberModel
-import com.xbot.domain.model.PosterModel
-import com.xbot.domain.model.TitleDetailModel
+import com.xbot.domain.models.EpisodeModel
+import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.MemberModel
+import com.xbot.domain.models.PosterModel
+import com.xbot.domain.models.TitleDetailModel
 
 object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
     override fun map(apiSuccessResponse: ApiResponse.Success<Release>): TitleDetailModel {
         val title = apiSuccessResponse.data
         return TitleDetailModel(
             id = title.id,
-            type = title.type.description ?: "",
+            type = title.type.value?.toReleaseType(),
             year = title.year,
             name = title.name.main,
-            season = title.season.description ?: "",
-            description = title.description ?: "",
+            season = title.season.value?.toSeason(),
             poster = PosterModel(
                 src = title.poster.optimized.src,
                 thumbnail = title.poster.optimized.thumbnail
             ),
-            freshAt = title.freshAt ?: "",
-            createdAt = title.createdAt ?: "",
-            updatedAt = title.updatedAt ?: "",
             isOngoing = title.isOngoing,
-            ageRating = title.ageRating.value.toLabelString(),
+            ageRating = title.ageRating.value.toAgeRating(),
             publishDay = title.publishDay.value.toDayOfWeek(),
-            notification = title.notification ?: "",
-            episodesTotal = title.episodesTotal,
-            isInProduction = title.isInProduction,
-            addedInUsersFavorites = title.addedInUsersFavorites,
-            averageDurationOfEpisode = title.averageDurationOfEpisode,
-            genres = title.genres?.map { it.name } ?: listOf(),
+            description = title.description.orEmpty(),
+            notification = title.notification.orEmpty(),
+            episodesCount = title.episodesTotal,
+            favoritesCount = title.addedInUsersFavorites,
+            episodeDuration = title.averageDurationOfEpisode,
+            genres = title.genres?.map { genre ->
+                GenreModel(
+                    id = genre.id,
+                    name = genre.name
+                )
+            } ?: listOf(),
             members = title.members?.map { member ->
                 MemberModel(
                     id = member.id,
-                    name = member.nickname ?: "",
-                    role = member.role.description ?: ""
+                    name = member.nickname.orEmpty(),
+                    role = member.role.description.orEmpty()
                 )
             } ?: listOf(),
             episodes = title.episodes?.map { episode ->
@@ -56,27 +55,9 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                     hls480 = episode.hls480,
                     hls720 = episode.hls720,
                     hls1080 = episode.hls1080,
-                    ordinal = episode.ordinal.toInt()
+                    ordinal = episode.ordinal
                 )
             } ?: listOf()
         )
-    }
-
-    private fun AgeRatingEnum.toLabelString(): String = when(this) {
-        AgeRatingEnum.R0_PLUS -> "0+"
-        AgeRatingEnum.R6_PLUS -> "6+"
-        AgeRatingEnum.R12_PLUS -> "12+"
-        AgeRatingEnum.R16_PLUS -> "16+"
-        AgeRatingEnum.R18_PLUS -> "18+"
-    }
-
-    private fun PublishDayEnum.toDayOfWeek(): DayOfWeek = when(this) {
-        PublishDayEnum.MONDAY -> DayOfWeek.MONDAY
-        PublishDayEnum.TUESDAY -> DayOfWeek.TUESDAY
-        PublishDayEnum.WEDNESDAY -> DayOfWeek.WEDNESDAY
-        PublishDayEnum.THURSDAY -> DayOfWeek.THURSDAY
-        PublishDayEnum.FRIDAY -> DayOfWeek.FRIDAY
-        PublishDayEnum.SATURDAY -> DayOfWeek.SATURDAY
-        PublishDayEnum.SUNDAY -> DayOfWeek.SUNDAY
     }
 }

@@ -1,6 +1,6 @@
 package com.xbot.data.di
 
-import com.xbot.data.datasource.FilterDataSource
+import com.xbot.data.datasource.FiltersDataSource
 import com.xbot.data.datasource.TitleDataSource
 import com.xbot.data.repository.FiltersRepositoryImpl
 import com.xbot.data.repository.TitleRepositoryImpl
@@ -23,7 +23,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideFiltersRepository(dataSource: FilterDataSource): FiltersRepository {
+    fun provideFiltersRepository(dataSource: FiltersDataSource): FiltersRepository {
         return FiltersRepositoryImpl(dataSource)
     }
 }

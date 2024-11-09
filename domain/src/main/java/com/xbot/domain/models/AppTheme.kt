@@ -1,4 +1,4 @@
-package com.xbot.domain.model
+package com.xbot.domain.models
 
 sealed class AppTheme {
     data object Light : AppTheme()

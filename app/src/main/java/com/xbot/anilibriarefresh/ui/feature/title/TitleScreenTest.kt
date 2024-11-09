@@ -21,10 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,16 +43,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
+import com.xbot.anilibriarefresh.models.TitleDetail
+import com.xbot.anilibriarefresh.models.toPosterUi
 import com.xbot.anilibriarefresh.ui.components.OverlayHeaderLayout
 import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.components.rememberOverlayHeaderLayoutScrollBehavior
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.ui.icons.Heart
-import com.xbot.anilibriarefresh.ui.theme.AnilibriaTheme
 import com.xbot.anilibriarefresh.ui.utils.fadedEdge
 import com.xbot.anilibriarefresh.ui.utils.only
-import com.xbot.domain.model.EpisodeModel
-import com.xbot.domain.model.TitleDetailModel
+import com.xbot.domain.models.EpisodeModel
 
 @Composable
 fun TitleScreenTest(
@@ -77,7 +74,7 @@ fun TitleScreenTest(
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
-    title: TitleDetailModel,
+    title: TitleDetail,
     paddingValues: PaddingValues
 ) {
     val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
@@ -203,7 +200,7 @@ private fun EpisodeItem(
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview
+            poster = episode.preview.toPosterUi()
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(

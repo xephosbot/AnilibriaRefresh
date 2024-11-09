@@ -5,8 +5,8 @@ import coil3.ImageLoader
 import coil3.map.Mapper
 import coil3.request.CachePolicy
 import coil3.request.crossfade
+import com.xbot.anilibriarefresh.models.Poster
 import com.xbot.api.di.BaseUrl
-import com.xbot.domain.model.PosterModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +26,7 @@ object CoilModule {
         return ImageLoader.Builder(context)
             .crossfade(true)
             .components {
-                add(Mapper<PosterModel, String> { data, _ -> "$baseUrl${data.src}" })
+                add(Mapper<Poster, String> { data, _ -> "$baseUrl${data.src}" })
             }
             .diskCachePolicy(CachePolicy.ENABLED)
             .build()

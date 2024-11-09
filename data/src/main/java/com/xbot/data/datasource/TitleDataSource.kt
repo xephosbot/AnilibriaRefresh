@@ -8,9 +8,9 @@ import com.xbot.data.mapper.SuccessTitlesMapper
 import com.xbot.data.mapper.SuccessTitleMapper
 import com.xbot.data.models.TitlePage
 import com.xbot.data.utils.handleErrors
-import com.xbot.domain.model.DayOfWeek
-import com.xbot.domain.model.TitleDetailModel
-import com.xbot.domain.model.TitleModel
+import com.xbot.domain.models.TitleDetailModel
+import com.xbot.domain.models.TitleModel
+import com.xbot.domain.models.enums.DayOfWeek
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

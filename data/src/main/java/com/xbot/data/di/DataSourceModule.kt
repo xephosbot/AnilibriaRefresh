@@ -1,7 +1,7 @@
 package com.xbot.data.di
 
 import com.xbot.api.service.AnilibriaClient
-import com.xbot.data.datasource.FilterDataSource
+import com.xbot.data.datasource.FiltersDataSource
 import com.xbot.data.datasource.TitleDataSource
 import dagger.Module
 import dagger.Provides
@@ -20,7 +20,7 @@ object DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideFilterDataSource(client: AnilibriaClient): FilterDataSource {
-        return FilterDataSource(client)
+    fun provideFiltersDataSource(client: AnilibriaClient): FiltersDataSource {
+        return FiltersDataSource(client)
     }
 }

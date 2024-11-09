@@ -5,18 +5,18 @@ import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessAgeRatingsMapper
 import com.xbot.data.mapper.SuccessGenresMapper
 import com.xbot.data.mapper.SuccessProductionStatusesMapper
-import com.xbot.data.mapper.SuccessPublishStatusMapper
+import com.xbot.data.mapper.SuccessPublishStatusesMapper
 import com.xbot.data.mapper.SuccessReleaseTypesMapper
-import com.xbot.data.mapper.SuccessSeasonMapper
+import com.xbot.data.mapper.SuccessSeasonsMapper
 import com.xbot.data.mapper.SuccessSortingTypesMapper
 import com.xbot.data.utils.handleErrors
-import com.xbot.domain.model.AgeRatingEnumModel
-import com.xbot.domain.model.GenreModel
-import com.xbot.domain.model.ProductionStatusesEnumModel
-import com.xbot.domain.model.PublishStatusEnumModel
-import com.xbot.domain.model.ReleaseTypeEnumModel
-import com.xbot.domain.model.SeasonEnumModel
-import com.xbot.domain.model.SortingTypesEnumModel
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingTypes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,12 +24,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-//TODO: Название класса источника не соотвесвует с названием класс репозитория (FiltersRepository)
-class FilterDataSource @Inject constructor(
+class FiltersDataSource @Inject constructor(
     private val client: AnilibriaClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    fun getAgeRatings(): Flow<List<AgeRatingEnumModel>> = flow {
+    fun getAgeRatings(): Flow<List<AgeRating>> = flow {
         val response = client.getAgeRatings()
         response.suspendOnSuccess(SuccessAgeRatingsMapper) {
             emit(this)
@@ -43,35 +42,35 @@ class FilterDataSource @Inject constructor(
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getProductionStatuses(): Flow<List<ProductionStatusesEnumModel>> = flow {
+    fun getProductionStatuses(): Flow<List<ProductionStatus>> = flow {
         val response = client.getProductionStatuses()
         response.suspendOnSuccess(SuccessProductionStatusesMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getPublishStatuses(): Flow<List<PublishStatusEnumModel>> = flow {
+    fun getPublishStatuses(): Flow<List<PublishStatus>> = flow {
         val response = client.getPublishStatuses()
-        response.suspendOnSuccess(SuccessPublishStatusMapper) {
+        response.suspendOnSuccess(SuccessPublishStatusesMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getSeasons(): Flow<List<SeasonEnumModel>> = flow {
+    fun getSeasons(): Flow<List<Season>> = flow {
         val response = client.getSeasons()
-        response.suspendOnSuccess(SuccessSeasonMapper) {
+        response.suspendOnSuccess(SuccessSeasonsMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getSortingTypes(): Flow<List<SortingTypesEnumModel>> = flow {
+    fun getSortingTypes(): Flow<List<SortingTypes>> = flow {
         val response = client.getSortingTypes()
         response.suspendOnSuccess(SuccessSortingTypesMapper) {
             emit(this)
         }.handleErrors(TAG)
     }.flowOn(dispatcher)
 
-    fun getReleaseType(): Flow<List<ReleaseTypeEnumModel>> = flow {
+    fun getReleaseType(): Flow<List<ReleaseType>> = flow {
         val response = client.getTypeReleases()
         response.suspendOnSuccess(SuccessReleaseTypesMapper) {
             emit(this)

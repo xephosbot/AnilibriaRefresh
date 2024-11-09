@@ -1,4 +1,4 @@
-package com.xbot.domain.model
+package com.xbot.domain.models
 
 data class MemberModel(
     val id: String,

@@ -29,16 +29,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.xbot.anilibriarefresh.models.Poster
+import com.xbot.anilibriarefresh.models.Title
+import com.xbot.anilibriarefresh.models.TitleTag
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
-import com.xbot.domain.model.PosterModel
-import com.xbot.domain.model.TitleModel
+import com.xbot.anilibriarefresh.ui.utils.stringResource
 
 @Composable
 fun TitleListItem(
     modifier: Modifier = Modifier,
-    title: TitleModel?,
-    onClick: (TitleModel) -> Unit = {}
+    title: Title?,
+    onClick: (Title) -> Unit = {}
 ) {
     Surface(
         onClick = { title?.let { onClick(it) } }
@@ -58,10 +60,8 @@ fun TitleListItem(
 @Composable
 private fun TitleListItemContent(
     modifier: Modifier = Modifier,
-    title: TitleModel
+    title: Title
 ) {
-    val tags = rememberTitleModelTags(title)
-
     TitleItemLayout(
         modifier = modifier
             .height(TitleItemContainerHeight)
@@ -85,20 +85,20 @@ private fun TitleListItemContent(
             )
         },
         tags = {
-            tags.forEachIndexed { index, tag ->
+            title.tags.forEachIndexed { index, tag ->
                 when(tag) {
-                    is TagData.Text -> Text(
-                        text = tag.text,
+                    is TitleTag.Text -> Text(
+                        text = stringResource(tag.text),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
-                    is TagData.TextWithIcon -> TextWithIcon(
-                        text = tag.text,
+                    is TitleTag.TextWithIcon -> TextWithIcon(
+                        text = stringResource(tag.text),
                         imageVector = tag.icon,
                         iconPosition = IconPosition.END
                     )
                 }
-                if (index != tags.lastIndex) Text(text = "•")
+                if (index != title.tags.lastIndex) Text(text = "•")
             }
         }
     )
@@ -284,22 +284,18 @@ private fun TitleItemLayout(
 @Preview
 @Composable
 private fun TitleItemPreview() {
-    val titleModel = TitleModel(
+    val title = Title(
         id = 1,
-        year = 2023,
-        type = "TV",
         name = "Атака титанов",
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        episodesCount = 12,
-        favoritesCount = 12495,
-        poster = PosterModel(
-            src = null,
-            thumbnail = null
+        tags = listOf(),
+        poster = Poster(
+            src = null
         ),
     )
 
     Column {
-        TitleListItem(title = titleModel)
+        TitleListItem(title = title)
         TitleListItem(title = null)
     }
 }

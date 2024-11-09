@@ -6,9 +6,9 @@ import androidx.paging.PagingData
 import com.xbot.data.datasource.TitleDataSource
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.data.datasource.TitlePagingSource
-import com.xbot.domain.model.DayOfWeek
-import com.xbot.domain.model.TitleDetailModel
-import com.xbot.domain.model.TitleModel
+import com.xbot.domain.models.TitleDetailModel
+import com.xbot.domain.models.TitleModel
+import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.repository.TitleRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -27,15 +27,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.xbot.anilibriarefresh.models.Title
+import com.xbot.anilibriarefresh.models.TitleTag
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
-import com.xbot.domain.model.TitleModel
+import com.xbot.anilibriarefresh.ui.utils.stringResource
 
 @Composable
 fun TitlePagerItem(
     modifier: Modifier = Modifier,
-    title: TitleModel,
-    onClick: (TitleModel) -> Unit
+    title: Title,
+    onClick: (Title) -> Unit
 ) {
     BoxWithConstraints {
         if (maxWidth < 600.dp) {
@@ -88,8 +90,8 @@ fun LoadingPagerItem(
 @Composable
 private fun CompactItemLayout(
     modifier: Modifier,
-    title: TitleModel,
-    onClick: (TitleModel) -> Unit
+    title: Title,
+    onClick: (Title) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -111,11 +113,9 @@ private fun CompactItemLayout(
 @Composable
 private fun LargeItemLayout(
     modifier: Modifier,
-    title: TitleModel,
-    onClick: (TitleModel) -> Unit
+    title: Title,
+    onClick: (Title) -> Unit
 ) {
-    val tags = rememberTitleModelTags(title)
-
     Box(
         modifier = Modifier
             .padding(horizontal = HorizontalPadding)
@@ -150,20 +150,20 @@ private fun LargeItemLayout(
                     overflow = TextOverflow.Ellipsis
                 )
                 Row {
-                    tags.forEachIndexed { index, tag ->
+                    title.tags.forEachIndexed { index, tag ->
                         when(tag) {
-                            is TagData.Text -> Text(
-                                text = tag.text,
+                            is TitleTag.Text -> Text(
+                                text = stringResource(tag.text),
                                 fontSize = 14.sp
                             )
-                            is TagData.TextWithIcon -> TextWithIcon(
-                                text = tag.text,
+                            is TitleTag.TextWithIcon -> TextWithIcon(
+                                text = stringResource(tag.text),
                                 imageVector = tag.icon,
                                 iconPosition = IconPosition.END,
                                 fontSize = 14.sp
                             )
                         }
-                        if (index < tags.lastIndex) {
+                        if (index < title.tags.lastIndex) {
                             Text(
                                 text = "•",
                                 fontSize = 14.sp

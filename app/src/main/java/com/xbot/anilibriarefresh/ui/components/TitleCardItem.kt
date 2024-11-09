@@ -19,15 +19,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.xbot.anilibriarefresh.models.Title
 import com.xbot.anilibriarefresh.ui.utils.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
-import com.xbot.domain.model.TitleModel
 
 @Composable
 fun TitleCardItem(
     modifier: Modifier = Modifier,
-    title: TitleModel?,
-    onClick: (TitleModel) -> Unit
+    title: Title?,
+    onClick: (Title) -> Unit
 ) {
     Crossfade(
         targetState = title,
@@ -43,8 +43,8 @@ fun TitleCardItem(
 @Composable
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
-    title: TitleModel,
-    onClick: (TitleModel) -> Unit
+    title: Title,
+    onClick: (Title) -> Unit
 ) {
     Column(
         modifier = Modifier.width(IntrinsicSize.Min)

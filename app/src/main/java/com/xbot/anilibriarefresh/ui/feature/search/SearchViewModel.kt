@@ -3,15 +3,15 @@ package com.xbot.anilibriarefresh.ui.feature.search
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
-import com.xbot.domain.model.AgeRatingEnumModel
-import com.xbot.domain.model.GenreModel
-import com.xbot.domain.model.ProductionStatusesEnumModel
-import com.xbot.domain.model.PublishStatusEnumModel
-import com.xbot.domain.model.ReleaseTypeEnumModel
-import com.xbot.domain.model.SeasonEnumModel
-import com.xbot.domain.model.SortingTypesEnumModel
+import com.xbot.anilibriarefresh.ui.utils.StringResource
+import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingTypes
 import com.xbot.domain.repository.FiltersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,18 +39,18 @@ class SearchViewModel @Inject constructor(
         repository.getYears()
     ) { valuesArray ->
         SearchScreenState.Success(
-            ageRatings = valuesArray[0] as List<AgeRatingEnumModel>,
+            ageRatings = valuesArray[0] as List<AgeRating>,
             genres = valuesArray[1] as List<GenreModel>,
-            productionStatuses = valuesArray[2] as List<ProductionStatusesEnumModel>,
-            publishStatuses = valuesArray[3] as List<PublishStatusEnumModel>,
-            seasons = valuesArray[4] as List<SeasonEnumModel>,
-            sortingTypes = valuesArray[5] as List<SortingTypesEnumModel>,
-            typeReleases = valuesArray[6] as List<ReleaseTypeEnumModel>,
+            productionStatuses = valuesArray[2] as List<ProductionStatus>,
+            publishStatuses = valuesArray[3] as List<PublishStatus>,
+            seasons = valuesArray[4] as List<Season>,
+            sortingTypes = valuesArray[5] as List<SortingTypes>,
+            typeReleases = valuesArray[6] as List<ReleaseType>,
             years = valuesArray[7] as List<Int>
         )
     }.catch { error ->
         snackbarManager.showMessage(
-            title = MessageContent.String(error.message ?: "")
+            title = StringResource.String(error.message ?: "")
         )
     }.stateIn(
         scope = viewModelScope,
@@ -63,13 +63,13 @@ class SearchViewModel @Inject constructor(
 sealed interface SearchScreenState {
     data object Loading: SearchScreenState
     data class Success(
-        val ageRatings: List<AgeRatingEnumModel>,
+        val ageRatings: List<AgeRating>,
         val genres: List<GenreModel>,
-        val productionStatuses: List<ProductionStatusesEnumModel>,
-        val publishStatuses: List<PublishStatusEnumModel>,
-        val seasons: List<SeasonEnumModel>,
-        val sortingTypes: List<SortingTypesEnumModel>,
-        val typeReleases: List<ReleaseTypeEnumModel>,
+        val productionStatuses: List<ProductionStatus>,
+        val publishStatuses: List<PublishStatus>,
+        val seasons: List<Season>,
+        val sortingTypes: List<SortingTypes>,
+        val typeReleases: List<ReleaseType>,
         val years: List<Int>
     ): SearchScreenState
 }

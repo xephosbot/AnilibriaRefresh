@@ -5,10 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.xbot.anilibriarefresh.models.TitleDetail
+import com.xbot.anilibriarefresh.models.toTitleDetailUi
 import com.xbot.anilibriarefresh.navigation.Route
-import com.xbot.anilibriarefresh.ui.utils.MessageContent
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
-import com.xbot.domain.model.TitleDetailModel
+import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.domain.repository.TitleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,10 +30,10 @@ class TitleViewModel @Inject constructor(
         .catch { error ->
             //TODO: информативные сообщения для разного типа ошибок
             snackbarManager.showMessage(
-                title = MessageContent.String(error.message ?: "")
+                title = StringResource.String(error.message ?: "")
             )
         }.map { title ->
-            TitleScreenState.Success(title)
+            TitleScreenState.Success(title.toTitleDetailUi())
         }
         .stateIn(
             scope = viewModelScope,
@@ -49,7 +50,7 @@ class TitleViewModel @Inject constructor(
 sealed interface TitleScreenState {
     data object Loading: TitleScreenState
     data class Success (
-        val title: TitleDetailModel
+        val title: TitleDetail
     ): TitleScreenState
 }
 

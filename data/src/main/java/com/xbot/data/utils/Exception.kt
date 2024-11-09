@@ -12,9 +12,9 @@ class NetworkException(message: String?) : Exception(message)
 class SerializationException(message: String?, cause: Throwable) : Exception(message, cause)
 
 @OptIn(ExperimentalSerializationApi::class)
-fun <T> ApiResponse<T>.handleErrors(tag: String = "") = onException {
+fun <T> ApiResponse<T>.handleErrors(tag: String? = null) = onException {
     if (BuildConfig.DEBUG) {
-        Log.e(tag, message ?: UNKNOWN_ERROR)
+        Log.e(tag ?: DEFAULT_TAG, message ?: UNKNOWN_ERROR)
     }
     when (throwable) {
         is UnknownHostException -> {
@@ -27,4 +27,5 @@ fun <T> ApiResponse<T>.handleErrors(tag: String = "") = onException {
     }
 }
 
+private const val DEFAULT_TAG = "Unknown tag"
 private const val UNKNOWN_ERROR = "Unknown error"

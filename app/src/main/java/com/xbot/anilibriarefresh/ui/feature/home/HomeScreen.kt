@@ -51,6 +51,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.anilibriarefresh.models.Title
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
 import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
@@ -63,8 +64,7 @@ import com.xbot.anilibriarefresh.ui.components.pagerItemTransition
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
-import com.xbot.domain.model.DayOfWeek
-import com.xbot.domain.model.TitleModel
+import com.xbot.domain.models.enums.DayOfWeek
 
 @Composable
 fun HomeScreen(
@@ -93,7 +93,7 @@ private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     state: HomeScreenState,
-    items: LazyPagingItems<TitleModel>,
+    items: LazyPagingItems<Title>,
     loadStates: CombinedLoadStates,
     onAction: (HomeScreenAction) -> Unit,
     onNavigate: (Int, String) -> Unit
@@ -159,11 +159,11 @@ private fun HomeScreenContent(
 @Composable
 private fun TitleList(
     modifier: Modifier = Modifier,
-    items: LazyPagingItems<TitleModel>,
-    recommendedList: List<TitleModel>,
-    scheduleList: Map<DayOfWeek, List<TitleModel>>,
+    items: LazyPagingItems<Title>,
+    recommendedList: List<Title>,
+    scheduleList: Map<DayOfWeek, List<Title>>,
     contentPadding: PaddingValues,
-    onTitleClick: (TitleModel) -> Unit
+    onTitleClick: (Title) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val pagerState = rememberPagerState(pageCount = { recommendedList.size })
@@ -266,9 +266,9 @@ private fun LoadingScreen(
 }
 
 private fun LazyGridScope.horizontalItems(
-    items: List<TitleModel>,
+    items: List<Title>,
     contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(TitleModel) -> Unit
+    itemContent: @Composable LazyItemScope.(Title) -> Unit
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -289,10 +289,10 @@ private fun LazyGridScope.horizontalItems(
 }
 
 private fun LazyGridScope.horizontalItems(
-    items: Map<DayOfWeek, List<TitleModel>>,
+    items: Map<DayOfWeek, List<Title>>,
     contentPadding: PaddingValues = PaddingValues(),
     stickyHeader: @Composable (DayOfWeek) -> Unit,
-    itemContent: @Composable LazyItemScope.(TitleModel) -> Unit
+    itemContent: @Composable LazyItemScope.(Title) -> Unit
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -349,8 +349,8 @@ private fun LazyGridScope.header(
 }
 
 private fun LazyGridScope.pagingItems(
-    items: LazyPagingItems<TitleModel>,
-    itemContent: @Composable LazyGridItemScope.(TitleModel?) -> Unit
+    items: LazyPagingItems<Title>,
+    itemContent: @Composable LazyGridItemScope.(Title?) -> Unit
 ) {
     items(
         count = items.itemCount,
