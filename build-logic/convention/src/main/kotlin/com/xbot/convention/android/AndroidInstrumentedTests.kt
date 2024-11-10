@@ -1,4 +1,4 @@
-package com.xbot.convention
+package com.xbot.convention.android
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import org.gradle.api.Project
@@ -11,9 +11,9 @@ import org.gradle.api.Project
  *
  * Note: this could be improved by checking other potential sourceSets based on buildTypes and flavors.
  */
-internal fun LibraryAndroidComponentsExtension.disableUnnecessaryAndroidTests(
-    project: Project,
-) = beforeVariants {
+internal fun Project.disableUnnecessaryAndroidTests(
+    libraryAndroidComponentsExtension: LibraryAndroidComponentsExtension,
+) = libraryAndroidComponentsExtension.beforeVariants {
     it.androidTest.enable = it.androidTest.enable
             && project.projectDir.resolve("src/androidTest").exists()
 }

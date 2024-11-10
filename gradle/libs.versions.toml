@@ -47,6 +47,7 @@ hiltExt = "1.2.0"
 jacoco = "0.8.7"
 junit4 = "4.13.2"
 kotlin = "2.0.10"
+kotlinCompiler = "1.5.15"
 kotlinxCollections = "0.3.7"
 kotlinxCoroutines = "1.9.0"
 kotlinxDatetime = "0.6.0"
@@ -89,6 +90,7 @@ androidx-compose-material3-adaptive-navigation = { group = "androidx.compose.mat
 androidx-compose-material-navigation = { group = "androidx.compose.material", name = "material-navigation", version = "1.8.0-alpha04" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -187,6 +189,7 @@ firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "fireb
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
@@ -195,11 +198,10 @@ room = { id = "androidx.room", version.ref = "room" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 
 # Plugins defined by this project
-xbot-android-application = { id = "xbot.android.application", version = "unspecified" }
-xbot-android-application-compose = { id = "xbot.android.application.compose", version = "unspecified" }
+xbot-android-application = { id = "xbot.android.application" }
 xbot-android-hilt = { id = "xbot.android.hilt", version = "unspecified" }
-xbot-android-library = { id = "xbot.android.library", version = "unspecified" }
-xbot-android-library-compose = { id = "xbot.android.library.compose", version = "unspecified" }
+xbot-android-library = { id = "xbot.android.library" }
+xbot-android-library-compose = { id = "xbot.android.library.compose" }
 xbot-android-room = { id = "xbot.android.room", version = "unspecified" }
 xbot-android-test = { id = "xbot.android.test", version = "unspecified" }
 xbot-jvm-library = { id = "xbot.jvm.library", version = "unspecified" }
