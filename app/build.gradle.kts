@@ -47,8 +47,8 @@ dependencies {
     implementation(libs.shimmer.compose)
 
     // Jetpack Media 3 dependencies
-    implementation("androidx.media3:media3-common-ktx:1.5.0-alpha01")
-    implementation("androidx.media3:media3-session:1.5.0-alpha01")
+    implementation("androidx.media3:media3-common-ktx:1.5.0-beta01")
+    implementation("androidx.media3:media3-session:1.5.0-beta01")
 
     // Testing dependencies
     androidTestImplementation(libs.androidx.test.espresso.core)

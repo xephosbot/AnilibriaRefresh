@@ -65,9 +65,5 @@ gradlePlugin {
             id = "xbot.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
-        register("jvmLibrary") {
-            id = "xbot.jvm.library"
-            implementationClass = "JvmLibraryConventionPlugin"
-        }
     }
 }
