@@ -1,5 +1,3 @@
-@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
-
 package com.xbot.anilibriarefresh.ui.components
 
 import androidx.annotation.FloatRange
@@ -42,6 +40,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -96,12 +95,12 @@ fun AnilibriaNavigationBar(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text(),
+                        contentDescription = stringResource(destination.textResId),
                     )
                 },
                 label = {
                     Text(
-                        text = destination.text(),
+                        text = stringResource(destination.textResId),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
