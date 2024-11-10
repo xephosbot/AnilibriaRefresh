@@ -33,6 +33,7 @@ dependencies {
     implementation("androidx.media3:media3-session:1.5.0-beta01")
 
     // Testing dependencies
+    testImplementation(libs.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.ext)

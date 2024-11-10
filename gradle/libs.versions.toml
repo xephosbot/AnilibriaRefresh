@@ -74,6 +74,7 @@ detektRulesCompose = "0.4.17"
 
 # Ktlint
 ktlintGradlePlugin = "12.1.1"
+junit = "4.12"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -138,7 +139,7 @@ google-oss-licenses = { group = "com.google.android.gms", name = "play-services-
 google-oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "googleOssPlugin" }
 haze-compose = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-compose-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
-javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollections" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinxCoroutines" }
