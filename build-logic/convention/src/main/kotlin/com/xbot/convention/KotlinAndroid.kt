@@ -2,14 +2,12 @@ package com.xbot.convention
 
 import com.android.build.api.dsl.CommonExtension
 import com.xbot.convention.extensions.libs
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.provideDelegate
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
@@ -21,15 +19,15 @@ internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     commonExtension.apply {
-        compileSdk = 35
+        compileSdk = Configuration.Sdk.COMPILE_SDK
 
         defaultConfig {
-            minSdk = 24
+            minSdk = Configuration.Sdk.MIN_SDK
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = Configuration.Java.JAVA_VERSION
+            targetCompatibility = Configuration.Java.JAVA_VERSION
             isCoreLibraryDesugaringEnabled = true
         }
     }
@@ -46,8 +44,8 @@ internal fun Project.configureKotlinAndroid(
  */
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = Configuration.Java.JAVA_VERSION
+        targetCompatibility = Configuration.Java.JAVA_VERSION
     }
 
     configureKotlin<KotlinJvmProjectExtension>()
@@ -65,7 +63,7 @@ private inline fun <reified T : KotlinTopLevelExtension> Project.configureKotlin
         is KotlinJvmProjectExtension -> compilerOptions
         else -> error("Unsupported project extension $this ${T::class}")
     }.apply {
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = Configuration.Java.JAVA_TARGET
         allWarningsAsErrors = warningsAsErrors.toBoolean()
         freeCompilerArgs.addAll(
             // Enable experimental coroutines APIs, including Flow
