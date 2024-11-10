@@ -27,10 +27,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
 
     // Jetpack Media 3 dependencies
-    implementation("androidx.media3:media3-exoplayer:1.5.0-beta01")
-    implementation("androidx.media3:media3-exoplayer-hls:1.5.0-beta01")
-    implementation("androidx.media3:media3-common-ktx:1.5.0-beta01")
-    implementation("androidx.media3:media3-session:1.5.0-beta01")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.androidx.media3.common.ktx)
+    implementation(libs.androidx.media3.session)
 
     // Testing dependencies
     testImplementation(libs.junit)
