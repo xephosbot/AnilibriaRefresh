@@ -28,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     repository: TitleRepository,
-    private val snackbarManager: SnackbarManager
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     val titles: Flow<PagingData<Title>> = repository.getLatestTitles()
         .map { pagingData ->
@@ -38,35 +38,35 @@ class HomeViewModel @Inject constructor(
 
     val state: StateFlow<HomeScreenState> = combine(
         repository.getRecommendedTitles(),
-        repository.getScheduleTitles()
+        repository.getScheduleTitles(),
     ) { recommendedTitles, scheduleTitles ->
         HomeScreenState.Success(
             recommendedTitles = recommendedTitles.map(TitleModel::toTitleUi),
             scheduleTitles = scheduleTitles.mapValues { (_, titleList) ->
                 titleList.map(TitleModel::toTitleUi)
-            }
+            },
         )
     }.catch { error ->
-        //TODO: информативные сообщения для разного типа ошибок
+        // TODO: информативные сообщения для разного типа ошибок
         snackbarManager.showMessage(
-            title = StringResource.String(error.message ?: "")
+            title = StringResource.String(error.message ?: ""),
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = HomeScreenState.Loading
+        initialValue = HomeScreenState.Loading,
     )
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
             is HomeScreenAction.ShowErrorMessage -> {
-                //TODO: информативные сообщения для разного типа ошибок
+                // TODO: информативные сообщения для разного типа ошибок
                 snackbarManager.showMessage(
                     title = StringResource.String(action.error.message ?: ""),
                     action = MessageAction(
                         title = StringResource.Text(R.string.retry_button),
-                        action = action.onConfirmAction
-                    )
+                        action = action.onConfirmAction,
+                    ),
                 )
             }
         }
@@ -75,16 +75,16 @@ class HomeViewModel @Inject constructor(
 
 @Stable
 sealed interface HomeScreenState {
-    data object Loading: HomeScreenState
+    data object Loading : HomeScreenState
     data class Success(
         val recommendedTitles: List<Title>,
-        val scheduleTitles: Map<DayOfWeek, List<Title>>
-    ): HomeScreenState
+        val scheduleTitles: Map<DayOfWeek, List<Title>>,
+    ) : HomeScreenState
 }
 
 sealed interface HomeScreenAction {
     data class ShowErrorMessage(
         val error: Throwable,
-        val onConfirmAction: () -> Unit
-    ): HomeScreenAction
+        val onConfirmAction: () -> Unit,
+    ) : HomeScreenAction
 }

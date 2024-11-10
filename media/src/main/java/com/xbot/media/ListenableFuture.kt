@@ -19,7 +19,8 @@ internal suspend fun <T> ListenableFuture<T>.await(): T {
     return suspendCancellableCoroutine { cont: CancellableContinuation<T> ->
         addListener(
             ToContinuation(this, cont),
-            MoreExecutors.directExecutor())
+            MoreExecutors.directExecutor(),
+        )
         cont.invokeOnCancellation {
             cancel(false)
         }
@@ -28,8 +29,8 @@ internal suspend fun <T> ListenableFuture<T>.await(): T {
 
 private class ToContinuation<T>(
     val futureToObserve: ListenableFuture<T>,
-    val continuation: CancellableContinuation<T>
-): Runnable {
+    val continuation: CancellableContinuation<T>,
+) : Runnable {
     override fun run() {
         if (futureToObserve.isCancelled) {
             continuation.cancel()

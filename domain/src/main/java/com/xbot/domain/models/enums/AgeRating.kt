@@ -5,7 +5,5 @@ enum class AgeRating {
     R6_PLUS,
     R12_PLUS,
     R16_PLUS,
-    R18_PLUS
+    R18_PLUS,
 }
-
-

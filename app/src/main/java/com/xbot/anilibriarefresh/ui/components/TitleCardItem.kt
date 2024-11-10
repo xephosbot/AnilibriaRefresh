@@ -27,11 +27,11 @@ import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 fun TitleCardItem(
     modifier: Modifier = Modifier,
     title: Title?,
-    onClick: (Title) -> Unit
+    onClick: (Title) -> Unit,
 ) {
     Crossfade(
         targetState = title,
-        label = "TitleCardItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}"
+        label = "TitleCardItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
     ) { state ->
         when (state) {
             null -> LoadingTitleCardItem(modifier)
@@ -44,10 +44,10 @@ fun TitleCardItem(
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
     title: Title,
-    onClick: (Title) -> Unit
+    onClick: (Title) -> Unit,
 ) {
     Column(
-        modifier = Modifier.width(IntrinsicSize.Min)
+        modifier = Modifier.width(IntrinsicSize.Min),
     ) {
         PosterImage(
             modifier = modifier
@@ -55,21 +55,21 @@ private fun TitleCardItemContent(
                 .aspectRatio(7f / 10f)
                 .clip(RoundedCornerShape(8.dp))
                 .clickable { onClick(title) },
-            poster = title.poster
+            poster = title.poster,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = title.name,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
 
 @Composable
 private fun LoadingTitleCardItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val shimmer = LocalShimmer.current
 
@@ -79,7 +79,7 @@ private fun LoadingTitleCardItem(
             .aspectRatio(7f / 10f)
             .shimmerSafe(shimmer)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.LightGray)
+            .background(Color.LightGray),
     )
 }
 

@@ -13,5 +13,5 @@ data class TitleDetail(
     val notification: String,
     val genres: List<GenreModel>,
     val members: List<MemberModel>,
-    val episodes: List<EpisodeModel>
+    val episodes: List<EpisodeModel>,
 )

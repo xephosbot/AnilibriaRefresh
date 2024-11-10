@@ -4,5 +4,5 @@ import com.xbot.domain.models.TitleModel
 
 data class TitlePage(
     val items: List<TitleModel>,
-    val total: Int
+    val total: Int,
 )

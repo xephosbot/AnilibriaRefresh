@@ -1,7 +1,7 @@
 package com.xbot.domain.repository
 
-import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType

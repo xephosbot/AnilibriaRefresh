@@ -17,8 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 
 @Composable
-fun rememberSystemUiController(
-): SystemUiController {
+fun rememberSystemUiController(): SystemUiController {
     val view = LocalView.current
     val activity = view.context.findActivity()
     return remember(view, activity) { AndroidSystemUiController(view, activity) }
@@ -44,10 +43,10 @@ interface SystemUiController {
     var requestedOrientation: Int
 }
 
-private class AndroidSystemUiController (
+private class AndroidSystemUiController(
     private val view: View,
     private val activity: Activity?,
-): SystemUiController {
+) : SystemUiController {
     private val window = (view.parent as? DialogWindowProvider)?.window
         ?: activity?.window
     private val windowInsetsController = window?.let {

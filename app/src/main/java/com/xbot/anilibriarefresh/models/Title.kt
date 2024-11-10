@@ -8,5 +8,5 @@ data class Title(
     val name: String,
     val description: String,
     val tags: List<TitleTag>,
-    val poster: Poster
+    val poster: Poster,
 )

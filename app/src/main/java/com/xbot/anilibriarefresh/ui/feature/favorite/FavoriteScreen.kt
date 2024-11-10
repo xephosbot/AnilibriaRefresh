@@ -9,10 +9,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
-    viewModel: FavoriteViewModel = hiltViewModel()
+    viewModel: FavoriteViewModel = hiltViewModel(),
 ) {
-    //TODO: Favorite screen
+    // TODO: Favorite screen
     Surface(modifier = modifier.fillMaxSize()) {
-
     }
 }

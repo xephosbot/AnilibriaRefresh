@@ -1,8 +1,8 @@
 package com.xbot.data.repository
 
 import com.xbot.data.datasource.FiltersDataSource
-import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class FiltersRepositoryImpl @Inject constructor(
-    private val filterDataSource: FiltersDataSource
-): FiltersRepository {
-
+    private val filterDataSource: FiltersDataSource,
+) : FiltersRepository {
     override fun getAgeRatings(): Flow<List<AgeRating>> {
         return filterDataSource.getAgeRatings()
     }
@@ -47,6 +46,4 @@ internal class FiltersRepositoryImpl @Inject constructor(
     override fun getYears(): Flow<List<Int>> {
         return filterDataSource.getYears()
     }
-
-
 }

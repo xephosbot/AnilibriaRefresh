@@ -1,8 +1,8 @@
 package com.xbot.api.models
 
-import com.xbot.api.models.enums.QualityEnum
 import com.xbot.api.models.enums.CodecEnum
 import com.xbot.api.models.enums.ColorDepthEnum
+import com.xbot.api.models.enums.QualityEnum
 import com.xbot.api.models.enums.TorrentTypeEnum
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -25,5 +25,5 @@ data class Torrent(
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("description") val description: String,
-    @SerialName("completed_times") val completedTimes: Int
+    @SerialName("completed_times") val completedTimes: Int,
 )

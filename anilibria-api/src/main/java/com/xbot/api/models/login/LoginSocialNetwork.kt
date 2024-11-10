@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LoginSocialNetwork(
     @SerialName("url") val url: String,
-    @SerialName("state") val state: String
+    @SerialName("state") val state: String,
 )

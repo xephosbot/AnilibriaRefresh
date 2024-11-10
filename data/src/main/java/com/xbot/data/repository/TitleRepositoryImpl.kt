@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class TitleRepositoryImpl @Inject constructor(
-    private val dataSource: TitleDataSource
+    private val dataSource: TitleDataSource,
 ) : TitleRepository {
     override fun getLatestTitles(): Flow<PagingData<TitleModel>> {
         return Pager(
@@ -22,9 +22,9 @@ internal class TitleRepositoryImpl @Inject constructor(
                 pageSize = NETWORK_PAGE_SIZE,
                 prefetchDistance = NETWORK_PAGE_SIZE,
                 enablePlaceholders = true,
-                jumpThreshold = NETWORK_PAGE_SIZE * 3
+                jumpThreshold = NETWORK_PAGE_SIZE * 3,
             ),
-            pagingSourceFactory = { TitlePagingSource(dataSource) }
+            pagingSourceFactory = { TitlePagingSource(dataSource) },
         ).flow
     }
 

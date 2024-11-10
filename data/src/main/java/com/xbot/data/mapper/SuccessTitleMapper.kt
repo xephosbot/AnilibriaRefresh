@@ -20,7 +20,7 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             season = title.season.value?.toSeason(),
             poster = PosterModel(
                 src = title.poster.optimized.src,
-                thumbnail = title.poster.optimized.thumbnail
+                thumbnail = title.poster.optimized.thumbnail,
             ),
             isOngoing = title.isOngoing,
             ageRating = title.ageRating.value.toAgeRating(),
@@ -33,14 +33,14 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
             genres = title.genres?.map { genre ->
                 GenreModel(
                     id = genre.id,
-                    name = genre.name
+                    name = genre.name,
                 )
             } ?: listOf(),
             members = title.members?.map { member ->
                 MemberModel(
                     id = member.id,
                     name = member.nickname.orEmpty(),
-                    role = member.role.description.orEmpty()
+                    role = member.role.description.orEmpty(),
                 )
             } ?: listOf(),
             episodes = title.episodes?.map { episode ->
@@ -50,14 +50,14 @@ object SuccessTitleMapper : ApiSuccessModelMapper<Release, TitleDetailModel> {
                     duration = episode.duration,
                     preview = PosterModel(
                         src = episode.preview.optimized.src,
-                        thumbnail = episode.preview.optimized.thumbnail
+                        thumbnail = episode.preview.optimized.thumbnail,
                     ),
                     hls480 = episode.hls480,
                     hls720 = episode.hls720,
                     hls1080 = episode.hls1080,
-                    ordinal = episode.ordinal
+                    ordinal = episode.ordinal,
                 )
-            } ?: listOf()
+            } ?: listOf(),
         )
     }
 }

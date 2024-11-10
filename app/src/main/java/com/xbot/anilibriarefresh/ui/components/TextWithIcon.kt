@@ -31,14 +31,14 @@ fun TextWithIcon(
     style: TextStyle = LocalTextStyle.current,
     fontSize: TextUnit = TextUnit.Unspecified,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    maxLines: Int = 1
+    maxLines: Int = 1,
 ) {
     val fontSizeStyled = when {
         fontSize != TextUnit.Unspecified -> fontSize
         else -> style.fontSize
     }
 
-    val annotatedString = when(iconPosition) {
+    val annotatedString = when (iconPosition) {
         IconPosition.START -> buildAnnotatedString {
             appendInlineContent(id = INLINE_CONTENT_ICON_ID)
             appendInlineContent(id = INLINE_CONTENT_SPACER_ID)
@@ -55,41 +55,41 @@ fun TextWithIcon(
             Placeholder(
                 width = fontSizeStyled,
                 height = fontSizeStyled,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
+            ),
         ) {
             Icon(
                 imageVector = imageVector,
                 modifier = Modifier.fillMaxSize(),
-                contentDescription = null
+                contentDescription = null,
             )
         },
         INLINE_CONTENT_SPACER_ID to InlineTextContent(
             Placeholder(
                 width = iconPadding.value.sp,
                 height = fontSizeStyled,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter
-            )
+                placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
+            ),
         ) {
             Spacer(modifier = Modifier.size(iconPadding))
-        }
+        },
     )
 
     Text(
         modifier = modifier,
         text = annotatedString,
         style = style.merge(
-            fontSize = fontSize
+            fontSize = fontSize,
         ),
         inlineContent = inlineContent,
         overflow = overflow,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
 enum class IconPosition {
     START,
-    END
+    END,
 }
 
 private const val INLINE_CONTENT_ICON_ID = "iconId"

@@ -11,9 +11,8 @@ import javax.inject.Inject
 import kotlin.math.max
 
 class TitlePagingSource @Inject constructor(
-    private val dataSource: TitleDataSource
+    private val dataSource: TitleDataSource,
 ) : PagingSource<Int, TitleModel>() {
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TitleModel> {
         val pageIndex = params.key ?: FIRST_PAGE_INDEX
         val loadSize = params.loadSize
@@ -37,7 +36,7 @@ class TitlePagingSource @Inject constructor(
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = itemsBefore,
-                itemsAfter = itemsAfter
+                itemsAfter = itemsAfter,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

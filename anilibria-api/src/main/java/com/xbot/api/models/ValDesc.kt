@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ValDesc<T>(
     @SerialName("value") val value: T,
-    @SerialName("description") val description: String?
+    @SerialName("description") val description: String?,
 )

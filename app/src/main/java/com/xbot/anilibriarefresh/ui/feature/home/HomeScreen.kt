@@ -86,7 +86,7 @@ fun HomeScreen(
         items = items,
         loadStates = items.loadState,
         onAction = viewModel::onAction,
-        onNavigate = onNavigate
+        onNavigate = onNavigate,
     )
 }
 
@@ -113,22 +113,22 @@ private fun HomeScreenContent(
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = loadStates.refresh is LoadState.Loading,
-        onRefresh = items::refresh
+        onRefresh = items::refresh,
     )
 
     Scaffold(modifier = modifier) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .pullRefresh(pullRefreshState)
+                .pullRefresh(pullRefreshState),
         ) {
             Crossfade(
                 targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
-                label = "Loading state transition in HomeScreenContent"
+                label = "Loading state transition in HomeScreenContent",
             ) { targetState ->
                 when (targetState) {
                     true -> LoadingScreen(
-                        contentPadding = innerPadding.union(paddingValues)
+                        contentPadding = innerPadding.union(paddingValues),
                     )
 
                     else -> {
@@ -138,22 +138,22 @@ private fun HomeScreenContent(
                             recommendedList = successState.recommendedTitles,
                             scheduleList = successState.scheduleTitles,
                             contentPadding = innerPadding.union(paddingValues),
-                            onTitleClick = { onNavigate(it.id, it.name) }
+                            onTitleClick = { onNavigate(it.id, it.name) },
                         )
                     }
                 }
             }
 
-            //I wrapped it in a box because I needed to add padding.
+            // I wrapped it in a box because I needed to add padding.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding.union(paddingValues))
+                    .padding(innerPadding.union(paddingValues)),
             ) {
                 PullRefreshIndicator(
                     refreshing = loadStates.refresh is LoadState.Loading,
                     state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    modifier = Modifier.align(Alignment.TopCenter),
                 )
             }
         }
@@ -176,13 +176,13 @@ private fun TitleList(
         LazyVerticalGrid(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(350.dp),
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
         ) {
             horizontalPagerItems(state = pagerState) { page ->
                 TitlePagerItem(
                     modifier = Modifier.pagerItemTransition(page, pagerState),
                     title = recommendedList[page],
-                    onClick = onTitleClick
+                    onClick = onTitleClick,
                 )
             }
             header(
@@ -201,10 +201,10 @@ private fun TitleList(
                             lineHeight = 14.sp,
                             style = LocalTextStyle.current.copy(
                                 platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                )
+                                    includeFontPadding = false,
+                                ),
                             ),
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -212,18 +212,18 @@ private fun TitleList(
                 itemContent = { title ->
                     TitleCardItem(
                         title = title,
-                        onClick = onTitleClick
+                        onClick = onTitleClick,
                     )
-                }
+                },
             )
             header(
                 titleResId = R.string.new_episodes,
-                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
             )
             pagingItems(items) { title ->
                 TitleListItem(
                     title = title,
-                    onClick = onTitleClick
+                    onClick = onTitleClick,
                 )
             }
         }
@@ -244,18 +244,18 @@ private fun LoadingScreen(
                 .padding(contentPadding),
         ) {
             LoadingPagerItem()
-            Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
+            Spacer(modifier = Modifier.height(6.dp)) // Pager indicator size
             Spacer(modifier = Modifier.height(16.dp))
             Header(
                 title = stringResource(R.string.schedule),
-                onClick = {}
+                onClick = {},
             )
-            //TODO: Add extra spacing for way of week title
+            // TODO: Add extra spacing for way of week title
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState(), enabled = false)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
             ) {
                 repeat(6) {
                     TitleCardItem(title = null) {}
@@ -263,7 +263,7 @@ private fun LoadingScreen(
             }
             Header(
                 title = stringResource(R.string.new_episodes),
-                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
             )
             repeat(6) {
                 TitleListItem(title = null)
@@ -279,15 +279,15 @@ private fun LazyGridScope.horizontalItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "HorizontalList" }
+        contentType = { "HorizontalList" },
     ) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
         ) {
             items(
                 items = items,
-                key = { it.id }
+                key = { it.id },
             ) {
                 itemContent(it)
             }
@@ -303,14 +303,14 @@ private fun LazyGridScope.horizontalItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "HorizontalList" }
+        contentType = { "HorizontalList" },
     ) {
         LazyRowWithStickyHeader(
             items = items,
             contentPadding = contentPadding,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             stickyHeader = stickyHeader,
-            itemContent = itemContent
+            itemContent = itemContent,
         )
     }
 }
@@ -321,14 +321,14 @@ private fun LazyGridScope.horizontalPagerItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "PagerItems" }
+        contentType = { "PagerItems" },
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             HorizontalPager(
                 state = state,
-                beyondViewportPageCount = 1
+                beyondViewportPageCount = 1,
             ) { page ->
                 pageContent(page)
             }
@@ -345,12 +345,12 @@ private fun LazyGridScope.header(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "Header" }
+        contentType = { "Header" },
     ) {
         Header(
             title = stringResource(id = titleResId),
             contentPadding = contentPadding,
-            onClick = onClick
+            onClick = onClick,
         )
     }
 }
@@ -362,7 +362,7 @@ private fun LazyGridScope.pagingItems(
     items(
         count = items.itemCount,
         key = items.itemKey(),
-        contentType = items.itemContentType { "PagingItems" }
+        contentType = items.itemContentType { "PagingItems" },
     ) {
         itemContent(items[it])
     }

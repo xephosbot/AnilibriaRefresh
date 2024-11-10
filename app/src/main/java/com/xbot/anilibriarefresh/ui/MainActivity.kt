@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(
             ObjectAnimator.ofFloat(splashScreenView, View.ALPHA, 1f, 0f),
-            ObjectAnimator.ofFloat(iconView, View.ALPHA, 1f, 0f)
+            ObjectAnimator.ofFloat(iconView, View.ALPHA, 1f, 0f),
         )
         animatorSet.duration = SPLASHSCREEN_ALPHA_ANIMATION_DURATION
         animatorSet.interpolator = accelerateInterpolator

@@ -17,7 +17,7 @@ android {
 }
 
 dependencies {
-    //Retrofit dependencies
+    // Retrofit dependencies
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.okhttp.brotli)

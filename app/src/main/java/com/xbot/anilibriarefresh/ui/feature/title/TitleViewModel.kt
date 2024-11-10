@@ -23,14 +23,14 @@ import javax.inject.Inject
 class TitleViewModel @Inject constructor(
     repository: TitleRepository,
     savedStateHandle: SavedStateHandle,
-    snackbarManager: SnackbarManager
+    snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val titleId = savedStateHandle.toRoute<Route.Home.Detail>().titleId
     val state: StateFlow<TitleScreenState> = repository.getTitle(titleId)
         .catch { error ->
-            //TODO: информативные сообщения для разного типа ошибок
+            // TODO: информативные сообщения для разного типа ошибок
             snackbarManager.showMessage(
-                title = StringResource.String(error.message ?: "")
+                title = StringResource.String(error.message ?: ""),
             )
         }.map { title ->
             TitleScreenState.Success(title.toTitleDetailUi())
@@ -38,22 +38,22 @@ class TitleViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = TitleScreenState.Loading
+            initialValue = TitleScreenState.Loading,
         )
 
     fun onAction(action: TitleScreenAction) {
-        //TODO: Actions handling
+        // TODO: Actions handling
     }
 }
 
 @Stable
 sealed interface TitleScreenState {
-    data object Loading: TitleScreenState
-    data class Success (
-        val title: TitleDetail
-    ): TitleScreenState
+    data object Loading : TitleScreenState
+    data class Success(
+        val title: TitleDetail,
+    ) : TitleScreenState
 }
 
 sealed interface TitleScreenAction {
-    //TODO: Actions for title screen
+    // TODO: Actions for title screen
 }

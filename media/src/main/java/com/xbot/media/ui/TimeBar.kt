@@ -55,7 +55,7 @@ internal fun TimeBar(
     },
     track: @Composable (current: Float, buffered: Float) -> Unit = { current, buffered ->
         Track(played = current, buffered = buffered)
-    }
+    },
 ) {
     val state = remember {
         TimeBarState(positionMs, durationMs, onPositionChange, onPositionChangeStart, onPositionChangeStop)
@@ -78,7 +78,7 @@ internal fun TimeBar(
             state.gestureEndAction()
         },
         startDragImmediately = state.isDragging,
-        state = state
+        state = state,
     )
 
     val thumbBox = @Composable {
@@ -87,18 +87,18 @@ internal fun TimeBar(
                 .wrapContentWidth()
                 .onSizeChanged {
                     state.thumbWidth = it.width.toFloat()
-                }
+                },
         ) {
             thumb(enabled, state.isDragging)
         }
     }
     val trackBox = @Composable {
         Box(
-            modifier = Modifier.wrapContentWidth()
+            modifier = Modifier.wrapContentWidth(),
         ) {
             track(
                 if (durationMs > 0) state.position else 0f,
-                if (durationMs > 0) bufferedPositionMs.toFloat() / durationMs else 0f
+                if (durationMs > 0) bufferedPositionMs.toFloat() / durationMs else 0f,
             )
         }
     }
@@ -107,7 +107,7 @@ internal fun TimeBar(
         modifier = modifier.then(drag),
         state = state,
         thumb = thumbBox,
-        track = trackBox
+        track = trackBox,
     )
 }
 
@@ -122,10 +122,10 @@ private fun TimeBarLayout(
         modifier = Modifier
             .requiredSizeIn(
                 minWidth = ThumbDefaultSize,
-                minHeight = ThumbDefaultSize
+                minHeight = ThumbDefaultSize,
             )
             .then(modifier),
-        contents = listOf(thumb, track)
+        contents = listOf(thumb, track),
     ) { (thumbMeasurable, trackMeasurable), constraints ->
         val thumbPlaceable = thumbMeasurable.first()
             .measure(constraints)
@@ -162,7 +162,7 @@ internal fun Track(
         modifier = modifier
             .fillMaxWidth()
             .height(TrackHeight)
-            .rotate(if (LocalLayoutDirection.current == LayoutDirection.Rtl) 180f else 0f)
+            .rotate(if (LocalLayoutDirection.current == LayoutDirection.Rtl) 180f else 0f),
     ) {
         val width = size.width
         var left = 0f
@@ -173,7 +173,7 @@ internal fun Track(
             drawRect(
                 playedColor,
                 topLeft = Offset(left, 0f),
-                size = size.copy(width = playedWidth)
+                size = size.copy(width = playedWidth),
             )
             left = playedRight
         }
@@ -184,7 +184,7 @@ internal fun Track(
             drawRect(
                 bufferedColor,
                 topLeft = Offset(left, 0f),
-                size = size.copy(width = bufferedWidth)
+                size = size.copy(width = bufferedWidth),
             )
             left = bufferedRight
         }
@@ -193,7 +193,7 @@ internal fun Track(
             drawRect(
                 backgroundColor,
                 topLeft = Offset(left, 0f),
-                size = size.copy(width = size.width - left)
+                size = size.copy(width = size.width - left),
             )
         }
     }
@@ -205,7 +205,7 @@ internal fun Thumb(
     dragging: Boolean,
     modifier: Modifier = Modifier,
     color: Color = Color(0xFFFFFFFF),
-    shape: Shape = CircleShape
+    shape: Shape = CircleShape,
 ) {
     val size = when {
         !enabled -> ThumbDisabledSize
@@ -215,7 +215,7 @@ internal fun Thumb(
     Spacer(
         modifier = modifier
             .size(size)
-            .background(color, shape)
+            .background(color, shape),
     )
 }
 
@@ -225,8 +225,8 @@ class TimeBarState(
     private val duration: Long,
     var onPositionChange: ((positionMs: Long) -> Unit)?,
     var onPositionChangeStart: ((positionMs: Long) -> Unit)?,
-    var onPositionChangeStop: ((positionMs: Long) -> Unit)?
-): DraggableState {
+    var onPositionChangeStop: ((positionMs: Long) -> Unit)?,
+) : DraggableState {
     private val valueRange: ClosedFloatingPointRange<Float> = 0f..1f
 
     private var positionState by mutableFloatStateOf(position.toFloat() / duration)
@@ -248,7 +248,7 @@ class TimeBarState(
 
     override suspend fun drag(
         dragPriority: MutatePriority,
-        block: suspend DragScope.() -> Unit
+        block: suspend DragScope.() -> Unit,
     ): Unit = coroutineScope {
         isDragging = true
         scrollMutex.mutateWith(dragScope, dragPriority, block)

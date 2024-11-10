@@ -6,9 +6,7 @@ import com.xbot.api.models.Genre
 import com.xbot.api.models.Release
 import com.xbot.api.models.ReleaseCatalogResponse
 import com.xbot.api.models.Schedule
-import com.xbot.api.models.login.LoginRequest
-import com.xbot.api.models.login.LoginResponse
-import com.xbot.api.models.login.LoginSocialNetwork
+import com.xbot.api.models.ValDesc
 import com.xbot.api.models.enums.AgeRatingEnum
 import com.xbot.api.models.enums.ProductionStatusEnum
 import com.xbot.api.models.enums.PublishStatusEnum
@@ -16,7 +14,9 @@ import com.xbot.api.models.enums.ReleaseTypeEnum
 import com.xbot.api.models.enums.SeasonEnum
 import com.xbot.api.models.enums.SocialNetworkEnum
 import com.xbot.api.models.enums.SortingTypeEnum
-import com.xbot.api.models.ValDesc
+import com.xbot.api.models.login.LoginRequest
+import com.xbot.api.models.login.LoginResponse
+import com.xbot.api.models.login.LoginSocialNetwork
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -28,10 +28,9 @@ import retrofit2.http.Query
  * @see <a href="https://anilibria.top/api/docs/v1">Документация API Anilibria</a>
  */
 interface AnilibriaService {
-
     @POST("accounts/users/auth/login")
     suspend fun loginUser(
-        @Body loginRequest: LoginRequest
+        @Body loginRequest: LoginRequest,
     ): ApiResponse<LoginResponse>
 
     @POST("accounts/users/auth/logout")
@@ -39,12 +38,12 @@ interface AnilibriaService {
 
     @GET("accounts/users/auth/social/{provider}/login")
     suspend fun loginWithSocialNetwork(
-        @Path("provider") provider: SocialNetworkEnum
+        @Path("provider") provider: SocialNetworkEnum,
     ): ApiResponse<LoginSocialNetwork>
 
     @GET("accounts/users/auth/social/authenticate")
     suspend fun authenticateWithSocialNetwork(
-        @Query("state") state: String
+        @Query("state") state: String,
     ): ApiResponse<LoginResponse>
 
     @GET("anime/catalog/releases")
@@ -60,12 +59,12 @@ interface AnilibriaService {
         @Query("f[sorting]") sorting: String? = null,
         @Query("f[age_ratings]") ageRatings: String? = null,
         @Query("f[publish_statuses]") publishStatuses: String? = null,
-        @Query("f[production_statuses]") productionStatuses: String? = null
+        @Query("f[production_statuses]") productionStatuses: String? = null,
     ): ApiResponse<ReleaseCatalogResponse>
 
     @GET("anime/releases/{id}")
     suspend fun getRelease(
-        @Path("id") id: Int
+        @Path("id") id: Int,
     ): ApiResponse<Release>
 
     @GET("anime/catalog/references/age-ratings")
@@ -97,17 +96,17 @@ interface AnilibriaService {
 
     @GET("anime/franchises/{franchiseId}")
     suspend fun getFranchiseById(
-        @Path("franchiseId") id: Int
+        @Path("franchiseId") id: Int,
     ): ApiResponse<Franchise>
 
     @GET("anime/franchises/random")
     suspend fun getFranchisesRandom(
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): ApiResponse<List<Franchise>>
 
     @GET("anime/franchises/release/{releaseId}")
     suspend fun getFranchisesByRelease(
-        @Path("releaseId") id: Int
+        @Path("releaseId") id: Int,
     ): ApiResponse<List<Franchise>>
 
     @GET("anime/genres")
@@ -115,29 +114,29 @@ interface AnilibriaService {
 
     @GET("anime/genres/{genreId}")
     suspend fun getGenreById(
-        @Path("genreId") id: Int
+        @Path("genreId") id: Int,
     ): ApiResponse<Genre>
 
     @GET("anime/genres/random")
     suspend fun getRandomGenres(
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): ApiResponse<List<Genre>>
 
     @GET("anime/genres/{genreId}/releases")
     suspend fun getAllReleasesByGenre(
         @Path("genreId") id: Int,
         @Query("page") page: Int,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): ApiResponse<ReleaseCatalogResponse>
 
     @GET("anime/releases/latest")
     suspend fun getLatestReleases(
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): ApiResponse<List<Release>>
 
     @GET("anime/releases/random")
     suspend fun getRandomReleases(
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): ApiResponse<List<Release>>
 
     @GET("anime/schedule/week")

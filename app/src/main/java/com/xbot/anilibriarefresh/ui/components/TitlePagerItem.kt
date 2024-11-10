@@ -46,13 +46,13 @@ fun TitlePagerItem(
         CompactItemLayout(
             modifier = modifier,
             title = title,
-            onClick = onClick
+            onClick = onClick,
         )
     } else {
         LargeItemLayout(
             modifier = modifier,
             title = title,
-            onClick = onClick
+            onClick = onClick,
         )
     }
 }
@@ -72,7 +72,7 @@ fun LoadingPagerItem(
             .height(if (isCompact) Dp.Unspecified else LargeItemHeight)
             .shimmerSafe(shimmer)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray)
+            .background(Color.LightGray),
     )
 }
 
@@ -87,14 +87,14 @@ private fun CompactItemLayout(
             .padding(horizontal = HorizontalPadding)
             .then(modifier)
             .clip(PagerItemShape),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         PosterImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(7f / 10f)
                 .clickable { onClick(title) },
-            poster = title.poster
+            poster = title.poster,
         )
     }
 }
@@ -112,9 +112,9 @@ private fun LargeItemLayout(
             .clickable { onClick(title) }
             .height(LargeItemHeight)
             .clip(PagerItemShape)
-            //TODO: Temporary background until final design
+            // TODO: Temporary background until final design
             .background(MaterialTheme.colorScheme.tertiaryContainer),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Row {
             PosterImage(
@@ -122,41 +122,41 @@ private fun LargeItemLayout(
                     .fillMaxHeight()
                     .aspectRatio(7f / 10f)
                     .clip(RoundedCornerShape(16.dp)),
-                poster = title.poster
+                poster = title.poster,
             )
             Column(
                 modifier = Modifier
                     .padding(HorizontalPadding)
                     .weight(1f),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     text = title.name,
                     fontSize = 24.sp,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Row {
                     title.tags.forEachIndexed { index, tag ->
                         when (tag) {
                             is TitleTag.Text -> Text(
                                 text = stringResource(tag.text),
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
                             )
 
                             is TitleTag.TextWithIcon -> TextWithIcon(
                                 text = stringResource(tag.text),
                                 imageVector = tag.icon,
                                 iconPosition = IconPosition.END,
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
                             )
                         }
                         if (index < title.tags.lastIndex) {
                             Text(
                                 text = "•",
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
                             )
                         }
                     }
@@ -164,7 +164,7 @@ private fun LargeItemLayout(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = title.description,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

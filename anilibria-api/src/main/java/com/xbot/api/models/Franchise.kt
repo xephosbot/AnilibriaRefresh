@@ -16,7 +16,7 @@ data class Franchise(
     @SerialName("total_duration") val totalDuration: String,
     @SerialName("total_duration_in_seconds") val totalDurationInSeconds: Long,
     @SerialName("image") val image: Image,
-    @SerialName("franchise_releases") val franchiseReleases: List<FranchiseRelease>? = null
+    @SerialName("franchise_releases") val franchiseReleases: List<FranchiseRelease>? = null,
 )
 
 @Serializable
@@ -25,5 +25,5 @@ data class FranchiseRelease(
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("release_id") val releaseId: Int,
     @SerialName("franchise_id") val franchiseId: String,
-    @SerialName("release") val release: Release
+    @SerialName("release") val release: Release,
 )

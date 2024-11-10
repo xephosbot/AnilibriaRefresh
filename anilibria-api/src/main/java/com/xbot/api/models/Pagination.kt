@@ -10,11 +10,11 @@ data class Pagination(
     @SerialName("per_page") val perPage: Int,
     @SerialName("current_page") val currentPage: Int,
     @SerialName("total_pages") val totalPages: Int,
-    @SerialName("links") val links: Links
+    @SerialName("links") val links: Links,
 )
 
 @Serializable
 data class Links(
     @SerialName("previous") val previous: String? = null,
-    @SerialName("next") val next: String? = null
+    @SerialName("next") val next: String? = null,
 )

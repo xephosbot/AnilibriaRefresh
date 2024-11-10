@@ -3,9 +3,9 @@ package com.xbot.data.datasource
 import com.skydoves.sandwich.suspendOnSuccess
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.data.mapper.SuccessScheduleMapper
-import com.xbot.data.mapper.SuccessTitlesUpdatedMapper
-import com.xbot.data.mapper.SuccessTitlesMapper
 import com.xbot.data.mapper.SuccessTitleMapper
+import com.xbot.data.mapper.SuccessTitlesMapper
+import com.xbot.data.mapper.SuccessTitlesUpdatedMapper
 import com.xbot.data.models.TitlePage
 import com.xbot.data.utils.handleErrors
 import com.xbot.domain.models.TitleDetailModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class TitleDataSource @Inject constructor(
     private val client: AnilibriaClient,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     fun getLatestTitles(page: Int, limit: Int): Flow<TitlePage> = flow {
         val response = client.getReleases(page, limit)
@@ -30,7 +30,7 @@ class TitleDataSource @Inject constructor(
     }.flowOn(dispatcher)
 
     fun getRecommendedTitles(limit: Int): Flow<List<TitleModel>> = flow {
-        //TODO: просто заглушка выдающая рандомные релизы
+        // TODO: просто заглушка выдающая рандомные релизы
         val response = client.getRandomReleases(limit)
         response.suspendOnSuccess(SuccessTitlesMapper) {
             emit(this)

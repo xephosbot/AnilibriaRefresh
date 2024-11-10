@@ -27,9 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     repository: FiltersRepository,
-    private val snackbarManager: SnackbarManager
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-
     @Suppress("UNCHECKED_CAST")
     val state: StateFlow<SearchScreenState> = combine(
         repository.getGenres(),
@@ -39,7 +38,7 @@ class SearchViewModel @Inject constructor(
         repository.getSeason(),
         repository.getSortingTypes(),
         repository.getTypeReleases(),
-        repository.getYears()
+        repository.getYears(),
     ) { valuesArray ->
         SearchScreenState.Success(
             filtersList = listOf(
@@ -49,30 +48,30 @@ class SearchViewModel @Inject constructor(
                 "Выход серий" to valuesArray[3].typedMap(PublishStatus::toStringResource),
                 "Сезон" to valuesArray[4].typedMap(Season::toStringResource),
                 "Типы сортировки" to valuesArray[5].typedMap(SortingTypes::toStringResource),
-                "Тип релиза" to valuesArray[6].typedMap(ReleaseType::toStringResource)
+                "Тип релиза" to valuesArray[6].typedMap(ReleaseType::toStringResource),
             ),
-            years = valuesArray[7] as List<Int>
+            years = valuesArray[7] as List<Int>,
         )
     }.catch { error ->
         snackbarManager.showMessage(
-            title = StringResource.String(error.message ?: "")
+            title = StringResource.String(error.message ?: ""),
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = SearchScreenState.Loading
+        initialValue = SearchScreenState.Loading,
     )
 
     fun onAction(action: SearchScreenAction) {
-        when(action) {
+        when (action) {
             is SearchScreenAction.ShowErrorMessage -> {
-                //TODO: информативные сообщения для разного типа ошибок
+                // TODO: информативные сообщения для разного типа ошибок
                 snackbarManager.showMessage(
                     title = StringResource.String(action.error.message ?: ""),
                     action = MessageAction(
                         title = StringResource.Text(R.string.retry_button),
-                        action = action.onConfirmAction
-                    )
+                        action = action.onConfirmAction,
+                    ),
                 )
             }
         }
@@ -86,16 +85,16 @@ class SearchViewModel @Inject constructor(
 
 @Stable
 sealed interface SearchScreenState {
-    data object Loading: SearchScreenState
+    data object Loading : SearchScreenState
     data class Success(
         val filtersList: List<Pair<String, List<StringResource>>>,
-        val years: List<Int>
-    ): SearchScreenState
+        val years: List<Int>,
+    ) : SearchScreenState
 }
 
 sealed interface SearchScreenAction {
     data class ShowErrorMessage(
         val error: Throwable,
-        val onConfirmAction: () -> Unit
-    ): SearchScreenAction
+        val onConfirmAction: () -> Unit,
+    ) : SearchScreenAction
 }

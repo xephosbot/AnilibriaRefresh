@@ -40,14 +40,14 @@ import com.xbot.anilibriarefresh.ui.utils.stringResource
 fun TitleListItem(
     modifier: Modifier = Modifier,
     title: Title?,
-    onClick: (Title) -> Unit = {}
+    onClick: (Title) -> Unit = {},
 ) {
     Surface(
-        onClick = { title?.let { onClick(it) } }
+        onClick = { title?.let { onClick(it) } },
     ) {
         Crossfade(
             targetState = title,
-            label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}"
+            label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
         ) { state ->
             when (state) {
                 null -> LoadingTitleListItem(modifier)
@@ -60,7 +60,7 @@ fun TitleListItem(
 @Composable
 private fun TitleListItemContent(
     modifier: Modifier = Modifier,
-    title: Title
+    title: Title,
 ) {
     TitleItemLayout(
         modifier = modifier
@@ -69,44 +69,44 @@ private fun TitleListItemContent(
         headlineContent = {
             Text(
                 text = title.name,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         supportingContent = {
             Text(
                 text = title.description.lines().joinToString(" "),
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         leadingContent = {
             PosterImage(
                 modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                poster = title.poster
+                poster = title.poster,
             )
         },
         tags = {
             title.tags.forEachIndexed { index, tag ->
-                when(tag) {
+                when (tag) {
                     is TitleTag.Text -> Text(
                         text = stringResource(tag.text),
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
+                        maxLines = 1,
                     )
                     is TitleTag.TextWithIcon -> TextWithIcon(
                         text = stringResource(tag.text),
                         imageVector = tag.icon,
-                        iconPosition = IconPosition.END
+                        iconPosition = IconPosition.END,
                     )
                 }
                 if (index != title.tags.lastIndex) Text(text = "•")
             }
-        }
+        },
     )
 }
 
 @Composable
 private fun LoadingTitleListItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val shimmer = LocalShimmer.current
 
@@ -121,7 +121,7 @@ private fun LoadingTitleListItem(
                     .height(16.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color.LightGray)
+                    .background(Color.LightGray),
             )
         },
         supportingContent = {
@@ -129,14 +129,14 @@ private fun LoadingTitleListItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color.LightGray)
+                    .background(Color.LightGray),
             )
         },
         leadingContent = {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
+                    .background(Color.LightGray),
             )
         },
         tags = {
@@ -147,13 +147,12 @@ private fun LoadingTitleListItem(
                         .height(16.dp)
                         .weight(1f)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(Color.LightGray)
+                        .background(Color.LightGray),
                 )
                 if (index != tagsCount - 1) Text("•")
             }
-        }
+        },
     )
-
 }
 
 @Composable
@@ -162,56 +161,56 @@ private fun TitleItemLayout(
     headlineContent: @Composable () -> Unit,
     supportingContent: @Composable () -> Unit,
     leadingContent: @Composable () -> Unit,
-    tags: @Composable RowScope.() -> Unit
+    tags: @Composable RowScope.() -> Unit,
 ) {
     val headlineBox = @Composable {
         Box {
-            //TODO: Use MaterialTheme.typography style
+            // TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
                 value = LocalTextStyle.current.copy(fontWeight = FontWeight.Bold),
-                content = headlineContent
+                content = headlineContent,
             )
         }
     }
     val supportingBox = @Composable {
         Box {
-            //TODO: Use MaterialTheme.typography style
+            // TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
                 value = LocalTextStyle.current.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
                 ),
-                content = supportingContent
+                content = supportingContent,
             )
         }
     }
     val tagsRow = @Composable {
-        //TODO: Use MaterialTheme.typography style
+        // TODO: Use MaterialTheme.typography style
         ProvideTextStyle(
             value = LocalTextStyle.current.copy(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp
-            )
+                fontSize = 14.sp,
+            ),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(TitleItemContentPadding),
                 verticalAlignment = Alignment.CenterVertically,
-                content = tags
+                content = tags,
             )
         }
     }
 
     Layout(
         modifier = modifier,
-        contents = listOf(headlineBox, supportingBox, leadingContent, tagsRow)
+        contents = listOf(headlineBox, supportingBox, leadingContent, tagsRow),
     ) { (headlineMeasurable, supportingMeasurable, leadingMeasurable, tagsMeasurable), constraints ->
         val leadingWidth = constraints.maxHeight * 7 / 10
         val leadingPlaceable = leadingMeasurable.first()
             .measure(
                 constraints = constraints.copy(
                     minWidth = leadingWidth,
-                    maxWidth = leadingWidth
-                )
+                    maxWidth = leadingWidth,
+                ),
             )
 
         val leadingPadding = TitleItemContainerPadding.roundToPx()
@@ -225,8 +224,8 @@ private fun TitleItemLayout(
             .measure(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
-                    minHeight = 0
-                )
+                    minHeight = 0,
+                ),
             )
 
         val headlinePadding = TitleItemContentPadding.roundToPx()
@@ -237,8 +236,8 @@ private fun TitleItemLayout(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
                     minHeight = 0,
-                    maxHeight = headlineHeight
-                )
+                    maxHeight = headlineHeight,
+                ),
             )
 
         val headlineOffset = headlinePlaceable.height + headlinePadding
@@ -250,31 +249,31 @@ private fun TitleItemLayout(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
                     minHeight = 0,
-                    maxHeight = supportingHeight
-                )
+                    maxHeight = supportingHeight,
+                ),
             )
 
         layout(
             width = constraints.maxWidth,
-            height = constraints.maxHeight
+            height = constraints.maxHeight,
         ) {
             leadingPlaceable.placeRelative(
                 x = 0,
-                y = 0
+                y = 0,
             )
             headlinePlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = 0
+                y = 0,
             )
             tagsPlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = headlineOffset
+                y = headlineOffset,
             )
-            //Place content only if it has a size of at least 1 line.
+            // Place content only if it has a size of at least 1 line.
             if (supportingPlaceable.height > TitleItemMinContentSize.roundToPx()) {
                 supportingPlaceable.placeRelative(
                     x = leadingWidth + leadingPadding,
-                    y = tagsOffset
+                    y = tagsOffset,
                 )
             }
         }
@@ -290,7 +289,7 @@ private fun TitleItemPreview() {
         description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
         tags = listOf(),
         poster = Poster(
-            src = null
+            src = null,
         ),
     )
 

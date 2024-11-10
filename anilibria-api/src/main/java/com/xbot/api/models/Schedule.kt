@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class Schedule(
     @SerialName("release") val release: Release,
     @SerialName("new_release_episode") val newEpisode: Episode?,
-    @SerialName("new_release_episode_ordinal") val newEpisodeOrdinal: Int
+    @SerialName("new_release_episode_ordinal") val newEpisodeOrdinal: Int,
 )

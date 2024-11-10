@@ -20,8 +20,8 @@ object SuccessTitlesMapper : ApiSuccessModelMapper<List<Release>, List<TitleMode
                 favoritesCount = title.addedInUsersFavorites,
                 poster = PosterModel(
                     src = title.poster.optimized.src,
-                    thumbnail = title.poster.optimized.thumbnail
-                )
+                    thumbnail = title.poster.optimized.thumbnail,
+                ),
             )
         }
     }

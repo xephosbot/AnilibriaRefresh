@@ -2,28 +2,28 @@ package com.xbot.anilibriarefresh.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.xbot.anilibriarefresh.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
+    certificates = R.array.com_google_android_gms_fonts_certs,
 )
 
 val bodyFontFamily = FontFamily(
     Font(
         googleFont = GoogleFont("Roboto"),
         fontProvider = provider,
-    )
+    ),
 )
 
 val displayFontFamily = FontFamily(
     Font(
         googleFont = GoogleFont("Roboto"),
         fontProvider = provider,
-    )
+    ),
 )
 
 // Default Material 3 typography values
@@ -46,4 +46,3 @@ val AnilibriaTypography = Typography(
     labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )
-

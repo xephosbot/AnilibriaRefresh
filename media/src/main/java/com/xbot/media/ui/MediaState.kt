@@ -28,7 +28,7 @@ import kotlin.math.absoluteValue
  */
 @Composable
 fun rememberMediaState(
-    player: Player?
+    player: Player?,
 ): MediaState = remember { MediaState(initPlayer = player) }.apply {
     this.player = player
 }
@@ -38,7 +38,7 @@ fun rememberMediaState(
  */
 @Stable
 class MediaState(
-    initPlayer: Player? = null
+    initPlayer: Player? = null,
 ) {
     /**
      * The player to use, or null to detach the current player.
@@ -70,8 +70,11 @@ class MediaState(
     var isControllerShowing: Boolean
         get() = controllerVisibility.isShowing
         set(value) {
-            controllerVisibility = if (value) ControllerVisibility.Visible
-            else ControllerVisibility.Invisible
+            controllerVisibility = if (value) {
+                ControllerVisibility.Visible
+            } else {
+                ControllerVisibility.Invisible
+            }
         }
 
     /**
@@ -86,11 +89,13 @@ class MediaState(
      */
     val shouldShowControllerIndefinitely: Boolean by derivedStateOf {
         playerState?.run {
-            controllerAutoShow
-                    && !timeline.isEmpty
-                    && (playbackState == Player.STATE_IDLE
-                    || playbackState == Player.STATE_ENDED
-                    || !playWhenReady)
+            controllerAutoShow &&
+                !timeline.isEmpty &&
+                (
+                    playbackState == Player.STATE_IDLE ||
+                        playbackState == Player.STATE_ENDED ||
+                        !playWhenReady
+                )
         } ?: true
     }
 
@@ -112,7 +117,7 @@ class MediaState(
         override fun onEvents(player: Player, events: Player.Events) {
             if (events.containsAny(
                     Player.EVENT_PLAYBACK_STATE_CHANGED,
-                    Player.EVENT_PLAY_WHEN_READY_CHANGED
+                    Player.EVENT_PLAY_WHEN_READY_CHANGED,
                 )
             ) {
                 maybeShowController()
@@ -193,13 +198,16 @@ enum class ControllerVisibility(
     /**
      * All UI controls are hidden.
      */
-    Invisible(false)
+    Invisible(false),
 }
 
 private val VideoSize.aspectRatio
     get() = if (height == 0) 0f else width * pixelWidthHeightRatio / height
 private val Painter.aspectRatio
     get() = intrinsicSize.run {
-        if (this == Size.Unspecified || width.isNaN() || height.isNaN() || height == 0f) 0f
-        else width / height
+        if (this == Size.Unspecified || width.isNaN() || height.isNaN() || height == 0f) {
+            0f
+        } else {
+            width / height
+        }
     }

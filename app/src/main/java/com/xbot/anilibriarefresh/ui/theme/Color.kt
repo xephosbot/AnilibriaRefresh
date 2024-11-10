@@ -221,7 +221,7 @@ val surfaceContainerHighDarkHighContrast = Color(0xFF322827)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF3D3231)
 
 /**
-    Цвета приложения
+ Цвета приложения
  */
 
 val buttonPagerContentColorDarkRed = Color(0xFFE01938)
@@ -232,7 +232,7 @@ val colorIconIsSelected = Color(0xFFEA374F)
 val colorStopsButtonPagerContent = arrayOf(
     0.0f to buttonPagerContentColorDarkRed,
     0.7f to buttonPagerContentColorLightRed,
-    1f to buttonPagerContentColorLightRed
+    1f to buttonPagerContentColorLightRed,
 )
 
 val FadeGradientColorStops
@@ -240,5 +240,5 @@ val FadeGradientColorStops
     get() = arrayOf(
         0.0f to Color.Transparent,
         0.4f to Color.Transparent,
-        1f to MaterialTheme.colorScheme.surface
+        1f to MaterialTheme.colorScheme.surface,
     )

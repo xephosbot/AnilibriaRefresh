@@ -27,7 +27,7 @@ import androidx.media3.common.Player
 internal fun PlayerSurface(
     modifier: Modifier = Modifier,
     state: MediaState,
-    surfaceType: SurfaceType
+    surfaceType: SurfaceType,
 ) {
     val player = state.player ?: return
     val onSurfaceCreated: (Surface) -> Unit = { surface -> player.setVideoSurface(surface) }
@@ -49,5 +49,5 @@ internal fun PlayerSurface(
 
 enum class SurfaceType {
     SurfaceView,
-    TextureView
+    TextureView,
 }

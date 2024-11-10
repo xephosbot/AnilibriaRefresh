@@ -28,10 +28,10 @@ import androidx.compose.ui.util.fastMap
 internal fun DimensionSubcomposeLayout(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
-    dependentContent: @Composable (Size) -> Unit
+    dependentContent: @Composable (Size) -> Unit,
 ) {
     SubcomposeLayout(
-        modifier = modifier
+        modifier = modifier,
     ) { constraints: Constraints ->
 
         // Subcompose(compose only a section) main content and get Placeable
@@ -59,5 +59,5 @@ internal fun DimensionSubcomposeLayout(
 
 internal enum class Slots {
     Main,
-    Dependent
+    Dependent,
 }

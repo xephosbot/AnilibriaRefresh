@@ -37,14 +37,14 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .hazeChild(
                         state = hazeState,
-                        style = hazeStyle
+                        style = hazeStyle,
                     ),
                 navController = navController,
-                //TODO: Delete it after testing
+                // TODO: Delete it after testing
                 onNavigationClick = {
                     navController.navigate(Route.Player(9789))
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
         navigationSuite = {
@@ -53,9 +53,9 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .hazeChild(
                             state = hazeState,
-                            style = hazeStyle
+                            style = hazeStyle,
                         ),
-                    navController = navController
+                    navController = navController,
                 )
 
                 NavigationSuiteType.NavigationRail -> AnilibriaNavigationRail(
@@ -63,16 +63,16 @@ fun AnilibriaApp(modifier: Modifier = Modifier) {
                     navContentPosition = contentPosition,
                     onNavigationClick = {
                         navController.navigate(Route.Player(9789))
-                    }
+                    },
                 )
             }
-        }
+        },
     ) { innerPadding ->
         AnilibriaNavGraph(
             modifier = Modifier
                 .haze(state = hazeState),
             navController = navController,
-            paddingValues = innerPadding
+            paddingValues = innerPadding,
         )
     }
 }

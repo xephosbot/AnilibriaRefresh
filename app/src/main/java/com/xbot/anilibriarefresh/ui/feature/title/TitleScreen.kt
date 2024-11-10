@@ -57,7 +57,7 @@ import com.xbot.domain.models.enums.Season
 fun TitleScreen(
     modifier: Modifier = Modifier,
     viewModel: TitleViewModel = hiltViewModel(),
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -65,7 +65,7 @@ fun TitleScreen(
         modifier = modifier,
         state = state,
         onAction = viewModel::onAction,
-        paddingValues = paddingValues
+        paddingValues = paddingValues,
     )
 }
 
@@ -74,14 +74,14 @@ private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     state: TitleScreenState,
     onAction: (TitleScreenAction) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     Crossfade(
         targetState = state,
-        label = "TitleScreenContent Crossfade to ${state::class.simpleName}"
+        label = "TitleScreenContent Crossfade to ${state::class.simpleName}",
     ) { targetState ->
         when (targetState) {
-            //TODO: Loading screen
+            // TODO: Loading screen
             is TitleScreenState.Loading -> Box(modifier = Modifier.fillMaxSize())
             is TitleScreenState.Success -> {
                 TitleDetail(
@@ -102,41 +102,41 @@ private fun TitleDetail(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = paddingValues
+        contentPadding = paddingValues,
     ) {
         mainContent(
-            title = title
+            title = title,
         )
         header(
-            textId = R.string.genres_title
+            textId = R.string.genres_title,
         )
         horizontalItems(
             items = title.genres.map { it.name },
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) { genre ->
             AssistChip(
                 onClick = {},
-                label = { Text(text = genre) }
+                label = { Text(text = genre) },
             )
         }
         header(
             textId = R.string.description_title,
-            contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
+            contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
         )
         description(
-            text = title.description
+            text = title.description,
         )
         header(
             textId = R.string.episodes_title,
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
         )
         verticalItems(
-            items = title.episodes
+            items = title.episodes,
         ) { episode ->
             if (episode != null) {
                 EpisodeItem(
                     episode = episode,
-                    onClick = {}
+                    onClick = {},
                 )
             }
         }
@@ -144,32 +144,32 @@ private fun TitleDetail(
 }
 
 private fun LazyListScope.mainContent(
-    title: TitleDetail
+    title: TitleDetail,
 ) {
     item(
-        contentType = { "MainContent" }
+        contentType = { "MainContent" },
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             PosterImage(
                 modifier = Modifier
                     .height(164.dp)
                     .aspectRatio(7f / 10f)
                     .clip(RoundedCornerShape(8.dp)),
-                poster = title.poster
+                poster = title.poster,
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = title.name,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
@@ -180,37 +180,37 @@ private fun LazyListScope.mainContent(
 private fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: EpisodeModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         PosterImage(
             modifier = Modifier
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview.toPosterUi()
+            poster = episode.preview.toPosterUi(),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = "Серия ${episode.ordinal}" + if (episode.name != null) " • ${episode.name}" else "",
             fontWeight = FontWeight.Medium,
-            fontSize = 18.sp
+            fontSize = 18.sp,
         )
     }
 }
 
 private fun LazyListScope.verticalItems(
     items: List<EpisodeModel>,
-    itemContent: @Composable LazyItemScope.(EpisodeModel?) -> Unit
+    itemContent: @Composable LazyItemScope.(EpisodeModel?) -> Unit,
 ) {
     items(
         items = items,
-        key = { it.id }
+        key = { it.id },
     ) {
         itemContent(it)
     }
@@ -219,18 +219,18 @@ private fun LazyListScope.verticalItems(
 private fun LazyListScope.horizontalItems(
     items: List<String>,
     contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(String) -> Unit
+    itemContent: @Composable LazyItemScope.(String) -> Unit,
 ) {
     item(
-        contentType = { "HorizontalList" }
+        contentType = { "HorizontalList" },
     ) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
         ) {
             items(
                 items = items,
-                key = { it }
+                key = { it },
             ) {
                 itemContent(it)
             }
@@ -239,26 +239,26 @@ private fun LazyListScope.horizontalItems(
 }
 
 private fun LazyListScope.description(
-    text: String
+    text: String,
 ) {
     item(
-        contentType = { "Description" }
+        contentType = { "Description" },
     ) {
         var expanded by remember { mutableStateOf(false) }
 
-        Box (
+        Box(
             modifier = Modifier
                 .clickable {
                     expanded = !expanded
                 }
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize(),
                 text = text,
-                maxLines = if (expanded) Int.MAX_VALUE else 3
+                maxLines = if (expanded) Int.MAX_VALUE else 3,
             )
         }
     }
@@ -269,11 +269,11 @@ private fun LazyListScope.header(
     contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
 ) {
     item(
-        contentType = { "Header" }
+        contentType = { "Header" },
     ) {
         Header(
             title = stringResource(textId),
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
         )
     }
 }
@@ -290,7 +290,7 @@ private fun TitleScreenPreview() {
         description = "Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра. Но амбиций Вельтора это не остановит. Пусть пока что наследие некогда могущественного демона сводится лишь к нескольким параграфам в учебниках истории, заблуждаться не стоит: очень скоро этот дивный новый мир будет снова у его ног. Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра.",
         poster = PosterModel(
             src = null,
-            thumbnail = null
+            thumbnail = null,
         ),
         isOngoing = false,
         ageRating = AgeRating.R16_PLUS,
@@ -304,23 +304,23 @@ private fun TitleScreenPreview() {
             MemberModel(
                 id = "e3d555b0",
                 name = "Sharon",
-                role = "Озвучка"
+                role = "Озвучка",
             ),
             MemberModel(
                 id = "e3d55444",
                 name = "HectoR",
-                role = "Озвучка"
+                role = "Озвучка",
             ),
             MemberModel(
                 id = "e3d55dddd",
                 name = "Flerion",
-                role = "Перевод и адаптация"
+                role = "Перевод и адаптация",
             ),
             MemberModel(
                 id = "e221111dd",
                 name = "Kiota",
-                role = "Оформление"
-            )
+                role = "Оформление",
+            ),
         ),
         episodes = listOf(
             EpisodeModel(
@@ -329,12 +329,12 @@ private fun TitleScreenPreview() {
                 duration = 2880,
                 preview = PosterModel(
                     src = null,
-                    thumbnail = null
+                    thumbnail = null,
                 ),
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 1f
+                ordinal = 1f,
             ),
             EpisodeModel(
                 id = "95c359d1",
@@ -342,12 +342,12 @@ private fun TitleScreenPreview() {
                 duration = 1440,
                 preview = PosterModel(
                     src = null,
-                    thumbnail = null
+                    thumbnail = null,
                 ),
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 2f
+                ordinal = 2f,
             ),
             EpisodeModel(
                 id = "95c322d1",
@@ -355,12 +355,12 @@ private fun TitleScreenPreview() {
                 duration = 1550,
                 preview = PosterModel(
                     src = null,
-                    thumbnail = null
+                    thumbnail = null,
                 ),
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 3f
+                ordinal = 3f,
             ),
             EpisodeModel(
                 id = "951159d1",
@@ -368,12 +368,12 @@ private fun TitleScreenPreview() {
                 duration = 1980,
                 preview = PosterModel(
                     src = null,
-                    thumbnail = null
+                    thumbnail = null,
                 ),
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 4f
+                ordinal = 4f,
             ),
             EpisodeModel(
                 id = "9511444000",
@@ -381,14 +381,14 @@ private fun TitleScreenPreview() {
                 duration = 2120,
                 preview = PosterModel(
                     src = null,
-                    thumbnail = null
+                    thumbnail = null,
                 ),
                 hls480 = "",
                 hls720 = "",
                 hls1080 = "",
-                ordinal = 5f
+                ordinal = 5f,
             ),
-        )
+        ),
     )
-    //TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
+    // TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
 }

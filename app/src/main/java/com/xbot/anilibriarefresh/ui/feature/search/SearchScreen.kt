@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Tune
@@ -25,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
@@ -55,7 +55,7 @@ import com.xbot.anilibriarefresh.ui.utils.stringResource
 fun SearchScreen(
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = hiltViewModel(),
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(value = false) }
     val state by searchViewModel.state.collectAsStateWithLifecycle()
@@ -65,7 +65,7 @@ fun SearchScreen(
         paddingValues = paddingValues,
         state = state,
         showBottomSheet = showBottomSheet,
-        onAction = searchViewModel::onAction
+        onAction = searchViewModel::onAction,
     )
 }
 
@@ -76,20 +76,19 @@ private fun SearchScreenContent(
     state: SearchScreenState,
     paddingValues: PaddingValues,
     showBottomSheet: MutableState<Boolean>,
-    onAction: (SearchScreenAction) -> Unit
+    onAction: (SearchScreenAction) -> Unit,
 ) {
-
     Surface(
         modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(paddingValues),
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             SearchBar(
-                showBottomSheet = showBottomSheet
+                showBottomSheet = showBottomSheet,
             )
             if (showBottomSheet.value) {
                 ModalBottomSheet(
@@ -99,7 +98,7 @@ private fun SearchScreenContent(
                 ) {
                     Crossfade(
                         targetState = state is SearchScreenState.Loading,
-                        label = ""
+                        label = "",
                     ) { targetState ->
                         when (targetState) {
                             true -> LoadingSearchScreen()
@@ -107,7 +106,7 @@ private fun SearchScreenContent(
                                 val successState = state as SearchScreenState.Success
                                 Filters(
                                     filtersList = successState.filtersList,
-                                    years = successState.years
+                                    years = successState.years,
                                 )
                             }
                         }
@@ -122,12 +121,12 @@ private fun SearchScreenContent(
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    showBottomSheet: MutableState<Boolean>
+    showBottomSheet: MutableState<Boolean>,
 ) {
     var textInput: String by rememberSaveable { mutableStateOf("") }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SearchBar(
             modifier = modifier
@@ -136,7 +135,7 @@ private fun SearchBar(
             inputField = {
                 SearchBarDefaults.InputField(
                     query = textInput,
-                    onQueryChange = {textInput = it},
+                    onQueryChange = { textInput = it },
                     expanded = false,
                     onExpandedChange = {},
                     onSearch = {},
@@ -144,7 +143,7 @@ private fun SearchBar(
                         Icon(
                             imageVector = Icons.Rounded.Search,
                             tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                     },
                     trailingIcon = {
@@ -152,32 +151,32 @@ private fun SearchBar(
                             IconButton(
                                 onClick = {
                                     showBottomSheet.value = true
-                                }
+                                },
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Tune,
                                     tint = MaterialTheme.colorScheme.onSurface,
-                                    contentDescription = ""
+                                    contentDescription = "",
                                 )
                             }
                             IconButton(
                                 onClick = {
                                     textInput = ""
-                                }
+                                },
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
                                     tint = MaterialTheme.colorScheme.onSurface,
-                                    contentDescription = ""
+                                    contentDescription = "",
                                 )
                             }
                         }
-                    }
+                    },
                 )
             },
             expanded = false,
             onExpandedChange = {},
-            windowInsets = WindowInsets(0.dp)
+            windowInsets = WindowInsets(0.dp),
         ) {}
     }
 }
@@ -185,15 +184,15 @@ private fun SearchBar(
 @Composable
 private fun Filters(
     modifier: Modifier = Modifier,
-    filtersList:  List<Pair<String, List<StringResource>>>,
-    years: List<Int>
+    filtersList: List<Pair<String, List<StringResource>>>,
+    years: List<Int>,
 ) {
     LazyColumn {
         items(filtersList) { filter ->
             ItemsFilter(
                 modifier = modifier,
                 text = filter.first,
-                list = filter.second
+                list = filter.second,
             )
         }
         item {
@@ -204,7 +203,7 @@ private fun Filters(
                 minValue = minYear,
                 maxValue = maxYear,
                 sliderPosition = yearRange,
-                onValueChange = { newRange -> yearRange = newRange }
+                onValueChange = { newRange -> yearRange = newRange },
             )
             ButtonComponent(
                 modifier = Modifier
@@ -213,7 +212,7 @@ private fun Filters(
                     .clip(RoundedCornerShape(8.dp)),
                 text = "Поиск",
                 onClick = {},
-                colorStops = colorStopsButtonPagerContent
+                colorStops = colorStopsButtonPagerContent,
             )
         }
     }
@@ -224,7 +223,7 @@ private fun Filters(
 private fun ItemsFilter(
     modifier: Modifier = Modifier,
     text: String,
-    list: List<StringResource>? = null
+    list: List<StringResource>? = null,
 ) {
     Text(
         modifier = modifier
@@ -232,23 +231,22 @@ private fun ItemsFilter(
             .padding(16.dp),
         text = text,
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp
+        fontSize = 18.sp,
     )
     if (list != null) {
         FlowRow(
             modifier = modifier
                 .padding(start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             list.forEach { item ->
                 AssistChip(
                     onClick = {},
-                    label = { Text(text = stringResource(item)) }
+                    label = { Text(text = stringResource(item)) },
                 )
             }
         }
     }
-
 }
 
 @Composable
@@ -258,22 +256,22 @@ fun YearSlider(
     maxValue: Float,
     steps: Int? = null,
     sliderPosition: ClosedFloatingPointRange<Float>,
-    onValueChange: (ClosedFloatingPointRange<Float>) -> Unit
+    onValueChange: (ClosedFloatingPointRange<Float>) -> Unit,
 ) {
     val calculatedSteps = steps ?: ((maxValue - minValue).toInt() - 1).coerceAtLeast(0)
 
     ItemsFilter(text = "Год")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
         ) {
             Text(
                 text = minValue.toInt().toString(),
-                modifier = Modifier.semantics { contentDescription = "Minimum Year" }
+                modifier = Modifier.semantics { contentDescription = "Minimum Year" },
             )
 
             RangeSlider(
@@ -284,12 +282,12 @@ fun YearSlider(
                 steps = calculatedSteps,
                 onValueChange = onValueChange,
                 valueRange = minValue..maxValue,
-                onValueChangeFinished = {}
+                onValueChangeFinished = {},
             )
 
             Text(
                 text = maxValue.toInt().toString(),
-                modifier = Modifier.semantics { contentDescription = "Maximum Year" }
+                modifier = Modifier.semantics { contentDescription = "Maximum Year" },
             )
         }
     }

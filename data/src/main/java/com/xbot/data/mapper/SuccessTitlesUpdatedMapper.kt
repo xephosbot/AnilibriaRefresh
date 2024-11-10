@@ -23,11 +23,11 @@ object SuccessTitlesUpdatedMapper : ApiSuccessModelMapper<ReleaseCatalogResponse
                     favoritesCount = title.addedInUsersFavorites,
                     poster = PosterModel(
                         src = title.poster.optimized.src,
-                        thumbnail = title.poster.optimized.thumbnail
-                    )
+                        thumbnail = title.poster.optimized.thumbnail,
+                    ),
                 )
             },
-            total = total
+            total = total,
         )
     }
 }

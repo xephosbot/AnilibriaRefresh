@@ -10,5 +10,5 @@ data class TitleModel(
     val description: String,
     val episodesCount: Int?,
     val favoritesCount: Int,
-    val poster: PosterModel
+    val poster: PosterModel,
 )

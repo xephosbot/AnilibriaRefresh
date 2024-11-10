@@ -57,16 +57,16 @@ fun Scaffold(
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Surface(
         modifier = modifier,
         color = containerColor,
-        contentColor = contentColor
+        contentColor = contentColor,
     ) {
         ScaffoldLayout(
             modifier = Modifier.windowInsetsPadding(
-                WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal)
+                WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal),
             ),
             fabPosition = floatingActionButtonPosition,
             topBar = topBar,
@@ -76,12 +76,12 @@ fun Scaffold(
                 SnackbarHost(hostState = scaffoldState.snackbarHostState) { data ->
                     Snackbar(
                         snackbarData = data,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
                     )
                 }
             },
             contentWindowInsets = contentWindowInsets,
-            fab = floatingActionButton
+            fab = floatingActionButton,
         )
     }
 }
@@ -95,7 +95,7 @@ private fun ScaffoldLayout(
     snackbar: @Composable () -> Unit,
     fab: @Composable () -> Unit,
     contentWindowInsets: WindowInsets,
-    bottomBar: @Composable () -> Unit
+    bottomBar: @Composable () -> Unit,
 ) {
     SubcomposeLayout(modifier) { constraints ->
         val layoutWidth = constraints.maxWidth
@@ -120,8 +120,8 @@ private fun ScaffoldLayout(
             it.measure(
                 looseConstraints.offset(
                     -leftInset - rightInset,
-                    -bottomInset
-                )
+                    -bottomInset,
+                ),
             )
         }
 
@@ -139,8 +139,8 @@ private fun ScaffoldLayout(
                 measurable.measure(
                     looseConstraints.offset(
                         -leftInset - rightInset,
-                        -bottomInset
-                    )
+                        -bottomInset,
+                    ),
                 )
                     .takeIf { it.height != 0 && it.width != 0 }
             }
@@ -162,7 +162,7 @@ private fun ScaffoldLayout(
             FabPlacement(
                 left = fabLeftOffset,
                 width = fabWidth,
-                height = fabHeight
+                height = fabHeight,
             )
         } else {
             null
@@ -171,7 +171,7 @@ private fun ScaffoldLayout(
         val bottomBarPlaceables = subcompose(ScaffoldLayoutContent.BottomBar) {
             CompositionLocalProvider(
                 LocalFabPlacement provides fabPlacement,
-                content = bottomBar
+                content = bottomBar,
             )
         }.map { it.measure(looseConstraints) }
 
@@ -179,7 +179,7 @@ private fun ScaffoldLayout(
         val fabOffsetFromBottom = fabPlacement?.let {
             if (bottomBarHeight == null) {
                 it.height + FabSpacing.roundToPx() +
-                        contentWindowInsets.getBottom(this@SubcomposeLayout)
+                    contentWindowInsets.getBottom(this@SubcomposeLayout)
             } else {
                 // Total height is the bottom bar height + the FAB height + the padding
                 // between the FAB and bottom bar
@@ -189,8 +189,10 @@ private fun ScaffoldLayout(
 
         val snackbarOffsetFromBottom = if (snackbarHeight != 0) {
             snackbarHeight +
-                    (fabOffsetFromBottom ?: bottomBarHeight
-                    ?: contentWindowInsets.getBottom(this@SubcomposeLayout))
+                (
+                    fabOffsetFromBottom ?: bottomBarHeight
+                        ?: contentWindowInsets.getBottom(this@SubcomposeLayout)
+                )
         } else {
             0
         }
@@ -209,7 +211,7 @@ private fun ScaffoldLayout(
                     bottomBarHeight.toDp()
                 },
                 start = insets.calculateStartPadding((this@SubcomposeLayout).layoutDirection),
-                end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
+                end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection),
             )
             content(innerPadding)
         }.fastMap {
@@ -228,8 +230,8 @@ private fun ScaffoldLayout(
             snackbarPlaceables.fastForEach {
                 it.place(
                     (layoutWidth - snackbarWidth) / 2 +
-                            contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
-                    layoutHeight - snackbarOffsetFromBottom
+                        contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
+                    layoutHeight - snackbarOffsetFromBottom,
                 )
             }
             // The bottom bar is always at the bottom of the layout
@@ -254,7 +256,7 @@ fun rememberScaffoldState(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): ScaffoldState = remember(snackbarHostState, snackbarManager, resources, coroutineScope) {
     ScaffoldState(snackbarHostState, snackbarManager, resources, coroutineScope)
 }
@@ -264,7 +266,7 @@ class ScaffoldState(
     val snackbarHostState: SnackbarHostState,
     private val snackbarManager: SnackbarManager,
     private val resources: Resources,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
     init {
         coroutineScope.launch {
@@ -279,7 +281,7 @@ class ScaffoldState(
                     // that suspends until the snackbar disappears from the screen
                     val result = snackbarHostState.showSnackbar(
                         message = text,
-                        actionLabel = actionLabel
+                        actionLabel = actionLabel,
                     )
 
                     when (result) {
@@ -304,7 +306,7 @@ class ScaffoldState(
 internal class FabPlacement(
     val left: Int,
     val width: Int,
-    val height: Int
+    val height: Int,
 )
 
 /**

@@ -29,18 +29,31 @@ fun Resources.stringResource(stringResource: StringResource): String {
     return when (stringResource) {
         is StringResource.String -> stringResource.text
         is StringResource.Text -> {
-            if (stringResource.formatArgs.isEmpty()) getString(stringResource.id)
-            else getString(stringResource.id, *stringResource.formatArgs)
+            if (stringResource.formatArgs.isEmpty()) {
+                getString(stringResource.id)
+            } else {
+                getString(stringResource.id, *stringResource.formatArgs)
+            }
         }
         is StringResource.Plurals -> {
-            if (stringResource.formatArgs.isEmpty()) getQuantityString(stringResource.id, stringResource.quantity)
-            else getQuantityString(stringResource.id, stringResource.quantity, *stringResource.formatArgs)
+            if (stringResource.formatArgs.isEmpty()) {
+                getQuantityString(stringResource.id, stringResource.quantity)
+            } else {
+                getQuantityString(stringResource.id, stringResource.quantity, *stringResource.formatArgs)
+            }
         }
     }
 }
 
 sealed interface StringResource {
-    class String(val text: kotlin.String): StringResource
-    class Text(@StringRes val id: Int, vararg val formatArgs: Any): StringResource
-    class Plurals(@PluralsRes val id: Int, val quantity: Int, vararg val formatArgs: Any): StringResource
+    class String(val text: kotlin.String) : StringResource
+    class Text(
+        @StringRes val id: Int,
+        vararg val formatArgs: Any,
+    ) : StringResource
+    class Plurals(
+        @PluralsRes val id: Int,
+        val quantity: Int,
+        vararg val formatArgs: Any,
+    ) : StringResource
 }

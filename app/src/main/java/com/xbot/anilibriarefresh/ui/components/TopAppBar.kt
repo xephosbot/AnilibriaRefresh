@@ -30,7 +30,7 @@ fun AnilibriaTopAppBar(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onNavigationClick: () -> Unit = {},
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val titleArg = navBackStackEntry?.arguments?.getString("titleName")
@@ -51,11 +51,11 @@ fun AnilibriaTopAppBar(
                     true -> Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                     else -> Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
@@ -67,7 +67,7 @@ fun AnilibriaTopAppBar(
                     else -> titleArg ?: "Unknown"
                 },
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -75,7 +75,7 @@ fun AnilibriaTopAppBar(
             scrolledContainerColor = Color.Transparent,
         ),
         scrollBehavior = scrollBehavior,
-        expandedHeight = AnilibriaTopAppBarHeight
+        expandedHeight = AnilibriaTopAppBarHeight,
     )
 }
 

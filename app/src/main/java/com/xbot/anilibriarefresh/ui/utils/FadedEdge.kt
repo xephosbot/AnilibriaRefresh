@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.fadedEdge(
     bottomEdge: Boolean = true,
-    edgeHeight: Dp = DefaultFadingEdgeHeight
+    edgeHeight: Dp = DefaultFadingEdgeHeight,
 ) = graphicsLayer {
     compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithContent {
@@ -31,9 +31,9 @@ private fun ContentDrawScope.drawFadedEdge(bottomEdge: Boolean, edgeHeight: Dp) 
         brush = Brush.verticalGradient(
             colors = listOf(Color.Transparent, Color.Black),
             startY = if (bottomEdge) size.height else 0f,
-            endY = if (bottomEdge) size.height - edgeHeightPx else edgeHeightPx
+            endY = if (bottomEdge) size.height - edgeHeightPx else edgeHeightPx,
         ),
-        blendMode = BlendMode.DstIn
+        blendMode = BlendMode.DstIn,
     )
 }
 

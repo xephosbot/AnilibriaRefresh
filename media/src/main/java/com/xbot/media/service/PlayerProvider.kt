@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class PlayerProvider @PublishedApi internal constructor(
     context: Context,
-    componentClass: Class<*>
+    componentClass: Class<*>,
 ) {
     private val sessionToken = SessionToken(context, ComponentName(context, componentClass))
     private val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
