@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xbot.android.application)
-    alias(libs.plugins.xbot.android.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.baselineprofile)
 }
@@ -12,6 +11,12 @@ dependencies {
     implementation(projects.media)
     implementation(projects.anilibriaApi)
     baselineProfile(projects.baselineprofile)
+
+    // Koin dependencies
+    implementation(platform(libs.koinBom))
+    implementation(libs.koinCore)
+    implementation(libs.koinAndroid)
+    implementation(libs.koinAndroidCompose)
 
     // Kotlin dependencies
     implementation(libs.kotlinx.datetime)
@@ -26,7 +31,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.compose.material.navigation)
     implementation(libs.androidx.profileinstaller)
 

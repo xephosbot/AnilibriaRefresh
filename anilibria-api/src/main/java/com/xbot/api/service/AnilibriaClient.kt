@@ -17,11 +17,8 @@ import com.xbot.api.models.enums.SortingTypeEnum
 import com.xbot.api.models.login.LoginRequest
 import com.xbot.api.models.login.LoginResponse
 import com.xbot.api.models.login.LoginSocialNetwork
-import javax.inject.Inject
 
-class AnilibriaClient @Inject constructor(
-    private val service: AnilibriaService,
-) {
+class AnilibriaClient(private val service: AnilibriaService) {
     /**
      * Авторизация пользователя по логину и паролю. Создание сессии пользователя, выдача токена авторизации для использования в cookies или в Bearer Token.
      *

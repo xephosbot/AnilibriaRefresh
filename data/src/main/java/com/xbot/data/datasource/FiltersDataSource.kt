@@ -22,9 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
-class FiltersDataSource @Inject constructor(
+class FiltersDataSource(
     private val client: AnilibriaClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {

@@ -16,16 +16,13 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingTypes
 import com.xbot.domain.repository.FiltersRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel(
     repository: FiltersRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {

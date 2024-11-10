@@ -15,7 +15,6 @@ import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.domain.models.TitleModel
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.repository.TitleRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +22,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     repository: TitleRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {

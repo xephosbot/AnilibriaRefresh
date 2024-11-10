@@ -57,10 +57,6 @@ gradlePlugin {
             id = "xbot.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
-        register("androidHilt") {
-            id = "xbot.android.hilt"
-            implementationClass = "AndroidHiltConventionPlugin"
-        }
         register("androidRoom") {
             id = "xbot.android.room"
             implementationClass = "AndroidRoomConventionPlugin"

@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.models.TitleDetail
@@ -52,11 +51,12 @@ import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TitleScreen(
     modifier: Modifier = Modifier,
-    viewModel: TitleViewModel = hiltViewModel(),
+    viewModel: TitleViewModel = koinViewModel(),
     paddingValues: PaddingValues,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

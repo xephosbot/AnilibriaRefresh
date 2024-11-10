@@ -43,7 +43,6 @@ import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -68,11 +67,12 @@ import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.models.enums.DayOfWeek
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     paddingValues: PaddingValues,
     onNavigate: (Int, String) -> Unit,
 ) {
