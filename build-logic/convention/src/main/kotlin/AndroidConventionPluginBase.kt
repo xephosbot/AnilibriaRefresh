@@ -3,6 +3,7 @@
  */
 
 import com.xbot.convention.android.configureAndroidDetekt
+import com.xbot.convention.android.configureAndroidKtlint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -12,6 +13,7 @@ abstract class AndroidConventionPluginBase : Plugin<Project> {
         with(target) {
             configurePlugin()
             configureDetekt()
+            configureKtlint()
             configureAndroid()
         }
     }
@@ -24,6 +26,10 @@ abstract class AndroidConventionPluginBase : Plugin<Project> {
 
     private fun Project.configureDetekt() {
         configureAndroidDetekt()
+    }
+
+    private fun Project.configureKtlint() {
+        configureAndroidKtlint()
     }
 
     protected abstract fun Project.configureAndroid()

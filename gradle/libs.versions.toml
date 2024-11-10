@@ -72,6 +72,9 @@ interpolator = "1.0.0"
 detektGradlePlugin = "1.23.7"
 detektRulesCompose = "0.4.17"
 
+# Ktlint
+ktlintGradlePlugin = "12.1.1"
+
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
@@ -186,6 +189,7 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 androidx-interpolator = { group = "androidx.interpolator", name = "interpolator", version.ref = "interpolator" }
 
 detektGradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
+ktlintGradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlintGradlePlugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -209,6 +213,7 @@ secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugi
 
 # Static Analyzer
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektGradlePlugin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradlePlugin" }
 
 # Plugins defined by this project
 xbot-android-application = { id = "xbot.android.application" }

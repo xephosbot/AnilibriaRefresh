@@ -29,6 +29,7 @@ dependencies {
 
     // Static Analyzer
     compileOnly(libs.detektGradlePlugin)
+    compileOnly(libs.ktlintGradlePlugin)
 }
 
 tasks {
