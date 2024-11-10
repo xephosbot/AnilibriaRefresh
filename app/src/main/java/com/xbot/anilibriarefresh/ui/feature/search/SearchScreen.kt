@@ -1,6 +1,7 @@
 package com.xbot.anilibriarefresh.ui.feature.search
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,11 +25,14 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -249,6 +255,7 @@ private fun ItemsFilter(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YearSlider(
     modifier: Modifier = Modifier,
@@ -259,6 +266,19 @@ fun YearSlider(
     onValueChange: (ClosedFloatingPointRange<Float>) -> Unit,
 ) {
     val calculatedSteps = steps ?: ((maxValue - minValue).toInt() - 1).coerceAtLeast(0)
+    val rangeSliderState = remember {
+        RangeSliderState(
+            activeRangeStart = minValue,
+            activeRangeEnd = maxValue,
+            valueRange = minValue..maxValue,
+            steps = calculatedSteps,
+            onValueChangeFinished = {
+                //TODO: передача финальных значений слайдера
+            }
+        )
+    }
+    val startInteractionSource = remember { MutableInteractionSource() }
+    val endInteractionSource = remember { MutableInteractionSource() }
 
     ItemsFilter(text = "Год")
     Column(
@@ -273,18 +293,44 @@ fun YearSlider(
                 text = minValue.toInt().toString(),
                 modifier = Modifier.semantics { contentDescription = "Minimum Year" },
             )
-
             RangeSlider(
+                state = rangeSliderState,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp),
-                value = sliderPosition,
-                steps = calculatedSteps,
-                onValueChange = onValueChange,
-                valueRange = minValue..maxValue,
-                onValueChangeFinished = {},
+                startInteractionSource = startInteractionSource,
+                endInteractionSource = endInteractionSource,
+                startThumb = {
+                    Label(
+                        label = {
+                            PlainTooltip(modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth()) {
+                                Text("%.0f".format(rangeSliderState.activeRangeStart))
+                            }
+                        },
+                        interactionSource = startInteractionSource
+                    ) {
+                        SliderDefaults.Thumb(
+                            interactionSource = startInteractionSource,
+                        )
+                    }
+                },
+                endThumb = {
+                    Label(
+                        label = {
+                            PlainTooltip(
+                                modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth()
+                            ) {
+                                Text("%.0f".format(rangeSliderState.activeRangeEnd))
+                            }
+                        },
+                        interactionSource = endInteractionSource
+                    ) {
+                        SliderDefaults.Thumb(
+                            interactionSource = endInteractionSource,
+                        )
+                    }
+                },
             )
-
             Text(
                 text = maxValue.toInt().toString(),
                 modifier = Modifier.semantics { contentDescription = "Maximum Year" },
