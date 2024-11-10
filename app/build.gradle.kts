@@ -13,6 +13,12 @@ dependencies {
     implementation(projects.anilibriaApi)
     baselineProfile(projects.baselineprofile)
 
+    // Koin dependencies
+    implementation(platform(libs.koinBom))
+    implementation(libs.koinCore)
+    implementation(libs.koinAndroid)
+    implementation(libs.koinAndroidCompose)
+
     // Kotlin dependencies
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)

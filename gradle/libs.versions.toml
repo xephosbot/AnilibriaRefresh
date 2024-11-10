@@ -68,6 +68,9 @@ truth = "1.1.5"
 turbine = "1.0.0"
 interpolator = "1.0.0"
 
+# Koin
+koinBom = "4.0.0"
+
 # Detekt
 detektGradlePlugin = "1.23.7"
 detektRulesCompose = "0.4.17"
@@ -172,6 +175,12 @@ sandwich-retrofit = { module = "com.github.skydoves:sandwich-retrofit", version.
 sandwich-retrofit-serialization = { module = "com.github.skydoves:sandwich-retrofit-serialization", version.ref = "sandwich" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
+# Koin
+koinBom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBom" }
+koinCore = { group = "io.insert-koin", name = "koin-core" }
+koinAndroid = { group = "io.insert-koin", name = "koin-android" }
+koinAndroidCompose = { group = "io.insert-koin", name = "koin-androidx-compose" }
 
 # Detekt
 detektFormatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detektGradlePlugin" }
