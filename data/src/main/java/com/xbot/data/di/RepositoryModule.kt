@@ -10,6 +10,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import javax.inject.Singleton
 
 @Module
@@ -26,4 +29,13 @@ object RepositoryModule {
     fun provideFiltersRepository(dataSource: FiltersDataSource): FiltersRepository {
         return FiltersRepositoryImpl(dataSource)
     }
+}
+
+/*
+ * Created by AnyGogin31 on 10.11.2024
+ */
+
+val repositoryModule = module {
+    singleOf(::TitleRepositoryImpl) bind TitleRepository::class
+    singleOf(::FiltersRepositoryImpl) bind FiltersRepository::class
 }

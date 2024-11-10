@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.koin.dsl.module
 import javax.inject.Singleton
 
 @Module
@@ -23,4 +24,13 @@ object DataSourceModule {
     fun provideFiltersDataSource(client: AnilibriaClient): FiltersDataSource {
         return FiltersDataSource(client)
     }
+}
+
+/*
+ * Created by AnyGogin31 on 10.11.2024
+ */
+
+val dataSourceModule = module {
+    single { TitleDataSource }
+    single { FiltersDataSource }
 }

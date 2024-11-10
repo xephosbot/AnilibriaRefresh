@@ -17,6 +17,10 @@ android {
 }
 
 dependencies {
+    // Koin dependencies
+    implementation(platform(libs.koinBom))
+    implementation(libs.koinCore)
+
     // Retrofit dependencies
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
