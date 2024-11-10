@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">Anilibria Refresh</string>
+    <string name="home">Главная</string>
+    <string name="favorite">Избранное</string>
+    <string name="search">Поиск</string>
+    <string name="profile">Профиль</string>
+    <string name="schedule">Расписание</string>
+    <string name="new_episodes">Новые эпизоды</string>
+    <string name="monday">Понедельник</string>
+    <string name="tuesday">Вторник</string>
+    <string name="wednesday">Среда</string>
+    <string name="thursday">Четверг</string>
+    <string name="friday">Пятница</string>
+    <string name="saturday">Суббота</string>
+    <string name="sunday">Воскресенье</string>
     <string name="unknown_error">Какая-то ошибка</string>
     <string name="retry_button">Повторить</string>
     <string name="text_favorites_btn">Всё</string>

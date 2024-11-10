@@ -83,6 +83,8 @@ fun AnilibriaNavGraph(
     }
 }
 
+// https://issuetracker.google.com/issues/360354551
+@SuppressLint("RestrictedApi")
 fun NavDestination?.hasRoute(route: Route) =
     this?.hierarchy?.any { it.hasRoute(route::class) } == true
 

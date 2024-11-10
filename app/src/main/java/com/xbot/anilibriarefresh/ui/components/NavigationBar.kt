@@ -96,12 +96,12 @@ fun AnilibriaNavigationBar(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text
+                        contentDescription = destination.text()
                     )
                 },
                 label = {
                     Text(
-                        text = destination.text,
+                        text = destination.text(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -206,7 +206,8 @@ private fun BottomNavigationTransition(
 ) {
     val animationProgress by animateFloatAsState(
         targetValue = if (selected) 1f else 0f,
-        animationSpec = BottomNavigationAnimationSpec
+        animationSpec = BottomNavigationAnimationSpec,
+        label = "BottomNavigation selection progress"
     )
 
     val color = lerp(inactiveColor, activeColor, animationProgress)

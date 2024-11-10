@@ -47,7 +47,7 @@ fun TitleListItem(
     ) {
         Crossfade(
             targetState = title,
-            label = "" //TODO: информативный label для перехода
+            label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}"
         ) { state ->
             when (state) {
                 null -> LoadingTitleListItem(modifier)
