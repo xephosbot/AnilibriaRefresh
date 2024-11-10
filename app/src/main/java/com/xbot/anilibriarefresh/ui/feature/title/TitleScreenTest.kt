@@ -40,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.skydoves.cloudy.cloudy
 import com.xbot.anilibriarefresh.models.TitleDetail
@@ -53,11 +52,12 @@ import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.anilibriarefresh.ui.utils.fadedEdge
 import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.domain.models.EpisodeModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TitleScreenTest(
     modifier: Modifier = Modifier,
-    viewModel: TitleViewModel = hiltViewModel(),
+    viewModel: TitleViewModel = koinViewModel(),
     paddingValues: PaddingValues,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

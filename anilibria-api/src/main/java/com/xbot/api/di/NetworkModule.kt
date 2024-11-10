@@ -1,71 +1,57 @@
+/*
+ * Created by AnyGogin31 on 10.11.2024
+ */
+
 package com.xbot.api.di
 
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import com.xbot.api.BuildConfig
 import com.xbot.api.service.AnilibriaClient
 import com.xbot.api.service.AnilibriaService
-import com.xbot.api.utils.conditional
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.brotli.BrotliInterceptor
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+val networkModule = module {
+    single {
         val logging = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BASIC)
         }
-        return OkHttpClient.Builder()
-            .conditional(BuildConfig.DEBUG) {
-                addInterceptor(logging)
+
+        OkHttpClient.Builder()
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(logging)
+                }
             }
             .addInterceptor(BrotliInterceptor)
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    single {
         val json = Json {
             coerceInputValues = true
             ignoreUnknownKeys = true
             isLenient = true
         }
-        return Retrofit.Builder()
-            .baseUrl(AnilibriaService.BASE_URL_API)
+
+        Retrofit.Builder()
+            .baseUrl(get<String>(named("baseUrlApi")))
             .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
             .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
-            .client(okHttpClient)
+            .client(get())
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideAnilibriaService(retrofit: Retrofit): AnilibriaService {
-        return retrofit.create(AnilibriaService::class.java)
-    }
+    single { get<Retrofit>().create(AnilibriaService::class.java) }
+    single { AnilibriaClient(service = get()) }
 
-    @Provides
-    @Singleton
-    fun provideAnilibriaClient(service: AnilibriaService): AnilibriaClient {
-        return AnilibriaClient(service)
-    }
-
-    @Provides
-    @BaseUrl
-    fun provideBaseUrl(): String {
-        return AnilibriaService.BASE_URL
-    }
+    single(named("baseUrl")) { AnilibriaService.BASE_URL }
+    single(named("baseUrlApi")) { AnilibriaService.BASE_URL_API }
 }

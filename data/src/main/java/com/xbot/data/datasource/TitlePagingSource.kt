@@ -7,10 +7,9 @@ import com.xbot.data.BuildConfig
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.domain.models.TitleModel
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 import kotlin.math.max
 
-class TitlePagingSource @Inject constructor(
+class TitlePagingSource(
     private val dataSource: TitleDataSource,
 ) : PagingSource<Int, TitleModel>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TitleModel> {

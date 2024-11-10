@@ -9,6 +9,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -24,4 +26,13 @@ object UIModule {
     ): PlayerProvider {
         return PlayerProvider.create<PlaybackService>(context)
     }
+}
+
+/*
+ * Created by AnyGogin31 on 10.11.2024
+ */
+
+val uiModule = module {
+    factory { SnackbarManager }
+    factory { PlayerProvider.create<PlaybackService>(context = androidContext()) }
 }

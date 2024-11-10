@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xbot.android.library.compose)
-    alias(libs.plugins.xbot.android.hilt)
 }
 
 android {
@@ -12,6 +11,12 @@ android {
 }
 
 dependencies {
+    // Koin dependencies
+    implementation(platform(libs.koinBom))
+    implementation(libs.koinCore)
+    implementation(libs.koinAndroid)
+    implementation(libs.koinAndroidCompose)
+
     // AndroidX dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtimeCompose)

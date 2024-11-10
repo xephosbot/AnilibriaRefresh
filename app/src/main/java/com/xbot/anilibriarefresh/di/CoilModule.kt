@@ -1,29 +1,24 @@
+/*
+ * Created by AnyGogin31 on 10.11.2024
+ */
+
 package com.xbot.anilibriarefresh.di
 
-import android.content.Context
 import coil3.ImageLoader
 import coil3.map.Mapper
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import com.xbot.anilibriarefresh.models.Poster
-import com.xbot.api.di.BaseUrl
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object CoilModule {
-    @Provides
-    @Singleton
-    fun provideImageLoader(
-        @ApplicationContext context: Context,
-        @BaseUrl baseUrl: String,
-    ): ImageLoader {
-        return ImageLoader.Builder(context)
+val coilModule = module {
+    single {
+        val context = androidContext()
+        val baseUrl = get<String>(qualifier = named("baseUrl"))
+
+        ImageLoader.Builder(context)
             .crossfade(true)
             .components {
                 add(Mapper<Poster, String> { data, _ -> "$baseUrl${data.src}" })

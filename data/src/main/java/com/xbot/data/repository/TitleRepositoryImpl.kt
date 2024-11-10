@@ -11,9 +11,8 @@ import com.xbot.domain.models.TitleModel
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.repository.TitleRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-internal class TitleRepositoryImpl @Inject constructor(
+internal class TitleRepositoryImpl(
     private val dataSource: TitleDataSource,
 ) : TitleRepository {
     override fun getLatestTitles(): Flow<PagingData<TitleModel>> {
