@@ -1,8 +1,7 @@
 package com.xbot.anilibriarefresh.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.ui.icons.Heart
@@ -38,31 +37,32 @@ sealed interface Route {
 }
 
 enum class TopLevelDestination(
-    val text: @Composable () -> String,
+    @StringRes
+    val textResId: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val route: Route,
 ) {
     Home(
-        text = { stringResource(R.string.home) },
+        textResId = R.string.home,
         selectedIcon = AnilibriaIcons.Filled.House,
         unselectedIcon = AnilibriaIcons.Outlined.House,
         route = Route.Home,
     ),
     Favorite(
-        text = { stringResource(R.string.favorite) },
+        textResId = R.string.favorite,
         selectedIcon = AnilibriaIcons.Filled.Heart,
         unselectedIcon = AnilibriaIcons.Outlined.Heart,
         route = Route.Favorite,
     ),
     Search(
-        text = { stringResource(R.string.search) },
+        textResId = R.string.search,
         selectedIcon = AnilibriaIcons.Outlined.Search,
         unselectedIcon = AnilibriaIcons.Outlined.Search,
         route = Route.Search,
     ),
     Profile(
-        text = { stringResource(R.string.profile) },
+        textResId = R.string.profile,
         selectedIcon = AnilibriaIcons.Outlined.Person,
         unselectedIcon = AnilibriaIcons.Outlined.Person,
         route = Route.Profile,

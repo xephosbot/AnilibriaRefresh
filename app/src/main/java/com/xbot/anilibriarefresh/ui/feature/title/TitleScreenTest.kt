@@ -97,6 +97,7 @@ private fun TitleScreenContent(
                         .fillMaxSize()
                         .fadedEdge(edgeHeight = 200.dp)
                         .fadedEdge(edgeHeight = 200.dp, bottomEdge = false)
+                        //TODO: Find another way to blur bitmap with supporting SDK >= 24
                         .cloudy(radius = 500),
                     poster = title.poster,
                 )
