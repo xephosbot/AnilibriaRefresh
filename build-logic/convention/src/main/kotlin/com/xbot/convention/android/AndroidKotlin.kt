@@ -6,6 +6,7 @@ package com.xbot.convention.android
 
 import com.android.build.api.dsl.CommonExtension
 import com.xbot.convention.Configuration
+import com.xbot.convention.extensions.getLibrary
 import com.xbot.convention.extensions.getPlugin
 import com.xbot.convention.extensions.libs
 import org.gradle.api.Project
@@ -37,7 +38,7 @@ internal fun Project.configureAndroidKotlin(
         }
 
         dependencies {
-            add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+            add("coreLibraryDesugaring", libs.getLibrary("android-desugarJdkLibs"))
         }
     }
 }

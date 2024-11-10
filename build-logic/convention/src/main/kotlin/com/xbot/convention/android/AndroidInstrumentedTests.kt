@@ -1,4 +1,4 @@
-package com.xbot.convention
+package com.xbot.convention.android
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import org.gradle.api.Project

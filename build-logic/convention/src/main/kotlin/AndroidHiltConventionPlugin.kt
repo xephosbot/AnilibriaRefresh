@@ -1,3 +1,7 @@
+import com.xbot.convention.extensions.getLibrary
+import com.xbot.convention.extensions.getPlugin
+import com.xbot.convention.extensions.implementation
+import com.xbot.convention.extensions.ksp
 import com.xbot.convention.extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -7,13 +11,13 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.google.devtools.ksp")
-                apply("dagger.hilt.android.plugin")
+                apply(libs.getPlugin("ksp").get().pluginId)
+                apply(libs.getPlugin("hilt").get().pluginId)
             }
 
             dependencies {
-                add("implementation", libs.findLibrary("hilt.android").get())
-                add("ksp", libs.findLibrary("hilt.compiler").get())
+                implementation(libs.getLibrary("hilt-android"))
+                ksp(libs.getLibrary("hilt-compiler"))
             }
         }
     }
