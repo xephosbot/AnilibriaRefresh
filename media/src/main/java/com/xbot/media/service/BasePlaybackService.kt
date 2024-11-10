@@ -11,7 +11,6 @@ import org.koin.android.ext.android.inject
 
 @OptIn(UnstableApi::class)
 open class BasePlaybackService : MediaSessionService() {
-
     private val player: Player by inject()
 
     private var mediaSession: MediaSession? = null

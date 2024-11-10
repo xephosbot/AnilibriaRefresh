@@ -274,8 +274,8 @@ fun YearSlider(
             valueRange = minValue..maxValue,
             steps = calculatedSteps,
             onValueChangeFinished = {
-                //TODO: передача финальных значений слайдера
-            }
+                // TODO: передача финальных значений слайдера
+            },
         )
     }
     val startInteractionSource = remember { MutableInteractionSource() }
@@ -308,7 +308,7 @@ fun YearSlider(
                                 Text("%.0f".format(rangeSliderState.activeRangeStart))
                             }
                         },
-                        interactionSource = startInteractionSource
+                        interactionSource = startInteractionSource,
                     ) {
                         SliderDefaults.Thumb(
                             interactionSource = startInteractionSource,
@@ -319,12 +319,12 @@ fun YearSlider(
                     Label(
                         label = {
                             PlainTooltip(
-                                modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth()
+                                modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth(),
                             ) {
                                 Text("%.0f".format(rangeSliderState.activeRangeEnd))
                             }
                         },
-                        interactionSource = endInteractionSource
+                        interactionSource = endInteractionSource,
                     ) {
                         SliderDefaults.Thumb(
                             interactionSource = endInteractionSource,

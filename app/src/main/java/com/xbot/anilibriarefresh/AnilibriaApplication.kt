@@ -15,7 +15,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class AnilibriaApplication : Application() {
-
     private val imageLoader: ImageLoader by inject()
 
     override fun onCreate() {
