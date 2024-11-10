@@ -6,9 +6,7 @@ import androidx.core.app.TaskStackBuilder
 import com.xbot.anilibriarefresh.ui.MainActivity
 import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.media.service.BasePlaybackService
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class PlaybackService : BasePlaybackService() {
     override fun getSingleTopActivity(): PendingIntent? {
         val intent = Intent(this, PlayerActivity::class.java)

@@ -5,9 +5,9 @@ import android.content.Context
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import com.xbot.media.await
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.guava.await
 
 class PlayerProvider @PublishedApi internal constructor(
     context: Context,
