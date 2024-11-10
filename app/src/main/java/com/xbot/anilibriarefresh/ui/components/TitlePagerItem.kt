@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -22,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -37,61 +38,49 @@ import com.xbot.anilibriarefresh.ui.utils.stringResource
 fun TitlePagerItem(
     modifier: Modifier = Modifier,
     title: Title,
-    onClick: (Title) -> Unit
+    onClick: (Title) -> Unit,
 ) {
-    BoxWithConstraints {
-        if (maxWidth < 600.dp) {
-            CompactItemLayout(
-                modifier = modifier,
-                title = title,
-                onClick = onClick
-            )
-        } else {
-            LargeItemLayout(
-                modifier = modifier,
-                title = title,
-                onClick = onClick
-            )
-        }
+    val isCompact = LocalConfiguration.current.screenWidthDp.dp < 600.dp
+
+    if (isCompact) {
+        CompactItemLayout(
+            modifier = modifier,
+            title = title,
+            onClick = onClick
+        )
+    } else {
+        LargeItemLayout(
+            modifier = modifier,
+            title = title,
+            onClick = onClick
+        )
     }
 }
 
 @Composable
 fun LoadingPagerItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val shimmer = LocalShimmer.current
+    val isCompact = LocalConfiguration.current.screenWidthDp.dp < 600.dp
 
-    BoxWithConstraints {
-        if (maxWidth < 600.dp) {
-            Box(
-                modifier = modifier
-                    .padding(horizontal = HorizontalPadding)
-                    .fillMaxWidth()
-                    .aspectRatio(7f / 10f)
-                    .shimmerSafe(shimmer)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.LightGray)
-            )
-        } else {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(LargeItemHeight)
-                    .padding(horizontal = HorizontalPadding)
-                    .shimmerSafe(shimmer)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.LightGray)
-            )
-        }
-    }
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = HorizontalPadding)
+            .aspectRatio(if (isCompact) 7f / 10f else 1f)
+            .height(if (isCompact) Dp.Unspecified else LargeItemHeight)
+            .shimmerSafe(shimmer)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+    )
 }
 
 @Composable
 private fun CompactItemLayout(
     modifier: Modifier,
     title: Title,
-    onClick: (Title) -> Unit
+    onClick: (Title) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -114,7 +103,7 @@ private fun CompactItemLayout(
 private fun LargeItemLayout(
     modifier: Modifier,
     title: Title,
-    onClick: (Title) -> Unit
+    onClick: (Title) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -151,11 +140,12 @@ private fun LargeItemLayout(
                 )
                 Row {
                     title.tags.forEachIndexed { index, tag ->
-                        when(tag) {
+                        when (tag) {
                             is TitleTag.Text -> Text(
                                 text = stringResource(tag.text),
                                 fontSize = 14.sp
                             )
+
                             is TitleTag.TextWithIcon -> TextWithIcon(
                                 text = stringResource(tag.text),
                                 imageVector = tag.icon,
@@ -183,7 +173,7 @@ private fun LargeItemLayout(
 
 fun Modifier.pagerItemTransition(
     page: Int,
-    state: PagerState
+    state: PagerState,
 ) = zIndex(page * 10f)
     .graphicsLayer {
         val startOffset = state.startOffsetForPage(page)

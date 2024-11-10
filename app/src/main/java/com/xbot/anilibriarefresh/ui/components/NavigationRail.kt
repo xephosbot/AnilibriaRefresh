@@ -252,7 +252,8 @@ private fun NavigationRailTransition(
     val animationProgress by
     animateFloatAsState(
         targetValue = if (selected) 1f else 0f,
-        animationSpec = NavigationRailAnimationSpec
+        animationSpec = NavigationRailAnimationSpec,
+        label = "NavigationRail selection progress"
     )
 
     val color = lerp(inactiveColor, activeColor, animationProgress)
