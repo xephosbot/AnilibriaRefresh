@@ -11,16 +11,13 @@ import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.domain.repository.TitleRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class TitleViewModel @Inject constructor(
+class TitleViewModel(
     repository: TitleRepository,
     savedStateHandle: SavedStateHandle,
     snackbarManager: SnackbarManager,

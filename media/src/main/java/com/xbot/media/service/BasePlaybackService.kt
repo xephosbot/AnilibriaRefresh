@@ -7,14 +7,12 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 @OptIn(UnstableApi::class)
-@AndroidEntryPoint
 open class BasePlaybackService : MediaSessionService() {
-    @Inject
-    lateinit var player: Player
+
+    private val player: Player by inject()
 
     private var mediaSession: MediaSession? = null
 

@@ -5,33 +5,33 @@ import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.xbot.anilibriarefresh.di.coilModule
 import com.xbot.anilibriarefresh.di.uiModule
+import com.xbot.anilibriarefresh.di.viewModelModule
 import com.xbot.api.di.networkModule
 import com.xbot.data.di.dataSourceModule
 import com.xbot.data.di.repositoryModule
 import com.xbot.media.di.mediaModule
-import dagger.hilt.android.HiltAndroidApp
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import javax.inject.Inject
 
-@HiltAndroidApp
 class AnilibriaApplication : Application() {
-    @Inject
-    lateinit var imageLoader: ImageLoader
+
+    private val imageLoader: ImageLoader by inject()
 
     override fun onCreate() {
         super.onCreate()
-        SingletonImageLoader.setSafe { imageLoader }
         startKoin {
             androidContext(this@AnilibriaApplication)
             modules(
                 networkModule,
                 dataSourceModule,
                 repositoryModule,
+                viewModelModule,
                 mediaModule,
                 uiModule,
                 coilModule,
             )
         }
+        SingletonImageLoader.setSafe { imageLoader }
     }
 }

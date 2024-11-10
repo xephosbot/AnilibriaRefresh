@@ -10,9 +10,8 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingTypes
 import com.xbot.domain.repository.FiltersRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-internal class FiltersRepositoryImpl @Inject constructor(
+internal class FiltersRepositoryImpl(
     private val filterDataSource: FiltersDataSource,
 ) : FiltersRepository {
     override fun getAgeRatings(): Flow<List<AgeRating>> {
