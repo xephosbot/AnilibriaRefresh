@@ -2,7 +2,7 @@ import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.xbot.convention.configureKotlinAndroid
 import com.xbot.convention.disableUnnecessaryAndroidTests
-import com.xbot.convention.libs
+import com.xbot.convention.extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
