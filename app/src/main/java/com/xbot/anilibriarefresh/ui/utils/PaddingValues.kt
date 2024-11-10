@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 private class UnionPaddingValues(
     private val first: PaddingValues,
-    private val second: PaddingValues
+    private val second: PaddingValues,
 ) : PaddingValues {
     override fun calculateBottomPadding(): Dp {
         return maxOf(first.calculateBottomPadding(), second.calculateBottomPadding())
@@ -44,7 +44,7 @@ private class UnionPaddingValues(
 @Stable
 private class LimitPaddingValues(
     val padding: PaddingValues,
-    val sides: WindowInsetsSides
+    val sides: WindowInsetsSides,
 ) : PaddingValues {
     override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
         val layoutDirectionSide = if (layoutDirection == LayoutDirection.Ltr) {

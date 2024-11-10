@@ -22,5 +22,5 @@ data class TitleDetailModel(
     val episodeDuration: Int?,
     val genres: List<GenreModel>,
     val members: List<MemberModel>,
-    val episodes: List<EpisodeModel>
+    val episodes: List<EpisodeModel>,
 )

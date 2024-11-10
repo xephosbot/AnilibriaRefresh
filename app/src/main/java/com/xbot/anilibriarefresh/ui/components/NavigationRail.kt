@@ -76,7 +76,7 @@ fun AnilibriaNavigationRail(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP,
-    onNavigationClick: () -> Unit = {}
+    onNavigationClick: () -> Unit = {},
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -99,11 +99,11 @@ fun AnilibriaNavigationRail(
                     true -> Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                     else -> Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
@@ -111,7 +111,7 @@ fun AnilibriaNavigationRail(
         contentArrangement = when (navContentPosition) {
             NavigationContentPosition.TOP -> Arrangement.Top
             NavigationContentPosition.CENTER -> Arrangement.Center
-        }
+        },
     ) {
         TopLevelDestination.entries.forEach { destination ->
             val isSelected = currentDestination.hasRoute(destination.route)
@@ -138,9 +138,9 @@ fun AnilibriaNavigationRail(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text()
+                        contentDescription = destination.text(),
                     )
-                }
+                },
             )
         }
     }
@@ -153,10 +153,10 @@ fun NavigationRail(
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     header: @Composable (ColumnScope.() -> Unit)? = null,
     windowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout).only(
-        WindowInsetsSides.Vertical + WindowInsetsSides.Start
+        WindowInsetsSides.Vertical + WindowInsetsSides.Start,
     ),
     contentArrangement: Arrangement.Vertical = Arrangement.Bottom,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
         color = containerColor,
@@ -170,7 +170,7 @@ fun NavigationRail(
                 .widthIn(min = 80.0.dp)
                 .padding(vertical = NavigationRailPadding)
                 .selectableGroup(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (header != null) {
                 header()
@@ -181,7 +181,7 @@ fun NavigationRail(
                     .fillMaxHeight()
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = contentArrangement,
-                content = content
+                content = content,
             )
         }
     }
@@ -198,9 +198,9 @@ fun NavigationRailItem(
     alwaysShowLabel: Boolean = true,
     colors: NavigationRailItemColors = NavigationRailItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.onSurface,
-        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f)
+        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
     ),
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
 ) {
     val styledLabel: @Composable (() -> Unit)? =
         label?.let {
@@ -221,22 +221,22 @@ fun NavigationRailItem(
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
-                indication = ripple(bounded = false)
+                indication = ripple(bounded = false),
             )
             .size(itemSize),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         NavigationRailTransition(
             activeColor = colors.selectedIconColor,
             inactiveColor = colors.unselectedIconColor,
-            selected = selected
+            selected = selected,
         ) { progress ->
             val animationProgress = if (alwaysShowLabel) 1f else progress
 
             NavigationRailItemBaselineLayout(
                 icon = icon,
                 label = styledLabel,
-                iconPositionAnimationProgress = animationProgress
+                iconPositionAnimationProgress = animationProgress,
             )
         }
     }
@@ -247,14 +247,14 @@ private fun NavigationRailTransition(
     activeColor: Color,
     inactiveColor: Color,
     selected: Boolean,
-    content: @Composable (animationProgress: Float) -> Unit
+    content: @Composable (animationProgress: Float) -> Unit,
 ) {
     val animationProgress by
-    animateFloatAsState(
-        targetValue = if (selected) 1f else 0f,
-        animationSpec = NavigationRailAnimationSpec,
-        label = "NavigationRail selection progress"
-    )
+        animateFloatAsState(
+            targetValue = if (selected) 1f else 0f,
+            animationSpec = NavigationRailAnimationSpec,
+            label = "NavigationRail selection progress",
+        )
 
     val color = lerp(inactiveColor, activeColor, animationProgress)
 
@@ -267,7 +267,7 @@ private fun NavigationRailTransition(
 private fun NavigationRailItemBaselineLayout(
     icon: @Composable () -> Unit,
     label: @Composable (() -> Unit)?,
-    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float,
 ) {
     Layout({
         Box(Modifier.layoutId("icon")) { icon() }
@@ -275,7 +275,8 @@ private fun NavigationRailItemBaselineLayout(
             Box(
                 Modifier
                     .layoutId("label")
-                    .alpha(iconPositionAnimationProgress)) { label() }
+                    .alpha(iconPositionAnimationProgress),
+            ) { label() }
         }
     }) { measurables, constraints ->
         val iconPlaceable = measurables.fastFirst { it.layoutId == "icon" }.measure(constraints)
@@ -288,7 +289,7 @@ private fun NavigationRailItemBaselineLayout(
                         // Measure with loose constraints for height as we don't want the label to
                         // take up more
                         // space than it needs
-                        constraints.copy(minHeight = 0)
+                        constraints.copy(minHeight = 0),
                     )
             }
 
@@ -300,7 +301,7 @@ private fun NavigationRailItemBaselineLayout(
                 labelPlaceable!!,
                 iconPlaceable,
                 constraints,
-                iconPositionAnimationProgress
+                iconPositionAnimationProgress,
             )
         }
     }
@@ -308,7 +309,7 @@ private fun NavigationRailItemBaselineLayout(
 
 private fun MeasureScope.placeIcon(
     iconPlaceable: Placeable,
-    constraints: Constraints
+    constraints: Constraints,
 ): MeasureResult {
     val iconX = max(0, (constraints.maxWidth - iconPlaceable.width) / 2)
     val iconY = max(0, (constraints.maxHeight - iconPlaceable.height) / 2)
@@ -321,7 +322,7 @@ private fun MeasureScope.placeLabelAndIcon(
     labelPlaceable: Placeable,
     iconPlaceable: Placeable,
     constraints: Constraints,
-    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float,
 ): MeasureResult {
     val baseline = labelPlaceable[LastBaseline]
     val labelBaselineOffset = ItemLabelBaselineBottomOffset.roundToPx()

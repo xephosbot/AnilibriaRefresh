@@ -32,10 +32,10 @@ fun OverlayHeaderLayout(
     modifier: Modifier = Modifier,
     scrollBehavior: OverlayHeaderLayoutScrollBehavior = rememberOverlayHeaderLayoutScrollBehavior(),
     headlineContent: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     DimensionSubcomposeLayout(
-        content = headlineContent
+        content = headlineContent,
     ) { headlineContentSize ->
         SideEffect {
             if (scrollBehavior.state.heightOffsetLimit != headlineContentSize.height) {
@@ -47,7 +47,7 @@ fun OverlayHeaderLayout(
         val contentBox = @Composable {
             Box(
                 modifier = Modifier
-                    .offset { IntOffset(0, scrollBehavior.state.heightOffset.toInt()) }
+                    .offset { IntOffset(0, scrollBehavior.state.heightOffset.toInt()) },
             ) {
                 content()
             }
@@ -56,7 +56,7 @@ fun OverlayHeaderLayout(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             headlineContent()
             contentBox()
@@ -68,13 +68,13 @@ fun OverlayHeaderLayout(
 fun rememberOverlayHeaderLayoutScrollBehavior(
     state: OverlayHeaderLayoutState = rememberOverlayHeaderLayoutState(),
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
-    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
+    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
 ): OverlayHeaderLayoutScrollBehavior {
     return remember {
         OverlayHeaderLayoutScrollBehavior(
             state = state,
             snapAnimationSpec = snapAnimationSpec,
-            flingAnimationSpec = flingAnimationSpec
+            flingAnimationSpec = flingAnimationSpec,
         )
     }
 }
@@ -82,7 +82,7 @@ fun rememberOverlayHeaderLayoutScrollBehavior(
 @Composable
 fun rememberOverlayHeaderLayoutState(
     initialHeightOffsetLimit: Float = -Float.MAX_VALUE,
-    initialHeightOffset: Float = 0f
+    initialHeightOffset: Float = 0f,
 ): OverlayHeaderLayoutState {
     return remember {
         OverlayHeaderLayoutState(initialHeightOffsetLimit, initialHeightOffset)
@@ -92,7 +92,7 @@ fun rememberOverlayHeaderLayoutState(
 @Stable
 class OverlayHeaderLayoutState(
     initialHeightOffsetLimit: Float,
-    initialHeightOffset: Float
+    initialHeightOffset: Float,
 ) {
     internal var heightOffsetLimit by mutableFloatStateOf(initialHeightOffsetLimit)
     internal var heightOffset: Float
@@ -110,7 +110,6 @@ class OverlayHeaderLayoutState(
                 0f
             }
 
-
     private var _heightOffset = mutableFloatStateOf(initialHeightOffset)
 }
 
@@ -118,12 +117,12 @@ class OverlayHeaderLayoutState(
 class OverlayHeaderLayoutScrollBehavior(
     val state: OverlayHeaderLayoutState,
     val snapAnimationSpec: AnimationSpec<Float>?,
-    val flingAnimationSpec: DecayAnimationSpec<Float>?
+    val flingAnimationSpec: DecayAnimationSpec<Float>?,
 ) {
     val nestedScrollConnection = object : NestedScrollConnection {
         override fun onPreScroll(
             available: Offset,
-            source: NestedScrollSource
+            source: NestedScrollSource,
         ): Offset {
             if (available.y > 0f) return Offset.Zero
 
@@ -139,7 +138,7 @@ class OverlayHeaderLayoutScrollBehavior(
         override fun onPostScroll(
             consumed: Offset,
             available: Offset,
-            source: NestedScrollSource
+            source: NestedScrollSource,
         ): Offset {
             if (available.y < 0f || consumed.y < 0f) {
                 val oldHeightOffset = state.heightOffset
@@ -158,7 +157,7 @@ class OverlayHeaderLayoutScrollBehavior(
         override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
             val superConsumed = super.onPostFling(consumed, available)
             return superConsumed +
-                    settleScroll(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                settleScroll(state, available.y, flingAnimationSpec, snapAnimationSpec)
         }
     }
 }
@@ -167,7 +166,7 @@ private suspend fun settleScroll(
     state: OverlayHeaderLayoutState,
     velocity: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?
+    snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
         return Velocity.Zero
@@ -197,7 +196,7 @@ private suspend fun settleScroll(
                 } else {
                     state.heightOffsetLimit
                 },
-                animationSpec = snapAnimationSpec
+                animationSpec = snapAnimationSpec,
             ) {
                 state.heightOffset = value
             }

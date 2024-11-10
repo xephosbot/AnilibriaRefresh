@@ -2,8 +2,8 @@ package com.xbot.api.models
 
 import com.xbot.api.models.enums.AgeRatingEnum
 import com.xbot.api.models.enums.PublishDayEnum
-import com.xbot.api.models.enums.SeasonEnum
 import com.xbot.api.models.enums.ReleaseTypeEnum
+import com.xbot.api.models.enums.SeasonEnum
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -36,5 +36,5 @@ data class Release(
     @SerialName("members") val members: List<Member>? = null,
     @SerialName("sponsor") val sponsor: Sponsor? = null,
     @SerialName("episodes") val episodes: List<Episode>? = null,
-    @SerialName("torrents") val torrents: List<Torrent>? = null
+    @SerialName("torrents") val torrents: List<Torrent>? = null,
 )

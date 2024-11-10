@@ -20,7 +20,7 @@ fun TitleModel.toTitleUi(): Title {
         name = name,
         description = description,
         tags = listOfTags(),
-        poster = Poster(poster.src)
+        poster = Poster(poster.src),
     )
 }
 
@@ -34,11 +34,11 @@ fun TitleDetailModel.toTitleDetailUi(): TitleDetail {
         notification = notification,
         genres = genres,
         members = members,
-        episodes = episodes
+        episodes = episodes,
     )
 }
 
-//TODO: CLean up after migrate
+// TODO: CLean up after migrate
 fun PosterModel.toPosterUi(): Poster {
     return Poster(src)
 }
@@ -56,7 +56,7 @@ private fun TitleModel.listOfTags(): List<TitleTag> {
 }
 
 fun ReleaseType.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         ReleaseType.TV -> R.string.release_type_tv
         ReleaseType.ONA -> R.string.release_type_ona
         ReleaseType.WEB -> R.string.release_type_web
@@ -70,7 +70,7 @@ fun ReleaseType.toStringResource(): StringResource {
 }
 
 fun AgeRating.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         AgeRating.R0_PLUS -> R.string.age_rating_0_plus
         AgeRating.R6_PLUS -> R.string.age_rating_6_plus
         AgeRating.R12_PLUS -> R.string.age_rating_12_plus
@@ -81,7 +81,7 @@ fun AgeRating.toStringResource(): StringResource {
 }
 
 fun ProductionStatus.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         ProductionStatus.IS_IN_PRODUCTION -> R.string.production_status_is_in_production
         ProductionStatus.IS_NOT_IN_PRODUCTION -> R.string.production_status_is_not_in_production
     }
@@ -89,7 +89,7 @@ fun ProductionStatus.toStringResource(): StringResource {
 }
 
 fun PublishStatus.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         PublishStatus.IS_ONGOING -> R.string.publish_status_is_ongoing
         PublishStatus.IS_NOT_ONGOING -> R.string.publish_status_is_not_ongoing
     }
@@ -97,7 +97,7 @@ fun PublishStatus.toStringResource(): StringResource {
 }
 
 fun Season.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         Season.WINTER -> R.string.season_winter
         Season.SPRING -> R.string.season_spring
         Season.SUMMER -> R.string.season_summer
@@ -107,7 +107,7 @@ fun Season.toStringResource(): StringResource {
 }
 
 fun SortingTypes.toStringResource(): StringResource {
-    val resId = when(this) {
+    val resId = when (this) {
         SortingTypes.FRESH_AT_DESC -> R.string.sorting_types_fresh_at_desc
         SortingTypes.FRESH_AT_ASC -> R.string.sorting_types_fresh_at_asc
         SortingTypes.RATING_DESC -> R.string.sorting_types_rating_desc

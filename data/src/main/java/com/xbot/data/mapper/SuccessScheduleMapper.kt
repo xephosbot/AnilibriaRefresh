@@ -25,10 +25,10 @@ object SuccessScheduleMapper : ApiSuccessModelMapper<List<Schedule>, Map<DayOfWe
                     favoritesCount = title.addedInUsersFavorites,
                     poster = PosterModel(
                         src = title.poster.optimized.src,
-                        thumbnail = title.poster.optimized.thumbnail
-                    )
+                        thumbnail = title.poster.optimized.thumbnail,
+                    ),
                 )
-            }
+            },
         ).toSortedMap(compareBy { it.ordinal })
     }
 }

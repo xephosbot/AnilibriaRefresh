@@ -20,7 +20,7 @@ import com.xbot.api.models.login.LoginSocialNetwork
 import javax.inject.Inject
 
 class AnilibriaClient @Inject constructor(
-    private val service: AnilibriaService
+    private val service: AnilibriaService,
 ) {
     /**
      * Авторизация пользователя по логину и паролю. Создание сессии пользователя, выдача токена авторизации для использования в cookies или в Bearer Token.
@@ -48,7 +48,7 @@ class AnilibriaClient @Inject constructor(
      * @return [ApiResponse] содержащий информацию о ключе, используемом для авторизации [LoginSocialNetwork].
      */
     suspend fun loginWithSocialNetwork(
-        provider: SocialNetworkEnum
+        provider: SocialNetworkEnum,
     ): ApiResponse<LoginSocialNetwork> {
         return service.loginWithSocialNetwork(provider = provider)
     }
@@ -60,7 +60,7 @@ class AnilibriaClient @Inject constructor(
      * @return [ApiResponse] содержащий информацию об авторизации [LoginResponse].
      */
     suspend fun authenticateWithSocialNetwork(
-        state: String
+        state: String,
     ): ApiResponse<LoginResponse> {
         return service.authenticateWithSocialNetwork(state = state)
     }
@@ -94,7 +94,7 @@ class AnilibriaClient @Inject constructor(
         sorting: SortingTypeEnum? = null,
         ageRatings: List<AgeRatingEnum>? = null,
         publishStatuses: List<PublishStatusEnum>? = null,
-        productionStatuses: List<ProductionStatusEnum>? = null
+        productionStatuses: List<ProductionStatusEnum>? = null,
     ): ApiResponse<ReleaseCatalogResponse> {
         return service.getReleases(
             page = page,
@@ -108,7 +108,7 @@ class AnilibriaClient @Inject constructor(
             sorting = sorting?.toString(),
             ageRatings = ageRatings?.joinToString(","),
             publishStatuses = publishStatuses?.joinToString(","),
-            productionStatuses = productionStatuses?.joinToString(",")
+            productionStatuses = productionStatuses?.joinToString(","),
         )
     }
 
@@ -214,10 +214,10 @@ class AnilibriaClient @Inject constructor(
     }
 
     /**Получение списка случайных франшиз с применением различных фильтров.
-    *
-    * @param limit Количество случайных франшиз в выдаче.
+     *
+     * @param limit Количество случайных франшиз в выдаче.
      * @return [ApiResponse] содержащий информацию о франшизе [Franchise].
-    */
+     */
     suspend fun getFranchisesRandom(limit: Int): ApiResponse<List<Franchise>> {
         return service.getFranchisesRandom(limit = limit)
     }
@@ -267,12 +267,12 @@ class AnilibriaClient @Inject constructor(
     suspend fun getAllReleasesByGenre(
         id: Int,
         page: Int,
-        limit: Int
+        limit: Int,
     ): ApiResponse<ReleaseCatalogResponse> {
         return service.getAllReleasesByGenre(
             id = id,
             page = page,
-            limit = limit
+            limit = limit,
         )
     }
 
@@ -282,7 +282,7 @@ class AnilibriaClient @Inject constructor(
      * @return [ApiResponse] содержащий информацию о последних релизах [Release].
      */
     suspend fun getLatestReleases(
-        limit: Int
+        limit: Int,
     ): ApiResponse<List<Release>> {
         return service.getLatestReleases(limit = limit)
     }
@@ -293,7 +293,7 @@ class AnilibriaClient @Inject constructor(
      * @return [ApiResponse] содержащий информацию о случайных релизах [Release].
      */
     suspend fun getRandomReleases(
-        limit: Int
+        limit: Int,
     ): ApiResponse<List<Release>> {
         return service.getRandomReleases(limit = limit)
     }

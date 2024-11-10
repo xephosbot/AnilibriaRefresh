@@ -21,7 +21,7 @@ object CoilModule {
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context,
-        @BaseUrl baseUrl: String
+        @BaseUrl baseUrl: String,
     ): ImageLoader {
         return ImageLoader.Builder(context)
             .crossfade(true)

@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Sponsor(
-    @SerialName("id") val id: String? = null
+    @SerialName("id") val id: String? = null,
 )

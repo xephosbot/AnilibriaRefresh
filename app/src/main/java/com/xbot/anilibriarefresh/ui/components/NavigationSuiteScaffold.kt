@@ -43,7 +43,7 @@ fun AnilibriaNavigationSuiteScaffold(
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
     contentWindowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout),
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
 
@@ -56,7 +56,8 @@ fun AnilibriaNavigationSuiteScaffold(
     val navContentPosition = when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
         WindowHeightSizeClass.COMPACT -> NavigationContentPosition.TOP
         WindowHeightSizeClass.MEDIUM,
-        WindowHeightSizeClass.EXPANDED -> NavigationContentPosition.CENTER
+        WindowHeightSizeClass.EXPANDED,
+        -> NavigationContentPosition.CENTER
 
         else -> NavigationContentPosition.TOP
     }
@@ -68,7 +69,7 @@ fun AnilibriaNavigationSuiteScaffold(
             safeInsets.insets = contentWindowInsets.exclude(consumedWindowInsets)
         },
         color = containerColor,
-        contentColor = contentColor
+        contentColor = contentColor,
     ) {
         NavigationSuiteScaffoldLayout(
             layoutType = navLayoutType,
@@ -77,7 +78,7 @@ fun AnilibriaNavigationSuiteScaffold(
                 SnackbarHost(hostState = scaffoldState.snackbarHostState) { data ->
                     Snackbar(
                         snackbarData = data,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
                     )
                 }
             },
@@ -85,7 +86,7 @@ fun AnilibriaNavigationSuiteScaffold(
                 NavigationSuiteScopeImpl(navLayoutType, navContentPosition).navigationSuite()
             },
             content = content,
-            contentWindowInsets = contentWindowInsets
+            contentWindowInsets = contentWindowInsets,
         )
     }
 }
@@ -119,8 +120,8 @@ private fun NavigationSuiteScaffoldLayout(
             it.measure(
                 looseConstraints.offset(
                     -leftInset - rightInset,
-                    -bottomInset
-                )
+                    -bottomInset,
+                ),
             )
         }
 
@@ -140,8 +141,13 @@ private fun NavigationSuiteScaffoldLayout(
         val layoutWidth = constraints.maxWidth
 
         val snackbarOffsetFromBottom = if (snackbarHeight != 0) {
-            snackbarHeight + (if (isNavigationBar && navigationBarHeight != null)  navigationBarHeight else
-                contentWindowInsets.getBottom(this@SubcomposeLayout))
+            snackbarHeight + (
+                if (isNavigationBar && navigationBarHeight != null) {
+                    navigationBarHeight
+                } else {
+                    contentWindowInsets.getBottom(this@SubcomposeLayout)
+                }
+            )
         } else {
             0
         }
@@ -164,7 +170,7 @@ private fun NavigationSuiteScaffoldLayout(
                 } else {
                     navigationBarWidth.toDp()
                 },
-                end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
+                end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection),
             )
             content(innerPadding)
         }.fastMap {
@@ -183,8 +189,8 @@ private fun NavigationSuiteScaffoldLayout(
                 snackbarPlaceables.fastForEach {
                     it.place(
                         (layoutWidth - snackbarWidth) / 2 +
-                                contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
-                        layoutHeight - snackbarOffsetFromBottom
+                            contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
+                        layoutHeight - snackbarOffsetFromBottom,
                     )
                 }
                 // Place the navigation component at the bottom of the screen.
@@ -199,8 +205,8 @@ private fun NavigationSuiteScaffoldLayout(
                 snackbarPlaceables.fastForEach {
                     it.place(
                         (layoutWidth - snackbarWidth) / 2 +
-                                contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
-                        layoutHeight - snackbarOffsetFromBottom
+                            contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection),
+                        layoutHeight - snackbarOffsetFromBottom,
                     )
                 }
                 // Place the navigation component at the start of the screen.
@@ -219,7 +225,7 @@ interface NavigationSuiteScope {
 
 private class NavigationSuiteScopeImpl(
     override val layoutType: NavigationSuiteType,
-    override val contentPosition: NavigationContentPosition
+    override val contentPosition: NavigationContentPosition,
 ) : NavigationSuiteScope
 
 private enum class NavigationSuiteScaffoldLayoutContent { MainContent, Navigation, TopBar, Snackbar }

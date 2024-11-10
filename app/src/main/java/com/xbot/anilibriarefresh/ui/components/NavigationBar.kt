@@ -61,14 +61,14 @@ import kotlin.math.roundToInt
 @Composable
 fun AnilibriaNavigationBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     val navBackStack by navController.currentBackStackAsState()
 
-    NavigationBar (
+    NavigationBar(
         modifier = modifier,
     ) {
         TopLevelDestination.entries.forEach { destination ->
@@ -96,16 +96,16 @@ fun AnilibriaNavigationBar(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text()
+                        contentDescription = destination.text(),
                     )
                 },
                 label = {
                     Text(
                         text = destination.text(),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
-                }
+                },
             )
         }
     }
@@ -118,24 +118,24 @@ private fun NavigationBar(
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     tonalElevation: Dp = NavigationBarDefaults.Elevation,
     windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Surface(
         color = containerColor,
         contentColor = contentColor,
         tonalElevation = tonalElevation,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(windowInsets)
-                .defaultMinSize(minHeight = 64.dp)
-                .selectableGroup(),
+                Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(windowInsets)
+                    .defaultMinSize(minHeight = 64.dp)
+                    .selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(NavigationBarItemHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
-            content = content
+            content = content,
         )
     }
 }
@@ -154,9 +154,9 @@ fun RowScope.NavigationBarItem(
     alwaysShowLabel: Boolean = true,
     colors: NavigationBarItemColors = NavigationBarItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.onSurface,
-        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f)
+        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
     ),
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
 ) {
     val styledLabel: @Composable (() -> Unit)? =
         label?.let {
@@ -164,7 +164,7 @@ fun RowScope.NavigationBarItem(
                 val style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center)
                 ProvideTextStyle(
                     value = style,
-                    content = label
+                    content = label,
                 )
             }
         }
@@ -176,22 +176,22 @@ fun RowScope.NavigationBarItem(
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
-                indication = ripple(bounded = false)
+                indication = ripple(bounded = false),
             )
             .weight(1f),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         BottomNavigationTransition(
             activeColor = colors.selectedIconColor,
             inactiveColor = colors.unselectedIconColor,
-            selected = selected
+            selected = selected,
         ) { progress ->
             val animationProgress = if (alwaysShowLabel) 1f else progress
 
             BottomNavigationItemBaselineLayout(
                 icon = icon,
                 label = styledLabel,
-                iconPositionAnimationProgress = animationProgress
+                iconPositionAnimationProgress = animationProgress,
             )
         }
     }
@@ -202,12 +202,12 @@ private fun BottomNavigationTransition(
     activeColor: Color,
     inactiveColor: Color,
     selected: Boolean,
-    content: @Composable (animationProgress: Float) -> Unit
+    content: @Composable (animationProgress: Float) -> Unit,
 ) {
     val animationProgress by animateFloatAsState(
         targetValue = if (selected) 1f else 0f,
         animationSpec = BottomNavigationAnimationSpec,
-        label = "BottomNavigation selection progress"
+        label = "BottomNavigation selection progress",
     )
 
     val color = lerp(inactiveColor, activeColor, animationProgress)
@@ -221,7 +221,7 @@ private fun BottomNavigationTransition(
 private fun BottomNavigationItemBaselineLayout(
     icon: @Composable () -> Unit,
     label: @Composable (() -> Unit)?,
-    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float,
 ) {
     Layout({
         Box(Modifier.layoutId("icon")) { icon() }
@@ -230,7 +230,7 @@ private fun BottomNavigationItemBaselineLayout(
                 Modifier
                     .layoutId("label")
                     .alpha(iconPositionAnimationProgress)
-                    .padding(horizontal = BottomNavigationItemHorizontalPadding)
+                    .padding(horizontal = BottomNavigationItemHorizontalPadding),
             ) {
                 label()
             }
@@ -246,7 +246,7 @@ private fun BottomNavigationItemBaselineLayout(
                         // Measure with loose constraints for height as we don't want the label to
                         // take up more
                         // space than it needs
-                        constraints.copy(minHeight = 0)
+                        constraints.copy(minHeight = 0),
                     )
             }
 
@@ -258,7 +258,7 @@ private fun BottomNavigationItemBaselineLayout(
                 labelPlaceable!!,
                 iconPlaceable,
                 constraints,
-                iconPositionAnimationProgress
+                iconPositionAnimationProgress,
             )
         }
     }
@@ -266,7 +266,7 @@ private fun BottomNavigationItemBaselineLayout(
 
 private fun MeasureScope.placeIcon(
     iconPlaceable: Placeable,
-    constraints: Constraints
+    constraints: Constraints,
 ): MeasureResult {
     val height = constraints.constrainHeight(NavigationBarHeight.roundToPx())
     val iconY = (height - iconPlaceable.height) / 2
@@ -277,7 +277,7 @@ private fun MeasureScope.placeLabelAndIcon(
     labelPlaceable: Placeable,
     iconPlaceable: Placeable,
     constraints: Constraints,
-    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) iconPositionAnimationProgress: Float,
 ): MeasureResult {
     val firstBaseline = labelPlaceable[FirstBaseline]
     val baselineOffset = CombinedItemTextBaseline.roundToPx()

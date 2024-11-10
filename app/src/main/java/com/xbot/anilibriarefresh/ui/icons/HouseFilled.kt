@@ -20,7 +20,7 @@ val AnilibriaIcons.Filled.House: ImageVector
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 24f,
-            viewportHeight = 24f
+            viewportHeight = 24f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFffffff)),
@@ -29,7 +29,7 @@ val AnilibriaIcons.Filled.House: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(4.0f, 11.4522f)
                 verticalLineTo(16.8002f)

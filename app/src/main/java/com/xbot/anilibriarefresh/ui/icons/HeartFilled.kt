@@ -20,16 +20,16 @@ val AnilibriaIcons.Filled.Heart: ImageVector
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 24f,
-            viewportHeight = 24f
+            viewportHeight = 24f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFffffff)),
-				stroke = SolidColor(Color(0xFFffffff)),
-				strokeLineWidth = 2.0f,
+                stroke = SolidColor(Color(0xFFffffff)),
+                strokeLineWidth = 2.0f,
                 strokeLineCap = Butt,
-				strokeLineJoin = Miter,
-				strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 7.6943f)
                 curveTo(10.0f, 2.9999f, 3.0f, 3.4999f, 3.0f, 9.4999f)

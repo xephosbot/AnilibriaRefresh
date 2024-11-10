@@ -26,12 +26,12 @@ import javax.inject.Inject
 class PlayerViewModel @Inject constructor(
     repository: TitleRepository,
     playerProvider: PlayerProvider,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val titleId = savedStateHandle.toRoute<Route.Player>().titleId
     private val titleFlow = repository.getTitle(titleId)
         .catch {
-            //TODO: Реализовать обработку ошибок подключения
+            // TODO: Реализовать обработку ошибок подключения
             Log.e("PlayerViewModel", it.message ?: "")
         }
     val controller: StateFlow<Player?> = playerProvider.player
@@ -47,14 +47,14 @@ class PlayerViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = null
+            initialValue = null,
         )
 
     private fun TitleDetailModel.toMediaItem(): MediaItem {
         val mediaMetadata = MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
             .setTitle(name)
-            //TODO:
+            // TODO:
             .setArtist(type?.toString())
             .setArtworkUri(Uri.parse("https://anilibria.top${poster.src}"))
             .build()

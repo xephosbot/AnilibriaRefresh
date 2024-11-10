@@ -19,5 +19,5 @@ data class Episode(
     @SerialName("youtube_id") val youtubeId: String?,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("sort_order") val sortOrder: Int,
-    @SerialName("name_english") val nameEnglish: String?
+    @SerialName("name_english") val nameEnglish: String?,
 )

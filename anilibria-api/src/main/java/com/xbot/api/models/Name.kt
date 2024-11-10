@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class Name(
     @SerialName("main") val main: String,
     @SerialName("english") val english: String,
-    @SerialName("alternative") val alternative: String?
+    @SerialName("alternative") val alternative: String?,
 )

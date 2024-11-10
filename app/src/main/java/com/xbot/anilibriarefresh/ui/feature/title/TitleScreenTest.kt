@@ -58,7 +58,7 @@ import com.xbot.domain.models.EpisodeModel
 fun TitleScreenTest(
     modifier: Modifier = Modifier,
     viewModel: TitleViewModel = hiltViewModel(),
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -66,7 +66,7 @@ fun TitleScreenTest(
         TitleScreenContent(
             modifier = modifier,
             title = (state as TitleScreenState.Success).title,
-            paddingValues = paddingValues
+            paddingValues = paddingValues,
         )
     }
 }
@@ -75,7 +75,7 @@ fun TitleScreenTest(
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     title: TitleDetail,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
 
@@ -90,7 +90,7 @@ private fun TitleScreenContent(
                     .graphicsLayer {
                         alpha = scrollBehavior.state.collapsedFraction
                     },
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 PosterImage(
                     modifier = Modifier
@@ -98,7 +98,7 @@ private fun TitleScreenContent(
                         .fadedEdge(edgeHeight = 200.dp)
                         .fadedEdge(edgeHeight = 200.dp, bottomEdge = false)
                         .cloudy(radius = 500),
-                    poster = title.poster
+                    poster = title.poster,
                 )
                 PosterImage(
                     modifier = Modifier
@@ -107,46 +107,46 @@ private fun TitleScreenContent(
                         .clip(RoundedCornerShape(16.dp))
                         .shadow(elevation = 3.dp),
                     poster = title.poster,
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Fit,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     ) {
         Surface {
             LazyColumn(
-                contentPadding = paddingValues.only(WindowInsetsSides.Bottom)
+                contentPadding = paddingValues.only(WindowInsetsSides.Bottom),
             ) {
                 item {
                     Column(
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp),
                     ) {
                         Spacer(Modifier.height(16.dp))
                         Text(
                             text = title.name,
                             fontSize = 22.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
                         )
                         Spacer(Modifier.height(16.dp))
                         Row {
                             Button(
                                 modifier = Modifier.weight(1f),
-                                onClick = {}
+                                onClick = {},
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.PlayArrow,
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(text = "Смотреть")
                             }
                             Spacer(Modifier.width(16.dp))
-                            OutlinedButton (
-                                onClick = {}
+                            OutlinedButton(
+                                onClick = {},
                             ) {
                                 Icon(
                                     imageVector = AnilibriaIcons.Filled.Heart,
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(text = "2.1k")
@@ -154,12 +154,12 @@ private fun TitleScreenContent(
                         }
                         var expanded by remember { mutableStateOf(false) }
 
-                        Box (
+                        Box(
                             modifier = Modifier
                                 .clickable {
                                     expanded = !expanded
                                 }
-                                .padding(16.dp)
+                                .padding(16.dp),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -167,7 +167,7 @@ private fun TitleScreenContent(
                                     .animateContentSize(),
                                 text = title.description,
                                 maxLines = if (expanded) Int.MAX_VALUE else 3,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
@@ -175,7 +175,7 @@ private fun TitleScreenContent(
                 items(title.episodes) { episode ->
                     EpisodeItem(
                         episode = episode,
-                        onClick = {}
+                        onClick = {},
                     )
                 }
             }
@@ -187,26 +187,26 @@ private fun TitleScreenContent(
 private fun EpisodeItem(
     modifier: Modifier = Modifier,
     episode: EpisodeModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         PosterImage(
             modifier = Modifier
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview.toPosterUi()
+            poster = episode.preview.toPosterUi(),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = "Серия ${episode.ordinal}" + if (episode.name != null) " • ${episode.name}" else "",
             fontWeight = FontWeight.Medium,
-            fontSize = 18.sp
+            fontSize = 18.sp,
         )
     }
 }

@@ -26,7 +26,6 @@ import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
 import com.xbot.anilibriarefresh.ui.feature.search.SearchScreen
-import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreenTest
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
@@ -37,7 +36,7 @@ fun AnilibriaNavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    startDestination: Route = Route.Home
+    startDestination: Route = Route.Home,
 ) {
     NavHost(
         modifier = modifier
@@ -46,14 +45,14 @@ fun AnilibriaNavGraph(
         navController = navController,
         startDestination = startDestination,
         enterTransition = { materialFadeThroughIn() },
-        exitTransition = { materialFadeThroughOut() }
+        exitTransition = { materialFadeThroughOut() },
     ) {
         navigation<Route.Home>(
-            startDestination = Route.Home.List
+            startDestination = Route.Home.List,
         ) {
             composable<Route.Home.List> { backStackEntry ->
                 HomeScreen(
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
                 ) { titleId, titleName ->
                     if (backStackEntry.lifecycleIsResumed()) {
                         navController.navigate(Route.Home.Detail(titleId, titleName))
@@ -62,7 +61,7 @@ fun AnilibriaNavGraph(
             }
             composable<Route.Home.Detail> {
                 TitleScreenTest(
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
                 )
             }
         }
@@ -71,7 +70,7 @@ fun AnilibriaNavGraph(
         }
         composable<Route.Search> {
             SearchScreen(
-                paddingValues = paddingValues
+                paddingValues = paddingValues,
             )
         }
         composable<Route.Profile> {

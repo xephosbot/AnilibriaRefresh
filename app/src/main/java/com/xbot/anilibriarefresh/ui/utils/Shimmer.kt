@@ -18,8 +18,11 @@ fun ProvideShimmer(value: Shimmer, content: @Composable () -> Unit) {
 
 @Composable
 fun Modifier.shimmerSafe(shimmer: Shimmer?) = then(
-    if (shimmer != null) Modifier.shimmer(shimmer)
-    else Modifier
+    if (shimmer != null) {
+        Modifier.shimmer(shimmer)
+    } else {
+        Modifier
+    },
 )
 
 fun Modifier.shimmerUpdater(shimmer: Shimmer) = onGloballyPositioned {

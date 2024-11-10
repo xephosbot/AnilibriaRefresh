@@ -38,7 +38,7 @@ fun HorizontalPagerIndicator(
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.CenterStart
+        contentAlignment = Alignment.CenterStart,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(spacing),
@@ -54,7 +54,7 @@ fun HorizontalPagerIndicator(
         }
 
         Box(
-            modifier =Modifier
+            modifier = Modifier
                 .offset {
                     val position = pageIndexMapping(state.currentPage)
                     val offset = state.currentPageOffsetFraction
@@ -64,22 +64,25 @@ fun HorizontalPagerIndicator(
                             0f,
                             (state.pageCount - 1)
                                 .coerceAtLeast(0)
-                                .toFloat()
+                                .toFloat(),
                         )
 
                     IntOffset(
                         x = ((spacingPx + indicatorWidthPx) * scrollPosition).toInt(),
-                        y = 0
+                        y = 0,
                     )
                 }
                 .size(width = indicatorWidth, height = indicatorHeight)
                 .then(
-                    if (state.pageCount > 0) Modifier.background(
-                        color = activeColor,
-                        shape = indicatorShape,
-                    )
-                    else Modifier
-                )
+                    if (state.pageCount > 0) {
+                        Modifier.background(
+                            color = activeColor,
+                            shape = indicatorShape,
+                        )
+                    } else {
+                        Modifier
+                    },
+                ),
         )
     }
 }

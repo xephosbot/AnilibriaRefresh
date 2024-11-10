@@ -69,7 +69,7 @@ fun PlayerController(
     isBuffering: Boolean,
     navigationIcon: @Composable () -> Unit = {},
     bottomActions: @Composable RowScope.() -> Unit = {},
-    windowInsets: WindowInsets = WindowInsets.displayCutout
+    windowInsets: WindowInsets = WindowInsets.displayCutout,
 ) {
     Crossfade(targetState = mediaState.isControllerShowing, modifier = modifier) { isShowing ->
         if (isShowing) {
@@ -110,7 +110,7 @@ fun PlayerController(
                 onPlayPauseClicked = {
                     controllerState.playOrPause()
                     hideEffectTrigger++
-                }
+                },
             )
         }
     }
@@ -127,21 +127,21 @@ private fun ControllerLayout(
     windowInsets: WindowInsets,
     onPositionChangeStart: (Long) -> Unit,
     onPositionChangeStop: (Long) -> Unit,
-    onPlayPauseClicked: () -> Unit
+    onPlayPauseClicked: () -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         PlayerControllerTopBar(
             modifier = Modifier.align(Alignment.TopCenter),
             contentPadding = windowInsets.getHorizontalPadding(),
             mediaInfo = mediaState.playerState?.mediaMetadata.toMediaInfo(),
-            navigationIcon = navigationIcon
+            navigationIcon = navigationIcon,
         )
 
         if (!isBuffering) {
             PlayPauseIcon(
                 modifier = Modifier.align(Alignment.Center),
                 isPlaying = controllerState.showPause,
-                onClick = onPlayPauseClicked
+                onClick = onPlayPauseClicked,
             )
         }
 
@@ -151,7 +151,7 @@ private fun ControllerLayout(
             onPositionChangeStart = onPositionChangeStart,
             onPositionChangeStop = onPositionChangeStop,
             bottomActions = bottomActions,
-            windowInsets = windowInsets.getBottomPadding()
+            windowInsets = windowInsets.getBottomPadding(),
         )
     }
 }
@@ -161,7 +161,7 @@ private fun PlayPauseIcon(
     modifier: Modifier = Modifier,
     isPlaying: Boolean,
     onClick: () -> Unit,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
 ) {
     val icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow
     Icon(
@@ -170,10 +170,10 @@ private fun PlayPauseIcon(
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(bounded = false),
-                onClick = onClick
+                onClick = onClick,
             ),
         imageVector = icon,
-        contentDescription = null
+        contentDescription = null,
     )
 }
 
@@ -184,7 +184,7 @@ private fun PlayerControllerBottomBar(
     onPositionChangeStart: (Long) -> Unit,
     onPositionChangeStop: (Long) -> Unit,
     bottomActions: @Composable RowScope.() -> Unit,
-    windowInsets: PaddingValues
+    windowInsets: PaddingValues,
 ) {
     val durationText by remember { derivedStateOf { controllerState.durationMs.toTime() } }
     val positionText by remember { derivedStateOf { controllerState.positionMs.toTime() } }
@@ -193,12 +193,12 @@ private fun PlayerControllerBottomBar(
         modifier = modifier
             .fillMaxWidth()
             .padding(windowInsets)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "$positionText/$durationText",
-                fontSize = 14.sp
+                fontSize = 14.sp,
             )
             Spacer(Modifier.weight(1f))
             bottomActions()
@@ -208,7 +208,7 @@ private fun PlayerControllerBottomBar(
             positionMs = controllerState.positionMs,
             bufferedPositionMs = controllerState.bufferedPositionMs,
             onPositionChangeStart = onPositionChangeStart,
-            onPositionChangeStop = onPositionChangeStop
+            onPositionChangeStop = onPositionChangeStop,
         )
     }
 }
@@ -227,7 +227,7 @@ private fun PlayerControllerTopBar(
     modifier: Modifier,
     contentPadding: PaddingValues,
     mediaInfo: MediaInfo,
-    navigationIcon: @Composable () -> Unit
+    navigationIcon: @Composable () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier.padding(horizontal = contentPadding.calculateMaxPadding()),
@@ -241,8 +241,8 @@ private fun PlayerControllerTopBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent,
             titleContentColor = LocalContentColor.current,
-            navigationIconContentColor = LocalContentColor.current
-        )
+            navigationIconContentColor = LocalContentColor.current,
+        ),
     )
 }
 
@@ -251,12 +251,12 @@ private fun PlayerControllerTopBar(
  */
 private data class MediaInfo(
     val title: String,
-    val subtitle: String
+    val subtitle: String,
 )
 
 private fun MediaMetadata?.toMediaInfo(): MediaInfo = MediaInfo(
     title = this?.title?.toString().orEmpty(),
-    subtitle = this?.artist?.toString().orEmpty()
+    subtitle = this?.artist?.toString().orEmpty(),
 )
 
 @SuppressLint("DefaultLocale")
@@ -290,7 +290,7 @@ private fun WindowInsets.getBottomPadding(): PaddingValues =
 // Calculates the max padding for proper centering.
 @Composable
 private fun PaddingValues.calculateMaxPadding(
-    layoutDirection: LayoutDirection = LocalLayoutDirection.current
+    layoutDirection: LayoutDirection = LocalLayoutDirection.current,
 ) = max(calculateLeftPadding(layoutDirection), calculateRightPadding(layoutDirection))
 
 private val BackgroundOverlayColor = Color(0x98000000)

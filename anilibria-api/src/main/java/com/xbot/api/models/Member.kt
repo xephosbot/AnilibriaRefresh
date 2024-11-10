@@ -9,5 +9,5 @@ data class Member(
     @SerialName("id") val id: String,
     @SerialName("role") val role: ValDesc<MemberRoleEnum>,
     @SerialName("nickname") val nickname: String?,
-    @SerialName("user") val user: User?
+    @SerialName("user") val user: User?,
 )

@@ -42,7 +42,7 @@ enum class ShowBuffering {
      * The buffering indicator is always shown when the player is in the
      * [buffering][Player.STATE_BUFFERING] state.
      */
-    Always;
+    Always,
 }
 
 /**
@@ -105,12 +105,14 @@ fun Media(
     controller: @Composable ((MediaState, Boolean) -> Unit)? = { mediaState, isBuffering ->
         PlayerController(
             mediaState = mediaState,
-            isBuffering = isBuffering
+            isBuffering = isBuffering,
         )
-    }
+    },
 ) {
-    if (showBuffering != ShowBuffering.Never) require(buffering != null) {
-        "buffering should not be null if showBuffering is 'ShowBuffering.$showBuffering'"
+    if (showBuffering != ShowBuffering.Never) {
+        require(buffering != null) {
+            "buffering should not be null if showBuffering is 'ShowBuffering.$showBuffering'"
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -130,34 +132,40 @@ fun Media(
         modifier = modifier
             .clickable(
                 indication = null,
-                interactionSource = null
+                interactionSource = null,
             ) {
                 if (controller != null && state.player != null) {
                     state.controllerVisibility = when (state.controllerVisibility) {
                         ControllerVisibility.Visible -> {
-                            if (controllerHideOnTouch) ControllerVisibility.Invisible
-                            else ControllerVisibility.Visible
+                            if (controllerHideOnTouch) {
+                                ControllerVisibility.Invisible
+                            } else {
+                                ControllerVisibility.Visible
+                            }
                         }
                         ControllerVisibility.PartiallyVisible -> ControllerVisibility.Visible
                         ControllerVisibility.Invisible -> ControllerVisibility.Visible
                     }
                 }
-            }
+            },
     ) {
         // video
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
                 .then(
-                    if (state.contentAspectRatio <= 0) Modifier.fillMaxSize()
-                    else Modifier.resize(state.contentAspectRatio, resizeMode)
-                )
+                    if (state.contentAspectRatio <= 0) {
+                        Modifier.fillMaxSize()
+                    } else {
+                        Modifier.resize(state.contentAspectRatio, resizeMode)
+                    },
+                ),
         ) {
             PlayerSurface(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = state,
-                surfaceType = surfaceType
+                surfaceType = surfaceType,
             )
 
             // shutter
@@ -165,7 +173,7 @@ fun Media(
                 Spacer(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(shutterColor)
+                        .background(shutterColor),
                 )
             }
             LaunchedEffect(keepContentOnPlayerReset) {
@@ -198,8 +206,11 @@ fun Media(
         val artworkPainter = when {
             // non video track is selected, can use artwork
             state.isVideoTrackSelected == false -> {
-                if (!useArtwork) null
-                else state.artworkPainter ?: defaultArtworkPainter
+                if (!useArtwork) {
+                    null
+                } else {
+                    state.artworkPainter ?: defaultArtworkPainter
+                }
             }
             keepContentOnPlayerReset -> state.usingArtworkPainter
             else -> null
@@ -210,7 +221,7 @@ fun Media(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize(),
-                contentScale = resizeMode.contentScale
+                contentScale = resizeMode.contentScale,
             )
         }
         SideEffect {
@@ -231,9 +242,11 @@ fun Media(
         val isBufferingShowing by remember(showBuffering) {
             derivedStateOf {
                 state.playerState?.run {
-                    playbackState == Player.STATE_BUFFERING
-                            && (showBuffering == ShowBuffering.Always
-                            || (showBuffering == ShowBuffering.WhenPlaying && playWhenReady))
+                    playbackState == Player.STATE_BUFFERING &&
+                        (
+                            showBuffering == ShowBuffering.Always ||
+                                (showBuffering == ShowBuffering.WhenPlaying && playWhenReady)
+                        )
                 } ?: false
             }
         }

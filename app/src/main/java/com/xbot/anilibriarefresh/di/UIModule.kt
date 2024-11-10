@@ -19,7 +19,9 @@ object UIModule {
     }
 
     @Provides
-    fun providePlayerProvider(@ApplicationContext context: Context): PlayerProvider {
+    fun providePlayerProvider(
+        @ApplicationContext context: Context,
+    ): PlayerProvider {
         return PlayerProvider.create<PlaybackService>(context)
     }
 }

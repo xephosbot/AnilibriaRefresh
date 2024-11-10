@@ -68,6 +68,4 @@ object NetworkModule {
     fun provideBaseUrl(): String {
         return AnilibriaService.BASE_URL
     }
-
-
 }

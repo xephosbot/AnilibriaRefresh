@@ -10,8 +10,8 @@ import com.xbot.data.mapper.SuccessReleaseTypesMapper
 import com.xbot.data.mapper.SuccessSeasonsMapper
 import com.xbot.data.mapper.SuccessSortingTypesMapper
 import com.xbot.data.utils.handleErrors
-import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.GenreModel
+import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class FiltersDataSource @Inject constructor(
     private val client: AnilibriaClient,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     fun getAgeRatings(): Flow<List<AgeRating>> = flow {
         val response = client.getAgeRatings()

@@ -8,5 +8,5 @@ enum class ReleaseType {
     OAD,
     MOVIE,
     DORAMA,
-    SPECIAL;
+    SPECIAL,
 }

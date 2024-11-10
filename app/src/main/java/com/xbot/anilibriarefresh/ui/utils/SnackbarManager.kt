@@ -11,16 +11,15 @@ import java.util.UUID
 data class Message(
     val id: Long,
     val title: StringResource,
-    val action: MessageAction? = null
+    val action: MessageAction? = null,
 )
 
 data class MessageAction(
     val title: StringResource,
-    val action: () -> Unit = {}
+    val action: () -> Unit = {},
 )
 
 object SnackbarManager {
-
     private val _messages: MutableStateFlow<List<Message>> = MutableStateFlow(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 
@@ -28,7 +27,7 @@ object SnackbarManager {
         val message = Message(
             id = UUID.randomUUID().mostSignificantBits,
             title = title,
-            action = action
+            action = action,
         )
         _messages.update { currentMessages ->
             currentMessages + message

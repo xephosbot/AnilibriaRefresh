@@ -46,7 +46,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlayerActivity : ComponentActivity() {
-
     private val viewModel: PlayerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,9 +88,12 @@ class PlayerActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Color.Black)
                     then(
-                        if (!isLandscape) Modifier.systemBarsPadding()
-                        else Modifier
-                    )
+                        if (!isLandscape) {
+                            Modifier.systemBarsPadding()
+                        } else {
+                            Modifier
+                        }
+                    ),
             ) {
                 Media(
                     modifier = Modifier.fillMaxSize(),
@@ -110,7 +112,7 @@ class PlayerActivity : ComponentActivity() {
                                 IconButton(onClick = { closeActivity() }) {
                                     Icon(
                                         imageVector = Icons.Default.Close,
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             },
@@ -118,7 +120,7 @@ class PlayerActivity : ComponentActivity() {
                                 IconButton(onClick = {}) {
                                     Icon(
                                         imageVector = Icons.Default.Settings,
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                                 IconButton(onClick = {
@@ -129,16 +131,16 @@ class PlayerActivity : ComponentActivity() {
                                     }
                                 }) {
                                     Icon(
-                                        imageVector = when(isLandscape) {
+                                        imageVector = when (isLandscape) {
                                             true -> Icons.Default.FullscreenExit
                                             else -> Icons.Default.Fullscreen
                                         },
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
-                            }
+                            },
                         )
-                    }
+                    },
                 )
             }
         }

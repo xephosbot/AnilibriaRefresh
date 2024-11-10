@@ -8,5 +8,5 @@ data class EpisodeModel(
     val hls480: String?,
     val hls720: String?,
     val hls1080: String?,
-    val duration: Int
+    val duration: Int,
 )
