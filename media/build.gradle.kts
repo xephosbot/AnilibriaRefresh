@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xbot.android.library.compose)
-    alias(libs.plugins.xbot.android.hilt)
 }
 
 android {

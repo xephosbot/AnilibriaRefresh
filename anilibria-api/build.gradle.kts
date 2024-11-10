@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xbot.android.library)
-    alias(libs.plugins.xbot.android.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -32,6 +31,8 @@ dependencies {
 
     // Kotlin dependencies
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
 
     // Testing dependencies

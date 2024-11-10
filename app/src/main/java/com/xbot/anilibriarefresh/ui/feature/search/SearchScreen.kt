@@ -29,6 +29,7 @@ import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -50,17 +51,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.components.ButtonComponent
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.anilibriarefresh.ui.utils.stringResource
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    searchViewModel: SearchViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = koinViewModel(),
     paddingValues: PaddingValues,
 ) {
     val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(value = false) }
