@@ -1,20 +1,17 @@
-import com.android.build.api.dsl.LibraryExtension
+import com.android.build.gradle.LibraryExtension
 import com.xbot.convention.android.configureAndroidCompose
-import org.gradle.api.Plugin
+import com.xbot.convention.extensions.getPlugin
+import com.xbot.convention.extensions.libs
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 
+class AndroidLibraryComposeConventionPlugin : AndroidConventionPluginBase() {
 
-class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            with(pluginManager) {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.plugin.compose")
-            }
+    override fun Project.getPluginId() = libs.getPlugin("xbot-android-library").get().pluginId
 
-            val extension = extensions.getByType<LibraryExtension>()
-            configureAndroidCompose(extension)
+    override fun Project.configureAndroid() {
+        extensions.configure<LibraryExtension> {
+            configureAndroidCompose(this)
         }
     }
 }

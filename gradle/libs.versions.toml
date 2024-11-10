@@ -200,8 +200,8 @@ secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugi
 # Plugins defined by this project
 xbot-android-application = { id = "xbot.android.application" }
 xbot-android-hilt = { id = "xbot.android.hilt", version = "unspecified" }
-xbot-android-library = { id = "xbot.android.library", version = "unspecified" }
-xbot-android-library-compose = { id = "xbot.android.library.compose", version = "unspecified" }
+xbot-android-library = { id = "xbot.android.library" }
+xbot-android-library-compose = { id = "xbot.android.library.compose" }
 xbot-android-room = { id = "xbot.android.room", version = "unspecified" }
 xbot-android-test = { id = "xbot.android.test", version = "unspecified" }
 xbot-jvm-library = { id = "xbot.jvm.library", version = "unspecified" }
