@@ -63,7 +63,6 @@ class MediaState(
      */
     val playerState: PlayerState? get() = stateOfPlayerState.value
 
-    // Controller visibility related properties and functions
     /**
      * Whether the controller is showing.
      */

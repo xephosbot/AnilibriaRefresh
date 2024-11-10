@@ -5,21 +5,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TorrentTypeEnum(private val value: String) {
-    @SerialName("BDRip") BDRip("BDRip"),
+    @SerialName("BDRip") BD_RIP("BDRip"),
 
-    @SerialName("HDRip") HDRip("HDRip"),
+    @SerialName("HDRip") HD_RIP("HDRip"),
 
-    @SerialName("TVRip") TVRip("TVRip"),
+    @SerialName("TVRip") TV_RIP("TVRip"),
 
-    @SerialName("WEBRip") WEBRip("WEBRip"),
+    @SerialName("WEBRip") WEB_RIP("WEBRip"),
 
-    @SerialName("DTVRip") DTVRip("DTVRip"),
+    @SerialName("DTVRip") DTV_RIP("DTVRip"),
 
-    @SerialName("DVDRip") DVDRip("DVDRip"),
+    @SerialName("DVDRip") DVD_RIP("DVDRip"),
 
-    @SerialName("HDTVRip") HDTVRip("HDTVRip"),
+    @SerialName("HDTVRip") HDTV_RIP("HDTVRip"),
 
-    @SerialName("WEB-DLRip") WEB_DLRip("WEB-DLRip"),
+    @SerialName("WEB-DLRip") WEB_DL_RIP("WEB-DLRip"),
     ;
 
     override fun toString(): String = value
