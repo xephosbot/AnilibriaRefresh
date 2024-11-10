@@ -78,7 +78,7 @@ private fun TitleScreenContent(
 ) {
     Crossfade(
         targetState = state,
-        label = "" //TODO: информативный label для перехода
+        label = "TitleScreenContent Crossfade to ${state::class.simpleName}"
     ) { targetState ->
         when (targetState) {
             //TODO: Loading screen

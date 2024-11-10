@@ -1,5 +1,6 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.models.Title
 import com.xbot.anilibriarefresh.ui.components.Header
 import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
@@ -71,7 +74,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     paddingValues: PaddingValues,
-    onNavigate: (Int, String) -> Unit
+    onNavigate: (Int, String) -> Unit,
 ) {
     val items = viewModel.titles.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -96,7 +99,7 @@ private fun HomeScreenContent(
     items: LazyPagingItems<Title>,
     loadStates: CombinedLoadStates,
     onAction: (HomeScreenAction) -> Unit,
-    onNavigate: (Int, String) -> Unit
+    onNavigate: (Int, String) -> Unit,
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
         onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
@@ -121,12 +124,13 @@ private fun HomeScreenContent(
         ) {
             Crossfade(
                 targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
-                label = "" //TODO: информативный label для перехода
+                label = "Loading state transition in HomeScreenContent"
             ) { targetState ->
                 when (targetState) {
                     true -> LoadingScreen(
                         contentPadding = innerPadding.union(paddingValues)
                     )
+
                     else -> {
                         val successState = state as HomeScreenState.Success
                         TitleList(
@@ -163,13 +167,13 @@ private fun TitleList(
     recommendedList: List<Title>,
     scheduleList: Map<DayOfWeek, List<Title>>,
     contentPadding: PaddingValues,
-    onTitleClick: (Title) -> Unit
+    onTitleClick: (Title) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val pagerState = rememberPagerState(pageCount = { recommendedList.size })
 
     ProvideShimmer(shimmer) {
-        LazyVerticalGrid (
+        LazyVerticalGrid(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding
@@ -182,8 +186,8 @@ private fun TitleList(
                 )
             }
             header(
-                title = "Расписание", //TODO: Move to string resources
-                onClick = {}, //TODO: On click action which should open schedule screen
+                titleResId = R.string.schedule,
+                onClick = {},
             )
             horizontalItems(
                 items = scheduleList,
@@ -213,7 +217,7 @@ private fun TitleList(
                 }
             )
             header(
-                title = "Новые эпизоды", //TODO: Move to string resources
+                titleResId = R.string.new_episodes,
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
             )
             pagingItems(items) { title ->
@@ -229,7 +233,7 @@ private fun TitleList(
 @Composable
 private fun LoadingScreen(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
@@ -242,7 +246,10 @@ private fun LoadingScreen(
             LoadingPagerItem()
             Spacer(modifier = Modifier.height(6.dp)) //Pager indicator size
             Spacer(modifier = Modifier.height(16.dp))
-            Header(title = "Расписание", onClick = {}) //TODO: Move to string resources
+            Header(
+                title = stringResource(R.string.schedule),
+                onClick = {}
+            )
             //TODO: Add extra spacing for way of week title
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -255,7 +262,7 @@ private fun LoadingScreen(
                 }
             }
             Header(
-                title = "Новые эпизоды", //TODO: Move to string resources
+                title = stringResource(R.string.new_episodes),
                 contentPadding = HeaderDefaults.ContentPaddingExcludeBottom
             )
             repeat(6) {
@@ -268,7 +275,7 @@ private fun LoadingScreen(
 private fun LazyGridScope.horizontalItems(
     items: List<Title>,
     contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(Title) -> Unit
+    itemContent: @Composable LazyItemScope.(Title) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -292,7 +299,7 @@ private fun LazyGridScope.horizontalItems(
     items: Map<DayOfWeek, List<Title>>,
     contentPadding: PaddingValues = PaddingValues(),
     stickyHeader: @Composable (DayOfWeek) -> Unit,
-    itemContent: @Composable LazyItemScope.(Title) -> Unit
+    itemContent: @Composable LazyItemScope.(Title) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -310,7 +317,7 @@ private fun LazyGridScope.horizontalItems(
 
 private fun LazyGridScope.horizontalPagerItems(
     state: PagerState,
-    pageContent: @Composable PagerScope.(page: Int) -> Unit
+    pageContent: @Composable PagerScope.(page: Int) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -332,16 +339,16 @@ private fun LazyGridScope.horizontalPagerItems(
 }
 
 private fun LazyGridScope.header(
-    title: String,
+    @StringRes titleResId: Int,
     contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
         contentType = { "Header" }
     ) {
         Header(
-            title = title,
+            title = stringResource(id = titleResId),
             contentPadding = contentPadding,
             onClick = onClick
         )
@@ -350,7 +357,7 @@ private fun LazyGridScope.header(
 
 private fun LazyGridScope.pagingItems(
     items: LazyPagingItems<Title>,
-    itemContent: @Composable LazyGridItemScope.(Title?) -> Unit
+    itemContent: @Composable LazyGridItemScope.(Title?) -> Unit,
 ) {
     items(
         count = items.itemCount,
@@ -361,13 +368,13 @@ private fun LazyGridScope.pagingItems(
     }
 }
 
-//TODO: Move to string resources
-private fun DayOfWeek.toStringRes(): String = when(this) {
-    DayOfWeek.MONDAY -> "Понедельник"
-    DayOfWeek.TUESDAY -> "Вторник"
-    DayOfWeek.WEDNESDAY -> "Среда"
-    DayOfWeek.THURSDAY -> "Четверг"
-    DayOfWeek.FRIDAY -> "Пятница"
-    DayOfWeek.SATURDAY -> "Суббота"
-    DayOfWeek.SUNDAY -> "Воскресенье"
+@Composable
+private fun DayOfWeek.toStringRes(): String = when (this) {
+    DayOfWeek.MONDAY -> stringResource(R.string.monday)
+    DayOfWeek.TUESDAY -> stringResource(R.string.tuesday)
+    DayOfWeek.WEDNESDAY -> stringResource(R.string.wednesday)
+    DayOfWeek.THURSDAY -> stringResource(R.string.thursday)
+    DayOfWeek.FRIDAY -> stringResource(R.string.friday)
+    DayOfWeek.SATURDAY -> stringResource(R.string.saturday)
+    DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
 }
