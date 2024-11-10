@@ -138,7 +138,7 @@ fun AnilibriaNavigationRail(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text
+                        contentDescription = destination.text()
                     )
                 }
             )

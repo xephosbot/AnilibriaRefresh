@@ -96,12 +96,12 @@ fun AnilibriaNavigationBar(
                             true -> destination.selectedIcon
                             else -> destination.unselectedIcon
                         },
-                        contentDescription = destination.text
+                        contentDescription = destination.text()
                     )
                 },
                 label = {
                     Text(
-                        text = destination.text,
+                        text = destination.text(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
