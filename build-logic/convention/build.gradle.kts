@@ -26,6 +26,9 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
+
+    // Static Analyzer
+    compileOnly(libs.detektGradlePlugin)
 }
 
 tasks {
