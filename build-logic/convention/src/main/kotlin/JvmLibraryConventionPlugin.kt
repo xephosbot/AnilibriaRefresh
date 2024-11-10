@@ -1,14 +1,14 @@
-import com.xbot.convention.configureKotlinJvm
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+/*
+ * Not used in the project at all
+ */
 
-class JvmLibraryConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            with(pluginManager) {
-                apply("org.jetbrains.kotlin.jvm")
-            }
-            configureKotlinJvm()
-        }
-    }
-}
+//class JvmLibraryConventionPlugin : Plugin<Project> {
+//    override fun apply(target: Project) {
+//        with(target) {
+//            with(pluginManager) {
+//                apply("org.jetbrains.kotlin.jvm")
+//            }
+//            configureKotlinJvm()
+//        }
+//    }
+//}

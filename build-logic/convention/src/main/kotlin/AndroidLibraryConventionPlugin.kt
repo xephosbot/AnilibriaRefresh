@@ -1,7 +1,7 @@
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.xbot.convention.Configuration
-import com.xbot.convention.configureKotlinAndroid
+import com.xbot.convention.android.configureAndroidKotlin
 import com.xbot.convention.disableUnnecessaryAndroidTests
 import com.xbot.convention.extensions.libs
 import org.gradle.api.Plugin
@@ -19,7 +19,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension> {
-                configureKotlinAndroid(this)
+                configureAndroidKotlin(this)
                 defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
                 defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 // The resource prefix is derived from the module name,

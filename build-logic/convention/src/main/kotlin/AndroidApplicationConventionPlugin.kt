@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.xbot.convention.Configuration
-import com.xbot.convention.configureKotlinAndroid
+import com.xbot.convention.android.configureAndroidKotlin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -14,7 +14,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<ApplicationExtension> {
-                configureKotlinAndroid(this)
+                configureAndroidKotlin(this)
                 defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
             }
         }
