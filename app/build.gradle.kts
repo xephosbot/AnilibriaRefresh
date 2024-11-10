@@ -5,35 +5,6 @@ plugins {
     alias(libs.plugins.baselineprofile)
 }
 
-android {
-    namespace = "com.xbot.anilibriarefresh"
-
-    defaultConfig {
-        applicationId = "com.xbot.anilibriarefresh"
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("debug")
-        }
-    }
-
-    packaging {
-        resources {
-            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
-        }
-    }
-}
-
 dependencies {
     // Project-level dependencies
     implementation(projects.domain)
@@ -87,4 +58,8 @@ dependencies {
     // Debug dependencies
     debugImplementation(libs.androidx.compose.ui.testManifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+android {
+    namespace = "com.xbot.anilibriarefresh"
 }

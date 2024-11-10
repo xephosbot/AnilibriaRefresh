@@ -1,5 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.xbot.convention.Configuration
+import com.xbot.convention.android.configureAndroidApplication
 import com.xbot.convention.android.configureAndroidCompose
 import com.xbot.convention.android.configureAndroidKotlin
 import com.xbot.convention.extensions.getPlugin
@@ -14,9 +14,9 @@ class AndroidApplicationConventionPlugin : AndroidConventionPluginBase() {
 
     override fun Project.configureAndroid() {
         extensions.configure<ApplicationExtension> {
+            configureAndroidApplication(this)
             configureAndroidCompose(this)
             configureAndroidKotlin(this)
-            defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
         }
     }
 }

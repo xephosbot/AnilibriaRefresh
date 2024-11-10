@@ -1,8 +1,6 @@
-import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
-import com.xbot.convention.Configuration
 import com.xbot.convention.android.configureAndroidKotlin
-import com.xbot.convention.android.disableUnnecessaryAndroidTests
+import com.xbot.convention.android.configureAndroidLibrary
 import com.xbot.convention.extensions.getLibrary
 import com.xbot.convention.extensions.getPlugin
 import com.xbot.convention.extensions.implementation
@@ -17,16 +15,8 @@ class AndroidLibraryConventionPlugin : AndroidConventionPluginBase() {
 
     override fun Project.configureAndroid() {
         extensions.configure<LibraryExtension> {
+            configureAndroidLibrary(this)
             configureAndroidKotlin(this)
-            defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
-            defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            // The resource prefix is derived from the module name,
-            // so resources inside ":core:module1" must be prefixed with "core_module1_"
-            resourcePrefix = path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_").lowercase() + "_"
-        }
-
-        extensions.configure<LibraryAndroidComponentsExtension> {
-            disableUnnecessaryAndroidTests(this)
         }
 
         dependencies {
