@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.xbot.android.application)
-    alias(libs.plugins.xbot.android.application.compose)
     alias(libs.plugins.xbot.android.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.baselineprofile)

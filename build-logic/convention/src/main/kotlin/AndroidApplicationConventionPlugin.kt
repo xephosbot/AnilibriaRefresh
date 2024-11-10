@@ -1,23 +1,22 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.xbot.convention.Configuration
+import com.xbot.convention.android.configureAndroidCompose
 import com.xbot.convention.android.configureAndroidKotlin
-import org.gradle.api.Plugin
+import com.xbot.convention.extensions.getPlugin
+import com.xbot.convention.extensions.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
-class AndroidApplicationConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            with(pluginManager) {
-                apply("com.android.application")
-                apply("org.jetbrains.kotlin.android")
-            }
+// Merged with AndroidApplicationComposeConventionPlugin
+class AndroidApplicationConventionPlugin : AndroidConventionPluginBase() {
 
-            extensions.configure<ApplicationExtension> {
-                configureAndroidKotlin(this)
-                defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
-            }
+    override fun Project.getPluginId() = libs.getPlugin("android-application").get().pluginId
+
+    override fun Project.configureAndroid() {
+        extensions.configure<ApplicationExtension> {
+            configureAndroidCompose(this)
+            configureAndroidKotlin(this)
+            defaultConfig.targetSdk = Configuration.Sdk.TARGET_SDK
         }
     }
-
 }

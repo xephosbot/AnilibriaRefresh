@@ -37,10 +37,6 @@ tasks {
 
 gradlePlugin {
     plugins {
-        register("androidApplicationCompose") {
-            id = "xbot.android.application.compose"
-            implementationClass = "AndroidApplicationComposeConventionPlugin"
-        }
         register("androidApplication") {
             id = "xbot.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
