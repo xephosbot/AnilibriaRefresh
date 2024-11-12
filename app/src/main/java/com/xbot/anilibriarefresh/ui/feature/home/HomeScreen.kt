@@ -150,7 +150,7 @@ private fun HomeScreenContent(
                     .fillMaxSize()
                     .padding(innerPadding.union(paddingValues)),
             ) {
-                //TODO: after the release of the M3 version, replace it and remove the dependency androidx.compose.material
+                // TODO: after the release of the M3 version, replace it and remove the dependency androidx.compose.material
                 PullRefreshIndicator(
                     refreshing = loadStates.refresh is LoadState.Loading,
                     state = pullRefreshState,
