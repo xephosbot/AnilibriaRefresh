@@ -1,56 +1,73 @@
 package com.xbot.anilibriarefresh.ui.feature.title
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.anilibriarefresh.R
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.size.Size
+import coil3.toBitmap
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.anilibriarefresh.models.Episode
+import com.xbot.anilibriarefresh.models.Poster
 import com.xbot.anilibriarefresh.models.TitleDetail
-import com.xbot.anilibriarefresh.models.toPosterUi
-import com.xbot.anilibriarefresh.ui.components.Header
-import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
+import com.xbot.anilibriarefresh.ui.components.OverlayHeaderLayout
 import com.xbot.anilibriarefresh.ui.components.PosterImage
-import com.xbot.domain.models.EpisodeModel
-import com.xbot.domain.models.MemberModel
-import com.xbot.domain.models.PosterModel
-import com.xbot.domain.models.TitleDetailModel
-import com.xbot.domain.models.enums.AgeRating
-import com.xbot.domain.models.enums.DayOfWeek
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.domain.models.enums.Season
+import com.xbot.anilibriarefresh.ui.components.rememberOverlayHeaderLayoutScrollBehavior
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Heart
+import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
+import com.xbot.anilibriarefresh.ui.utils.fadedEdge
+import com.xbot.anilibriarefresh.ui.utils.only
+import com.xbot.anilibriarefresh.ui.utils.rememberBlurredBitmap
+import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
+import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -61,125 +78,203 @@ fun TitleScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    TitleScreenContent(
-        modifier = modifier,
-        state = state,
-        onAction = viewModel::onAction,
-        paddingValues = paddingValues,
-    )
+    if (state is TitleScreenState.Success) {
+        TitleScreenContent(
+            modifier = modifier,
+            title = (state as TitleScreenState.Success).title,
+            paddingValues = paddingValues,
+        )
+    }
 }
 
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
-    state: TitleScreenState,
-    onAction: (TitleScreenAction) -> Unit,
+    title: TitleDetail,
     paddingValues: PaddingValues,
 ) {
-    Crossfade(
-        targetState = state,
-        label = "TitleScreenContent Crossfade to ${state::class.simpleName}",
-    ) { targetState ->
-        when (targetState) {
-            // TODO: Loading screen
-            is TitleScreenState.Loading -> Box(modifier = Modifier.fillMaxSize())
-            is TitleScreenState.Success -> {
-                TitleDetail(
-                    modifier = modifier,
-                    title = targetState.title,
-                    paddingValues = paddingValues,
-                )
+    val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
+
+    OverlayHeaderLayout(
+        modifier = modifier
+            .padding(paddingValues.only(WindowInsetsSides.Horizontal)),
+        headlineContent = {
+            PosterWithBackground(
+                modifier = Modifier
+                    .padding(paddingValues.only(WindowInsetsSides.Top))
+                    .graphicsLayer {
+                        alpha = scrollBehavior.state.collapsedFraction
+                    },
+                poster = title.poster,
+            )
+        },
+        scrollBehavior = scrollBehavior,
+    ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            val shimmer = rememberShimmer(ShimmerBounds.Custom)
+
+            ProvideShimmer(shimmer) {
+                LazyColumn(
+                    modifier = Modifier.shimmerUpdater(shimmer),
+                    contentPadding = paddingValues.only(WindowInsetsSides.Bottom),
+                ) {
+                    mainBlock(
+                        title = title
+                    )
+                    episodes(
+                        items = title.episodes,
+                        onItemClick = {}
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun TitleDetail(
+private fun PosterWithBackground(
     modifier: Modifier = Modifier,
-    title: TitleDetail,
-    paddingValues: PaddingValues,
+    poster: Poster,
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = paddingValues,
+    val posterPainter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(poster)
+            .size(Size.ORIGINAL)
+            .build(),
+    )
+
+    val posterImageLoadedState by posterPainter.state.collectAsStateWithLifecycle()
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(350.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        mainContent(
-            title = title,
-        )
-        header(
-            textId = R.string.genres_title,
-        )
-        horizontalItems(
-            items = title.genres.map { it.name },
-            contentPadding = PaddingValues(horizontal = 16.dp),
-        ) { genre ->
-            AssistChip(
-                onClick = {},
-                label = { Text(text = genre) },
-            )
+        Crossfade(targetState = posterImageLoadedState) { state ->
+            when (state) {
+                is AsyncImagePainter.State.Success -> {
+                    val posterBitmap = state.result.image.toBitmap()
+                    val blurredPosterBitmap = rememberBlurredBitmap(posterBitmap, radius = 25f)
+
+                    Image(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .fadedEdge(edgeHeight = 200.dp)
+                            .fadedEdge(edgeHeight = 200.dp, bottomEdge = false),
+                        bitmap = blurredPosterBitmap.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                    )
+
+                    Image(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .aspectRatio(7f / 10f)
+                            .clip(RoundedCornerShape(16.dp))
+                            .align(Alignment.Center),
+                        bitmap = posterBitmap.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+                else -> {
+                    val shimmer = rememberShimmer(ShimmerBounds.View)
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerSafe(shimmer)
+                            .fadedEdge(edgeHeight = 150.dp)
+                            .fadedEdge(edgeHeight = 150.dp, bottomEdge = false)
+                            .background(Color.LightGray),
+                    )
+                }
+            }
         }
-        header(
-            textId = R.string.description_title,
-            contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
-        )
-        description(
-            text = title.description,
-        )
-        header(
-            textId = R.string.episodes_title,
-            contentPadding = PaddingValues(horizontal = 16.dp),
-        )
-        verticalItems(
-            items = title.episodes,
-        ) { episode ->
-            if (episode != null) {
-                EpisodeItem(
-                    episode = episode,
+    }
+}
+
+private fun LazyListScope.mainBlock(
+    title: TitleDetail
+) {
+    item {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+        ) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = title.name,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(16.dp))
+            Row {
+                Button(
+                    modifier = Modifier.weight(3f),
                     onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(text = "Смотреть")
+                }
+                Spacer(Modifier.width(16.dp))
+                OutlinedButton(
+                    modifier = Modifier.weight(1.5f),
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = AnilibriaIcons.Filled.Heart,
+                        contentDescription = null,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(text = "2.1k")
+                }
+            }
+            var expanded by remember { mutableStateOf(false) }
+
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        expanded = !expanded
+                    }
+                    .padding(16.dp),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    text = title.description,
+                    maxLines = if (expanded) Int.MAX_VALUE else 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
     }
 }
 
-private fun LazyListScope.mainContent(
-    title: TitleDetail,
+private fun LazyListScope.episodes(
+    items: List<Episode>,
+    onItemClick: (Episode) -> Unit
 ) {
-    item(
-        contentType = { "MainContent" },
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        ) {
-            PosterImage(
-                modifier = Modifier
-                    .height(164.dp)
-                    .aspectRatio(7f / 10f)
-                    .clip(RoundedCornerShape(8.dp)),
-                poster = title.poster,
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = title.name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-        }
+    items(
+        items = items,
+        key = { it.id }
+    ) { episode ->
+        EpisodeItem(
+            episode = episode,
+            onClick = { onItemClick(episode) }
+        )
     }
 }
 
 @Composable
 private fun EpisodeItem(
     modifier: Modifier = Modifier,
-    episode: EpisodeModel,
+    episode: Episode,
     onClick: () -> Unit,
 ) {
     Row(
@@ -193,202 +288,13 @@ private fun EpisodeItem(
                 .height(100.dp)
                 .width(150.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            poster = episode.preview.toPosterUi(),
+            poster = episode.preview,
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = "Серия ${episode.ordinal}" + if (episode.name != null) " • ${episode.name}" else "",
+            text = episode.name,
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
         )
     }
-}
-
-private fun LazyListScope.verticalItems(
-    items: List<EpisodeModel>,
-    itemContent: @Composable LazyItemScope.(EpisodeModel?) -> Unit,
-) {
-    items(
-        items = items,
-        key = { it.id },
-    ) {
-        itemContent(it)
-    }
-}
-
-private fun LazyListScope.horizontalItems(
-    items: List<String>,
-    contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(String) -> Unit,
-) {
-    item(
-        contentType = { "HorizontalList" },
-    ) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = contentPadding,
-        ) {
-            items(
-                items = items,
-                key = { it },
-            ) {
-                itemContent(it)
-            }
-        }
-    }
-}
-
-private fun LazyListScope.description(
-    text: String,
-) {
-    item(
-        contentType = { "Description" },
-    ) {
-        var expanded by remember { mutableStateOf(false) }
-
-        Box(
-            modifier = Modifier
-                .clickable {
-                    expanded = !expanded
-                }
-                .padding(16.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                text = text,
-                maxLines = if (expanded) Int.MAX_VALUE else 3,
-            )
-        }
-    }
-}
-
-private fun LazyListScope.header(
-    @StringRes textId: Int,
-    contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
-) {
-    item(
-        contentType = { "Header" },
-    ) {
-        Header(
-            title = stringResource(textId),
-            contentPadding = contentPadding,
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun TitleScreenPreview() {
-    val titleModel = TitleDetailModel(
-        id = 1,
-        type = ReleaseType.MOVIE,
-        year = 2020,
-        name = "Целитель, которого исключили из группы, оказался сильнейшим",
-        season = Season.SUMMER,
-        description = "Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра. Но амбиций Вельтора это не остановит. Пусть пока что наследие некогда могущественного демона сводится лишь к нескольким параграфам в учебниках истории, заблуждаться не стоит: очень скоро этот дивный новый мир будет снова у его ног. Чтобы исекайнуться, иногда достаточно и простого перемещения во времени. Это, собственно, и происходит с Королём демонов Вельтором. Пав от руки героя пять столетий назад, он наконец-то возвращается к жизни, и готов вновь установить своё господство уже в новой эпохе. Однако это совсем не тот мир, который когда-то покорил Вельтор. За пять сотен лет смесь магии и технологий превратила средневековые ландшафты в самый настоящий киберпанк с огромными небоскрёбами, неоновыми вывесками и прочими прелестями жанра.",
-        poster = PosterModel(
-            src = null,
-            thumbnail = null,
-        ),
-        isOngoing = false,
-        ageRating = AgeRating.R16_PLUS,
-        publishDay = DayOfWeek.SUNDAY,
-        notification = "Серии выходят по воскресеньям",
-        episodesCount = 34,
-        favoritesCount = 35034,
-        episodeDuration = 25,
-        genres = listOf(),
-        members = listOf(
-            MemberModel(
-                id = "e3d555b0",
-                name = "Sharon",
-                role = "Озвучка",
-            ),
-            MemberModel(
-                id = "e3d55444",
-                name = "HectoR",
-                role = "Озвучка",
-            ),
-            MemberModel(
-                id = "e3d55dddd",
-                name = "Flerion",
-                role = "Перевод и адаптация",
-            ),
-            MemberModel(
-                id = "e221111dd",
-                name = "Kiota",
-                role = "Оформление",
-            ),
-        ),
-        episodes = listOf(
-            EpisodeModel(
-                id = "95c359d0",
-                name = "Андерворлд",
-                duration = 2880,
-                preview = PosterModel(
-                    src = null,
-                    thumbnail = null,
-                ),
-                hls480 = "",
-                hls720 = "",
-                hls1080 = "",
-                ordinal = 1f,
-            ),
-            EpisodeModel(
-                id = "95c359d1",
-                name = "Древо зла",
-                duration = 1440,
-                preview = PosterModel(
-                    src = null,
-                    thumbnail = null,
-                ),
-                hls480 = "",
-                hls720 = "",
-                hls1080 = "",
-                ordinal = 2f,
-            ),
-            EpisodeModel(
-                id = "95c322d1",
-                name = "Пограничный Хребет",
-                duration = 1550,
-                preview = PosterModel(
-                    src = null,
-                    thumbnail = null,
-                ),
-                hls480 = "",
-                hls720 = "",
-                hls1080 = "",
-                ordinal = 3f,
-            ),
-            EpisodeModel(
-                id = "951159d1",
-                name = "Отправление",
-                duration = 1980,
-                preview = PosterModel(
-                    src = null,
-                    thumbnail = null,
-                ),
-                hls480 = "",
-                hls720 = "",
-                hls1080 = "",
-                ordinal = 4f,
-            ),
-            EpisodeModel(
-                id = "9511444000",
-                name = "Океаническая Черепаха",
-                duration = 2120,
-                preview = PosterModel(
-                    src = null,
-                    thumbnail = null,
-                ),
-                hls480 = "",
-                hls720 = "",
-                hls1080 = "",
-                ordinal = 5f,
-            ),
-        ),
-    )
-    // TitleDetail(title = titleModel, paddingValues = PaddingValues(0.dp))
 }
