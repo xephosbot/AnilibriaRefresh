@@ -8,6 +8,9 @@ import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -44,6 +47,19 @@ fun OverlayHeaderLayout(
             }
         }
 
+        val dragModifier = Modifier.draggable(
+            orientation = Orientation.Vertical,
+            state = rememberDraggableState { delta -> scrollBehavior.state.heightOffset += delta },
+            onDragStopped = { velocity ->
+                settleScroll(
+                    scrollBehavior.state,
+                    velocity,
+                    scrollBehavior.flingAnimationSpec,
+                    scrollBehavior.snapAnimationSpec
+                )
+            }
+        )
+
         val contentBox = @Composable {
             Box(
                 modifier = Modifier
@@ -56,7 +72,8 @@ fun OverlayHeaderLayout(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .then(dragModifier),
         ) {
             headlineContent()
             contentBox()
@@ -157,7 +174,7 @@ class OverlayHeaderLayoutScrollBehavior(
         override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
             val superConsumed = super.onPostFling(consumed, available)
             return superConsumed +
-                settleScroll(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                    settleScroll(state, available.y, flingAnimationSpec, snapAnimationSpec)
         }
     }
 }
