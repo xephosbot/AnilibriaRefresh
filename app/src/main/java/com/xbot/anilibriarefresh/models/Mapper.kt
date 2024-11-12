@@ -4,7 +4,7 @@ import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.ui.icons.Heart
 import com.xbot.anilibriarefresh.ui.utils.StringResource
-import com.xbot.domain.models.PosterModel
+import com.xbot.domain.models.EpisodeModel
 import com.xbot.domain.models.TitleDetailModel
 import com.xbot.domain.models.TitleModel
 import com.xbot.domain.models.enums.AgeRating
@@ -34,13 +34,26 @@ fun TitleDetailModel.toTitleDetailUi(): TitleDetail {
         notification = notification,
         genres = genres,
         members = members,
-        episodes = episodes,
+        episodes = episodes.map(EpisodeModel::toEpisodeUi),
     )
 }
 
-// TODO: CLean up after migrate
-fun PosterModel.toPosterUi(): Poster {
-    return Poster(src)
+fun EpisodeModel.toEpisodeUi(): Episode {
+    return Episode(
+        id = id,
+        // TODO: Move string resources
+        name = "Серия ${ordinal.toFormattedString()}" + if (name != null) " • $name" else "",
+        preview = Poster(preview.src),
+        duration = duration
+    )
+}
+
+private fun Float.toFormattedString(): String {
+    return if (this % 1 == 0f) {
+        this.toInt().toString()
+    } else {
+        this.toString()
+    }
 }
 
 private fun TitleModel.listOfTags(): List<TitleTag> {

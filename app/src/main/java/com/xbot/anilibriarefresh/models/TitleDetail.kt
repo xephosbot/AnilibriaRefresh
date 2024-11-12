@@ -1,6 +1,5 @@
 package com.xbot.anilibriarefresh.models
 
-import com.xbot.domain.models.EpisodeModel
 import com.xbot.domain.models.GenreModel
 import com.xbot.domain.models.MemberModel
 
@@ -13,5 +12,5 @@ data class TitleDetail(
     val notification: String,
     val genres: List<GenreModel>,
     val members: List<MemberModel>,
-    val episodes: List<EpisodeModel>,
+    val episodes: List<Episode>,
 )
