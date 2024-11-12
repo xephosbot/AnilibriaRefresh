@@ -19,6 +19,9 @@ fun rememberBlurredBitmap(bitmap: Bitmap, radius: Float): Bitmap {
     }
 }
 
+// TODO: Since RenderScript is deprecated for API 31 and above, a second implementation needs to be added.
+//  https://developer.android.com/guide/topics/renderscript/migrate#migrate-from-blur
+@Suppress("DEPRECATION")
 private object BlurUtils {
     private const val BITMAP_SCALE = 0.4f
 
