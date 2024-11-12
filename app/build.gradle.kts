@@ -44,7 +44,6 @@ dependencies {
     implementation(libs.androidx.compose.google.fonts)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation("com.github.skydoves:cloudy:0.2.3")
     implementation(libs.haze.compose)
     implementation(libs.haze.compose.materials)
     implementation(libs.material.motion.compose.core)
