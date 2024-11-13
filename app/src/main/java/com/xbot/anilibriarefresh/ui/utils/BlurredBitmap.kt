@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import kotlin.math.roundToInt
 
 @Composable
 fun rememberBlurredBitmap(
@@ -41,8 +42,8 @@ object BlurUtils {
 
     @Suppress("DEPRECATION")
     fun blur(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
-        val width = Math.round(bitmap.width * BITMAP_SCALE)
-        val height = Math.round(bitmap.height * BITMAP_SCALE)
+        val width = (bitmap.width * BITMAP_SCALE).roundToInt()
+        val height = (bitmap.height * BITMAP_SCALE).roundToInt()
 
         val inputBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
         val outputBitmap = Bitmap.createBitmap(inputBitmap)
@@ -61,8 +62,12 @@ object BlurUtils {
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun blur(bitmap: Bitmap, radius: Float): Bitmap {
+        val width = (bitmap.width * BITMAP_SCALE).roundToInt()
+        val height = (bitmap.height * BITMAP_SCALE).roundToInt()
+
+        val inputBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
         val imageReader = ImageReader.newInstance(
-            bitmap.width, bitmap.height,
+            inputBitmap.width, inputBitmap.height,
             PixelFormat.RGBA_8888, 1,
             HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE or HardwareBuffer.USAGE_GPU_COLOR_OUTPUT,
         )
@@ -79,7 +84,7 @@ object BlurUtils {
         renderNode.setRenderEffect(blurRenderEffect)
 
         val renderCanvas = renderNode.beginRecording()
-        renderCanvas.drawBitmap(bitmap, 0f, 0f, null)
+        renderCanvas.drawBitmap(inputBitmap, 0f, 0f, null)
         renderNode.endRecording()
         hardwareRenderer.createRenderRequest()
             .setWaitForPresent(true)
