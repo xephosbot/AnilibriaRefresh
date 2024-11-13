@@ -63,7 +63,7 @@ room = "2.6.1"
 sandwich = "2.0.10"
 secrets = "2.0.1"
 truth = "1.4.4"
-turbine = "1.0.0"
+turbine = "1.2.0"
 interpolator = "1.0.0"
 
 # Koin
