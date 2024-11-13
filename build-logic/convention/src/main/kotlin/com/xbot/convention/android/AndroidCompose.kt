@@ -5,6 +5,7 @@
 package com.xbot.convention.android
 
 import com.android.build.api.dsl.CommonExtension
+import com.xbot.convention.extensions.androidTestImplementation
 import com.xbot.convention.extensions.debugImplementation
 import com.xbot.convention.extensions.getLibrary
 import com.xbot.convention.extensions.getPlugin
@@ -34,15 +35,13 @@ internal fun Project.configureAndroidCompose(
 
         dependencies {
             implementation(platform(libs.getLibrary("androidx-compose-bom")))
+            androidTestImplementation(platform(libs.getLibrary("androidx-compose-bom")))
 
             implementation(libs.getLibrary("androidx-compose-ui"))
             implementation(libs.getLibrary("androidx-compose-ui-util"))
             implementation(libs.getLibrary("androidx-compose-ui-tooling-preview"))
 
             debugImplementation(libs.getLibrary("androidx-compose-ui-tooling"))
-
-            implementation(libs.getLibrary("androidx-compose-material"))
-            implementation(libs.getLibrary("androidx-compose-material3"))
         }
     }
 
