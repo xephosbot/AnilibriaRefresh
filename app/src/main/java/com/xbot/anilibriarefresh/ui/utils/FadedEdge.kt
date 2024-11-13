@@ -54,8 +54,10 @@ private val NON_LINEAR_GRADIENT_SHADER = """
     uniform float edgeHeight;
     uniform int bottomEdge;
     
-    float easeInOutQuad(float x) {
-        return x < 0.5 ? 2.0 * x * x : 1.0 - pow(-2.0 * x + 2.0, 2.0) / 2.0;
+    const float PI = 3.14159265358979323846;
+    
+    float easeInOutSine(float x) {
+        return -(cos(PI * x) - 1) / 2;
     }
     
     half4 main(in float2 fragCoord) {
