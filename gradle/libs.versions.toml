@@ -71,7 +71,7 @@ koinBom = "4.0.0"
 
 # Detekt
 detektGradlePlugin = "1.23.7"
-detektRulesCompose = "0.4.17"
+detektRulesCompose = "0.4.18"
 
 # Ktlint
 ktlintGradlePlugin = "12.1.1"
