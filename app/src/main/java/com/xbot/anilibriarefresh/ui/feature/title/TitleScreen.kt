@@ -160,8 +160,8 @@ private fun PosterWithBackground(
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
-                            .fadedEdge(edgeHeight = 200.dp)
-                            .fadedEdge(edgeHeight = 200.dp, bottomEdge = false),
+                            .fadedEdge(edgeHeight = 150.dp)
+                            .fadedEdge(edgeHeight = 150.dp, bottomEdge = false),
                         bitmap = blurredPosterBitmap.asImageBitmap(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
