@@ -75,7 +75,7 @@ detektRulesCompose = "0.4.17"
 
 # Ktlint
 ktlintGradlePlugin = "12.1.1"
-junit = "4.12"
+junit = "4.13.2"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
