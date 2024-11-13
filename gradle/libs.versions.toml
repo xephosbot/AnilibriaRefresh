@@ -62,6 +62,7 @@ roborazzi = "1.32.2"
 room = "2.6.1"
 sandwich = "2.0.10"
 secrets = "2.0.1"
+stickyHeaders = "0.1.0-alpha04"
 truth = "1.4.4"
 turbine = "1.2.0"
 interpolator = "1.0.0"
@@ -170,6 +171,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 sandwich-retrofit = { module = "com.github.skydoves:sandwich-retrofit", version.ref = "sandwich" }
 sandwich-retrofit-serialization = { module = "com.github.skydoves:sandwich-retrofit-serialization", version.ref = "sandwich" }
+sticky-headers = { module = "me.gingerninja.lazy:sticky-headers", version.ref = "stickyHeaders" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -15,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.xbot.anilibriarefresh.ui.components.stickyheaders.StickyHeaders
+import me.gingerninja.lazy.StickyHeaders
 
 @Composable
 fun <K, V> LazyRowWithStickyHeader(
@@ -24,6 +27,7 @@ fun <K, V> LazyRowWithStickyHeader(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    stickyEdgePadding: Dp = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
     reverseLayout: Boolean = false,
     horizontalArrangement: Arrangement.Horizontal = if (!reverseLayout) Arrangement.Start else Arrangement.End,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
@@ -39,6 +43,7 @@ fun <K, V> LazyRowWithStickyHeader(
     Column {
         StickyHeaders(
             modifier = Modifier.fillMaxWidth(),
+            stickyEdgePadding = stickyEdgePadding,
             state = state,
             key = { item ->
                 itemsWithKeys.getOrNull(item.index)?.first
