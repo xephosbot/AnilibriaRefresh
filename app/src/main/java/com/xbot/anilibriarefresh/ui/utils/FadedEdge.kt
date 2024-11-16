@@ -65,7 +65,7 @@ private val NON_LINEAR_GRADIENT_SHADER = """
             ? fragCoord.y - (resolution.y - edgeHeight)
             : edgeHeight - fragCoord.y;
         float t = clamp(y / edgeHeight, 0.0, 1.0);
-        float alpha = easeInOutQuad(1.0 - t);
+        float alpha = easeInOutSine(1.0 - t);
         return half4(0.0, 0.0, 0.0, alpha);
     }
 """.trimIndent()

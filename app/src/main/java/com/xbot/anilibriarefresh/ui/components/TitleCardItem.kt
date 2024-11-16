@@ -46,25 +46,14 @@ private fun TitleCardItemContent(
     title: Title,
     onClick: (Title) -> Unit,
 ) {
-    Column(
-        modifier = Modifier.width(IntrinsicSize.Min),
-    ) {
-        PosterImage(
-            modifier = modifier
-                .height(TitleCardHeight)
-                .aspectRatio(7f / 10f)
-                .clip(RoundedCornerShape(8.dp))
-                .clickable { onClick(title) },
-            poster = title.poster,
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = title.name,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
+    PosterImage(
+        modifier = modifier
+            .height(TitleCardHeight)
+            .aspectRatio(7f / 10f)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick(title) },
+        poster = title.poster,
+    )
 }
 
 @Composable
