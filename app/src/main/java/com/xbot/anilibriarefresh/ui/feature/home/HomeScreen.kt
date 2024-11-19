@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,14 +27,14 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,7 @@ import com.xbot.anilibriarefresh.ui.components.TitleListItem
 import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
 import com.xbot.anilibriarefresh.ui.components.pagerItemTransition
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
+import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
 import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.models.enums.DayOfWeek
@@ -90,7 +92,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
@@ -111,17 +113,16 @@ private fun HomeScreenContent(
         (loadStates.prepend is LoadState.Error) -> showErrorMessage((loadStates.prepend as LoadState.Error).error)
     }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = loadStates.refresh is LoadState.Loading,
-        onRefresh = items::refresh,
-    )
+    val pullToRefreshState = rememberPullToRefreshState()
 
-    Scaffold(modifier = modifier) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(pullRefreshState),
-        ) {
+    Scaffold(
+        modifier = modifier.pullToRefresh(
+            isRefreshing = loadStates.refresh is LoadState.Loading,
+            state = pullToRefreshState,
+            onRefresh = items::refresh
+        )
+    ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize()) {
             Crossfade(
                 targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
                 label = "Loading state transition in HomeScreenContent",
@@ -144,19 +145,17 @@ private fun HomeScreenContent(
                 }
             }
 
-            // I wrapped it in a box because I needed to add padding.
-            Box(
+            Indicator(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding.union(paddingValues)),
-            ) {
-                // TODO: after the release of the M3 version, replace it and remove the dependency androidx.compose.material
-                PullRefreshIndicator(
-                    refreshing = loadStates.refresh is LoadState.Loading,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                )
-            }
+                    .align(Alignment.TopCenter)
+                    .padding(
+                        paddingValues = innerPadding
+                            .union(paddingValues)
+                            .only(WindowInsetsSides.Top)
+                    ),
+                isRefreshing = loadStates.refresh is LoadState.Loading,
+                state = pullToRefreshState
+            )
         }
     }
 }
