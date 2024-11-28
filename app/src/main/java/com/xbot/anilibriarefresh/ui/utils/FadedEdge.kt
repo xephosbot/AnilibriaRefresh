@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import org.intellij.lang.annotations.Language
 
 fun Modifier.fadedEdge(
-    bottomEdge: Boolean = true,
     edgeHeight: Dp = DefaultFadingEdgeHeight,
+    bottomEdge: Boolean = true,
 ) = graphicsLayer {
     compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithCache {
