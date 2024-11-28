@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Header(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
     Row(
