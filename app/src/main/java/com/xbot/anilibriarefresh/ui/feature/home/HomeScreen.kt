@@ -1,6 +1,5 @@
 package com.xbot.anilibriarefresh.ui.feature.home
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -124,7 +123,10 @@ private fun HomeScreenContent(
         modifier = modifier.pullToRefresh(
             isRefreshing = loadStates.refresh is LoadState.Loading,
             state = pullToRefreshState,
-            onRefresh = items::refresh
+            onRefresh = {
+                items.refresh()
+                onAction(HomeScreenAction.Refresh)
+            }
         ),
         topBar = {
             AnilibriaTopAppBar(
@@ -215,24 +217,33 @@ private fun TitleList(
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding,
         ) {
-            header(
-                titleResId = R.string.schedule
-            )
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { HomeScreenContentType.Header },
+            ) {
+                Header(stringResource(R.string.schedule))
+            }
             horizontalCarouselItems(state = carouselState) { index ->
                 TitleCarouselItem(
                     title = recommendedList[index],
                     onClick = onTitleClick,
                 )
             }
-            header(
-                titleResId = R.string.schedule,
-                onClick = {},
-            )
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { HomeScreenContentType.Header },
+            ) {
+                Header(
+                    title = stringResource(R.string.schedule),
+                    onClick = {}
+                )
+            }
             horizontalItems(
                 items = scheduleList,
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 stickyHeader = { dayOfWeek ->
                     Column {
+                        // TODO: Use MaterialTheme.typography style
                         Text(
                             text = dayOfWeek.toStringRes(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -250,9 +261,14 @@ private fun TitleList(
                     )
                 },
             )
-            header(
-                titleResId = R.string.new_episodes
-            )
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { HomeScreenContentType.Header },
+            ) {
+                Header(
+                    title = stringResource(R.string.new_episodes),
+                )
+            }
             pagingItems(items) { title ->
                 TitleListItem(
                     title = title,
@@ -311,7 +327,7 @@ private fun LazyGridScope.horizontalItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "HorizontalList" },
+        contentType = { HomeScreenContentType.HorizontalList },
     ) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -335,7 +351,7 @@ private fun LazyGridScope.horizontalItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "HorizontalList" },
+        contentType = { HomeScreenContentType.HorizontalList },
     ) {
         LazyRowWithStickyHeader(
             items = items,
@@ -354,7 +370,7 @@ private fun LazyGridScope.horizontalCarouselItems(
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "CarouselItems" },
+        contentType = { HomeScreenContentType.CarouselItems },
     ) {
         HorizontalMultiBrowseCarousel(
             modifier = Modifier
@@ -369,21 +385,6 @@ private fun LazyGridScope.horizontalCarouselItems(
     }
 }
 
-private fun LazyGridScope.header(
-    @StringRes titleResId: Int,
-    onClick: (() -> Unit)? = null,
-) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { "Header" },
-    ) {
-        Header(
-            title = stringResource(id = titleResId),
-            onClick = onClick,
-        )
-    }
-}
-
 private fun LazyGridScope.pagingItems(
     items: LazyPagingItems<Title>,
     itemContent: @Composable LazyGridItemScope.(Title?) -> Unit,
@@ -391,7 +392,7 @@ private fun LazyGridScope.pagingItems(
     items(
         count = items.itemCount,
         key = items.itemKey(),
-        contentType = items.itemContentType { "PagingItems" },
+        contentType = items.itemContentType { HomeScreenContentType.PagingItems },
     ) {
         itemContent(items[it])
     }
@@ -406,4 +407,11 @@ private fun DayOfWeek.toStringRes(): String = when (this) {
     DayOfWeek.FRIDAY -> stringResource(R.string.friday)
     DayOfWeek.SATURDAY -> stringResource(R.string.saturday)
     DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
+}
+
+private enum class HomeScreenContentType {
+    Header,
+    HorizontalList,
+    CarouselItems,
+    PagingItems
 }
