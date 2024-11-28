@@ -116,7 +116,7 @@ fun AnilibriaNavigationRail(
 @Composable
 fun NavigationRail(
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     header: @Composable (ColumnScope.() -> Unit)? = null,
     windowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout).only(
