@@ -98,7 +98,7 @@ private fun ScaffoldLayout(
     bottomBar: @Composable () -> Unit,
 ) {
     val navigationPaddingBottom = LocalNavigationPadding.current.calculateBottomPadding()
-        .takeIf { it != 0.dp }
+        .takeIf { it > 0.dp }
 
     SubcomposeLayout(modifier) { constraints ->
         val layoutWidth = constraints.maxWidth
@@ -111,6 +111,7 @@ private fun ScaffoldLayout(
         }
 
         val topBarHeight = topBarPlaceables.fastMaxBy { it.height }?.height ?: 0
+        val topBarWidth = topBarPlaceables.fastMaxBy { it.width }?.width ?: 0
 
         val snackbarPlaceables = subcompose(ScaffoldLayoutContent.Snackbar, snackbar).fastMap {
             // respect only bottom and horizontal for snackbar and fab
@@ -229,7 +230,7 @@ private fun ScaffoldLayout(
                 it.place(0, 0)
             }
             topBarPlaceables.fastForEach {
-                it.place(0, 0)
+                it.place(((layoutWidth - topBarWidth) / 2).coerceAtLeast(0), 0)
             }
             snackbarPlaceables.fastForEach {
                 it.place(
