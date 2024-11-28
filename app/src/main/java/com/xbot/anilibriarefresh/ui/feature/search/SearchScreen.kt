@@ -6,28 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.outlined.Tune
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Label
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.RangeSliderState
@@ -37,7 +28,6 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,16 +35,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.anilibriarefresh.ui.components.ButtonComponent
+import com.xbot.anilibriarefresh.ui.components.LocalNavigationPadding
 import com.xbot.anilibriarefresh.ui.components.Scaffold
-import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Search
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.anilibriarefresh.ui.utils.stringResource
 import org.koin.androidx.compose.koinViewModel
@@ -64,13 +54,11 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = koinViewModel()
 ) {
-    val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(value = false) }
     val state by searchViewModel.state.collectAsStateWithLifecycle()
 
     SearchScreenContent(
         modifier = modifier,
         state = state,
-        showBottomSheet = showBottomSheet,
         onAction = searchViewModel::onAction,
     )
 }
@@ -80,121 +68,80 @@ fun SearchScreen(
 private fun SearchScreenContent(
     modifier: Modifier = Modifier,
     state: SearchScreenState,
-    showBottomSheet: MutableState<Boolean>,
     onAction: (SearchScreenAction) -> Unit,
 ) {
-    Surface(
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-        ) {
+    var query by rememberSaveable { mutableStateOf("") }
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    Scaffold(
+        topBar = {
             SearchBar(
-                showBottomSheet = showBottomSheet,
-            )
-            if (showBottomSheet.value) {
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        showBottomSheet.value = false
-                    },
-                ) {
-                    Crossfade(
-                        targetState = state is SearchScreenState.Loading,
-                        label = "",
-                    ) { targetState ->
-                        when (targetState) {
-                            true -> LoadingSearchScreen()
-                            else -> {
-                                val successState = state as SearchScreenState.Success
-                                Filters(
-                                    filtersList = successState.filtersList,
-                                    years = successState.years,
-                                )
-                            }
+                modifier = modifier,
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        query = query,
+                        onQueryChange = { query = it },
+                        onSearch = { expanded = false },
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it },
+                        placeholder = { Text("Поиск по названию") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.Search,
+                                contentDescription = null
+                            )
                         }
-                    }
-                }
+                    )
+                },
+                expanded = expanded,
+                onExpandedChange = { expanded = it }
+            ) {
+                FiltersScreen(state = state)
+            }
+        }
+    ) {
+
+    }
+}
+
+@Composable
+private fun FiltersScreen(
+    modifier: Modifier = Modifier,
+    state: SearchScreenState,
+) {
+    Crossfade(
+        targetState = state is SearchScreenState.Loading,
+        label = "",
+    ) { targetState ->
+        when (targetState) {
+            true -> LoadingFiltersScreen(modifier = modifier)
+
+            else -> {
+                val successState = state as SearchScreenState.Success
+                FiltersScreenContent(
+                    modifier = modifier,
+                    filtersList = successState.filtersList,
+                    years = successState.years,
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchBar(
-    modifier: Modifier = Modifier,
-    showBottomSheet: MutableState<Boolean>,
-) {
-    var textInput: String by rememberSaveable { mutableStateOf("") }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SearchBar(
-            modifier = modifier
-                .weight(1f)
-                .padding(start = 16.dp, end = 16.dp),
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = textInput,
-                    onQueryChange = { textInput = it },
-                    expanded = false,
-                    onExpandedChange = {},
-                    onSearch = {},
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "",
-                        )
-                    },
-                    trailingIcon = {
-                        Row {
-                            IconButton(
-                                onClick = {
-                                    showBottomSheet.value = true
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Tune,
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    contentDescription = "",
-                                )
-                            }
-                            IconButton(
-                                onClick = {
-                                    textInput = ""
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    contentDescription = "",
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            expanded = false,
-            onExpandedChange = {}
-        ) {}
-    }
-}
-
-@Composable
-private fun Filters(
+private fun FiltersScreenContent(
     modifier: Modifier = Modifier,
     filtersList: List<Pair<String, List<StringResource>>>,
     years: List<Int>,
 ) {
-    LazyColumn {
-        items(filtersList) { filter ->
-            ItemsFilter(
+    LazyColumn(
+        contentPadding = LocalNavigationPadding.current
+    ) {
+        items(filtersList) { (title, items) ->
+            SearchFilterChips(
                 modifier = modifier,
-                text = filter.first,
-                list = filter.second,
+                title = title,
+                items = items,
             )
         }
         item {
@@ -207,41 +154,32 @@ private fun Filters(
                 sliderPosition = yearRange,
                 onValueChange = { newRange -> yearRange = newRange },
             )
-            ButtonComponent(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                text = "Поиск",
-                onClick = {},
-                colorStops = colorStopsButtonPagerContent,
-            )
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ItemsFilter(
+private fun SearchFilterChips(
     modifier: Modifier = Modifier,
-    text: String,
-    list: List<StringResource>? = null,
+    title: String,
+    items: List<StringResource>,
 ) {
-    Text(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        text = text,
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
-    )
-    if (list != null) {
+            .padding(horizontal = 16.dp)
+    ) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp,
+        )
+        Spacer(Modifier.height(8.dp))
         FlowRow(
-            modifier = modifier
-                .padding(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            list.forEach { item ->
+            items.forEach { item ->
                 AssistChip(
                     onClick = {},
                     label = { Text(text = stringResource(item)) },
@@ -276,7 +214,6 @@ fun YearSlider(
     val startInteractionSource = remember { MutableInteractionSource() }
     val endInteractionSource = remember { MutableInteractionSource() }
 
-    ItemsFilter(text = "Год")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
@@ -299,7 +236,11 @@ fun YearSlider(
                 startThumb = {
                     Label(
                         label = {
-                            PlainTooltip(modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth()) {
+                            PlainTooltip(
+                                modifier = Modifier
+                                    .sizeIn(45.dp, 25.dp)
+                                    .wrapContentWidth()
+                            ) {
                                 Text("%.0f".format(rangeSliderState.activeRangeStart))
                             }
                         },
@@ -314,7 +255,9 @@ fun YearSlider(
                     Label(
                         label = {
                             PlainTooltip(
-                                modifier = Modifier.sizeIn(45.dp, 25.dp).wrapContentWidth(),
+                                modifier = Modifier
+                                    .sizeIn(45.dp, 25.dp)
+                                    .wrapContentWidth(),
                             ) {
                                 Text("%.0f".format(rangeSliderState.activeRangeEnd))
                             }
@@ -336,7 +279,7 @@ fun YearSlider(
 }
 
 @Composable
-fun LoadingSearchScreen(modifier: Modifier = Modifier) {
+private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
     Surface {
         Column(modifier = modifier) {}
     }
