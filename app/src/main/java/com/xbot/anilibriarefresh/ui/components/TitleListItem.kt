@@ -2,6 +2,7 @@ package com.xbot.anilibriarefresh.ui.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,17 +42,15 @@ fun TitleListItem(
     title: Title?,
     onClick: (Title) -> Unit = {},
 ) {
-    Surface(
-        onClick = { title?.let { onClick(it) } },
-    ) {
-        Crossfade(
-            targetState = title,
-            label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
-        ) { state ->
-            when (state) {
-                null -> LoadingTitleListItem(modifier)
-                else -> TitleListItemContent(modifier, state)
-            }
+    Crossfade(
+        modifier = Modifier
+            .clickable { title?.let { onClick(it) } },
+        targetState = title,
+        label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
+    ) { state ->
+        when (state) {
+            null -> LoadingTitleListItem(modifier)
+            else -> TitleListItemContent(modifier, state)
         }
     }
 }
@@ -65,7 +63,10 @@ private fun TitleListItemContent(
     TitleItemLayout(
         modifier = modifier
             .height(TitleItemContainerHeight)
-            .padding(TitleItemContainerPadding),
+            .padding(
+                vertical = TitleItemContainerPaddingVertical,
+                horizontal = TitleItemContainerPaddingHorizontal
+            ),
         headlineContent = {
             Text(
                 text = title.name,
@@ -85,20 +86,8 @@ private fun TitleListItemContent(
             )
         },
         tags = {
-            title.tags.forEachIndexed { index, tag ->
-                when (tag) {
-                    is TitleTag.Text -> Text(
-                        text = stringResource(tag.text),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
-                    is TitleTag.TextWithIcon -> TextWithIcon(
-                        text = stringResource(tag.text),
-                        imageVector = tag.icon,
-                        iconPosition = IconPosition.END,
-                    )
-                }
-                if (index != title.tags.lastIndex) Text(text = "•")
+            title.tags.forEach { tag ->
+                TagChip(tag = tag)
             }
         },
     )
@@ -113,7 +102,10 @@ private fun LoadingTitleListItem(
     TitleItemLayout(
         modifier = modifier
             .height(TitleItemContainerHeight)
-            .padding(TitleItemContainerPadding)
+            .padding(
+                vertical = TitleItemContainerPaddingVertical,
+                horizontal = TitleItemContainerPaddingHorizontal
+            )
             .shimmerSafe(shimmer),
         headlineContent = {
             Box(
@@ -185,19 +177,11 @@ private fun TitleItemLayout(
         }
     }
     val tagsRow = @Composable {
-        // TODO: Use MaterialTheme.typography style
-        ProvideTextStyle(
-            value = LocalTextStyle.current.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp,
-            ),
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(TitleItemContentPadding),
-                verticalAlignment = Alignment.CenterVertically,
-                content = tags,
-            )
-        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(TitleItemTagsSpacing),
+            verticalAlignment = Alignment.CenterVertically,
+            content = tags,
+        )
     }
 
     Layout(
@@ -213,7 +197,7 @@ private fun TitleItemLayout(
                 ),
             )
 
-        val leadingPadding = TitleItemContainerPadding.roundToPx()
+        val leadingPadding = TitleItemContainerPaddingHorizontal.roundToPx()
         val contentWidth = if (constraints.maxWidth == Constraints.Infinity) {
             constraints.maxWidth
         } else {
@@ -229,7 +213,8 @@ private fun TitleItemLayout(
             )
 
         val headlinePadding = TitleItemContentPadding.roundToPx()
-        val headlineHeight = (constraints.maxHeight - tagsPlaceable.height - headlinePadding).coerceAtLeast(0)
+        val headlineHeight =
+            (constraints.maxHeight - tagsPlaceable.height - headlinePadding).coerceAtLeast(0)
 
         val headlinePlaceable = headlineMeasurable.first()
             .measure(
@@ -299,7 +284,9 @@ private fun TitleItemPreview() {
     }
 }
 
-private val TitleItemContainerPadding = 16.dp
+private val TitleItemContainerPaddingVertical = 8.dp
+private val TitleItemContainerPaddingHorizontal = 16.dp
 private val TitleItemContainerHeight = 192.dp
 private val TitleItemContentPadding = 4.dp
+private val TitleItemTagsSpacing = 8.dp
 private val TitleItemMinContentSize = 16.dp
