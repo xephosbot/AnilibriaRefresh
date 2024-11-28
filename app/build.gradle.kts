@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.baselineprofile)
 }
 
+android {
+    namespace = "com.xbot.anilibriarefresh"
+}
+
 dependencies {
     // Project-level dependencies
     implementation(projects.domain)
@@ -62,8 +66,4 @@ dependencies {
     // Debug dependencies
     debugImplementation(libs.androidx.compose.ui.testManifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-}
-
-android {
-    namespace = "com.xbot.anilibriarefresh"
 }
