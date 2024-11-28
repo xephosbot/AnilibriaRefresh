@@ -97,6 +97,9 @@ private fun ScaffoldLayout(
     contentWindowInsets: WindowInsets,
     bottomBar: @Composable () -> Unit,
 ) {
+    val navigationPaddingBottom = LocalNavigationPadding.current.calculateBottomPadding()
+        .takeIf { it != 0.dp }
+
     SubcomposeLayout(modifier) { constraints ->
         val layoutWidth = constraints.maxWidth
         val layoutHeight = constraints.maxHeight
@@ -176,6 +179,7 @@ private fun ScaffoldLayout(
         }.map { it.measure(looseConstraints) }
 
         val bottomBarHeight = bottomBarPlaceables.maxByOrNull { it.height }?.height
+            ?: navigationPaddingBottom?.roundToPx()
         val fabOffsetFromBottom = fabPlacement?.let {
             if (bottomBarHeight == null) {
                 it.height + FabSpacing.roundToPx() +
