@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.components.ButtonComponent
+import com.xbot.anilibriarefresh.ui.components.Scaffold
 import com.xbot.anilibriarefresh.ui.theme.colorStopsButtonPagerContent
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.anilibriarefresh.ui.utils.stringResource
@@ -61,15 +62,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    searchViewModel: SearchViewModel = koinViewModel(),
-    paddingValues: PaddingValues,
+    searchViewModel: SearchViewModel = koinViewModel()
 ) {
     val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(value = false) }
     val state by searchViewModel.state.collectAsStateWithLifecycle()
 
     SearchScreenContent(
         modifier = modifier,
-        paddingValues = paddingValues,
         state = state,
         showBottomSheet = showBottomSheet,
         onAction = searchViewModel::onAction,
@@ -81,14 +80,11 @@ fun SearchScreen(
 private fun SearchScreenContent(
     modifier: Modifier = Modifier,
     state: SearchScreenState,
-    paddingValues: PaddingValues,
     showBottomSheet: MutableState<Boolean>,
     onAction: (SearchScreenAction) -> Unit,
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -182,8 +178,7 @@ private fun SearchBar(
                 )
             },
             expanded = false,
-            onExpandedChange = {},
-            windowInsets = WindowInsets(0.dp),
+            onExpandedChange = {}
         ) {}
     }
 }

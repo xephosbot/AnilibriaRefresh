@@ -68,13 +68,13 @@ import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.anilibriarefresh.ui.utils.rememberBlurredBitmap
 import com.xbot.anilibriarefresh.ui.utils.shimmerSafe
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
+import dev.chrisbanes.haze.HazeState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TitleScreen(
     modifier: Modifier = Modifier,
     viewModel: TitleViewModel = koinViewModel(),
-    paddingValues: PaddingValues,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -82,7 +82,6 @@ fun TitleScreen(
         TitleScreenContent(
             modifier = modifier,
             title = (state as TitleScreenState.Success).title,
-            paddingValues = paddingValues,
         )
     }
 }
@@ -91,17 +90,15 @@ fun TitleScreen(
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
     title: TitleDetail,
-    paddingValues: PaddingValues,
 ) {
     val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
+    val hazeState = remember { HazeState() }
 
     OverlayHeaderLayout(
-        modifier = modifier
-            .padding(paddingValues.only(WindowInsetsSides.Horizontal)),
+        modifier = modifier,
         headlineContent = {
             PosterWithBackground(
                 modifier = Modifier
-                    .padding(paddingValues.only(WindowInsetsSides.Top))
                     .graphicsLayer {
                         alpha = scrollBehavior.state.collapsedFraction
                     },
@@ -110,13 +107,15 @@ private fun TitleScreenContent(
         },
         scrollBehavior = scrollBehavior,
     ) {
-        Surface(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
             ProvideShimmer(shimmer) {
                 LazyColumn(
                     modifier = Modifier.shimmerUpdater(shimmer),
-                    contentPadding = paddingValues.only(WindowInsetsSides.Bottom),
                 ) {
                     mainBlock(
                         title = title

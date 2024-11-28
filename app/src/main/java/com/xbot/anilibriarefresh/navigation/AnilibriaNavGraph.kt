@@ -34,14 +34,10 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    paddingValues: PaddingValues,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
     startDestination: Route = Route.Home,
 ) {
     NavHost(
-        modifier = modifier
-            .fillMaxSize()
-            .background(containerColor),
+        modifier = modifier.fillMaxSize(),
         navController = navController,
         startDestination = startDestination,
         enterTransition = { materialFadeThroughIn() },
@@ -51,27 +47,21 @@ fun AnilibriaNavGraph(
             startDestination = Route.Home.List,
         ) {
             composable<Route.Home.List> { backStackEntry ->
-                HomeScreen(
-                    paddingValues = paddingValues,
-                ) { titleId, titleName ->
+                HomeScreen { titleId, titleName ->
                     if (backStackEntry.lifecycleIsResumed()) {
-                        navController.navigate(Route.Home.Detail(titleId, titleName))
+                        navController.navigate(Route.Home.Detail(titleId))
                     }
                 }
             }
             composable<Route.Home.Detail> {
-                TitleScreen(
-                    paddingValues = paddingValues,
-                )
+                TitleScreen()
             }
         }
         composable<Route.Favorite> {
             FavoriteScreen()
         }
         composable<Route.Search> {
-            SearchScreen(
-                paddingValues = paddingValues,
-            )
+            SearchScreen()
         }
         composable<Route.Profile> {
             FavoriteScreen()

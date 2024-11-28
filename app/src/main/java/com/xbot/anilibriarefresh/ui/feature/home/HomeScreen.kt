@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -21,26 +22,28 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerScope
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.carousel.CarouselItemScope
+import androidx.compose.material3.carousel.CarouselState
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,27 +58,30 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.models.Title
+import com.xbot.anilibriarefresh.ui.components.AnilibriaTopAppBar
 import com.xbot.anilibriarefresh.ui.components.Header
-import com.xbot.anilibriarefresh.ui.components.HeaderDefaults
-import com.xbot.anilibriarefresh.ui.components.HorizontalPagerIndicator
 import com.xbot.anilibriarefresh.ui.components.LazyRowWithStickyHeader
-import com.xbot.anilibriarefresh.ui.components.LoadingPagerItem
+import com.xbot.anilibriarefresh.ui.components.LoadingCarouselItem
+import com.xbot.anilibriarefresh.ui.components.Scaffold
 import com.xbot.anilibriarefresh.ui.components.TitleCardItem
+import com.xbot.anilibriarefresh.ui.components.TitleCarouselItem
 import com.xbot.anilibriarefresh.ui.components.TitleListItem
-import com.xbot.anilibriarefresh.ui.components.TitlePagerItem
-import com.xbot.anilibriarefresh.ui.components.pagerItemTransition
+import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.ui.icons.Search
 import com.xbot.anilibriarefresh.ui.utils.ProvideShimmer
 import com.xbot.anilibriarefresh.ui.utils.only
 import com.xbot.anilibriarefresh.ui.utils.shimmerUpdater
-import com.xbot.anilibriarefresh.ui.utils.union
 import com.xbot.domain.models.enums.DayOfWeek
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.LocalHazeStyle
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
-    paddingValues: PaddingValues,
     onNavigate: (Int, String) -> Unit,
 ) {
     val items = viewModel.titles.collectAsLazyPagingItems()
@@ -83,7 +89,6 @@ fun HomeScreen(
 
     HomeScreenContent(
         modifier = modifier,
-        paddingValues = paddingValues,
         state = state,
         items = items,
         loadStates = items.loadState,
@@ -96,7 +101,6 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues,
     state: HomeScreenState,
     items: LazyPagingItems<Title>,
     loadStates: CombinedLoadStates,
@@ -114,22 +118,58 @@ private fun HomeScreenContent(
     }
 
     val pullToRefreshState = rememberPullToRefreshState()
+    val hazeState = remember { HazeState() }
 
     Scaffold(
         modifier = modifier.pullToRefresh(
             isRefreshing = loadStates.refresh is LoadState.Loading,
             state = pullToRefreshState,
             onRefresh = items::refresh
-        )
+        ),
+        topBar = {
+            AnilibriaTopAppBar(
+                modifier = Modifier
+                    .hazeChild(
+                        state = hazeState,
+                        style = LocalHazeStyle.current,
+                    ),
+                title = stringResource(R.string.home),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {},
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {},
+                    ) {
+                        Icon(
+                            imageVector = AnilibriaIcons.Outlined.Search,
+                            contentDescription = null,
+                        )
+                    }
+                },
+            )
+        }
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .haze(hazeState)
+        ) {
             Crossfade(
                 targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
                 label = "Loading state transition in HomeScreenContent",
             ) { targetState ->
                 when (targetState) {
                     true -> LoadingScreen(
-                        contentPadding = innerPadding.union(paddingValues),
+                        contentPadding = innerPadding,
                     )
 
                     else -> {
@@ -138,7 +178,7 @@ private fun HomeScreenContent(
                             items = items,
                             recommendedList = successState.recommendedTitles,
                             scheduleList = successState.scheduleTitles,
-                            contentPadding = innerPadding.union(paddingValues),
+                            contentPadding = innerPadding,
                             onTitleClick = { onNavigate(it.id, it.name) },
                         )
                     }
@@ -148,11 +188,7 @@ private fun HomeScreenContent(
             Indicator(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(
-                        paddingValues = innerPadding
-                            .union(paddingValues)
-                            .only(WindowInsetsSides.Top)
-                    ),
+                    .padding(innerPadding.only(WindowInsetsSides.Top)),
                 isRefreshing = loadStates.refresh is LoadState.Loading,
                 state = pullToRefreshState
             )
@@ -160,6 +196,7 @@ private fun HomeScreenContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TitleList(
     modifier: Modifier = Modifier,
@@ -170,7 +207,7 @@ private fun TitleList(
     onTitleClick: (Title) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val pagerState = rememberPagerState(pageCount = { recommendedList.size })
+    val carouselState = rememberCarouselState(itemCount = { recommendedList.size })
 
     ProvideShimmer(shimmer) {
         LazyVerticalGrid(
@@ -178,10 +215,12 @@ private fun TitleList(
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding,
         ) {
-            horizontalPagerItems(state = pagerState) { page ->
-                TitlePagerItem(
-                    modifier = Modifier.pagerItemTransition(page, pagerState),
-                    title = recommendedList[page],
+            header(
+                titleResId = R.string.schedule
+            )
+            horizontalCarouselItems(state = carouselState) { index ->
+                TitleCarouselItem(
+                    title = recommendedList[index],
                     onClick = onTitleClick,
                 )
             }
@@ -197,14 +236,9 @@ private fun TitleList(
                         Text(
                             text = dayOfWeek.toStringRes(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 14.sp,
-                            lineHeight = 14.sp,
-                            style = LocalTextStyle.current.copy(
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false,
-                                ),
-                            ),
-                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp,
+                            lineHeight = 12.sp,
+                            fontWeight = FontWeight.Normal,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -217,8 +251,7 @@ private fun TitleList(
                 },
             )
             header(
-                titleResId = R.string.new_episodes,
-                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
+                titleResId = R.string.new_episodes
             )
             pagingItems(items) { title ->
                 TitleListItem(
@@ -243,7 +276,7 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
                 .padding(contentPadding),
         ) {
-            LoadingPagerItem()
+            LoadingCarouselItem()
             Spacer(modifier = Modifier.height(6.dp)) // Pager indicator size
             Spacer(modifier = Modifier.height(16.dp))
             Header(
@@ -263,7 +296,6 @@ private fun LoadingScreen(
             }
             Header(
                 title = stringResource(R.string.new_episodes),
-                contentPadding = HeaderDefaults.ContentPaddingExcludeBottom,
             )
             repeat(6) {
                 TitleListItem(title = null)
@@ -315,32 +347,30 @@ private fun LazyGridScope.horizontalItems(
     }
 }
 
-private fun LazyGridScope.horizontalPagerItems(
-    state: PagerState,
-    pageContent: @Composable PagerScope.(page: Int) -> Unit,
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LazyGridScope.horizontalCarouselItems(
+    state: CarouselState,
+    carouselContent: @Composable CarouselItemScope.(index: Int) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
-        contentType = { "PagerItems" },
+        contentType = { "CarouselItems" },
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            HorizontalPager(
-                state = state,
-                beyondViewportPageCount = 1,
-            ) { page ->
-                pageContent(page)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalPagerIndicator(state = state)
+        HorizontalMultiBrowseCarousel(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            state = state,
+            preferredItemWidth = 312.dp,
+            itemSpacing = 16.dp
+        ) { index ->
+            carouselContent(index)
         }
     }
 }
 
 private fun LazyGridScope.header(
     @StringRes titleResId: Int,
-    contentPadding: PaddingValues = HeaderDefaults.ContentPadding,
     onClick: (() -> Unit)? = null,
 ) {
     item(
@@ -349,7 +379,6 @@ private fun LazyGridScope.header(
     ) {
         Header(
             title = stringResource(id = titleResId),
-            contentPadding = contentPadding,
             onClick = onClick,
         )
     }

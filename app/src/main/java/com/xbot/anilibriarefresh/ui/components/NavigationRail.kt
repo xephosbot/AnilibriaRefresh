@@ -26,10 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRailItemColors
@@ -45,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasureResult
@@ -53,7 +49,6 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
@@ -61,12 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.navigation.NavigationContentPosition
 import com.xbot.anilibriarefresh.navigation.TopLevelDestination
 import com.xbot.anilibriarefresh.navigation.currentBackStackAsState
 import com.xbot.anilibriarefresh.navigation.hasRoute
-import com.xbot.anilibriarefresh.navigation.isTopLevelDestination
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -74,39 +67,14 @@ import kotlin.math.roundToInt
 fun AnilibriaNavigationRail(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP,
-    onNavigationClick: () -> Unit = {},
+    navContentPosition: NavigationContentPosition = NavigationContentPosition.TOP
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     val navBackStack by navController.currentBackStackAsState()
-    val isTopLevel = navController.isTopLevelDestination()
 
     NavigationRail(
         modifier = modifier,
-        header = {
-            IconButton(
-                onClick = {
-                    when (isTopLevel) {
-                        true -> onNavigationClick()
-                        else -> navController.navigateUp()
-                    }
-                },
-            ) {
-                when (isTopLevel) {
-                    true -> Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                    else -> Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
-            }
-        },
         contentArrangement = when (navContentPosition) {
             NavigationContentPosition.TOP -> Arrangement.Top
             NavigationContentPosition.CENTER -> Arrangement.Center
