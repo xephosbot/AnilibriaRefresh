@@ -1,12 +1,12 @@
 package com.xbot.data.mapper
 
-import com.xbot.api.models.enums.AgeRatingEnum
-import com.xbot.api.models.enums.ProductionStatusEnum
-import com.xbot.api.models.enums.PublishDayEnum
-import com.xbot.api.models.enums.PublishStatusEnum
-import com.xbot.api.models.enums.ReleaseTypeEnum
-import com.xbot.api.models.enums.SeasonEnum
-import com.xbot.api.models.enums.SortingTypeEnum
+import com.xbot.api.shared.enums.AgeRatingEnum
+import com.xbot.api.shared.enums.ProductionStatusEnum
+import com.xbot.api.shared.enums.PublishDayEnum
+import com.xbot.api.shared.enums.PublishStatusEnum
+import com.xbot.api.shared.enums.ReleaseTypeEnum
+import com.xbot.api.shared.enums.SeasonEnum
+import com.xbot.api.shared.enums.SortingTypeEnum
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.models.enums.ProductionStatus

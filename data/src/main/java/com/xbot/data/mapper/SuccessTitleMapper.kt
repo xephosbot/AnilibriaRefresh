@@ -2,7 +2,7 @@ package com.xbot.data.mapper
 
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
-import com.xbot.api.models.Release
+import com.xbot.api.shared.Release
 import com.xbot.domain.models.EpisodeModel
 import com.xbot.domain.models.GenreModel
 import com.xbot.domain.models.MemberModel

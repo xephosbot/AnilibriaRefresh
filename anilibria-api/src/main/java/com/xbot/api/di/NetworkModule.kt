@@ -6,8 +6,14 @@ package com.xbot.api.di
 
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import com.xbot.api.BuildConfig
-import com.xbot.api.service.AnilibriaClient
-import com.xbot.api.service.AnilibriaService
+import com.xbot.api.auth.AuthService
+import com.xbot.api.catalog.CatalogService
+import com.xbot.api.franchises.FranchisesService
+import com.xbot.api.genres.GenresService
+import com.xbot.api.releases.ReleasesService
+import com.xbot.api.schedule.ScheduleService
+import com.xbot.api.AnilibriaClient
+import com.xbot.api.AnilibriaApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -49,9 +55,24 @@ val networkModule = module {
             .build()
     }
 
-    single { get<Retrofit>().create(AnilibriaService::class.java) }
-    single { AnilibriaClient(service = get()) }
+    single { get<Retrofit>().create(AuthService::class.java) }
+    single { get<Retrofit>().create(CatalogService::class.java) }
+    single { get<Retrofit>().create(FranchisesService::class.java) }
+    single { get<Retrofit>().create(GenresService::class.java) }
+    single { get<Retrofit>().create(ReleasesService::class.java) }
+    single { get<Retrofit>().create(ScheduleService::class.java) }
 
-    single(named("baseUrl")) { AnilibriaService.BASE_URL }
-    single(named("baseUrlApi")) { AnilibriaService.BASE_URL_API }
+    single {
+        AnilibriaClient(
+            authService = get(),
+            catalogService = get(),
+            franchisesService = get(),
+            genresService = get(),
+            releasesService = get(),
+            scheduleService = get()
+        )
+    }
+
+    single(named("baseUrl")) { AnilibriaApi.BASE_URL }
+    single(named("baseUrlApi")) { AnilibriaApi.BASE_URL_API }
 }

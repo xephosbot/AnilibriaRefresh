@@ -2,7 +2,7 @@ package com.xbot.data.mapper
 
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
-import com.xbot.api.models.Genre
+import com.xbot.api.genres.models.Genre
 import com.xbot.domain.models.GenreModel
 
 object SuccessGenresMapper : ApiSuccessModelMapper<List<Genre>, List<GenreModel>> {

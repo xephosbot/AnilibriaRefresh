@@ -2,7 +2,7 @@ package com.xbot.data.mapper
 
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.mappers.ApiSuccessModelMapper
-import com.xbot.api.models.ReleaseCatalogResponse
+import com.xbot.api.shared.ReleaseCatalogResponse
 import com.xbot.data.models.TitlePage
 import com.xbot.domain.models.PosterModel
 import com.xbot.domain.models.TitleModel

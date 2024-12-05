@@ -1,7 +1,7 @@
 package com.xbot.data.datasource
 
 import com.skydoves.sandwich.suspendOnSuccess
-import com.xbot.api.service.AnilibriaClient
+import com.xbot.api.AnilibriaClient
 import com.xbot.data.mapper.SuccessAgeRatingsMapper
 import com.xbot.data.mapper.SuccessGenresMapper
 import com.xbot.data.mapper.SuccessProductionStatusesMapper
