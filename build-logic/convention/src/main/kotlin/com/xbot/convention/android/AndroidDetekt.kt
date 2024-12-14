@@ -18,13 +18,13 @@ internal fun Project.configureAndroidDetekt() {
     pluginManager.apply(libs.getPlugin("detekt").get().pluginId)
 
     extensions.configure<DetektExtension> {
-        toolVersion = libs.getVersion("detektGradlePlugin").toString()
+        toolVersion = libs.getVersion("detekt").toString()
         parallel = true
         autoCorrect = true
 
         dependencies {
-            detektPlugins(libs.getLibrary("detektFormatting"))
-            detektPlugins(libs.getLibrary("detektRulesCompose"))
+            detektPlugins(libs.getLibrary("detekt-formatting"))
+            detektPlugins(libs.getLibrary("detekt-rules-compose"))
         }
     }
 }

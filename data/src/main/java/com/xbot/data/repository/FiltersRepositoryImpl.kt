@@ -7,42 +7,41 @@ import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
+import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.repository.FiltersRepository
-import kotlinx.coroutines.flow.Flow
 
 internal class FiltersRepositoryImpl(
     private val filterDataSource: FiltersDataSource,
 ) : FiltersRepository {
-    override fun getAgeRatings(): Flow<List<AgeRating>> {
+    override suspend fun getAgeRatings(): List<AgeRating> {
         return filterDataSource.getAgeRatings()
     }
 
-    override fun getGenres(): Flow<List<GenreModel>> {
+    override suspend fun getGenres(): List<GenreModel> {
         return filterDataSource.getGenres()
     }
 
-    override fun getProductionStatuses(): Flow<List<ProductionStatus>> {
+    override suspend fun getProductionStatuses(): List<ProductionStatus> {
         return filterDataSource.getProductionStatuses()
     }
 
-    override fun getPublishStatuses(): Flow<List<PublishStatus>> {
+    override suspend fun getPublishStatuses(): List<PublishStatus> {
         return filterDataSource.getPublishStatuses()
     }
 
-    override fun getSeason(): Flow<List<Season>> {
+    override suspend fun getSeason(): List<Season> {
         return filterDataSource.getSeasons()
     }
 
-    override fun getSortingTypes(): Flow<List<SortingTypes>> {
+    override suspend fun getSortingTypes(): List<SortingType> {
         return filterDataSource.getSortingTypes()
     }
 
-    override fun getTypeReleases(): Flow<List<ReleaseType>> {
+    override suspend fun getTypeReleases(): List<ReleaseType> {
         return filterDataSource.getReleaseType()
     }
 
-    override fun getYears(): Flow<List<Int>> {
+    override suspend fun getYears(): List<Int> {
         return filterDataSource.getYears()
     }
 }

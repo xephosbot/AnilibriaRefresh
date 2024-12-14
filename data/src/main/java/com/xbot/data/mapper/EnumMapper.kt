@@ -1,19 +1,19 @@
 package com.xbot.data.mapper
 
-import com.xbot.api.shared.enums.AgeRatingEnum
-import com.xbot.api.shared.enums.ProductionStatusEnum
-import com.xbot.api.shared.enums.PublishDayEnum
-import com.xbot.api.shared.enums.PublishStatusEnum
-import com.xbot.api.shared.enums.ReleaseTypeEnum
-import com.xbot.api.shared.enums.SeasonEnum
-import com.xbot.api.shared.enums.SortingTypeEnum
+import com.xbot.api.models.shared.enums.AgeRatingEnum
+import com.xbot.api.models.shared.enums.ProductionStatusEnum
+import com.xbot.api.models.shared.enums.PublishDayEnum
+import com.xbot.api.models.shared.enums.PublishStatusEnum
+import com.xbot.api.models.shared.enums.ReleaseTypeEnum
+import com.xbot.api.models.shared.enums.SeasonEnum
+import com.xbot.api.models.shared.enums.SortingTypeEnum
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
+import com.xbot.domain.models.enums.SortingType
 
 internal fun AgeRatingEnum.toAgeRating(): AgeRating = when (this) {
     AgeRatingEnum.R0_PLUS -> AgeRating.R0_PLUS
@@ -61,11 +61,11 @@ internal fun SeasonEnum.toSeason(): Season = when (this) {
     SeasonEnum.WINTER -> Season.WINTER
 }
 
-internal fun SortingTypeEnum.toSortingType(): SortingTypes = when (this) {
-    SortingTypeEnum.YEAR_ASC -> SortingTypes.YEAR_ASC
-    SortingTypeEnum.YEAR_DESC -> SortingTypes.YEAR_DESC
-    SortingTypeEnum.RATING_ASC -> SortingTypes.RATING_ASC
-    SortingTypeEnum.RATING_DESC -> SortingTypes.RATING_DESC
-    SortingTypeEnum.FRESH_AT_ASC -> SortingTypes.FRESH_AT_ASC
-    SortingTypeEnum.FRESH_AT_DESC -> SortingTypes.FRESH_AT_DESC
+internal fun SortingTypeEnum.toSortingType(): SortingType = when (this) {
+    SortingTypeEnum.YEAR_ASC -> SortingType.YEAR_ASC
+    SortingTypeEnum.YEAR_DESC -> SortingType.YEAR_DESC
+    SortingTypeEnum.RATING_ASC -> SortingType.RATING_ASC
+    SortingTypeEnum.RATING_DESC -> SortingType.RATING_DESC
+    SortingTypeEnum.FRESH_AT_ASC -> SortingType.FRESH_AT_ASC
+    SortingTypeEnum.FRESH_AT_DESC -> SortingType.FRESH_AT_DESC
 }

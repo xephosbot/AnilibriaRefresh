@@ -27,15 +27,15 @@ internal class TitleRepositoryImpl(
         ).flow
     }
 
-    override fun getRecommendedTitles(): Flow<List<TitleModel>> {
+    override suspend fun getRecommendedTitles(): List<TitleModel> {
         return dataSource.getRecommendedTitles(10)
     }
 
-    override fun getScheduleTitles(): Flow<Map<DayOfWeek, List<TitleModel>>> {
+    override suspend fun getScheduleTitles(): Map<DayOfWeek, List<TitleModel>> {
         return dataSource.getScheduleTitles()
     }
 
-    override fun getTitle(id: Int): Flow<TitleDetailModel> {
+    override suspend fun getTitle(id: Int): TitleDetailModel {
         return dataSource.getTitle(id)
     }
 }

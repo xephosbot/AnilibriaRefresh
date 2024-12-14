@@ -37,5 +37,11 @@ internal fun Project.configureAndroidApplication(
                 signingConfig = signingConfigs.getByName("debug")
             }
         }
+
+        packaging {
+            resources {
+                pickFirsts.add("META-INF/INDEX.LIST")
+            }
+        }
     }
 }

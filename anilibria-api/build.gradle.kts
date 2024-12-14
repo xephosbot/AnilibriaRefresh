@@ -17,17 +17,19 @@ android {
 
 dependencies {
     // Koin dependencies
-    implementation(platform(libs.koinBom))
-    implementation(libs.koinCore)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
 
-    // Retrofit dependencies
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging)
-    implementation(libs.okhttp.brotli)
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.kotlin.serialization)
-    implementation(libs.sandwich.retrofit)
-    implementation(libs.sandwich.retrofit.serialization)
+    // Ktor dependencies
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.encoding)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.slf4j.api)
+    implementation(libs.logback.android)
+    implementation(libs.brotli.dec)
 
     // Kotlin dependencies
     implementation(libs.kotlinx.datetime)

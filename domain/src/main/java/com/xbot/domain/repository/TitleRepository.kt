@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TitleRepository {
     fun getLatestTitles(): Flow<PagingData<TitleModel>>
-    fun getRecommendedTitles(): Flow<List<TitleModel>>
-    fun getScheduleTitles(): Flow<Map<DayOfWeek, List<TitleModel>>>
-    fun getTitle(id: Int): Flow<TitleDetailModel>
+    suspend fun getRecommendedTitles(): List<TitleModel>
+    suspend fun getScheduleTitles(): Map<DayOfWeek, List<TitleModel>>
+    suspend fun getTitle(id: Int): TitleDetailModel
 }

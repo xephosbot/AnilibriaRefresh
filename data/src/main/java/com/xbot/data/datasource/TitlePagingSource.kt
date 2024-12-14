@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import com.xbot.data.BuildConfig
 import com.xbot.data.datasource.TitleDataSource.Companion.NETWORK_PAGE_SIZE
 import com.xbot.domain.models.TitleModel
-import kotlinx.coroutines.flow.first
 import kotlin.math.max
 
 class TitlePagingSource(
@@ -16,7 +15,7 @@ class TitlePagingSource(
         val pageIndex = params.key ?: FIRST_PAGE_INDEX
         val loadSize = params.loadSize
         return try {
-            val page = dataSource.getLatestTitles(pageIndex + 1, loadSize).first()
+            val page = dataSource.getLatestTitles(pageIndex + 1, loadSize)
 
             val newCount = page.items.size
             val total = page.total

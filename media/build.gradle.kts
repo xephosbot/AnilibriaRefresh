@@ -12,10 +12,10 @@ android {
 
 dependencies {
     // Koin dependencies
-    implementation(platform(libs.koinBom))
-    implementation(libs.koinCore)
-    implementation(libs.koinAndroid)
-    implementation(libs.koinAndroidCompose)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
 
     // AndroidX dependencies
     implementation(libs.androidx.core.ktx)

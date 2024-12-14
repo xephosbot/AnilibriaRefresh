@@ -12,7 +12,7 @@ import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
+import com.xbot.domain.models.enums.SortingType
 
 fun TitleModel.toTitleUi(): Title {
     return Title(
@@ -119,14 +119,14 @@ fun Season.toStringResource(): StringResource {
     return StringResource.Text(resId)
 }
 
-fun SortingTypes.toStringResource(): StringResource {
+fun SortingType.toStringResource(): StringResource {
     val resId = when (this) {
-        SortingTypes.FRESH_AT_DESC -> R.string.sorting_types_fresh_at_desc
-        SortingTypes.FRESH_AT_ASC -> R.string.sorting_types_fresh_at_asc
-        SortingTypes.RATING_DESC -> R.string.sorting_types_rating_desc
-        SortingTypes.RATING_ASC -> R.string.sorting_types_rating_asc
-        SortingTypes.YEAR_DESC -> R.string.sorting_types_year_desc
-        SortingTypes.YEAR_ASC -> R.string.sorting_types_year_asc
+        SortingType.FRESH_AT_DESC -> R.string.sorting_types_fresh_at_desc
+        SortingType.FRESH_AT_ASC -> R.string.sorting_types_fresh_at_asc
+        SortingType.RATING_DESC -> R.string.sorting_types_rating_desc
+        SortingType.RATING_ASC -> R.string.sorting_types_rating_asc
+        SortingType.YEAR_DESC -> R.string.sorting_types_year_desc
+        SortingType.YEAR_ASC -> R.string.sorting_types_year_asc
     }
     return StringResource.Text(resId)
 }

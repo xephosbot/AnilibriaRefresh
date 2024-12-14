@@ -1,89 +1,71 @@
 package com.xbot.data.datasource
 
-import com.skydoves.sandwich.suspendOnSuccess
-import com.xbot.api.AnilibriaClient
-import com.xbot.data.mapper.SuccessAgeRatingsMapper
-import com.xbot.data.mapper.SuccessGenresMapper
-import com.xbot.data.mapper.SuccessProductionStatusesMapper
-import com.xbot.data.mapper.SuccessPublishStatusesMapper
-import com.xbot.data.mapper.SuccessReleaseTypesMapper
-import com.xbot.data.mapper.SuccessSeasonsMapper
-import com.xbot.data.mapper.SuccessSortingTypesMapper
-import com.xbot.data.utils.handleErrors
+import com.xbot.api.client.AnilibriaClient
+import com.xbot.api.models.shared.enums.AgeRatingEnum
+import com.xbot.api.models.shared.enums.ProductionStatusEnum
+import com.xbot.api.models.shared.enums.PublishStatusEnum
+import com.xbot.api.models.shared.enums.ReleaseTypeEnum
+import com.xbot.api.models.shared.enums.SeasonEnum
+import com.xbot.api.models.shared.enums.SortingTypeEnum
+import com.xbot.api.request.getCatalogAgeRatings
+import com.xbot.api.request.getCatalogGenres
+import com.xbot.api.request.getCatalogProductionStatuses
+import com.xbot.api.request.getCatalogPublishStatuses
+import com.xbot.api.request.getCatalogReleaseTypes
+import com.xbot.api.request.getCatalogSeasons
+import com.xbot.api.request.getCatalogSortingTypes
+import com.xbot.api.request.getCatalogYears
+import com.xbot.data.mapper.toAgeRating
+import com.xbot.data.mapper.toProductionStatus
+import com.xbot.data.mapper.toPublishStatus
+import com.xbot.data.mapper.toReleaseType
+import com.xbot.data.mapper.toSeason
+import com.xbot.data.mapper.toSortingType
 import com.xbot.domain.models.GenreModel
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.xbot.domain.models.enums.SortingType
 
 class FiltersDataSource(
-    private val client: AnilibriaClient,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val client: AnilibriaClient
 ) {
-    fun getAgeRatings(): Flow<List<AgeRating>> = flow {
-        val response = client.getAgeRatings()
-        response.suspendOnSuccess(SuccessAgeRatingsMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getAgeRatings(): List<AgeRating> {
+        return client.getCatalogAgeRatings().map(AgeRatingEnum::toAgeRating)
+    }
 
-    fun getGenres(): Flow<List<GenreModel>> = flow {
-        val response = client.getGenres()
-        response.suspendOnSuccess(SuccessGenresMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getGenres(): List<GenreModel> {
+        return client.getCatalogGenres().map { genre ->
+            GenreModel(
+                id = genre.id,
+                name = genre.name
+            )
+        }
+    }
 
-    fun getProductionStatuses(): Flow<List<ProductionStatus>> = flow {
-        val response = client.getProductionStatuses()
-        response.suspendOnSuccess(SuccessProductionStatusesMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getProductionStatuses(): List<ProductionStatus> {
+        return client.getCatalogProductionStatuses().map(ProductionStatusEnum::toProductionStatus)
+    }
 
-    fun getPublishStatuses(): Flow<List<PublishStatus>> = flow {
-        val response = client.getPublishStatuses()
-        response.suspendOnSuccess(SuccessPublishStatusesMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getPublishStatuses(): List<PublishStatus> {
+        return client.getCatalogPublishStatuses().map(PublishStatusEnum::toPublishStatus)
+    }
 
-    fun getSeasons(): Flow<List<Season>> = flow {
-        val response = client.getSeasons()
-        response.suspendOnSuccess(SuccessSeasonsMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getSeasons(): List<Season> {
+        return client.getCatalogSeasons().map(SeasonEnum::toSeason)
+    }
 
-    fun getSortingTypes(): Flow<List<SortingTypes>> = flow {
-        val response = client.getSortingTypes()
-        response.suspendOnSuccess(SuccessSortingTypesMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getSortingTypes(): List<SortingType> {
+        return client.getCatalogSortingTypes().map(SortingTypeEnum::toSortingType)
+    }
 
-    fun getReleaseType(): Flow<List<ReleaseType>> = flow {
-        val response = client.getTypeReleases()
-        response.suspendOnSuccess(SuccessReleaseTypesMapper) {
-            emit(this)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
+    suspend fun getReleaseType(): List<ReleaseType> {
+        return client.getCatalogReleaseTypes().map(ReleaseTypeEnum::toReleaseType)
+    }
 
-    fun getYears(): Flow<List<Int>> = flow {
-        val response = client.getYears()
-        response.suspendOnSuccess {
-            emit(data)
-        }.handleErrors(TAG)
-    }.flowOn(dispatcher)
-
-    companion object {
-        private const val TAG = "FiltersDataSource"
+    suspend fun getYears(): List<Int> {
+        return client.getCatalogYears()
     }
 }

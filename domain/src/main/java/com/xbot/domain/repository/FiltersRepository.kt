@@ -6,16 +6,15 @@ import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingTypes
-import kotlinx.coroutines.flow.Flow
+import com.xbot.domain.models.enums.SortingType
 
 interface FiltersRepository {
-    fun getAgeRatings(): Flow<List<AgeRating>>
-    fun getGenres(): Flow<List<GenreModel>>
-    fun getProductionStatuses(): Flow<List<ProductionStatus>>
-    fun getPublishStatuses(): Flow<List<PublishStatus>>
-    fun getSeason(): Flow<List<Season>>
-    fun getSortingTypes(): Flow<List<SortingTypes>>
-    fun getTypeReleases(): Flow<List<ReleaseType>>
-    fun getYears(): Flow<List<Int>>
+    suspend fun getAgeRatings(): List<AgeRating>
+    suspend fun getGenres(): List<GenreModel>
+    suspend fun getProductionStatuses(): List<ProductionStatus>
+    suspend fun getPublishStatuses(): List<PublishStatus>
+    suspend fun getSeason(): List<Season>
+    suspend fun getSortingTypes(): List<SortingType>
+    suspend fun getTypeReleases(): List<ReleaseType>
+    suspend fun getYears(): List<Int>
 }

@@ -26,20 +26,18 @@ class PlayerViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val titleId = savedStateHandle.toRoute<Route.Player>().titleId
-    private val titleFlow = repository.getTitle(titleId)
+    val controller: StateFlow<Player?> = playerProvider.player
+        .onEach { player ->
+            val title = repository.getTitle(titleId)
+            with(player) {
+                if (mediaItemCount == 0) addMediaItem(title.toMediaItem())
+                prepare()
+                play()
+            }
+        }
         .catch {
             // TODO: Реализовать обработку ошибок подключения
             Log.e("PlayerViewModel", it.message ?: "")
-        }
-    val controller: StateFlow<Player?> = playerProvider.player
-        .onEach { player ->
-            titleFlow.collect { title ->
-                with(player) {
-                    if (mediaItemCount == 0) addMediaItem(title.toMediaItem())
-                    prepare()
-                    play()
-                }
-            }
         }
         .stateIn(
             scope = viewModelScope,

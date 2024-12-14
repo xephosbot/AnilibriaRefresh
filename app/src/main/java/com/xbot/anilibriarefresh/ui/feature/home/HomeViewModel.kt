@@ -15,20 +15,16 @@ import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.domain.models.TitleModel
 import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.repository.TitleRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     repository: TitleRepository,
     private val snackbarManager: SnackbarManager,
@@ -42,27 +38,23 @@ class HomeViewModel(
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 0)
     val state: StateFlow<HomeScreenState> = refreshTrigger
         .onStart { emit(Unit) }
-        .flatMapLatest {
-            combine(
-                repository.getRecommendedTitles(),
-                repository.getScheduleTitles(),
-            ) { recommendedTitles, scheduleTitles ->
-                HomeScreenState.Success(
-                    recommendedTitles = recommendedTitles.map(TitleModel::toTitleUi),
-                    scheduleTitles = scheduleTitles.mapValues { (_, titleList) ->
-                        titleList.map(TitleModel::toTitleUi)
-                    },
-                )
-            }.catch { error ->
-                // TODO: информативные сообщения для разного типа ошибок
-                snackbarManager.showMessage(
-                    title = StringResource.String(error.message ?: ""),
-                    action = MessageAction(
-                        title = StringResource.Text(R.string.retry_button),
-                        action = { onAction(HomeScreenAction.Refresh) },
-                    ),
-                )
-            }
+        .map {
+            HomeScreenState.Success(
+                recommendedTitles = repository.getRecommendedTitles().map(TitleModel::toTitleUi),
+                scheduleTitles = repository.getScheduleTitles().mapValues { (_, titleList) ->
+                    titleList.map(TitleModel::toTitleUi)
+                },
+            )
+        }
+        .catch { error ->
+            // TODO: информативные сообщения для разного типа ошибок
+            snackbarManager.showMessage(
+                title = StringResource.String(error.message ?: ""),
+                action = MessageAction(
+                    title = StringResource.Text(R.string.retry_button),
+                    action = { onAction(HomeScreenAction.Refresh) },
+                ),
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),

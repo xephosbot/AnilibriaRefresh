@@ -4,17 +4,26 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+android {
+    namespace = "com.xbot.data"
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+}
+
 dependencies {
     // Project-level dependencies
     implementation(projects.anilibriaApi)
     implementation(projects.domain)
 
-    implementation(libs.sandwich.retrofit)
-    implementation(libs.sandwich.retrofit.serialization)
-
     // Koin dependencies
-    implementation(platform(libs.koinBom))
-    implementation(libs.koinCore)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
 
     // AndroidX dependencies
     implementation(libs.androidx.dataStore)
@@ -29,16 +38,4 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.ext)
-}
-
-android {
-    namespace = "com.xbot.data"
-
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
