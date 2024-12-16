@@ -25,11 +25,13 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "AnilibriaRefresh"
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":app")
-include(":domain")
-include(":data")
 include(":media")
-include(":anilibria-api")
 include(":baselineprofile")
+include(":core:designsystem")
+include(":shared:domain")
+include(":shared:api")
+include(":shared:data")
+include(":shared:common")
