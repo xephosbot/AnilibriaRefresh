@@ -10,7 +10,7 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.repository.FiltersRepository
 
-internal class FiltersRepositoryImpl(
+class FiltersRepositoryImpl(
     private val filterDataSource: FiltersDataSource,
 ) : FiltersRepository {
     override suspend fun getAgeRatings(): List<AgeRating> {

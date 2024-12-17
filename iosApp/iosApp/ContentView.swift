@@ -1,33 +1,37 @@
 import SwiftUI
-import Domain
+import AnilibriaFramework
 
 struct ContentView: View {
-    @State private var showContent = false
+    @ObservedObject private(set) var viewModel: ViewModel
+    
     var body: some View {
-        VStack {
-            Button("Click me!") {
-                withAnimation {
-                    showContent = !showContent
-                }
-            }
+        ListView(phrases: viewModel.titles)
+            .task { await self.viewModel.startObserving() }
+    }
+}
 
-            if showContent {
-                VStack(spacing: 16) {
-                    Image(systemName: "swift")
-                        .font(.system(size: 200))
-                        .foregroundColor(.accentColor)
-                    Text("SwiftUI: \(Greeting().greet())")
-                }
-                .transition(.move(edge: .top).combined(with: .opacity))
+extension ContentView {
+    @MainActor
+    class ViewModel: ObservableObject {
+        @Published var titles: Array<String> = []
+        let repository = KoinKt.getTitleRepository()
+
+        func startObserving() async {
+            let titles = try? await repository.getRecommendedTitles()
+            for title in titles ?? [] {
+                self.titles.append(title.name)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct ListView: View {
+    let phrases: Array<String>
+
+    var body: some View {
+        List(phrases, id: \.self) {
+            Text($0)
+        }
     }
 }
+

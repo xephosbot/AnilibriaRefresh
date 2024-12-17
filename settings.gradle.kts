@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
 
 pluginManagement {
@@ -25,13 +26,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "AnilibriaRefresh"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include(":app")
+include(":androidApp")
 include(":media")
 include(":baselineprofile")
 include(":core:designsystem")
 include(":shared:domain")
 include(":shared:api")
 include(":shared:data")
-include(":shared:common")
+include(":shared:together")

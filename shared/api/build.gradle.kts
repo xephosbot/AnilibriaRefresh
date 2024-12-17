@@ -15,17 +15,9 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Api"
-            isStatic = true
-        }
-    }
-
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     jvm()
 
     sourceSets {
@@ -55,7 +47,7 @@ kotlin {
 
 android {
     namespace = "com.xbot.api"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

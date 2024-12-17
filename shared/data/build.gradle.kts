@@ -14,17 +14,9 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Data"
-            isStatic = true
-        }
-    }
-
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     jvm()
 
     sourceSets {
@@ -50,7 +42,7 @@ kotlin {
 
 android {
     namespace = "com.xbot.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

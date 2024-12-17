@@ -12,7 +12,7 @@ import com.xbot.domain.models.enums.DayOfWeek
 import com.xbot.domain.repository.TitleRepository
 import kotlinx.coroutines.flow.Flow
 
-internal class TitleRepositoryImpl(
+class TitleRepositoryImpl(
     private val dataSource: TitleDataSource,
 ) : TitleRepository {
     override fun getLatestTitles(): Flow<PagingData<TitleModel>> {

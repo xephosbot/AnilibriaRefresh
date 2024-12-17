@@ -6,10 +6,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val networkModule = module {
-    single {
-        AnilibriaClient()
-    }
-
+    single { AnilibriaClient() }
     single(named("baseUrl")) { AnilibriaApi.BASE_URL }
     single(named("baseUrlApi")) { AnilibriaApi.BASE_URL_API }
 }
