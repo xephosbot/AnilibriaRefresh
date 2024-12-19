@@ -25,7 +25,6 @@ kotlin {
 
         }
         commonMain.dependencies {
-            implementation(libs.androidx.paging.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
         }

@@ -5,7 +5,7 @@ struct ContentView: View {
     @ObservedObject private(set) var viewModel: ViewModel
     
     var body: some View {
-        ListView(phrases: viewModel.titles)
+        ListView(titles: viewModel.titles)
             .task { await self.viewModel.startObserving() }
     }
 }
@@ -17,21 +17,22 @@ extension ContentView {
         let repository = KoinKt.getTitleRepository()
 
         func startObserving() async {
-            let titles = try? await repository.getRecommendedTitles()
-            for title in titles ?? [] {
-                self.titles.append(title.name)
+            do {
+                let titles = try await repository.getRecommendedTitles()
+                self.titles = titles.map { $0.name }
+            } catch {
+                print("Error loading titles: \(error.localizedDescription)")
             }
         }
     }
 }
 
 struct ListView: View {
-    let phrases: Array<String>
+    let titles: Array<String>
 
     var body: some View {
-        List(phrases, id: \.self) {
+        List(titles, id: \.self) {
             Text($0)
         }
     }
 }
-

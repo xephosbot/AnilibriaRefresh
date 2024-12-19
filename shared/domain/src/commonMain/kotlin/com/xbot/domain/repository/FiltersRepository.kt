@@ -13,8 +13,8 @@ interface FiltersRepository {
     suspend fun getGenres(): List<GenreModel>
     suspend fun getProductionStatuses(): List<ProductionStatus>
     suspend fun getPublishStatuses(): List<PublishStatus>
-    suspend fun getSeason(): List<Season>
+    suspend fun getSeasons(): List<Season>
     suspend fun getSortingTypes(): List<SortingType>
-    suspend fun getTypeReleases(): List<ReleaseType>
+    suspend fun getReleaseType(): List<ReleaseType>
     suspend fun getYears(): List<Int>
 }

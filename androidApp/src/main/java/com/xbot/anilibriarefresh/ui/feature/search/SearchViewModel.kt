@@ -42,10 +42,10 @@ class SearchViewModel(
                                 .map(ProductionStatus::toStringResource),
                             "Выход серий" to repository.getPublishStatuses()
                                 .map(PublishStatus::toStringResource),
-                            "Сезон" to repository.getSeason().map(Season::toStringResource),
+                            "Сезон" to repository.getSeasons().map(Season::toStringResource),
                             "Типы сортировки" to repository.getSortingTypes()
                                 .map(SortingType::toStringResource),
-                            "Тип релиза" to repository.getTypeReleases()
+                            "Тип релиза" to repository.getReleaseType()
                                 .map(ReleaseType::toStringResource),
                         ),
                         years = repository.getYears(),

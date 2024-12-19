@@ -1,14 +1,13 @@
 package com.xbot.domain.repository
 
-import androidx.paging.PagingData
 import com.xbot.domain.models.TitleDetailModel
 import com.xbot.domain.models.TitleModel
 import com.xbot.domain.models.enums.DayOfWeek
-import kotlinx.coroutines.flow.Flow
+import com.xbot.domain.models.utils.PagedResponse
 
 interface TitleRepository {
-    fun getLatestTitles(): Flow<PagingData<TitleModel>>
+    suspend fun getCatalogTitles(page: Int, limit: Int): PagedResponse<TitleModel>
     suspend fun getRecommendedTitles(): List<TitleModel>
-    suspend fun getScheduleTitles(): Map<DayOfWeek, List<TitleModel>>
+    suspend fun getScheduleWeek(): Map<DayOfWeek, List<TitleModel>>
     suspend fun getTitle(id: Int): TitleDetailModel
 }
