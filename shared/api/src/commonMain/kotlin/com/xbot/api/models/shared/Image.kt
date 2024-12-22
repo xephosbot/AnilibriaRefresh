@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Image(
     @SerialName("preview") val preview: String,
     @SerialName("thumbnail") val thumbnail: String,
-    @SerialName("optimized") val optimized: com.xbot.api.models.shared.Image.OptimizedImage,
+    @SerialName("optimized") val optimized: OptimizedImage,
 ) {
     @Serializable
     data class OptimizedImage(

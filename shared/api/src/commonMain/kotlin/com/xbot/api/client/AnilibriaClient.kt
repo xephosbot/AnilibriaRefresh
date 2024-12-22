@@ -1,6 +1,7 @@
 package com.xbot.api.client
 
 import com.xbot.api.AnilibriaApi
+import com.xbot.api.di.defaultJson
 import com.xbot.api.utils.brotli
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -17,7 +18,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 
 /**
  * Клиент для взаимодействия с API Anilibria.
@@ -31,14 +31,7 @@ class AnilibriaClient {
             level = LogLevel.BODY
         }
         install(ContentNegotiation) {
-            json(
-                Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                }
-            )
+            json(defaultJson)
         }
         install(ContentEncoding) {
             gzip()

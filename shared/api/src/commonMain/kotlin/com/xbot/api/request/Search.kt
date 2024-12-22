@@ -5,7 +5,7 @@ import com.xbot.api.models.shared.Release
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-suspend fun AnilibriaClient.search(query: String): List<Release> = request {
+suspend fun AnilibriaClient.search(query: String) = request<List<Release>> {
     get("app/search/releases") {
         parameter("query", query)
     }

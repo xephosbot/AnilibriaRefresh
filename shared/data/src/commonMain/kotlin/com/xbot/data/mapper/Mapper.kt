@@ -9,14 +9,14 @@ import com.xbot.domain.models.PosterModel
 import com.xbot.domain.models.TitleDetailModel
 import com.xbot.domain.models.TitleModel
 
-fun Genre.toGenreModel() = GenreModel(
+internal fun Genre.toGenreModel() = GenreModel(
     id = id,
     name = name
 )
 
-fun Release.toTitleModel() = TitleModel(
+internal fun Release.toTitleModel() = TitleModel(
     id = id,
-    type = type.value?.toReleaseType(),
+    type = type?.toReleaseType(),
     year = year,
     name = name.main,
     description = description.orEmpty(),
@@ -28,19 +28,19 @@ fun Release.toTitleModel() = TitleModel(
     ),
 )
 
-fun Release.toTitleDetailModel() = TitleDetailModel(
+internal fun Release.toTitleDetailModel() = TitleDetailModel(
     id = id,
-    type = type.value?.toReleaseType(),
+    type = type?.toReleaseType(),
     year = year,
     name = name.main,
-    season = season.value?.toSeason(),
+    season = season?.toSeason(),
     poster = PosterModel(
         src = poster.optimized.src,
         thumbnail = poster.optimized.thumbnail,
     ),
     isOngoing = isOngoing,
-    ageRating = ageRating.value.toAgeRating(),
-    publishDay = publishDay.value.toDayOfWeek(),
+    ageRating = ageRating.toAgeRating(),
+    publishDay = publishDay.toDayOfWeek(),
     description = description.orEmpty(),
     notification = notification.orEmpty(),
     episodesCount = episodesTotal,
@@ -56,7 +56,7 @@ fun Release.toTitleDetailModel() = TitleDetailModel(
         MemberModel(
             id = member.id,
             name = member.nickname.orEmpty(),
-            role = member.role.description.orEmpty(),
+            role = member.role.name,
         )
     } ?: listOf(),
     episodes = episodes?.map { episode ->

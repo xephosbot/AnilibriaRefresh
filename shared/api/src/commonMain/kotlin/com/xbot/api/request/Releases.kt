@@ -7,32 +7,32 @@ import com.xbot.api.models.shared.Release
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-suspend fun AnilibriaClient.getLatestReleases(limit: Int): List<Release> = request {
+suspend fun AnilibriaClient.getLatestReleases(limit: Int) = request<List<Release>> {
     get("anime/releases/latest") {
         parameter("limit", limit)
     }
 }
 
-suspend fun AnilibriaClient.getRandomReleases(limit: Int): List<Release> = request {
+suspend fun AnilibriaClient.getRandomReleases(limit: Int) = request<List<Release>> {
     get("anime/releases/random") {
         parameter("limit", limit)
     }
 }
 
-suspend fun AnilibriaClient.getRelease(id: Int): Release = request {
+suspend fun AnilibriaClient.getRelease(id: Int) = request<Release> {
     get("anime/releases/${id}")
 }
 
 //TODO:
-suspend fun AnilibriaClient.getEpisode(releaseEpisodeId: Int): EpisodeWithRelease = request {
+suspend fun AnilibriaClient.getEpisode(releaseEpisodeId: Int) = request<EpisodeWithRelease> {
     get("anime/releases/episodes/${releaseEpisodeId}")
 }
 
 //TODO:
-suspend fun AnilibriaClient.getScheduleNow(): Map<String, Schedule> = request {
+suspend fun AnilibriaClient.getScheduleNow() = request<Map<String, Schedule>> {
     get("anime/schedule/now")
 }
 
-suspend fun AnilibriaClient.getScheduleWeek(): List<Schedule> = request {
+suspend fun AnilibriaClient.getScheduleWeek() = request<List<Schedule>> {
     get("anime/schedule/week")
 }

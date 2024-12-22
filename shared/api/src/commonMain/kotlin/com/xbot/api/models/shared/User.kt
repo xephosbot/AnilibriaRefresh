@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     @SerialName("id") val id: Int,
-    @SerialName("avatar") val avatar: com.xbot.api.models.shared.User.Avatar,
+    @SerialName("avatar") val avatar: Avatar,
 ) {
     @Serializable
     data class Avatar(
