@@ -1,7 +1,7 @@
 [versions]
 androidDesugarJdkLibs = "2.1.3"
-androidGradlePlugin = "8.6.1"
-androidTools = "31.7.3"
+android-gradle-plugin = "8.8.0-rc02"
+android-tools = "31.7.3"
 androidxActivity = "1.9.3"
 androidxComposeBom = "2024.12.01"
 androidxComposeBomAlpha = "2024.12.01"
@@ -28,16 +28,15 @@ materialMotionCompose = "2.0.1"
 media3 = "1.5.0"
 shimmer = "1.3.1"
 haze = "1.1.1"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 compose-multiplatform = "1.7.0"
 kotlinCompiler = "1.5.15"
 kotlinxCollections = "0.3.8"
-kotlinxCoroutines = "1.9.0"
+kotlinxCoroutines = "1.10.0"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.7.3"
-ksp = "2.0.21-1.0.28"
+ksp = "2.1.0-1.0.29"
 koin = "4.0.1-Beta1"
-skie = "0.10.0"
 ktor = "3.0.3"
 paging = "3.3.5"
 robolectric = "4.14.1"
@@ -50,9 +49,6 @@ detekt = "1.23.7"
 detektRulesCompose = "0.4.22"
 ktlint = "12.1.1"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-appcompat = "1.7.0"
-material = "1.12.0"
 
 [libraries]
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
@@ -84,9 +80,6 @@ androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "li
 androidx-metrics = { group = "androidx.metrics", name = "metrics-performance", version.ref = "androidxMetrics" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
-androidx-paging-core = { module = "androidx.paging:paging-common", version.ref = "paging" }
-androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-androidx-paging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
 androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "androidxProfileinstaller" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
@@ -115,6 +108,11 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 sticky-headers = { module = "me.gingerninja.lazy:sticky-headers", version.ref = "stickyHeaders" }
+
+# Paging
+androidx-paging-core = { module = "androidx.paging:paging-common", version.ref = "paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
 
 # Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -154,22 +152,19 @@ detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-form
 detekt-rules-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektRulesCompose" }
 
 # Dependencies of the included build-logic
-android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
-android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark"}
@@ -177,9 +172,9 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-multiplatform-android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
-skie = { id = "co.touchlab.skie", version.ref = "skie" }
 
 # Static Analyzer
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

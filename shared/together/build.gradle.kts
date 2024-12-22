@@ -1,18 +1,13 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.skie)
+    alias(libs.plugins.kotlin.multiplatform.android.library)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+    androidLibrary {
+        namespace = "com.xbot.together"
+        compileSdk = 35
+        minSdk = 24
     }
     
     listOf(
@@ -42,19 +37,7 @@ kotlin {
             api(projects.shared.api)
             api(projects.shared.data)
             api(projects.shared.domain)
-            api(libs.koin.core)
+            implementation(libs.koin.core)
         }
-    }
-}
-
-android {
-    namespace = "com.xbot.together"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }
