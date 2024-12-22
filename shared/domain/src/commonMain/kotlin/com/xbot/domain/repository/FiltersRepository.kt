@@ -9,12 +9,12 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 
 interface FiltersRepository {
-    suspend fun getAgeRatings(): List<AgeRating>
-    suspend fun getGenres(): List<GenreModel>
-    suspend fun getProductionStatuses(): List<ProductionStatus>
-    suspend fun getPublishStatuses(): List<PublishStatus>
-    suspend fun getSeasons(): List<Season>
-    suspend fun getSortingTypes(): List<SortingType>
-    suspend fun getReleaseType(): List<ReleaseType>
-    suspend fun getYears(): List<Int>
+    suspend fun getAgeRatings(): Result<List<AgeRating>>
+    suspend fun getGenres(): Result<List<GenreModel>>
+    suspend fun getProductionStatuses(): Result<List<ProductionStatus>>
+    suspend fun getPublishStatuses(): Result<List<PublishStatus>>
+    suspend fun getSeasons(): Result<List<Season>>
+    suspend fun getSortingTypes(): Result<List<SortingType>>
+    suspend fun getReleaseType(): Result<List<ReleaseType>>
+    suspend fun getYears(): Result<List<Int>>
 }

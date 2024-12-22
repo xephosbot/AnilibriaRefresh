@@ -32,38 +32,38 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.repository.FiltersRepository
 
-class FiltersRepositoryImpl(
+internal class DefaultFiltersRepository(
     private val client: AnilibriaClient
 ) : FiltersRepository {
-    override suspend fun getAgeRatings(): List<AgeRating> {
-        return client.getCatalogAgeRatings().map(AgeRatingEnum::toAgeRating)
+    override suspend fun getAgeRatings(): Result<List<AgeRating>> = runCatching {
+        client.getCatalogAgeRatings().map(AgeRatingEnum::toAgeRating)
     }
 
-    override suspend fun getGenres(): List<GenreModel> {
-        return client.getCatalogGenres().map(Genre::toGenreModel)
+    override suspend fun getGenres(): Result<List<GenreModel>> = runCatching {
+        client.getCatalogGenres().map(Genre::toGenreModel)
     }
 
-    override suspend fun getProductionStatuses(): List<ProductionStatus> {
-        return client.getCatalogProductionStatuses().map(ProductionStatusEnum::toProductionStatus)
+    override suspend fun getProductionStatuses(): Result<List<ProductionStatus>> = runCatching {
+        client.getCatalogProductionStatuses().map(ProductionStatusEnum::toProductionStatus)
     }
 
-    override suspend fun getPublishStatuses(): List<PublishStatus> {
-        return client.getCatalogPublishStatuses().map(PublishStatusEnum::toPublishStatus)
+    override suspend fun getPublishStatuses(): Result<List<PublishStatus>> = runCatching {
+        client.getCatalogPublishStatuses().map(PublishStatusEnum::toPublishStatus)
     }
 
-    override suspend fun getSeasons(): List<Season> {
-        return client.getCatalogSeasons().map(SeasonEnum::toSeason)
+    override suspend fun getSeasons(): Result<List<Season>> = runCatching {
+        client.getCatalogSeasons().map(SeasonEnum::toSeason)
     }
 
-    override suspend fun getSortingTypes(): List<SortingType> {
-        return client.getCatalogSortingTypes().map(SortingTypeEnum::toSortingType)
+    override suspend fun getSortingTypes(): Result<List<SortingType>> = runCatching {
+        client.getCatalogSortingTypes().map(SortingTypeEnum::toSortingType)
     }
 
-    override suspend fun getReleaseType(): List<ReleaseType> {
-        return client.getCatalogReleaseTypes().map(ReleaseTypeEnum::toReleaseType)
+    override suspend fun getReleaseType(): Result<List<ReleaseType>> = runCatching {
+        client.getCatalogReleaseTypes().map(ReleaseTypeEnum::toReleaseType)
     }
 
-    override suspend fun getYears(): List<Int> {
-        return client.getCatalogYears()
+    override suspend fun getYears(): Result<List<Int>> = runCatching {
+        client.getCatalogYears()
     }
 }

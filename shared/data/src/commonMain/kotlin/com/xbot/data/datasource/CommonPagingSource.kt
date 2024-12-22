@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.xbot.domain.models.utils.PagedResponse
 import kotlin.math.max
 
-open class CommonPagingSource<T : Any>(
+internal class CommonPagingSource<T : Any>(
     private val loadPage: suspend (page: Int, limit: Int) -> PagedResponse<T>,
 ) : PagingSource<Int, T>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
