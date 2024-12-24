@@ -12,19 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.xbot.anilibriarefresh.models.Title
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.domain.models.Release
 
 @Composable
 fun TitleCardItem(
     modifier: Modifier = Modifier,
-    title: Title?,
-    onClick: (Title) -> Unit,
+    release: Release?,
+    onClick: (Release) -> Unit,
 ) {
     Crossfade(
-        targetState = title,
-        label = "TitleCardItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
+        targetState = release,
+        label = "TitleCardItem Crossfade to ${if (release == null) "Loading" else "Loaded Title"}",
     ) { state ->
         when (state) {
             null -> LoadingTitleCardItem(modifier)
@@ -36,16 +36,16 @@ fun TitleCardItem(
 @Composable
 private fun TitleCardItemContent(
     modifier: Modifier = Modifier,
-    title: Title,
-    onClick: (Title) -> Unit,
+    release: Release,
+    onClick: (Release) -> Unit,
 ) {
     PosterImage(
         modifier = modifier
             .height(TitleCardHeight)
             .aspectRatio(7f / 10f)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick(title) },
-        poster = title.poster,
+            .clickable { onClick(release) },
+        poster = release.poster,
     )
 }
 

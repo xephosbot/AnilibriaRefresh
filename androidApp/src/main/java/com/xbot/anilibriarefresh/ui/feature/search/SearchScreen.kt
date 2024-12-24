@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.ui.components.LocalNavigationPadding
 import com.xbot.anilibriarefresh.ui.components.Scaffold
-import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.ui.icons.Search
+import com.xbot.anilibriarefresh.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.icons.Search
 import com.xbot.anilibriarefresh.ui.utils.StringResource
 import com.xbot.anilibriarefresh.ui.utils.stringResource
 import org.koin.androidx.compose.koinViewModel

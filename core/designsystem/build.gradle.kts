@@ -1,15 +1,19 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.multiplatform.android.library)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
 }
 
 kotlin {
-    androidLibrary {
-        namespace = "com.xbot.designsystem"
-        compileSdk = 35
-        minSdk = 24
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
     }
 
     jvm("desktop")
@@ -41,4 +45,21 @@ compose.resources {
     publicResClass = false
     packageOfResClass = "com.xbot.designsystem.resources"
     generateResClass = always
+}
+
+android {
+    namespace = "com.xbot.designsystem"
+    compileSdk = 35
+
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].resources.srcDirs("src/commonMain/composeResources")
+
+    defaultConfig {
+        minSdk = 24
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }

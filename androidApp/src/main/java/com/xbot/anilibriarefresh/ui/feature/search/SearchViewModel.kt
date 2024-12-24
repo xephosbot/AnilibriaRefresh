@@ -4,17 +4,10 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.models.toStringResource
 import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
-import com.xbot.domain.models.enums.AgeRating
-import com.xbot.domain.models.enums.ProductionStatus
-import com.xbot.domain.models.enums.PublishStatus
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.repository.FiltersRepository
+import com.xbot.domain.repository.CatalogRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    repository: FiltersRepository,
+    repository: CatalogRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val _state: MutableStateFlow<SearchScreenState> = MutableStateFlow(SearchScreenState.Loading)
@@ -34,21 +27,21 @@ class SearchViewModel(
                 _state.update {
                     SearchScreenState.Success(
                         filtersList = listOf(
-                            "Жанры" to repository.getGenres()
+                            /*"Жанры" to repository.getGenres().getOrThrow()
                                 .map { StringResource.String(it.name) },
-                            "Возрастной рейтинг" to repository.getAgeRatings()
+                            "Возрастной рейтинг" to repository.getAgeRatings().getOrThrow()
                                 .map(AgeRating::toStringResource),
-                            "Статус озвучки" to repository.getProductionStatuses()
+                            "Статус озвучки" to repository.getProductionStatuses().getOrThrow()
                                 .map(ProductionStatus::toStringResource),
-                            "Выход серий" to repository.getPublishStatuses()
+                            "Выход серий" to repository.getPublishStatuses().getOrThrow()
                                 .map(PublishStatus::toStringResource),
                             "Сезон" to repository.getSeasons().map(Season::toStringResource),
-                            "Типы сортировки" to repository.getSortingTypes()
+                            "Типы сортировки" to repository.getSortingTypes().getOrThrow()
                                 .map(SortingType::toStringResource),
-                            "Тип релиза" to repository.getReleaseType()
-                                .map(ReleaseType::toStringResource),
+                            "Тип релиза" to repository.getReleaseType().getOrThrow()
+                                .map(ReleaseType::toStringResource),*/
                         ),
-                        years = repository.getYears(),
+                        years = repository.getYears().getOrThrow(),
                     )
                 }
             } catch (error: Exception) {

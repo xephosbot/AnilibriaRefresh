@@ -3,11 +3,11 @@ package com.xbot.anilibriarefresh.navigation
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.ui.icons.Heart
-import com.xbot.anilibriarefresh.ui.icons.House
-import com.xbot.anilibriarefresh.ui.icons.Person
-import com.xbot.anilibriarefresh.ui.icons.Search
+import com.xbot.anilibriarefresh.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.icons.Heart
+import com.xbot.anilibriarefresh.icons.House
+import com.xbot.anilibriarefresh.icons.Person
+import com.xbot.anilibriarefresh.icons.Search
 import kotlinx.serialization.Serializable
 
 sealed interface Route {

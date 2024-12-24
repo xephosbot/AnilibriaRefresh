@@ -1,14 +1,14 @@
 package com.xbot.data.di
 
-import com.xbot.data.repository.DefaultFiltersRepository
-import com.xbot.data.repository.DefaultTitleRepository
-import com.xbot.domain.repository.FiltersRepository
-import com.xbot.domain.repository.TitleRepository
+import com.xbot.data.repository.DefaultCatalogRepository
+import com.xbot.data.repository.DefaultReleaseRepository
+import com.xbot.domain.repository.CatalogRepository
+import com.xbot.domain.repository.ReleaseRepository
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    singleOf(::DefaultTitleRepository) { bind<TitleRepository>() }
-    singleOf(::DefaultFiltersRepository) { bind<FiltersRepository>() }
+    singleOf(::DefaultReleaseRepository) { bind<ReleaseRepository>() }
+    singleOf(::DefaultCatalogRepository) { bind<CatalogRepository>() }
 }

@@ -6,7 +6,7 @@ import com.xbot.api.models.account.LoginRequest
 import com.xbot.api.models.account.LoginResponse
 import com.xbot.api.models.account.LoginSocialNetworkResponse
 import com.xbot.api.models.account.ResetPasswordRequest
-import com.xbot.api.models.shared.enums.SocialNetworkEnum
+import com.xbot.api.models.shared.enums.SocialNetwork
 import com.xbot.api.models.account.AddToCollectionRequest
 import com.xbot.api.models.account.ReleaseWithCollectionType
 import com.xbot.api.models.account.RemoveFromCollectionRequest
@@ -16,11 +16,11 @@ import com.xbot.api.models.account.Profile
 import com.xbot.api.models.account.AddTimeCodeRequest
 import com.xbot.api.models.account.DeleteTimeCodeRequest
 import com.xbot.api.models.account.EpisodeWithTimeCode
-import com.xbot.api.models.shared.Genre
-import com.xbot.api.models.shared.ReleasesWithMetadata
-import com.xbot.api.models.shared.enums.AgeRatingEnum
-import com.xbot.api.models.shared.enums.ReleaseTypeEnum
-import com.xbot.api.models.shared.enums.SortingTypeEnum
+import com.xbot.api.models.shared.GenreApi
+import com.xbot.api.models.shared.ReleasesWithMetadataApi
+import com.xbot.api.models.shared.enums.AgeRatingApi
+import com.xbot.api.models.shared.enums.ReleaseTypeApi
+import com.xbot.api.models.shared.enums.SortingTypeApi
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -37,7 +37,7 @@ suspend fun AnilibriaClient.logout() = request<LoginResponse> {
     post("accounts/users/auth/logout")
 }
 
-suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetworkEnum) = request<LoginSocialNetworkResponse> {
+suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetwork) = request<LoginSocialNetworkResponse> {
     get("accounts/users/auth/social/${provider}/login")
 }
 
@@ -59,15 +59,15 @@ suspend fun AnilibriaClient.resetPassword(token: String, password: String, passw
     }
 }
 
-suspend fun AnilibriaClient.getCollectionAgeRatings() = request<List<AgeRatingEnum>> {
+suspend fun AnilibriaClient.getCollectionAgeRatings() = request<List<AgeRatingApi>> {
     get("accounts/users/me/collections/references/age-ratings")
 }
 
-suspend fun AnilibriaClient.getCollectionGenres() = request<List<Genre>> {
+suspend fun AnilibriaClient.getCollectionGenres() = request<List<GenreApi>> {
     get("accounts/users/me/collections/references/genres")
 }
 
-suspend fun AnilibriaClient.getCollectionReleaseTypes() = request<List<ReleaseTypeEnum>> {
+suspend fun AnilibriaClient.getCollectionReleaseTypes() = request<List<ReleaseTypeApi>> {
     get("accounts/users/me/collections/references/types")
 }
 
@@ -84,11 +84,11 @@ suspend fun AnilibriaClient.getCollectionReleases(
     page: Int,
     limit: Int,
     genres: List<Int>? = null,
-    types: List<ReleaseTypeEnum>? = null,
+    types: List<ReleaseTypeApi>? = null,
     fromYear: Int? = null,
     search: String? = null,
-    ageRatings: List<AgeRatingEnum>? = null
-) = request<ReleasesWithMetadata> {
+    ageRatings: List<AgeRatingApi>? = null
+) = request<ReleasesWithMetadataApi> {
     get("accounts/users/me/collections/releases") {
         //TODO:
         parameter("type_of_collection", collectionType)
@@ -116,19 +116,19 @@ suspend fun AnilibriaClient.removeFromCollection(request: List<RemoveFromCollect
     }
 }
 
-suspend fun AnilibriaClient.getFavoriteAgeRatings() = request<List<AgeRatingEnum>> {
+suspend fun AnilibriaClient.getFavoriteAgeRatings() = request<List<AgeRatingApi>> {
     get("accounts/users/me/favorites/references/age-ratings")
 }
 
-suspend fun AnilibriaClient.getFavoriteGenres() = request<List<Genre>> {
+suspend fun AnilibriaClient.getFavoriteGenres() = request<List<GenreApi>> {
     get("accounts/users/me/favorites/references/genres")
 }
 
-suspend fun AnilibriaClient.getFavoriteSortingTypes() = request<List<SortingTypeEnum>> {
+suspend fun AnilibriaClient.getFavoriteSortingTypes() = request<List<SortingTypeApi>> {
     get("accounts/users/me/favorites/references/sorting")
 }
 
-suspend fun AnilibriaClient.getFavoriteReleaseTypes() = request<List<ReleaseTypeEnum>> {
+suspend fun AnilibriaClient.getFavoriteReleaseTypes() = request<List<ReleaseTypeApi>> {
     get("accounts/users/me/favorites/references/types")
 }
 
@@ -144,12 +144,12 @@ suspend fun AnilibriaClient.getFavoriteReleases(
     page: Int,
     limit: Int,
     fromYear: Int? = null,
-    types: List<ReleaseTypeEnum>? = null,
+    types: List<ReleaseTypeApi>? = null,
     genres: List<Int>? = null,
     search: String? = null,
-    sorting: com.xbot.api.models.shared.enums.SortingTypeEnum? = null,
-    ageRatings: List<AgeRatingEnum>? = null
-) = request<ReleasesWithMetadata> {
+    sorting: com.xbot.api.models.shared.enums.SortingTypeApi? = null,
+    ageRatings: List<AgeRatingApi>? = null
+) = request<ReleasesWithMetadataApi> {
     get("accounts/users/me/favorites/releases") {
         parameter("page", page)
         parameter("limit", limit)

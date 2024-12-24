@@ -36,8 +36,11 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -56,20 +58,16 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.models.Title
 import com.xbot.anilibriarefresh.ui.components.*
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.LazyRowWithStickyHeader
-import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.ui.icons.Search
+import com.xbot.anilibriarefresh.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.icons.Search
 import com.xbot.designsystem.modifiers.ProvideShimmer
 import com.xbot.designsystem.utils.only
 import com.xbot.designsystem.modifiers.shimmerUpdater
-import com.xbot.domain.models.enums.DayOfWeek
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.LocalHazeStyle
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import com.xbot.domain.models.Release
+import kotlinx.datetime.DayOfWeek
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -85,7 +83,6 @@ fun HomeScreen(
         modifier = modifier,
         state = state,
         items = items,
-        loadStates = items.loadState,
         onAction = viewModel::onAction,
         onNavigate = onNavigate,
     )
@@ -96,8 +93,7 @@ fun HomeScreen(
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     state: HomeScreenState,
-    items: LazyPagingItems<Title>,
-    loadStates: CombinedLoadStates,
+    items: LazyPagingItems<Release>,
     onAction: (HomeScreenAction) -> Unit,
     onNavigate: (Int, String) -> Unit,
 ) {
@@ -105,18 +101,23 @@ private fun HomeScreenContent(
         onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
     }
 
-    when {
-        (loadStates.refresh is LoadState.Error) -> showErrorMessage((loadStates.refresh as LoadState.Error).error)
-        (loadStates.append is LoadState.Error) -> showErrorMessage((loadStates.append as LoadState.Error).error)
-        (loadStates.prepend is LoadState.Error) -> showErrorMessage((loadStates.prepend as LoadState.Error).error)
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    LaunchedEffect(items) {
+        snapshotFlow { items.loadState }.collect { loadState ->
+            (loadState.refresh as? LoadState.Error)?.let { showErrorMessage(it.error) }
+            (loadState.append as? LoadState.Error)?.let { showErrorMessage(it.error) }
+            (loadState.prepend as? LoadState.Error)?.let { showErrorMessage(it.error) }
+        }
     }
 
-    val pullToRefreshState = rememberPullToRefreshState()
-    val hazeState = remember { HazeState() }
+    val isRefreshing by remember(state, items) {
+        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeScreenState.Loading }
+    }
 
     Scaffold(
         modifier = modifier.pullToRefresh(
-            isRefreshing = loadStates.refresh is LoadState.Loading,
+            isRefreshing = isRefreshing,
             state = pullToRefreshState,
             onRefresh = {
                 items.refresh()
@@ -125,11 +126,7 @@ private fun HomeScreenContent(
         ),
         topBar = {
             AnilibriaTopAppBar(
-                modifier = Modifier
-                    .hazeChild(
-                        state = hazeState,
-                        style = LocalHazeStyle.current,
-                    ),
+                modifier = Modifier,
                 title = stringResource(R.string.home),
                 navigationIcon = {
                     IconButton(
@@ -155,26 +152,19 @@ private fun HomeScreenContent(
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .haze(hazeState)
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Crossfade(
-                targetState = loadStates.refresh is LoadState.Loading || state is HomeScreenState.Loading,
+                targetState = state is HomeScreenState.Loading,
                 label = "Loading state transition in HomeScreenContent",
-            ) { targetState ->
-                when (targetState) {
-                    true -> LoadingScreen(
-                        contentPadding = innerPadding,
-                    )
-
+            ) { loading ->
+                when (loading) {
+                    true -> LoadingScreen(contentPadding = innerPadding)
                     else -> {
                         val successState = state as HomeScreenState.Success
                         TitleList(
                             items = items,
-                            recommendedList = successState.recommendedTitles,
-                            scheduleList = successState.scheduleTitles,
+                            recommendedList = successState.releasesFeed.recommendedReleases,
+                            scheduleList = successState.releasesFeed.schedule,
                             contentPadding = innerPadding,
                             onTitleClick = { onNavigate(it.id, it.name) },
                         )
@@ -186,7 +176,7 @@ private fun HomeScreenContent(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(innerPadding.only(WindowInsetsSides.Top)),
-                isRefreshing = loadStates.refresh is LoadState.Loading,
+                isRefreshing = isRefreshing,
                 state = pullToRefreshState
             )
         }
@@ -197,11 +187,11 @@ private fun HomeScreenContent(
 @Composable
 private fun TitleList(
     modifier: Modifier = Modifier,
-    items: LazyPagingItems<Title>,
-    recommendedList: List<Title>,
-    scheduleList: Map<DayOfWeek, List<Title>>,
+    items: LazyPagingItems<Release>,
+    recommendedList: List<Release>,
+    scheduleList: Map<DayOfWeek, List<Release>>,
     contentPadding: PaddingValues,
-    onTitleClick: (Title) -> Unit,
+    onTitleClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val carouselState = rememberCarouselState(itemCount = { recommendedList.size })
@@ -220,7 +210,7 @@ private fun TitleList(
             }
             horizontalCarouselItems(state = carouselState) { index ->
                 TitleCarouselItem(
-                    title = recommendedList[index],
+                    release = recommendedList[index],
                     onClick = onTitleClick,
                 )
             }
@@ -251,7 +241,7 @@ private fun TitleList(
                 },
                 itemContent = { title ->
                     TitleCardItem(
-                        title = title,
+                        release = title,
                         onClick = onTitleClick,
                     )
                 },
@@ -266,7 +256,7 @@ private fun TitleList(
             }
             pagingItems(items) { title ->
                 TitleListItem(
-                    title = title,
+                    release = title,
                     onClick = onTitleClick,
                 )
             }
@@ -302,23 +292,23 @@ private fun LoadingScreen(
                     .padding(horizontal = 16.dp),
             ) {
                 repeat(6) {
-                    TitleCardItem(title = null) {}
+                    TitleCardItem(release = null) {}
                 }
             }
             Header(
                 title = stringResource(R.string.new_episodes),
             )
             repeat(6) {
-                TitleListItem(title = null)
+                TitleListItem(release = null)
             }
         }
     }
 }
 
 private fun LazyGridScope.horizontalItems(
-    items: List<Title>,
+    items: List<Release>,
     contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(Title) -> Unit,
+    itemContent: @Composable LazyItemScope.(Release) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -339,10 +329,10 @@ private fun LazyGridScope.horizontalItems(
 }
 
 private fun LazyGridScope.horizontalItems(
-    items: Map<DayOfWeek, List<Title>>,
+    items: Map<DayOfWeek, List<Release>>,
     contentPadding: PaddingValues = PaddingValues(),
     stickyHeader: @Composable (DayOfWeek) -> Unit,
-    itemContent: @Composable LazyItemScope.(Title) -> Unit,
+    itemContent: @Composable LazyItemScope.(Release) -> Unit,
 ) {
     item(
         span = { GridItemSpan(maxLineSpan) },
@@ -381,8 +371,8 @@ private fun LazyGridScope.horizontalCarouselItems(
 }
 
 private fun LazyGridScope.pagingItems(
-    items: LazyPagingItems<Title>,
-    itemContent: @Composable LazyGridItemScope.(Title?) -> Unit,
+    items: LazyPagingItems<Release>,
+    itemContent: @Composable LazyGridItemScope.(Release?) -> Unit,
 ) {
     items(
         count = items.itemCount,

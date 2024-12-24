@@ -7,65 +7,45 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.models.Title
-import com.xbot.anilibriarefresh.models.toTitleUi
 import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
-import com.xbot.data.datasource.CommonPagingSource
-import com.xbot.data.datasource.CommonPagingSource.Companion.NETWORK_PAGE_SIZE
-import com.xbot.domain.models.TitleModel
-import com.xbot.domain.models.enums.DayOfWeek
-import com.xbot.domain.repository.TitleRepository
-import kotlinx.coroutines.async
+import com.xbot.domain.models.ReleasesFeed
+import com.xbot.domain.models.Release
+import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.usecase.GetReleasesFeed
+import com.xbot.domain.usecase.GetReleasesPager
+import com.xbot.domain.usecase.GetReleasesPager.Companion.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val repository: TitleRepository,
+    private val getReleasesPager: GetReleasesPager,
+    private val getReleasesFeed: GetReleasesFeed,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    private val pager = Pager(
-        config = PagingConfig(
-            pageSize = NETWORK_PAGE_SIZE,
-            prefetchDistance = NETWORK_PAGE_SIZE,
-            enablePlaceholders = true,
-            jumpThreshold = NETWORK_PAGE_SIZE * 3,
-        ),
-        pagingSourceFactory = {
-            CommonPagingSource { page, limit -> repository.getCatalogTitles(page, limit) }
-        },
-    )
-    val titles: Flow<PagingData<Title>> = pager.flow.map { pagingData ->
-        pagingData.map(TitleModel::toTitleUi)
-    }.cachedIn(viewModelScope)
+    val titles: Flow<PagingData<Release>> = getReleasesPager.invoke()
+        .cachedIn(viewModelScope)
 
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState.Loading)
     val state: StateFlow<HomeScreenState> = _state
         .onStart { refresh() }
-        .catch { error ->
-            // TODO: информативные сообщения для разного типа ошибок
-            showErrorMessage(error.message.orEmpty(), ::refresh)
-        }.stateIn(
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = HomeScreenState.Loading,
+            initialValue = _state.value
         )
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
             is HomeScreenAction.ShowErrorMessage -> {
-                // TODO: информативные сообщения для разного типа ошибок
                 showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
             }
             is HomeScreenAction.Refresh -> refresh()
@@ -74,15 +54,18 @@ class HomeViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            val recommendedTitles = async { repository.getRecommendedTitles() }
-            val scheduleWeek = async { repository.getScheduleWeek() }
-            val successState = HomeScreenState.Success(
-                recommendedTitles = recommendedTitles.await().map(TitleModel::toTitleUi),
-                scheduleTitles = scheduleWeek.await().mapValues { (_, titleList) ->
-                    titleList.map(TitleModel::toTitleUi)
+            _state.update { HomeScreenState.Loading }
+        }
+
+        viewModelScope.launch {
+            getReleasesFeed.invoke().fold(
+                onSuccess = { releasesFeed ->
+                    _state.update { HomeScreenState.Success(releasesFeed) }
                 },
+                onFailure = {
+                    showErrorMessage(it.localizedMessage.orEmpty(), ::refresh)
+                }
             )
-            _state.update { successState }
         }
     }
 
@@ -100,10 +83,7 @@ class HomeViewModel(
 @Stable
 sealed interface HomeScreenState {
     data object Loading : HomeScreenState
-    data class Success(
-        val recommendedTitles: List<Title>,
-        val scheduleTitles: Map<DayOfWeek, List<Title>>,
-    ) : HomeScreenState
+    data class Success(val releasesFeed: ReleasesFeed) : HomeScreenState
 }
 
 sealed interface HomeScreenAction {

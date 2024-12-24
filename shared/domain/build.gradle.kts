@@ -13,7 +13,6 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-
     jvm()
 
     sourceSets {
@@ -21,6 +20,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.androidx.paging.core)
+            implementation(libs.koin.core)
         }
     }
 }

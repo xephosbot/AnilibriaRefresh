@@ -36,17 +36,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
-import com.xbot.anilibriarefresh.models.Title
-import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.anilibriarefresh.ui.utils.dimmedEdge
+import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.domain.models.Release
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarouselItemScope.TitleCarouselItem(
     modifier: Modifier = Modifier,
-    title: Title,
-    onClick: (Title) -> Unit,
+    release: Release,
+    onClick: (Release) -> Unit,
 ) {
     val isCompact = LocalConfiguration.current.screenWidthDp.dp < 600.dp
 
@@ -55,18 +55,18 @@ fun CarouselItemScope.TitleCarouselItem(
             .fillMaxWidth()
             .aspectRatio(if (isCompact) 7f / 10f else 10f / 6f)
             .maskClip(CarouselItemShape)
-            .clickable { onClick(title) },
+            .clickable { onClick(release) },
         contentAlignment = Alignment.BottomStart
     ) {
         PosterImage(
             modifier = Modifier
                 .fillMaxSize()
                 .dimmedEdge(edgeHeightRatio = 0.75f),
-            poster = title.poster,
+            poster = release.poster,
         )
         when {
-            isCompact -> CompactItemLayout(title = title)
-            else -> LargeItemLayout(title = title)
+            isCompact -> CompactItemLayout(release = release)
+            else -> LargeItemLayout(release = release)
         }
     }
 }
@@ -92,7 +92,7 @@ fun LoadingCarouselItem(
 @Composable
 private fun CarouselItemScope.CompactItemLayout(
     modifier: Modifier = Modifier,
-    title: Title
+    release: Release
 ) {
     Box(
         modifier = modifier
@@ -114,17 +114,17 @@ private fun CarouselItemScope.CompactItemLayout(
                 modifier = Modifier.weight(1f),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    title.tags.forEach { tag ->
+                    /*title.tags.forEach { tag ->
                         TagChip(
                             tag = tag,
                             containerColor = Color.White,
                             contentColor = Color.Black
                         )
-                    }
+                    }*/
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = title.name,
+                    text = release.name,
                     style = LocalTextStyle.current.copy(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -136,7 +136,7 @@ private fun CarouselItemScope.CompactItemLayout(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = title.description,
+                    text = release.description,
                     style = LocalTextStyle.current.copy(
                         fontSize = 12.sp,
                         lineHeight = 18.sp,
@@ -168,7 +168,7 @@ private fun CarouselItemScope.CompactItemLayout(
 @Composable
 private fun CarouselItemScope.LargeItemLayout(
     modifier: Modifier = Modifier,
-    title: Title
+    release: Release
 ) {
     Box(
         modifier = modifier
@@ -190,17 +190,17 @@ private fun CarouselItemScope.LargeItemLayout(
                 modifier = Modifier.weight(1f),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    title.tags.forEach { tag ->
+                    /*title.tags.forEach { tag ->
                         TagChip(
                             tag = tag,
                             containerColor = Color.White,
                             contentColor = Color.Black
                         )
-                    }
+                    }*/
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = title.name,
+                    text = release.name,
                     style = LocalTextStyle.current.copy(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -212,7 +212,7 @@ private fun CarouselItemScope.LargeItemLayout(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = title.description,
+                    text = release.description,
                     style = LocalTextStyle.current.copy(
                         fontSize = 12.sp,
                         lineHeight = 18.sp,

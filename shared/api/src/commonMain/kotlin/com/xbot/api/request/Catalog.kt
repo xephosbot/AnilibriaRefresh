@@ -1,14 +1,14 @@
 package com.xbot.api.request
 
 import com.xbot.api.client.AnilibriaClient
-import com.xbot.api.models.shared.Genre
-import com.xbot.api.models.shared.ReleasesWithMetadata
-import com.xbot.api.models.shared.enums.AgeRatingEnum
-import com.xbot.api.models.shared.enums.ProductionStatusEnum
-import com.xbot.api.models.shared.enums.PublishStatusEnum
-import com.xbot.api.models.shared.enums.ReleaseTypeEnum
-import com.xbot.api.models.shared.enums.SeasonEnum
-import com.xbot.api.models.shared.enums.SortingTypeEnum
+import com.xbot.api.models.shared.GenreApi
+import com.xbot.api.models.shared.ReleasesWithMetadataApi
+import com.xbot.api.models.shared.enums.AgeRatingApi
+import com.xbot.api.models.shared.enums.ProductionStatusApi
+import com.xbot.api.models.shared.enums.PublishStatusApi
+import com.xbot.api.models.shared.enums.ReleaseTypeApi
+import com.xbot.api.models.shared.enums.SeasonApi
+import com.xbot.api.models.shared.enums.SortingTypeApi
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
@@ -16,16 +16,16 @@ suspend fun AnilibriaClient.getCatalogReleases(
     page: Int,
     limit: Int,
     genres: List<Int>? = null,
-    types: List<ReleaseTypeEnum>? = null,
-    seasons: List<SeasonEnum>? = null,
+    types: List<ReleaseTypeApi>? = null,
+    seasons: List<SeasonApi>? = null,
     fromYear: Int? = null,
     toYear: Int? = null,
     search: String? = null,
-    sorting: SortingTypeEnum? = null,
-    ageRatings: List<AgeRatingEnum>? = null,
-    publishStatuses: List<PublishStatusEnum>? = null,
-    productionStatuses: List<ProductionStatusEnum>? = null,
-) = request<ReleasesWithMetadata> {
+    sorting: SortingTypeApi? = null,
+    ageRatings: List<AgeRatingApi>? = null,
+    publishStatuses: List<PublishStatusApi>? = null,
+    productionStatuses: List<ProductionStatusApi>? = null,
+) = request<ReleasesWithMetadataApi> {
     get("anime/catalog/releases") {
         parameter("page", page)
         parameter("limit", limit)
@@ -42,31 +42,31 @@ suspend fun AnilibriaClient.getCatalogReleases(
     }
 }
 
-suspend fun AnilibriaClient.getCatalogAgeRatings() = request<List<AgeRatingEnum>> {
+suspend fun AnilibriaClient.getCatalogAgeRatings() = request<List<AgeRatingApi>> {
     get("anime/catalog/references/age-ratings")
 }
 
-suspend fun AnilibriaClient.getCatalogGenres() = request<List<Genre>> {
+suspend fun AnilibriaClient.getCatalogGenres() = request<List<GenreApi>> {
     get("anime/catalog/references/genres")
 }
 
-suspend fun AnilibriaClient.getCatalogProductionStatuses() = request<List<ProductionStatusEnum>> {
+suspend fun AnilibriaClient.getCatalogProductionStatuses() = request<List<ProductionStatusApi>> {
     get("anime/catalog/references/production-statuses")
 }
 
-suspend fun AnilibriaClient.getCatalogPublishStatuses() = request<List<PublishStatusEnum>> {
+suspend fun AnilibriaClient.getCatalogPublishStatuses() = request<List<PublishStatusApi>> {
     get("anime/catalog/references/publish-statuses")
 }
 
-suspend fun AnilibriaClient.getCatalogSeasons() = request<List<SeasonEnum>> {
+suspend fun AnilibriaClient.getCatalogSeasons() = request<List<SeasonApi>> {
     get("anime/catalog/references/seasons")
 }
 
-suspend fun AnilibriaClient.getCatalogSortingTypes() = request<List<SortingTypeEnum>> {
+suspend fun AnilibriaClient.getCatalogSortingTypes() = request<List<SortingTypeApi>> {
     get("anime/catalog/references/sorting")
 }
 
-suspend fun AnilibriaClient.getCatalogReleaseTypes() = request<List<ReleaseTypeEnum>> {
+suspend fun AnilibriaClient.getCatalogReleaseTypes() = request<List<ReleaseTypeApi>> {
     get("anime/catalog/references/types")
 }
 

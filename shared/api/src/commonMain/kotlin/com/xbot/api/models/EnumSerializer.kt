@@ -2,7 +2,6 @@
 
 package com.xbot.api.models
 
-import com.xbot.api.di.defaultJson
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -15,33 +14,39 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.serializer
 
 @OptIn(ExperimentalSerializationApi::class)
-open class EnumSerializer<T : Enum<T>>(
-    private val serializer: KSerializer<T>
-) : KSerializer<T> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(serializer.descriptor.serialName) {
+internal open class EnumSerializer<T : Enum<T>>(
+    private val values: Array<T>,
+    private val valueMapper: (T) -> String
+) : KSerializer<T?> {
+    private var valueToEnumMap: Map<String, T> = values.associateBy(valueMapper)
+
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("EnumSerializer") {
         element("value", serializer<String>().descriptor)
         element("description", serializer<String>().descriptor)
     }
 
-    override fun serialize(encoder: Encoder, value: T) {
-        encoder.encodeSerializableValue(serializer, value)
+    override fun serialize(encoder: Encoder, value: T?) {
+        if (value != null) {
+            encoder.encodeString(valueMapper.invoke(value))
+        } else {
+            encoder.encodeNull()
+        }
     }
 
-    override fun deserialize(decoder: Decoder): T {
+    override fun deserialize(decoder: Decoder): T? {
         return decoder.decodeStructure(descriptor) {
-            lateinit var value: String
-            lateinit var description: String
+            var value: String? = null
 
             while (true) {
-                when (val i = decodeElementIndex(descriptor)) {
+                when (val index = decodeElementIndex(descriptor)) {
                     CompositeDecoder.DECODE_DONE -> break
-                    0 -> value = decodeStringElement(descriptor, i)
-                    1 -> description = decodeStringElement(descriptor, i)
-                    else -> throw SerializationException("Unknown index $i")
+                    0 -> value = decodeNullableSerializableElement(descriptor, index, serializer<String>())
+                    1 -> decodeNullableSerializableElement(descriptor, index, serializer<String>())
+                    else -> throw SerializationException("Unknown index $index")
                 }
             }
 
-            defaultJson.decodeFromString(serializer, value)
+            value?.let { valueToEnumMap[it] }
         }
     }
 }

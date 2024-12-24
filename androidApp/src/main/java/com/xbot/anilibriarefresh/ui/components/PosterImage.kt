@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
-import com.xbot.anilibriarefresh.models.Poster
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.domain.models.Poster
 
 @Composable
 fun PosterImage(

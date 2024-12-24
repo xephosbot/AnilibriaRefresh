@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,26 +24,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xbot.anilibriarefresh.models.Poster
-import com.xbot.anilibriarefresh.models.Title
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.domain.models.Release
 
 @Composable
 fun TitleListItem(
     modifier: Modifier = Modifier,
-    title: Title?,
-    onClick: (Title) -> Unit = {},
+    release: Release?,
+    onClick: (Release) -> Unit = {},
 ) {
     Crossfade(
         modifier = Modifier
-            .clickable { title?.let { onClick(it) } },
-        targetState = title,
-        label = "TitleListItem Crossfade to ${if (title == null) "Loading" else "Loaded Title"}",
+            .clickable { release?.let { onClick(it) } },
+        targetState = release,
+        label = "TitleListItem Crossfade to ${if (release == null) "Loading" else "Loaded Title"}",
     ) { state ->
         when (state) {
             null -> LoadingTitleListItem(modifier)
@@ -56,7 +53,7 @@ fun TitleListItem(
 @Composable
 private fun TitleListItemContent(
     modifier: Modifier = Modifier,
-    title: Title,
+    release: Release,
 ) {
     TitleItemLayout(
         modifier = modifier
@@ -67,26 +64,24 @@ private fun TitleListItemContent(
             ),
         headlineContent = {
             Text(
-                text = title.name,
+                text = release.name,
                 overflow = TextOverflow.Ellipsis,
             )
         },
         supportingContent = {
             Text(
-                text = title.description.lines().joinToString(" "),
+                text = release.description.lines().joinToString(" "),
                 overflow = TextOverflow.Ellipsis,
             )
         },
         leadingContent = {
             PosterImage(
                 modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                poster = title.poster,
+                poster = release.poster,
             )
         },
         tags = {
-            title.tags.forEach { tag ->
-                TagChip(tag = tag)
-            }
+
         },
     )
 }
@@ -260,25 +255,6 @@ private fun TitleItemLayout(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun TitleItemPreview() {
-    val title = Title(
-        id = 1,
-        name = "Атака титанов",
-        description = "Аниме об уничтожении мира, где главный герой может уничтожить весь мир и не хочет чтобы его друзья погибали",
-        tags = listOf(),
-        poster = Poster(
-            src = null,
-        ),
-    )
-
-    Column {
-        TitleListItem(title = title)
-        TitleListItem(title = null)
     }
 }
 

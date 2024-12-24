@@ -8,7 +8,7 @@ import coil3.ImageLoader
 import coil3.map.Mapper
 import coil3.request.CachePolicy
 import coil3.request.crossfade
-import com.xbot.anilibriarefresh.models.Poster
+import com.xbot.domain.models.Poster
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
