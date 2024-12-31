@@ -1,15 +1,11 @@
 package com.xbot.anilibriarefresh.navigation
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -25,7 +21,6 @@ import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
 import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
-import com.xbot.anilibriarefresh.ui.feature.search.SearchScreen
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
@@ -47,7 +42,7 @@ fun AnilibriaNavGraph(
             startDestination = Route.Home.List,
         ) {
             composable<Route.Home.List> { backStackEntry ->
-                HomeScreen { titleId, titleName ->
+                HomeScreen { titleId ->
                     if (backStackEntry.lifecycleIsResumed()) {
                         navController.navigate(Route.Home.Detail(titleId))
                     }
@@ -59,9 +54,6 @@ fun AnilibriaNavGraph(
         }
         composable<Route.Favorite> {
             FavoriteScreen()
-        }
-        composable<Route.Search> {
-            SearchScreen()
         }
         composable<Route.Profile> {
             FavoriteScreen()

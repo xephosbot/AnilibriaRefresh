@@ -53,12 +53,12 @@ import coil3.toBitmap
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.ui.components.OverlayHeaderLayout
-import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.components.rememberOverlayHeaderLayoutScrollBehavior
 import com.xbot.anilibriarefresh.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.icons.Heart
 import com.xbot.designsystem.modifiers.fadedEdge
 import com.xbot.anilibriarefresh.ui.utils.rememberBlurredBitmap
+import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.modifiers.ProvideShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
 import com.xbot.designsystem.modifiers.shimmerUpdater

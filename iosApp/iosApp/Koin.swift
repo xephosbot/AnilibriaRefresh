@@ -23,9 +23,9 @@ extension KoinApplication {
 
 extension KoinApplication {
     private static let keyPaths: [PartialKeyPath<Koin>] = [
-        \.titleRepository,
-        \.filtersRepository,
-        \.titlePager,
+        \.getCatalogFilters,
+        \.getReleasesFeed,
+        \.getReleasesPager,
     ]
     
     static func inject<T>() -> T {

@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.ui.components
+package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -15,12 +15,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,36 +34,41 @@ import com.xbot.designsystem.modifiers.shimmerSafe
 import com.xbot.domain.models.Release
 
 @Composable
-fun TitleListItem(
-    modifier: Modifier = Modifier,
+fun ReleaseListItem(
     release: Release?,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.surfaceBright,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
     onClick: (Release) -> Unit = {},
 ) {
-    Crossfade(
+    Surface(
         modifier = Modifier
-            .clickable { release?.let { onClick(it) } },
-        targetState = release,
-        label = "TitleListItem Crossfade to ${if (release == null) "Loading" else "Loaded Title"}",
-    ) { state ->
-        when (state) {
-            null -> LoadingTitleListItem(modifier)
-            else -> TitleListItemContent(modifier, state)
+            .padding(horizontal = ReleaseItemContainerPaddingHorizontal)
+            .then(modifier),
+        color = color,
+        contentColor = contentColor
+    ) {
+        Crossfade(
+            modifier = Modifier
+                .clickable { release?.let { onClick(it) } },
+            targetState = release,
+            label = "ReleaseListItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
+        ) { state ->
+            when (state) {
+                null -> LoadingReleaseListItem()
+                else -> ReleaseListItemContent(state)
+            }
         }
     }
 }
 
 @Composable
-private fun TitleListItemContent(
-    modifier: Modifier = Modifier,
+private fun ReleaseListItemContent(
     release: Release,
+    modifier: Modifier = Modifier,
 ) {
-    TitleItemLayout(
-        modifier = modifier
-            .height(TitleItemContainerHeight)
-            .padding(
-                vertical = TitleItemContainerPaddingVertical,
-                horizontal = TitleItemContainerPaddingHorizontal
-            ),
+    ReleaseItemLayout(
+        modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
             Text(
                 text = release.name,
@@ -75,30 +82,23 @@ private fun TitleListItemContent(
             )
         },
         leadingContent = {
-            PosterImage(
-                modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                poster = release.poster,
-            )
+            PosterImage(release.poster)
         },
         tags = {
-
+            Text(text = release.favoritesCount.toString())
         },
     )
 }
 
 @Composable
-private fun LoadingTitleListItem(
+private fun LoadingReleaseListItem(
     modifier: Modifier = Modifier,
 ) {
     val shimmer = LocalShimmer.current
 
-    TitleItemLayout(
+    ReleaseItemLayout(
         modifier = modifier
-            .height(TitleItemContainerHeight)
-            .padding(
-                vertical = TitleItemContainerPaddingVertical,
-                horizontal = TitleItemContainerPaddingHorizontal
-            )
+            .height(ReleaseItemContainerHeight)
             .shimmerSafe(shimmer),
         headlineContent = {
             Box(
@@ -141,7 +141,7 @@ private fun LoadingTitleListItem(
 }
 
 @Composable
-private fun TitleItemLayout(
+private fun ReleaseItemLayout(
     modifier: Modifier = Modifier,
     headlineContent: @Composable () -> Unit,
     supportingContent: @Composable () -> Unit,
@@ -152,7 +152,11 @@ private fun TitleItemLayout(
         Box {
             // TODO: Use MaterialTheme.typography style
             ProvideTextStyle(
-                value = LocalTextStyle.current.copy(fontWeight = FontWeight.Bold),
+                value = LocalTextStyle.current.copy(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp,
+                ),
                 content = headlineContent,
             )
         }
@@ -164,17 +168,26 @@ private fun TitleItemLayout(
                 value = LocalTextStyle.current.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
+                    lineHeight = 16.sp
                 ),
                 content = supportingContent,
             )
         }
     }
     val tagsRow = @Composable {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(TitleItemTagsSpacing),
-            verticalAlignment = Alignment.CenterVertically,
-            content = tags,
-        )
+        ProvideTextStyle(
+            value = LocalTextStyle.current.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
+                lineHeight = 18.sp
+            ),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(ReleaseItemTagsSpacing),
+                verticalAlignment = Alignment.CenterVertically,
+                content = tags,
+            )
+        }
     }
 
     Layout(
@@ -190,11 +203,11 @@ private fun TitleItemLayout(
                 ),
             )
 
-        val leadingPadding = TitleItemContainerPaddingHorizontal.roundToPx()
+        val leadingPadding = ReleaseItemContainerPaddingHorizontal.roundToPx()
         val contentWidth = if (constraints.maxWidth == Constraints.Infinity) {
             constraints.maxWidth
         } else {
-            (constraints.maxWidth - leadingPlaceable.width - leadingPadding).coerceAtLeast(0)
+            (constraints.maxWidth - leadingPlaceable.width - leadingPadding * 2).coerceAtLeast(0)
         }
 
         val tagsPlaceable = tagsMeasurable.first()
@@ -205,9 +218,12 @@ private fun TitleItemLayout(
                 ),
             )
 
-        val headlinePadding = TitleItemContentPadding.roundToPx()
+        val spacing = ReleaseItemContentSpacingVertical.roundToPx()
+        val verticalPadding = ReleaseItemContainerPaddingVertical.roundToPx()
         val headlineHeight =
-            (constraints.maxHeight - tagsPlaceable.height - headlinePadding).coerceAtLeast(0)
+            (constraints.maxHeight - verticalPadding * 2 - tagsPlaceable.height - spacing).coerceAtLeast(
+                0
+            )
 
         val headlinePlaceable = headlineMeasurable.first()
             .measure(
@@ -218,9 +234,10 @@ private fun TitleItemLayout(
                 ),
             )
 
-        val headlineOffset = headlinePlaceable.height + headlinePadding
-        val tagsOffset = headlineOffset + tagsPlaceable.height + headlinePadding
-        val supportingHeight = (constraints.maxHeight - tagsOffset).coerceAtLeast(0)
+        val headlineOffset = verticalPadding + headlinePlaceable.height + spacing
+        val tagsOffset = headlineOffset + tagsPlaceable.height + spacing
+        val supportingHeight =
+            (constraints.maxHeight - tagsOffset - verticalPadding).coerceAtLeast(0)
 
         val supportingPlaceable = supportingMeasurable.first()
             .measure(
@@ -241,14 +258,14 @@ private fun TitleItemLayout(
             )
             headlinePlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = 0,
+                y = verticalPadding,
             )
             tagsPlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
                 y = headlineOffset,
             )
             // Place content only if it has a size of at least 1 line.
-            if (supportingPlaceable.height > TitleItemMinContentSize.roundToPx()) {
+            if (supportingPlaceable.height > ReleaseItemMinContentSize.roundToPx()) {
                 supportingPlaceable.placeRelative(
                     x = leadingWidth + leadingPadding,
                     y = tagsOffset,
@@ -258,9 +275,27 @@ private fun TitleItemLayout(
     }
 }
 
-private val TitleItemContainerPaddingVertical = 8.dp
-private val TitleItemContainerPaddingHorizontal = 16.dp
-private val TitleItemContainerHeight = 192.dp
-private val TitleItemContentPadding = 4.dp
-private val TitleItemTagsSpacing = 8.dp
-private val TitleItemMinContentSize = 16.dp
+fun listItemShape(index: Int, lastIndex: Int): Shape = when (index) {
+    0 -> RoundedCornerShape(
+        topStart = 16.dp,
+        topEnd = 16.dp,
+        bottomStart = 4.dp,
+        bottomEnd = 4.dp
+    )
+
+    lastIndex -> RoundedCornerShape(
+        topStart = 4.dp,
+        topEnd = 4.dp,
+        bottomStart = 16.dp,
+        bottomEnd = 16.dp,
+    )
+
+    else -> RoundedCornerShape(4.dp)
+}
+
+private val ReleaseItemContainerPaddingVertical = 16.dp
+private val ReleaseItemContainerPaddingHorizontal = 16.dp
+private val ReleaseItemContainerHeight = 160.dp
+private val ReleaseItemContentSpacingVertical = 4.dp
+private val ReleaseItemTagsSpacing = 8.dp
+private val ReleaseItemMinContentSize = 16.dp

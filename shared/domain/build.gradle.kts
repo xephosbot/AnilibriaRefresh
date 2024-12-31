@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.multiplatform.android.library)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.nativecoroutines)
 }
 
 kotlin {
@@ -16,6 +18,9 @@ kotlin {
     jvm()
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+        }
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)

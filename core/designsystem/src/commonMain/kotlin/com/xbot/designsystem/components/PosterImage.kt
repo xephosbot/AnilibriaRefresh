@@ -17,15 +17,16 @@ import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.domain.models.Poster
 
 @Composable
 fun PosterImage(
+    poster: Poster,
     modifier: Modifier = Modifier,
-    model: Any,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
 ) {
-    var isLoading by rememberSaveable(model) { mutableStateOf(true) }
+    var isLoading by rememberSaveable(poster) { mutableStateOf(true) }
     val shimmer = LocalShimmer.current
 
     Box(
@@ -33,7 +34,7 @@ fun PosterImage(
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = model,
+            model = poster,
             contentDescription = contentDescription,
             contentScale = contentScale,
             onSuccess = {

@@ -24,9 +24,6 @@ sealed interface Route {
     data object Favorite : Route
 
     @Serializable
-    data object Search : Route
-
-    @Serializable
     data object Profile : Route
 
     @Serializable
@@ -41,25 +38,19 @@ enum class TopLevelDestination(
     val route: Route,
 ) {
     Home(
-        textResId = R.string.home,
+        textResId = R.string.tab_home,
         selectedIcon = AnilibriaIcons.Filled.House,
         unselectedIcon = AnilibriaIcons.Outlined.House,
         route = Route.Home,
     ),
     Favorite(
-        textResId = R.string.favorite,
+        textResId = R.string.tab_favorite,
         selectedIcon = AnilibriaIcons.Filled.Heart,
         unselectedIcon = AnilibriaIcons.Outlined.Heart,
         route = Route.Favorite,
     ),
-    Search(
-        textResId = R.string.search,
-        selectedIcon = AnilibriaIcons.Outlined.Search,
-        unselectedIcon = AnilibriaIcons.Outlined.Search,
-        route = Route.Search,
-    ),
     Profile(
-        textResId = R.string.profile,
+        textResId = R.string.tab_profile,
         selectedIcon = AnilibriaIcons.Outlined.Person,
         unselectedIcon = AnilibriaIcons.Outlined.Person,
         route = Route.Profile,

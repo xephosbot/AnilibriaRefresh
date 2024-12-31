@@ -28,7 +28,7 @@ class AnilibriaClient {
         expectSuccess = true
         install(Logging) {
             logger = Logger.SIMPLE
-            level = LogLevel.BODY
+            level = LogLevel.INFO
         }
         install(ContentNegotiation) {
             json(defaultJson)

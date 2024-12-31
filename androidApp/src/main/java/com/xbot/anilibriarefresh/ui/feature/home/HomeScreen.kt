@@ -13,25 +13,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.carousel.CarouselItemScope
-import androidx.compose.material3.carousel.CarouselState
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -39,14 +36,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,25 +58,32 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.ui.components.*
-import com.xbot.designsystem.components.Header
-import com.xbot.designsystem.components.LazyRowWithStickyHeader
 import com.xbot.anilibriarefresh.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.icons.Search
+import com.xbot.designsystem.components.Header
+import com.xbot.designsystem.components.LoadingReleasePagerItem
+import com.xbot.designsystem.components.ReleaseCardItem
+import com.xbot.designsystem.components.ReleaseListItem
+import com.xbot.designsystem.components.ReleasePagerItem
+import com.xbot.designsystem.components.horizontalItems
+import com.xbot.designsystem.components.horizontalPagerItems
+import com.xbot.designsystem.components.listItemShape
 import com.xbot.designsystem.modifiers.ProvideShimmer
-import com.xbot.designsystem.utils.only
 import com.xbot.designsystem.modifiers.shimmerUpdater
+import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import kotlinx.datetime.DayOfWeek
 import org.koin.androidx.compose.koinViewModel
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
-    onNavigate: (Int, String) -> Unit,
+    onNavigate: (Int) -> Unit,
 ) {
-    val items = viewModel.titles.collectAsLazyPagingItems()
+    val items = viewModel.releases.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreenContent(
@@ -95,7 +102,7 @@ private fun HomeScreenContent(
     state: HomeScreenState,
     items: LazyPagingItems<Release>,
     onAction: (HomeScreenAction) -> Unit,
-    onNavigate: (Int, String) -> Unit,
+    onNavigate: (Int) -> Unit,
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
         onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
@@ -115,58 +122,83 @@ private fun HomeScreenContent(
         derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeScreenState.Loading }
     }
 
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var searchBarExpanded by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.pullToRefresh(
             isRefreshing = isRefreshing,
             state = pullToRefreshState,
+            enabled = !searchBarExpanded,
             onRefresh = {
                 items.refresh()
                 onAction(HomeScreenAction.Refresh)
             }
         ),
         topBar = {
-            AnilibriaTopAppBar(
-                modifier = Modifier,
-                title = stringResource(R.string.home),
-                navigationIcon = {
-                    IconButton(
-                        onClick = {},
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                SearchBar(
+                    inputField = {
+                        SearchBarDefaults.InputField(
+                            query = searchQuery,
+                            onQueryChange = { searchQuery = it },
+                            onSearch = { searchBarExpanded = false },
+                            expanded = searchBarExpanded,
+                            onExpandedChange = { searchBarExpanded = it },
+                            placeholder = {
+                                Text(text = stringResource(R.string.search_bar_placeholder))
+                            },
+                            leadingIcon = {
+                                IconButton(onClick = {}) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Outlined.Search,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                    },
+                    expanded = searchBarExpanded,
+                    onExpandedChange = { searchBarExpanded = it },
+                    content = {
+                        FiltersScreen(
+                            filters = (state as? HomeScreenState.Success)?.filters
                         )
                     }
-                },
-                actions = {
-                    IconButton(
-                        onClick = {},
-                    ) {
-                        Icon(
-                            imageVector = AnilibriaIcons.Outlined.Search,
-                            contentDescription = null,
-                        )
-                    }
-                },
-            )
-        }
+                )
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            val successState = state as? HomeScreenState.Success
+
             Crossfade(
-                targetState = state is HomeScreenState.Loading,
+                targetState = successState,
                 label = "Loading state transition in HomeScreenContent",
-            ) { loading ->
-                when (loading) {
-                    true -> LoadingScreen(contentPadding = innerPadding)
+            ) { targetState ->
+                when (targetState) {
+                    null -> LoadingScreen(contentPadding = PaddingValues())
+
                     else -> {
-                        val successState = state as HomeScreenState.Success
                         TitleList(
                             items = items,
-                            recommendedList = successState.releasesFeed.recommendedReleases,
-                            scheduleList = successState.releasesFeed.schedule,
-                            contentPadding = innerPadding,
-                            onTitleClick = { onNavigate(it.id, it.name) },
+                            recommendedList = targetState.releasesFeed.recommendedReleases,
+                            scheduleList = targetState.releasesFeed.schedule,
+                            contentPadding = PaddingValues(),
+                            onReleaseClick = { onNavigate(it.id) },
                         )
                     }
                 }
@@ -183,7 +215,6 @@ private fun HomeScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TitleList(
     modifier: Modifier = Modifier,
@@ -191,27 +222,20 @@ private fun TitleList(
     recommendedList: List<Release>,
     scheduleList: Map<DayOfWeek, List<Release>>,
     contentPadding: PaddingValues,
-    onTitleClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val carouselState = rememberCarouselState(itemCount = { recommendedList.size })
+    val pagerState = rememberPagerState(pageCount = { recommendedList.size })
 
     ProvideShimmer(shimmer) {
         LazyVerticalGrid(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(350.dp),
-            contentPadding = contentPadding,
+            contentPadding = contentPadding
         ) {
-            item(
-                span = { GridItemSpan(maxLineSpan) },
-                contentType = { HomeScreenContentType.Header },
-            ) {
-                Header(stringResource(R.string.schedule))
-            }
-            horizontalCarouselItems(state = carouselState) { index ->
-                TitleCarouselItem(
-                    release = recommendedList[index],
-                    onClick = onTitleClick,
+            horizontalPagerItems(state = pagerState) { index ->
+                ReleasePagerItem(
+                    release = recommendedList[index]
                 )
             }
             item(
@@ -219,7 +243,7 @@ private fun TitleList(
                 contentType = { HomeScreenContentType.Header },
             ) {
                 Header(
-                    title = stringResource(R.string.schedule),
+                    title = stringResource(R.string.label_schedule),
                     onClick = {}
                 )
             }
@@ -230,19 +254,17 @@ private fun TitleList(
                     Column {
                         // TODO: Use MaterialTheme.typography style
                         Text(
-                            text = dayOfWeek.toStringRes(),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()),
                             fontSize = 12.sp,
                             lineHeight = 12.sp,
-                            fontWeight = FontWeight.Normal,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 },
                 itemContent = { title ->
-                    TitleCardItem(
+                    ReleaseCardItem(
                         release = title,
-                        onClick = onTitleClick,
+                        onClick = onReleaseClick,
                     )
                 },
             )
@@ -251,14 +273,21 @@ private fun TitleList(
                 contentType = { HomeScreenContentType.Header },
             ) {
                 Header(
-                    title = stringResource(R.string.new_episodes),
+                    title = stringResource(R.string.label_new_episodes),
                 )
             }
-            pagingItems(items) { title ->
-                TitleListItem(
-                    release = title,
-                    onClick = onTitleClick,
-                )
+            pagingItems(items) { index, release ->
+                Column {
+                    ReleaseListItem(
+                        modifier = Modifier
+                            .clip(listItemShape(index, items.itemCount - 1)),
+                        release = release,
+                        onClick = onReleaseClick,
+                    )
+                    if (index < items.itemCount - 1) {
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
             }
         }
     }
@@ -277,126 +306,47 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
                 .padding(contentPadding),
         ) {
-            LoadingCarouselItem()
-            Spacer(modifier = Modifier.height(6.dp)) // Pager indicator size
-            Spacer(modifier = Modifier.height(16.dp))
+            LoadingReleasePagerItem()
             Header(
-                title = stringResource(R.string.schedule),
+                title = stringResource(R.string.label_schedule),
                 onClick = {},
             )
-            // TODO: Add extra spacing for way of week title
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState(), enabled = false)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 20.dp),
             ) {
                 repeat(6) {
-                    TitleCardItem(release = null) {}
+                    ReleaseCardItem(release = null) {}
                 }
             }
             Header(
-                title = stringResource(R.string.new_episodes),
+                title = stringResource(R.string.label_new_episodes),
             )
             repeat(6) {
-                TitleListItem(release = null)
+                ReleaseListItem(release = null)
+                Spacer(Modifier.height(8.dp))
             }
-        }
-    }
-}
-
-private fun LazyGridScope.horizontalItems(
-    items: List<Release>,
-    contentPadding: PaddingValues = PaddingValues(),
-    itemContent: @Composable LazyItemScope.(Release) -> Unit,
-) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { HomeScreenContentType.HorizontalList },
-    ) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = contentPadding,
-        ) {
-            items(
-                items = items,
-                key = { it.id },
-            ) {
-                itemContent(it)
-            }
-        }
-    }
-}
-
-private fun LazyGridScope.horizontalItems(
-    items: Map<DayOfWeek, List<Release>>,
-    contentPadding: PaddingValues = PaddingValues(),
-    stickyHeader: @Composable (DayOfWeek) -> Unit,
-    itemContent: @Composable LazyItemScope.(Release) -> Unit,
-) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { HomeScreenContentType.HorizontalList },
-    ) {
-        LazyRowWithStickyHeader(
-            items = items,
-            contentPadding = contentPadding,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            stickyHeader = stickyHeader,
-            itemContent = itemContent,
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-private fun LazyGridScope.horizontalCarouselItems(
-    state: CarouselState,
-    carouselContent: @Composable CarouselItemScope.(index: Int) -> Unit,
-) {
-    item(
-        span = { GridItemSpan(maxLineSpan) },
-        contentType = { HomeScreenContentType.CarouselItems },
-    ) {
-        HorizontalMultiBrowseCarousel(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            state = state,
-            preferredItemWidth = 312.dp,
-            itemSpacing = 16.dp
-        ) { index ->
-            carouselContent(index)
         }
     }
 }
 
 private fun LazyGridScope.pagingItems(
     items: LazyPagingItems<Release>,
-    itemContent: @Composable LazyGridItemScope.(Release?) -> Unit,
+    itemContent: @Composable LazyGridItemScope.(index: Int, item: Release?) -> Unit,
 ) {
     items(
         count = items.itemCount,
         key = items.itemKey(),
         contentType = items.itemContentType { HomeScreenContentType.PagingItems },
     ) {
-        itemContent(items[it])
+        itemContent(it, items[it])
     }
-}
-
-@Composable
-private fun DayOfWeek.toStringRes(): String = when (this) {
-    DayOfWeek.MONDAY -> stringResource(R.string.monday)
-    DayOfWeek.TUESDAY -> stringResource(R.string.tuesday)
-    DayOfWeek.WEDNESDAY -> stringResource(R.string.wednesday)
-    DayOfWeek.THURSDAY -> stringResource(R.string.thursday)
-    DayOfWeek.FRIDAY -> stringResource(R.string.friday)
-    DayOfWeek.SATURDAY -> stringResource(R.string.saturday)
-    DayOfWeek.SUNDAY -> stringResource(R.string.sunday)
 }
 
 private enum class HomeScreenContentType {
     Header,
-    HorizontalList,
-    CarouselItems,
     PagingItems
 }

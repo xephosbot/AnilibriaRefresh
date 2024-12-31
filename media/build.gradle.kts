@@ -4,10 +4,6 @@ plugins {
 
 android {
     namespace = "com.xbot.media"
-
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 }
 
 dependencies {

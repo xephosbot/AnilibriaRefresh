@@ -1,6 +1,14 @@
+import co.touchlab.skie.configuration.EnumInterop
+import co.touchlab.skie.configuration.FlowInterop
+import co.touchlab.skie.configuration.SealedInterop
+import co.touchlab.skie.configuration.SuspendInterop
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.multiplatform.android.library)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.nativecoroutines)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -33,11 +41,27 @@ kotlin {
     jvm()
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+        }
         commonMain.dependencies {
             api(projects.shared.api)
             api(projects.shared.data)
             api(projects.shared.domain)
             implementation(libs.koin.core)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+    }
+}
+
+skie {
+    features {
+        group {
+            SealedInterop.Enabled(true)
+            EnumInterop.Enabled(true)
+            coroutinesInterop.set(false)
+            SuspendInterop.Enabled(false)
+            FlowInterop.Enabled(false)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.ui.utils
+package com.xbot.designsystem.modifiers
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache

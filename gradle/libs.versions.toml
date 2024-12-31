@@ -49,6 +49,8 @@ detekt = "1.23.7"
 detektRulesCompose = "0.4.22"
 ktlint = "12.1.1"
 junit = "4.13.2"
+skie = "0.10.0"
+nativecoroutines = "1.0.0-ALPHA-38"
 
 [libraries]
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
@@ -61,6 +63,7 @@ androidx-compose-foundation-layout = { group = "androidx.compose.foundation", na
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "androidxComposeAdaptive" }
+androidx-compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "androidxComposeAdaptive" }
 androidx-compose-material3-adaptive-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeAdaptive" }
 androidx-compose-material-navigation = { group = "androidx.compose.material", name = "material-navigation", version = "1.8.0-alpha07" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
@@ -175,6 +178,8 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-multiplatform-android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
+nativecoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "nativecoroutines" }
 
 # Static Analyzer
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

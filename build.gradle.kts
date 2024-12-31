@@ -14,4 +14,6 @@ plugins {
     alias(libs.plugins.baselineprofile) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.skie) apply false
+    alias(libs.plugins.nativecoroutines) apply false
 }

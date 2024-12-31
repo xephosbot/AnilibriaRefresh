@@ -3,20 +3,20 @@ package com.xbot.anilibriarefresh.ui.feature.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.utils.MessageAction
 import com.xbot.anilibriarefresh.ui.utils.SnackbarManager
 import com.xbot.anilibriarefresh.ui.utils.StringResource
-import com.xbot.domain.models.ReleasesFeed
+import com.xbot.domain.models.CatalogFilters
 import com.xbot.domain.models.Release
-import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.models.ReleasesFeed
+import com.xbot.domain.usecase.GetCatalogFilters
 import com.xbot.domain.usecase.GetReleasesFeed
 import com.xbot.domain.usecase.GetReleasesPager
-import com.xbot.domain.usecase.GetReleasesPager.Companion.PAGE_SIZE
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,11 +27,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getReleasesPager: GetReleasesPager,
+    getReleasesPager: GetReleasesPager,
     private val getReleasesFeed: GetReleasesFeed,
+    private val getCatalogFilters: GetCatalogFilters,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    val titles: Flow<PagingData<Release>> = getReleasesPager.invoke()
+    val releases: Flow<PagingData<Release>> = getReleasesPager()
         .cachedIn(viewModelScope)
 
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState.Loading)
@@ -39,7 +40,7 @@ class HomeViewModel(
         .onStart { refresh() }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
+            started = SharingStarted.Lazily,
             initialValue = _state.value
         )
 
@@ -55,12 +56,20 @@ class HomeViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.update { HomeScreenState.Loading }
-        }
 
-        viewModelScope.launch {
-            getReleasesFeed.invoke().fold(
-                onSuccess = { releasesFeed ->
-                    _state.update { HomeScreenState.Success(releasesFeed) }
+            runCatching {
+                coroutineScope {
+                    val releasesFeedDeferred = async { getReleasesFeed() }
+                    val catalogFiltersDeferred = async { getCatalogFilters() }
+
+                    val releasesFeed = releasesFeedDeferred.await().getOrThrow()
+                    val catalogFilters = catalogFiltersDeferred.await().getOrThrow()
+
+                    releasesFeed to catalogFilters
+                }
+            }.fold(
+                onSuccess = { (releasesFeed, catalogFilters) ->
+                    _state.update { HomeScreenState.Success(releasesFeed, catalogFilters) }
                 },
                 onFailure = {
                     showErrorMessage(it.localizedMessage.orEmpty(), ::refresh)
@@ -73,7 +82,7 @@ class HomeViewModel(
         snackbarManager.showMessage(
             title = StringResource.String(error),
             action = MessageAction(
-                title = StringResource.Text(R.string.retry_button),
+                title = StringResource.Text(R.string.button_retry),
                 action = onConfirmAction,
             ),
         )
@@ -83,7 +92,10 @@ class HomeViewModel(
 @Stable
 sealed interface HomeScreenState {
     data object Loading : HomeScreenState
-    data class Success(val releasesFeed: ReleasesFeed) : HomeScreenState
+    data class Success(
+        val releasesFeed: ReleasesFeed,
+        val filters: CatalogFilters
+    ) : HomeScreenState
 }
 
 sealed interface HomeScreenAction {

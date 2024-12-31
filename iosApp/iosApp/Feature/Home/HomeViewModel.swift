@@ -12,61 +12,35 @@ import KMPNativeCoroutinesAsync
 
 extension HomeScreen {
     @MainActor final class ViewModel: ObservableObject {
-
-        @LazyKoin private var titlePager: TitlePager
-        private var delegate = PagingCollectionViewController()
-
-        @Published private(set) var newsResult:[TitleModel] = []
-        @Published private(set) var hasNextPage: Bool = false
-        @Published private(set) var showLoding: Bool = false
-
-        func startLoadNews() {
+        
+        @LazyKoin private var pager: GetReleasesPager
+        private var delegate: PagingViewController<Release>
+        
+        @Published private(set) var itemsCount: Int = 0
+        
+        init() {
+            delegate = PagingViewController()
+        }
+        
+        func getItem(index: Int) -> Release? {
+            return delegate.getItem(index: Int32(index))
+        }
+        
+        func collectPagingData() {
             Task {
-                try? await asyncSequence(for: titlePager.invoke()).collect { pagingData in
-                    delegate.submitData(pagingData: pagingData)
+                try? await asyncSequence(for: pager.invoke()).collect { pagingData in
+                    try? await delegate.submitData(pagingData: pagingData)
                 }
             }
-        }
-
-        func subscribeDataChanged() async {
-            do {
-                for try await _ in asyncSequence(for: delegate.onPagesUpdatedFlow) {
-                    self.newsResult = delegate.getItems()
+            Task {
+                try? await asyncSequence(for: delegate.loadState).collect { loadState in
+                    
                 }
-            } catch {}
-        }
-
-        func loadNextPage() {
-            delegate.loadNextPage()
-        }
-
-        func subscribeLoadState() async {
-            do {
-                for try await loadState in asyncSequence(for: delegate.loadStateFlow) {
-                    switch onEnum(of: loadState.append) {
-                        case .error(let errorState):
-                            print(errorState.error.message?.description ?? "append error...")
-                            break
-                        case .loading(_):
-                            break
-                        case .notLoading(let notLoading):
-                            self.hasNextPage = !notLoading.endOfPaginationReached
-                            break
-                    }
-
-                    switch onEnum(of: loadState.refresh) {
-                        case .error(_):
-                            break
-                        case .loading(_):
-                            self.showLoding = true
-                            break
-                        case .notLoading(_):
-                            self.showLoding = false
-                            break
-                    }
+            }
+            Task {
+                try? await asyncSequence(for: delegate.itemsCount).collect { itemsCount in
+                    self.itemsCount = itemsCount.intValue
                 }
-            } catch {
-
             }
         }
     }
