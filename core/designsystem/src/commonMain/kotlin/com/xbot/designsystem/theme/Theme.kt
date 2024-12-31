@@ -236,6 +236,6 @@ internal val highContrastDarkColorScheme = darkColorScheme(
 @Composable
 expect fun AnilibriaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 )
