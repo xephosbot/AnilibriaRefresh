@@ -65,7 +65,6 @@ import com.xbot.designsystem.modifiers.shimmerUpdater
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.ReleaseDetail
-import dev.chrisbanes.haze.HazeState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -89,7 +88,6 @@ private fun TitleScreenContent(
     title: ReleaseDetail,
 ) {
     val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
-    val hazeState = remember { HazeState() }
 
     OverlayHeaderLayout(
         modifier = modifier,
