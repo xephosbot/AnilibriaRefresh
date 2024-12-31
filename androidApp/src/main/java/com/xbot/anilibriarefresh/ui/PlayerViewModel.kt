@@ -11,8 +11,8 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.navigation.toRoute
 import com.xbot.anilibriarefresh.navigation.Route
-import com.xbot.domain.models.TitleDetailModel
-import com.xbot.domain.repository.TitleRepository
+import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.repository.ReleaseRepository
 import com.xbot.media.service.PlayerProvider
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,14 +21,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 class PlayerViewModel(
-    repository: TitleRepository,
+    repository: ReleaseRepository,
     playerProvider: PlayerProvider,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val titleId = savedStateHandle.toRoute<Route.Player>().titleId
     val controller: StateFlow<Player?> = playerProvider.player
         .onEach { player ->
-            val title = repository.getTitle(titleId)
+            val title = repository.getRelease(titleId).getOrThrow()
             with(player) {
                 if (mediaItemCount == 0) addMediaItem(title.toMediaItem())
                 prepare()
@@ -45,7 +45,7 @@ class PlayerViewModel(
             initialValue = null,
         )
 
-    private fun TitleDetailModel.toMediaItem(): MediaItem {
+    private fun ReleaseDetail.toMediaItem(): MediaItem {
         val mediaMetadata = MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
             .setTitle(name)

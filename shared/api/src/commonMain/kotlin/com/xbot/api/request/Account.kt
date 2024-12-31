@@ -6,7 +6,7 @@ import com.xbot.api.models.account.LoginRequest
 import com.xbot.api.models.account.LoginResponse
 import com.xbot.api.models.account.LoginSocialNetworkResponse
 import com.xbot.api.models.account.ResetPasswordRequest
-import com.xbot.api.models.shared.enums.SocialNetworkEnum
+import com.xbot.api.models.shared.enums.SocialNetwork
 import com.xbot.api.models.account.AddToCollectionRequest
 import com.xbot.api.models.account.ReleaseWithCollectionType
 import com.xbot.api.models.account.RemoveFromCollectionRequest
@@ -16,67 +16,66 @@ import com.xbot.api.models.account.Profile
 import com.xbot.api.models.account.AddTimeCodeRequest
 import com.xbot.api.models.account.DeleteTimeCodeRequest
 import com.xbot.api.models.account.EpisodeWithTimeCode
-import com.xbot.api.models.shared.Genre
-import com.xbot.api.models.shared.LabeledValue
-import com.xbot.api.models.shared.ReleasesWithMetadata
-import com.xbot.api.models.shared.enums.AgeRatingEnum
-import com.xbot.api.models.shared.enums.ReleaseTypeEnum
-import com.xbot.api.models.shared.enums.SortingTypeEnum
+import com.xbot.api.models.shared.GenreApi
+import com.xbot.api.models.shared.ReleasesWithMetadataApi
+import com.xbot.api.models.shared.enums.AgeRatingApi
+import com.xbot.api.models.shared.enums.ReleaseTypeApi
+import com.xbot.api.models.shared.enums.SortingTypeApi
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
-suspend fun AnilibriaClient.login(login: String, password: String): LoginResponse = request {
+suspend fun AnilibriaClient.login(login: String, password: String) = request<LoginResponse> {
     post("accounts/users/auth/login") {
         setBody(LoginRequest(login, password))
     }
 }
 
-suspend fun AnilibriaClient.logout(): LoginResponse = request {
+suspend fun AnilibriaClient.logout() = request<LoginResponse> {
     post("accounts/users/auth/logout")
 }
 
-suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetworkEnum): LoginSocialNetworkResponse = request {
+suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetwork) = request<LoginSocialNetworkResponse> {
     get("accounts/users/auth/social/${provider}/login")
 }
 
-suspend fun AnilibriaClient.authenticateWithSocialNetwork(state: String): LoginResponse = request {
+suspend fun AnilibriaClient.authenticateWithSocialNetwork(state: String) = request<LoginResponse> {
     get("accounts/users/auth/social/authenticate") {
         parameter("state", state)
     }
 }
 
-suspend fun AnilibriaClient.forgetPassword(email: String): Unit = request {
+suspend fun AnilibriaClient.forgetPassword(email: String) = request<Unit> {
     get("accounts/users/auth/password/forget") {
         setBody(ForgetPasswordRequest(email))
     }
 }
 
-suspend fun AnilibriaClient.resetPassword(token: String, password: String, passwordConfirmation: String): Unit = request {
+suspend fun AnilibriaClient.resetPassword(token: String, password: String, passwordConfirmation: String) = request<Unit> {
     post("accounts/users/auth/password/reset") {
         setBody(ResetPasswordRequest(token, password, passwordConfirmation))
     }
 }
 
-suspend fun AnilibriaClient.getCollectionAgeRatings() = request<List<LabeledValue<AgeRatingEnum>>> {
+suspend fun AnilibriaClient.getCollectionAgeRatings() = request<List<AgeRatingApi>> {
     get("accounts/users/me/collections/references/age-ratings")
-}.map(LabeledValue<AgeRatingEnum>::value)
+}
 
-suspend fun AnilibriaClient.getCollectionGenres(): List<Genre> = request {
+suspend fun AnilibriaClient.getCollectionGenres() = request<List<GenreApi>> {
     get("accounts/users/me/collections/references/genres")
 }
 
-suspend fun AnilibriaClient.getCollectionReleaseTypes() = request<List<LabeledValue<ReleaseTypeEnum>>> {
+suspend fun AnilibriaClient.getCollectionReleaseTypes() = request<List<ReleaseTypeApi>> {
     get("accounts/users/me/collections/references/types")
-}.map(LabeledValue<ReleaseTypeEnum>::value)
+}
 
-suspend fun AnilibriaClient.getCollectionYears(): List<Int> = request {
+suspend fun AnilibriaClient.getCollectionYears() = request<List<Int>> {
     get("accounts/users/me/collections/references/years")
 }
 
-suspend fun AnilibriaClient.getCollectionReleaseIds(): List<ReleaseWithCollectionType> = request {
+suspend fun AnilibriaClient.getCollectionReleaseIds() = request<List<ReleaseWithCollectionType>> {
     get("accounts/users/me/collections/ids")
 }
 
@@ -85,11 +84,11 @@ suspend fun AnilibriaClient.getCollectionReleases(
     page: Int,
     limit: Int,
     genres: List<Int>? = null,
-    types: List<ReleaseTypeEnum>? = null,
+    types: List<ReleaseTypeApi>? = null,
     fromYear: Int? = null,
     search: String? = null,
-    ageRatings: List<AgeRatingEnum>? = null
-): ReleasesWithMetadata = request {
+    ageRatings: List<AgeRatingApi>? = null
+) = request<ReleasesWithMetadataApi> {
     get("accounts/users/me/collections/releases") {
         //TODO:
         parameter("type_of_collection", collectionType)
@@ -104,40 +103,40 @@ suspend fun AnilibriaClient.getCollectionReleases(
 }
 
 //TODO:
-suspend fun AnilibriaClient.addToCollection(request: List<AddToCollectionRequest>): Unit = request {
+suspend fun AnilibriaClient.addToCollection(request: List<AddToCollectionRequest>) = request<Unit> {
     post("accounts/users/me/collections") {
         setBody(request)
     }
 }
 
 //TODO:
-suspend fun AnilibriaClient.removeFromCollection(request: List<RemoveFromCollectionRequest>): Unit = request {
+suspend fun AnilibriaClient.removeFromCollection(request: List<RemoveFromCollectionRequest>) = request<Unit> {
     delete("accounts/users/me/collections") {
         setBody(request)
     }
 }
 
-suspend fun AnilibriaClient.getFavoriteAgeRatings() = request<List<LabeledValue<AgeRatingEnum>>> {
+suspend fun AnilibriaClient.getFavoriteAgeRatings() = request<List<AgeRatingApi>> {
     get("accounts/users/me/favorites/references/age-ratings")
-}.map(LabeledValue<AgeRatingEnum>::value)
+}
 
-suspend fun AnilibriaClient.getFavoriteGenres(): List<Genre> = request {
+suspend fun AnilibriaClient.getFavoriteGenres() = request<List<GenreApi>> {
     get("accounts/users/me/favorites/references/genres")
 }
 
-suspend fun AnilibriaClient.getFavoriteSortingTypes() = request<List<LabeledValue<SortingTypeEnum>>> {
+suspend fun AnilibriaClient.getFavoriteSortingTypes() = request<List<SortingTypeApi>> {
     get("accounts/users/me/favorites/references/sorting")
-}.map(LabeledValue<SortingTypeEnum>::value)
+}
 
-suspend fun AnilibriaClient.getFavoriteReleaseTypes() = request<List<LabeledValue<ReleaseTypeEnum>>> {
+suspend fun AnilibriaClient.getFavoriteReleaseTypes() = request<List<ReleaseTypeApi>> {
     get("accounts/users/me/favorites/references/types")
-}.map(LabeledValue<ReleaseTypeEnum>::value)
+}
 
-suspend fun AnilibriaClient.getFavoriteYears(): List<Int> = request {
+suspend fun AnilibriaClient.getFavoriteYears() = request<List<Int>> {
     get("accounts/users/me/favorites/references/years")
 }
 
-suspend fun AnilibriaClient.getFavoriteReleaseIds(): List<Int> = request {
+suspend fun AnilibriaClient.getFavoriteReleaseIds() = request<List<Int>> {
     get("/accounts/users/me/favorites/ids")
 }
 
@@ -145,12 +144,12 @@ suspend fun AnilibriaClient.getFavoriteReleases(
     page: Int,
     limit: Int,
     fromYear: Int? = null,
-    types: List<ReleaseTypeEnum>? = null,
+    types: List<ReleaseTypeApi>? = null,
     genres: List<Int>? = null,
     search: String? = null,
-    sorting: com.xbot.api.models.shared.enums.SortingTypeEnum? = null,
-    ageRatings: List<AgeRatingEnum>? = null
-): ReleasesWithMetadata = request {
+    sorting: com.xbot.api.models.shared.enums.SortingTypeApi? = null,
+    ageRatings: List<AgeRatingApi>? = null
+) = request<ReleasesWithMetadataApi> {
     get("accounts/users/me/favorites/releases") {
         parameter("page", page)
         parameter("limit", limit)
@@ -164,36 +163,36 @@ suspend fun AnilibriaClient.getFavoriteReleases(
 }
 
 //TODO:
-suspend fun AnilibriaClient.addToFavorite(request: List<AddToFavoriteRequest>): Unit = request {
+suspend fun AnilibriaClient.addToFavorite(request: List<AddToFavoriteRequest>) = request<Unit> {
     post("accounts/users/me/favorites") {
         setBody(request)
     }
 }
 
 //TODO:
-suspend fun AnilibriaClient.removeFromFavorite(request: List<RemoveFromFavoriteRequest>): Unit = request {
+suspend fun AnilibriaClient.removeFromFavorite(request: List<RemoveFromFavoriteRequest>) = request<Unit> {
     delete("accounts/users/me/favorites") {
         setBody(request)
     }
 }
 
-suspend fun AnilibriaClient.getUserProfile(): Profile = request {
+suspend fun AnilibriaClient.getUserProfile() = request<Profile> {
     get("accounts/users/me/profile")
 }
 
-suspend fun AnilibriaClient.getViewedTimeCodes(): List<EpisodeWithTimeCode> = request {
+suspend fun AnilibriaClient.getViewedTimeCodes() = request<List<EpisodeWithTimeCode>> {
     get("accounts/users/me/views/timecodes")
 }
 
 //TODO:
-suspend fun AnilibriaClient.addToViewedTimeCodes(request: List<AddTimeCodeRequest>): Unit = request {
+suspend fun AnilibriaClient.addToViewedTimeCodes(request: List<AddTimeCodeRequest>) = request<Unit> {
     post("accounts/users/me/views/timecodes") {
         setBody(request)
     }
 }
 
 //TODO:
-suspend fun AnilibriaClient.deleteViewedTimeCodes(request: List<DeleteTimeCodeRequest>): Unit = request {
+suspend fun AnilibriaClient.deleteViewedTimeCodes(request: List<DeleteTimeCodeRequest>) = request<Unit> {
     delete("accounts/users/me/views/timecodes") {
         setBody(request)
     }

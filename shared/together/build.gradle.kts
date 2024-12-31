@@ -1,18 +1,21 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import co.touchlab.skie.configuration.EnumInterop
+import co.touchlab.skie.configuration.FlowInterop
+import co.touchlab.skie.configuration.SealedInterop
+import co.touchlab.skie.configuration.SuspendInterop
 
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.multiplatform.android.library)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.nativecoroutines)
     alias(libs.plugins.skie)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+    androidLibrary {
+        namespace = "com.xbot.together"
+        compileSdk = 35
+        minSdk = 24
     }
     
     listOf(
@@ -38,23 +41,27 @@ kotlin {
     jvm()
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+        }
         commonMain.dependencies {
             api(projects.shared.api)
             api(projects.shared.data)
             api(projects.shared.domain)
-            api(libs.koin.core)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.coroutines.core)
         }
     }
 }
 
-android {
-    namespace = "com.xbot.together"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+skie {
+    features {
+        group {
+            SealedInterop.Enabled(true)
+            EnumInterop.Enabled(true)
+            coroutinesInterop.set(false)
+            SuspendInterop.Enabled(false)
+            FlowInterop.Enabled(false)
+        }
     }
 }

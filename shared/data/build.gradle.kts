@@ -1,17 +1,13 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.multiplatform.android.library)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+    androidLibrary {
+        namespace = "com.xbot.data"
+        compileSdk = 35
+        minSdk = 24
     }
 
     iosX64()
@@ -20,9 +16,6 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
         commonMain.dependencies {
             implementation(projects.shared.api)
             implementation(projects.shared.domain)
@@ -31,24 +24,5 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
         }
-        iosMain.dependencies {
-
-        }
-        jvmMain.dependencies {
-
-        }
-    }
-}
-
-android {
-    namespace = "com.xbot.data"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }

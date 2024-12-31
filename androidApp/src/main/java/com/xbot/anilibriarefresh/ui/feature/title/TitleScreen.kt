@@ -52,20 +52,19 @@ import coil3.size.Size
 import coil3.toBitmap
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.anilibriarefresh.models.Episode
-import com.xbot.anilibriarefresh.models.Poster
-import com.xbot.anilibriarefresh.models.TitleDetail
 import com.xbot.anilibriarefresh.ui.components.OverlayHeaderLayout
-import com.xbot.anilibriarefresh.ui.components.PosterImage
 import com.xbot.anilibriarefresh.ui.components.rememberOverlayHeaderLayoutScrollBehavior
-import com.xbot.anilibriarefresh.ui.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.ui.icons.Heart
+import com.xbot.anilibriarefresh.icons.AnilibriaIcons
+import com.xbot.anilibriarefresh.icons.Heart
 import com.xbot.designsystem.modifiers.fadedEdge
 import com.xbot.anilibriarefresh.ui.utils.rememberBlurredBitmap
+import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.modifiers.ProvideShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
 import com.xbot.designsystem.modifiers.shimmerUpdater
-import dev.chrisbanes.haze.HazeState
+import com.xbot.domain.models.Episode
+import com.xbot.domain.models.Poster
+import com.xbot.domain.models.ReleaseDetail
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -86,10 +85,9 @@ fun TitleScreen(
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
-    title: TitleDetail,
+    title: ReleaseDetail,
 ) {
     val scrollBehavior = rememberOverlayHeaderLayoutScrollBehavior()
-    val hazeState = remember { HazeState() }
 
     OverlayHeaderLayout(
         modifier = modifier,
@@ -192,7 +190,7 @@ private fun PosterWithBackground(
 }
 
 private fun LazyListScope.mainBlock(
-    title: TitleDetail
+    title: ReleaseDetail
 ) {
     item {
         Column(
@@ -288,7 +286,7 @@ private fun EpisodeItem(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = episode.name,
+            text = episode.name.orEmpty(),
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
         )

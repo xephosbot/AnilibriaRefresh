@@ -1,8 +1,8 @@
 package com.xbot.api.models.releases
 
-import com.xbot.api.models.shared.Poster
-import com.xbot.api.models.shared.Release
-import com.xbot.api.models.shared.TimeRange
+import com.xbot.api.models.shared.EpisodeApi.TimeRange
+import com.xbot.api.models.shared.PosterApi
+import com.xbot.api.models.shared.ReleaseApi
 import kotlinx.serialization.SerialName
 
 data class EpisodeWithRelease(
@@ -11,7 +11,7 @@ data class EpisodeWithRelease(
     @SerialName("ordinal") val ordinal: Float,
     @SerialName("opening") val opening: TimeRange,
     @SerialName("ending") val ending: TimeRange,
-    @SerialName("preview") val preview: Poster,
+    @SerialName("preview") val preview: PosterApi,
     @SerialName("hls_480") val hls480: String?,
     @SerialName("hls_720") val hls720: String?,
     @SerialName("hls_1080") val hls1080: String?,
@@ -21,5 +21,5 @@ data class EpisodeWithRelease(
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("name_english") val nameEnglish: String?,
-    @SerialName("release") val release: Release
+    @SerialName("release") val release: ReleaseApi
 )

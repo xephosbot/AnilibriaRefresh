@@ -5,12 +5,12 @@ import AnilibriaFramework
 struct iOSApp: App {
     
     init() {
-        KoinAppKt.doInitKoin()
+        KoinApplication.start()
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: ContentView.ViewModel())
+            HomeScreen()
         }
     }
 }

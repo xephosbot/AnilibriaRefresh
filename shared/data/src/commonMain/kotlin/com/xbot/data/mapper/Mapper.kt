@@ -1,70 +1,70 @@
 package com.xbot.data.mapper
 
-import com.xbot.api.models.shared.Genre
-import com.xbot.api.models.shared.Release
-import com.xbot.domain.models.EpisodeModel
-import com.xbot.domain.models.GenreModel
-import com.xbot.domain.models.MemberModel
-import com.xbot.domain.models.PosterModel
-import com.xbot.domain.models.TitleDetailModel
-import com.xbot.domain.models.TitleModel
+import com.xbot.api.models.shared.GenreApi
+import com.xbot.api.models.shared.ReleaseApi
+import com.xbot.domain.models.Episode
+import com.xbot.domain.models.Genre
+import com.xbot.domain.models.Member
+import com.xbot.domain.models.Poster
+import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.models.Release
 
-fun Genre.toGenreModel() = GenreModel(
+internal fun GenreApi.toDomain() = Genre(
     id = id,
     name = name
 )
 
-fun Release.toTitleModel() = TitleModel(
+internal fun ReleaseApi.toDomain() = Release(
     id = id,
-    type = type.value?.toReleaseType(),
+    type = type?.toDomain(),
     year = year,
     name = name.main,
     description = description.orEmpty(),
     episodesCount = episodesTotal,
     favoritesCount = addedInUsersFavorites,
-    poster = PosterModel(
+    poster = Poster(
         src = poster.optimized.src,
         thumbnail = poster.optimized.thumbnail,
     ),
 )
 
-fun Release.toTitleDetailModel() = TitleDetailModel(
+internal fun ReleaseApi.toReleaseDetail() = ReleaseDetail(
     id = id,
-    type = type.value?.toReleaseType(),
+    type = type?.toDomain(),
     year = year,
     name = name.main,
-    season = season.value?.toSeason(),
-    poster = PosterModel(
+    season = season?.toDomain(),
+    poster = Poster(
         src = poster.optimized.src,
         thumbnail = poster.optimized.thumbnail,
     ),
     isOngoing = isOngoing,
-    ageRating = ageRating.value.toAgeRating(),
-    publishDay = publishDay.value.toDayOfWeek(),
+    ageRating = ageRating!!.toDomain(),
+    publishDay = publishDay!!.toDayOfWeek(),
     description = description.orEmpty(),
     notification = notification.orEmpty(),
     episodesCount = episodesTotal,
     favoritesCount = addedInUsersFavorites,
     episodeDuration = averageDurationOfEpisode,
     genres = genres?.map { genre ->
-        GenreModel(
+        Genre(
             id = genre.id,
             name = genre.name,
         )
     } ?: listOf(),
     members = members?.map { member ->
-        MemberModel(
+        Member(
             id = member.id,
             name = member.nickname.orEmpty(),
-            role = member.role.description.orEmpty(),
+            role = member.role!!.name,
         )
     } ?: listOf(),
     episodes = episodes?.map { episode ->
-        EpisodeModel(
+        Episode(
             id = episode.id,
             name = episode.name,
             duration = episode.duration,
-            preview = PosterModel(
+            preview = Poster(
                 src = episode.preview.optimized.src,
                 thumbnail = episode.preview.optimized.thumbnail,
             ),

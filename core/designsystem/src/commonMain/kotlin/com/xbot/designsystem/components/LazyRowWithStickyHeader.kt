@@ -36,7 +36,7 @@ fun <K, V> LazyRowWithStickyHeader(
     stickyHeader: @Composable (K) -> Unit,
     itemContent: @Composable LazyItemScope.(V) -> Unit,
 ) {
-    val itemsWithKeys= remember(items) {
+    val itemsWithKeys = remember(items) {
         items.flatMap { entry -> entry.value.map { entry.key to it } }
     }
 
