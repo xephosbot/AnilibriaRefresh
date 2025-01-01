@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -236,7 +237,13 @@ private fun TitleList(
             horizontalPagerItems(state = pagerState) { index ->
                 ReleasePagerItem(
                     release = recommendedList[index]
-                )
+                ) {
+                    Button(
+                        onClick = {}
+                    ) {
+                        Text(text = stringResource(R.string.button_watch))
+                    }
+                }
             }
             item(
                 span = { GridItemSpan(maxLineSpan) },

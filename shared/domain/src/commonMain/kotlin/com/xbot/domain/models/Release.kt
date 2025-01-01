@@ -9,6 +9,7 @@ data class Release(
     val name: String,
     val description: String,
     val episodesCount: Int?,
+    val episodeDuration: Int?,
     val favoritesCount: Int,
     val poster: Poster,
 )

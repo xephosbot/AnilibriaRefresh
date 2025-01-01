@@ -21,6 +21,7 @@ internal fun ReleaseApi.toDomain() = Release(
     name = name.main,
     description = description.orEmpty(),
     episodesCount = episodesTotal,
+    episodeDuration = averageDurationOfEpisode,
     favoritesCount = addedInUsersFavorites,
     poster = Poster(
         src = poster.optimized.src,

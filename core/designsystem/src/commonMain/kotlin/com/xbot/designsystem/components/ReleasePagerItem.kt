@@ -4,13 +4,13 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,12 +22,16 @@ import androidx.compose.ui.unit.sp
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.fadedEdge
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.designsystem.resources.Res
+import com.xbot.designsystem.resources.subtitle_release_template
 import com.xbot.domain.models.Release
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ReleasePagerItem(
     release: Release?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Crossfade(
         targetState = release,
@@ -35,7 +39,7 @@ fun ReleasePagerItem(
     ) { state ->
         when (state) {
             null -> LoadingReleasePagerItem(modifier)
-            else -> ReleasePagerItemContent(modifier, state)
+            else -> ReleasePagerItemContent(modifier, state, content)
         }
     }
 }
@@ -43,7 +47,8 @@ fun ReleasePagerItem(
 @Composable
 private fun ReleasePagerItemContent(
     modifier: Modifier = Modifier,
-    release: Release
+    release: Release,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Box(
         modifier = modifier
@@ -71,16 +76,16 @@ private fun ReleasePagerItemContent(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = release.favoritesCount.toString(),
+                text = stringResource(Res.string.subtitle_release_template, release.year, release.episodesCount ?: 0, release.episodeDuration ?: 0, release.favoritesCount),
                 fontSize = 14.sp,
                 lineHeight = 18.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Spacer(Modifier.height(8.dp))
 
-            Button(onClick = {}) {
-                Text(text = "Смотреть")
-            }
+            content()
 
             Spacer(Modifier.height(8.dp))
         }

@@ -31,7 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xbot.designsystem.modifiers.LocalShimmer
 import com.xbot.designsystem.modifiers.shimmerSafe
+import com.xbot.designsystem.resources.Res
+import com.xbot.designsystem.resources.subtitle_release_template
 import com.xbot.domain.models.Release
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ReleaseListItem(
@@ -85,7 +88,11 @@ private fun ReleaseListItemContent(
             PosterImage(release.poster)
         },
         tags = {
-            Text(text = release.favoritesCount.toString())
+            Text(
+                text = stringResource(Res.string.subtitle_release_template, release.year, release.episodesCount ?: 0, release.episodeDuration ?: 0, release.favoritesCount),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         },
     )
 }
