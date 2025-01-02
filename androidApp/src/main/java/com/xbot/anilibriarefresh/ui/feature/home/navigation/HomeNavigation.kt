@@ -2,22 +2,24 @@ package com.xbot.anilibriarefresh.ui.feature.home.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,6 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,9 +39,11 @@ import com.xbot.anilibriarefresh.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.icons.Search
 import com.xbot.anilibriarefresh.navigation.Route
 import com.xbot.anilibriarefresh.navigation.lifecycleIsResumed
-import com.xbot.anilibriarefresh.ui.feature.home.search.FiltersScreen
 import com.xbot.anilibriarefresh.ui.feature.home.feed.HomeFeedScreen
+import com.xbot.anilibriarefresh.ui.feature.home.search.FiltersScreen
 import com.xbot.anilibriarefresh.ui.feature.home.search.SearchResultScreen
+import soup.compose.material.motion.animation.materialFadeThroughIn
+import soup.compose.material.motion.animation.materialFadeThroughOut
 
 fun NavGraphBuilder.homeSection(
     onReleaseClick: (Int) -> Unit
@@ -50,7 +57,6 @@ fun NavGraphBuilder.homeSection(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeNestedNavHost(
     onReleaseClick: (Int) -> Unit
@@ -60,73 +66,98 @@ private fun HomeNestedNavHost(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var searchBarExpanded by rememberSaveable { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                SearchBar(
-                    inputField = {
-                        SearchBarDefaults.InputField(
-                            query = searchQuery,
-                            onQueryChange = {
-                                searchQuery = it
-                            },
-                            onSearch = {
-                                searchBarExpanded = false
-                                nestedNavController.navigate(Route.Home.SearchResult(searchQuery))
-                            },
-                            expanded = searchBarExpanded,
-                            onExpandedChange = { searchBarExpanded = it },
-                            placeholder = {
-                                Text(text = stringResource(R.string.search_bar_placeholder))
-                            },
-                            leadingIcon = {
-                                IconButton(onClick = {}) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                    )
-                                }
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = AnilibriaIcons.Outlined.Search,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    },
-                    expanded = searchBarExpanded,
-                    onExpandedChange = { searchBarExpanded = it },
-                    content = {
-                        FiltersScreen()
-                    }
-                )
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .semantics { traversalIndex = 0f }
+    ) {
+        val contentInsets = WindowInsets.statusBars.add(WindowInsets(top = 64.dp))
+
         NavHost(
             navController = nestedNavController,
             startDestination = Route.Home.Feed,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }
+            enterTransition = { materialFadeThroughIn() },
+            exitTransition = { materialFadeThroughOut() },
         ) {
-            composable<Route.Home.Feed> {
+            composable<Route.Home.Feed>(
+                exitTransition = { ExitTransition.None }
+            ) {
                 HomeFeedScreen(
-                    contentPadding = innerPadding,
+                    contentPadding = contentInsets.asPaddingValues(),
                     onReleaseClick = onReleaseClick
                 )
             }
-            composable<Route.Home.SearchResult> {
+            composable<Route.Home.SearchResult>(
+                enterTransition = { EnterTransition.None }
+            ) {
                 SearchResultScreen(
-                    contentPadding = innerPadding,
+                    contentPadding = contentInsets.asPaddingValues(),
                     onReleaseClick = onReleaseClick
                 )
             }
         }
+
+        AnilibriaSearchBar(
+            modifier = Modifier.align(Alignment.TopCenter),
+            query = searchQuery,
+            onQueryChange = { searchQuery = it },
+            expanded = searchBarExpanded,
+            onExpandedChange = { searchBarExpanded = it },
+            onSearch = { query ->
+                searchBarExpanded = false
+                nestedNavController.navigate(Route.Home.SearchResult(query)) {
+                    popUpTo<Route.Home.SearchResult> { inclusive = true }
+                }
+            }
+        ) {
+            FiltersScreen()
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AnilibriaSearchBar(
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onSearch: (String) -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    SearchBar(
+        modifier = modifier,
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = query,
+                onQueryChange = onQueryChange,
+                onSearch = onSearch,
+                expanded = expanded,
+                onExpandedChange = onExpandedChange,
+                placeholder = {
+                    Text(text = stringResource(R.string.search_bar_placeholder))
+                },
+                leadingIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = AnilibriaIcons.Outlined.Search,
+                        contentDescription = null
+                    )
+                }
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        content = content
+    )
 }
