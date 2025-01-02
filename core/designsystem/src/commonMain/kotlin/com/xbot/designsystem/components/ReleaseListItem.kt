@@ -282,15 +282,22 @@ private fun ReleaseItemLayout(
     }
 }
 
-fun listItemShape(index: Int, lastIndex: Int): Shape = when (index) {
-    0 -> RoundedCornerShape(
+fun listItemShape(index: Int, lastIndex: Int): Shape = when {
+    index == 0 && index == lastIndex -> RoundedCornerShape(
+        topStart = 16.dp,
+        topEnd = 16.dp,
+        bottomStart = 16.dp,
+        bottomEnd = 16.dp
+    )
+
+    index == 0 -> RoundedCornerShape(
         topStart = 16.dp,
         topEnd = 16.dp,
         bottomStart = 4.dp,
         bottomEnd = 4.dp
     )
 
-    lastIndex -> RoundedCornerShape(
+    index == lastIndex -> RoundedCornerShape(
         topStart = 4.dp,
         topEnd = 4.dp,
         bottomStart = 16.dp,
