@@ -7,17 +7,16 @@ import com.xbot.anilibriarefresh.icons.AnilibriaIcons
 import com.xbot.anilibriarefresh.icons.Heart
 import com.xbot.anilibriarefresh.icons.House
 import com.xbot.anilibriarefresh.icons.Person
-import com.xbot.anilibriarefresh.icons.Search
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
     data object Home : Route {
         @Serializable
-        data object List
+        data object Feed
 
         @Serializable
-        data class Detail(val titleId: Int)
+        data class SearchResult(val searchQuery: String)
     }
 
     @Serializable
@@ -27,7 +26,10 @@ sealed interface Route {
     data object Profile : Route
 
     @Serializable
-    data class Player(val titleId: Int) : Route
+    data class Detail(val titleId: Int)
+
+    @Serializable
+    data class Player(val titleId: Int)
 }
 
 enum class TopLevelDestination(

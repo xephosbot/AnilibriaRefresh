@@ -1,16 +1,13 @@
-package com.xbot.anilibriarefresh.ui.feature.home
+package com.xbot.anilibriarefresh.ui.feature.home.feed
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,31 +20,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,8 +45,6 @@ import androidx.paging.compose.itemKey
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.anilibriarefresh.R
-import com.xbot.anilibriarefresh.icons.AnilibriaIcons
-import com.xbot.anilibriarefresh.icons.Search
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.LoadingReleasePagerItem
 import com.xbot.designsystem.components.ReleaseCardItem
@@ -79,34 +63,37 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun HomeScreen(
+fun HomeFeedScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
-    onNavigate: (Int) -> Unit,
+    viewModel: HomeFeedViewModel = koinViewModel(),
+    contentPadding: PaddingValues = PaddingValues(),
+    onReleaseClick: (Int) -> Unit,
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    HomeScreenContent(
+    HomeFeedScreenContent(
         modifier = modifier,
+        contentPadding = contentPadding,
         state = state,
         items = items,
         onAction = viewModel::onAction,
-        onNavigate = onNavigate,
+        onReleaseClick = onReleaseClick,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreenContent(
+private fun HomeFeedScreenContent(
     modifier: Modifier = Modifier,
-    state: HomeScreenState,
+    contentPadding: PaddingValues,
+    state: HomeFeedScreenState,
     items: LazyPagingItems<Release>,
-    onAction: (HomeScreenAction) -> Unit,
-    onNavigate: (Int) -> Unit,
+    onAction: (HomeFeedScreenAction) -> Unit,
+    onReleaseClick: (Int) -> Unit,
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
-        onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
+        onAction(HomeFeedScreenAction.ShowErrorMessage(error) { items.retry() })
     }
 
     val pullToRefreshState = rememberPullToRefreshState()
@@ -120,98 +107,42 @@ private fun HomeScreenContent(
     }
 
     val isRefreshing by remember(state, items) {
-        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeScreenState.Loading }
+        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeFeedScreenState.Loading }
     }
 
-    var searchQuery by rememberSaveable { mutableStateOf("") }
-    var searchBarExpanded by rememberSaveable { mutableStateOf(false) }
-
-    Scaffold(
-        modifier = modifier.pullToRefresh(
-            isRefreshing = isRefreshing,
-            state = pullToRefreshState,
-            enabled = !searchBarExpanded,
-            onRefresh = {
-                items.refresh()
-                onAction(HomeScreenAction.Refresh)
-            }
-        ),
-        topBar = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                SearchBar(
-                    inputField = {
-                        SearchBarDefaults.InputField(
-                            query = searchQuery,
-                            onQueryChange = { searchQuery = it },
-                            onSearch = { searchBarExpanded = false },
-                            expanded = searchBarExpanded,
-                            onExpandedChange = { searchBarExpanded = it },
-                            placeholder = {
-                                Text(text = stringResource(R.string.search_bar_placeholder))
-                            },
-                            leadingIcon = {
-                                IconButton(onClick = {}) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.ic_anilibria),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                    )
-                                }
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = AnilibriaIcons.Outlined.Search,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    },
-                    expanded = searchBarExpanded,
-                    onExpandedChange = { searchBarExpanded = it },
-                    content = {
-                        FiltersScreen(
-                            filters = (state as? HomeScreenState.Success)?.filters
-                        )
-                    }
-                )
-            }
+    PullToRefreshBox(
+        modifier = modifier,
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            items.refresh()
+            onAction(HomeFeedScreenAction.Refresh)
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val successState = state as? HomeScreenState.Success
-
-            Crossfade(
-                targetState = successState,
-                label = "Loading state transition in HomeScreenContent",
-            ) { targetState ->
-                when (targetState) {
-                    null -> LoadingScreen(contentPadding = PaddingValues())
-
-                    else -> {
-                        TitleList(
-                            items = items,
-                            recommendedList = targetState.releasesFeed.recommendedReleases,
-                            scheduleList = targetState.releasesFeed.schedule,
-                            contentPadding = PaddingValues(),
-                            onReleaseClick = { onNavigate(it.id) },
-                        )
-                    }
-                }
-            }
-
+        state = pullToRefreshState,
+        indicator = {
             Indicator(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(innerPadding.only(WindowInsetsSides.Top)),
+                    .padding(contentPadding.only(WindowInsetsSides.Top)),
                 isRefreshing = isRefreshing,
                 state = pullToRefreshState
             )
+        }
+    ) {
+        Crossfade(
+            targetState = state,
+            label = "Loading state transition in HomeScreenContent",
+        ) { targetState ->
+            when (targetState) {
+                is HomeFeedScreenState.Loading -> LoadingScreen()
+                is HomeFeedScreenState.Success -> {
+                    TitleList(
+                        items = items,
+                        recommendedList = targetState.releasesFeed.recommendedReleases,
+                        scheduleList = targetState.releasesFeed.schedule,
+                        onReleaseClick = { onReleaseClick(it.id) },
+                    )
+                }
+            }
         }
     }
 }
@@ -222,7 +153,6 @@ private fun TitleList(
     items: LazyPagingItems<Release>,
     recommendedList: List<Release>,
     scheduleList: Map<DayOfWeek, List<Release>>,
-    contentPadding: PaddingValues,
     onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
@@ -232,7 +162,6 @@ private fun TitleList(
         LazyVerticalGrid(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(350.dp),
-            contentPadding = contentPadding
         ) {
             horizontalPagerItems(state = pagerState) { index ->
                 ReleasePagerItem(
@@ -303,7 +232,6 @@ private fun TitleList(
 @Composable
 private fun LoadingScreen(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
@@ -311,7 +239,6 @@ private fun LoadingScreen(
         Column(
             modifier = modifier
                 .verticalScroll(rememberScrollState(), enabled = false)
-                .padding(contentPadding),
         ) {
             LoadingReleasePagerItem()
             Header(

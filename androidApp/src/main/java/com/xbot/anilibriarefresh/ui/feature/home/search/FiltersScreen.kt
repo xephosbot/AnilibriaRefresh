@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.ui.feature.home
+package com.xbot.anilibriarefresh.ui.feature.home.search
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -23,7 +24,6 @@ import androidx.compose.material3.Label
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,23 +36,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.anilibriarefresh.R
 import com.xbot.anilibriarefresh.ui.utils.stringRes
 import com.xbot.designsystem.components.Header
 import com.xbot.domain.models.CatalogFilters
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
 
 @Composable
 fun FiltersScreen(
     modifier: Modifier = Modifier,
-    filters: CatalogFilters?
+    viewModel: FiltersViewModel = koinViewModel(),
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     Crossfade(
-        targetState = filters
+        targetState = state
     ) { targetState ->
         when (targetState) {
-            null -> LoadingFiltersScreen(modifier)
-            else -> FiltersScreenContent(modifier, targetState)
+            is FiltersScreenState.Loading -> LoadingFiltersScreen(modifier)
+            is FiltersScreenState.Success -> FiltersScreenContent(modifier, targetState.filters)
         }
     }
 }
@@ -287,13 +291,11 @@ private fun YearSlider(
 
 @Composable
 private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
-    Surface {
-        Box(
-            modifier = modifier,
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 

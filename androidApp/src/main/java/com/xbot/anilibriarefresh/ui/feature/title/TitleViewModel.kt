@@ -21,7 +21,7 @@ class TitleViewModel(
     savedStateHandle: SavedStateHandle,
     snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    private val titleId = savedStateHandle.toRoute<Route.Home.Detail>().titleId
+    private val titleId = savedStateHandle.toRoute<Route.Detail>().titleId
     private val _state: MutableStateFlow<TitleScreenState> = MutableStateFlow(TitleScreenState.Loading)
     val state: StateFlow<TitleScreenState> = _state.asStateFlow()
 

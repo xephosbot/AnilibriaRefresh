@@ -12,7 +12,7 @@ class GetReleasesPager(
     private val releaseRepository: ReleaseRepository
 ) {
     @NativeCoroutines
-    operator fun invoke(): Flow<PagingData<Release>> {
+    operator fun invoke(search: String? = null): Flow<PagingData<Release>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -21,7 +21,9 @@ class GetReleasesPager(
                 initialLoadSize = PAGE_SIZE,
                 jumpThreshold = PAGE_SIZE * 3,
             ),
-            pagingSourceFactory = releaseRepository::getReleasePagingSource
+            pagingSourceFactory = {
+                releaseRepository.getReleasePagingSource(search)
+            }
         ).flow
     }
 

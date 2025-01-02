@@ -20,10 +20,14 @@ import kotlinx.datetime.DayOfWeek
 internal class DefaultReleaseRepository(
     private val client: AnilibriaClient
 ) : ReleaseRepository {
-    override fun getReleasePagingSource(): PagingSource<Int, Release> {
+    override fun getReleasePagingSource(search: String?): PagingSource<Int, Release> {
         return CommonPagingSource(
             loadPage = { page, limit ->
-                val result = client.getCatalogReleases(page, limit)
+                val result = client.getCatalogReleases(
+                    page = page,
+                    limit = limit,
+                    search = search
+                )
                 PagedResponse(
                     items = result.data.map(ReleaseApi::toDomain),
                     total = result.meta.pagination.total

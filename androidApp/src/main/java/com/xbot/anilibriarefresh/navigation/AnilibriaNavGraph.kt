@@ -17,10 +17,9 @@ import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteScreen
-import com.xbot.anilibriarefresh.ui.feature.home.HomeScreen
+import com.xbot.anilibriarefresh.ui.feature.home.navigation.homeSection
 import com.xbot.anilibriarefresh.ui.feature.title.TitleScreen
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
@@ -38,25 +37,17 @@ fun AnilibriaNavGraph(
         enterTransition = { materialFadeThroughIn() },
         exitTransition = { materialFadeThroughOut() },
     ) {
-        navigation<Route.Home>(
-            startDestination = Route.Home.List,
-        ) {
-            composable<Route.Home.List> { backStackEntry ->
-                HomeScreen { titleId ->
-                    if (backStackEntry.lifecycleIsResumed()) {
-                        navController.navigate(Route.Home.Detail(titleId))
-                    }
-                }
-            }
-            composable<Route.Home.Detail> {
-                TitleScreen()
-            }
+        homeSection { releaseId ->
+            navController.navigate(Route.Detail(releaseId))
         }
         composable<Route.Favorite> {
             FavoriteScreen()
         }
         composable<Route.Profile> {
             FavoriteScreen()
+        }
+        composable<Route.Detail> {
+            TitleScreen()
         }
         activity<Route.Player> {
             this.activityClass = PlayerActivity::class
@@ -91,5 +82,5 @@ fun NavController.currentBackStackAsState(): State<List<NavBackStackEntry>?> {
  * Это обходной путь для устранения дублирования событий навигации.
  * @see <a href="https://github.com/android/compose-samples/blob/081721ad44dfb29b55b1bc34f83d693b6b8dc9dd/Jetsnack/app/src/main/java/com/example/jetsnack/ui/JetsnackAppState.kt#L141-L147">Jetsnack Sample</a>
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
+internal fun NavBackStackEntry.lifecycleIsResumed() =
     this.lifecycle.currentState == Lifecycle.State.RESUMED
