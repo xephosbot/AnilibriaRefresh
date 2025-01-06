@@ -50,7 +50,7 @@ detektRulesCompose = "0.4.22"
 ktlint = "12.1.1"
 junit = "4.13.2"
 skie = "0.10.0"
-nativecoroutines = "1.0.0-ALPHA-38"
+nativecoroutines = "1.0.0-ALPHA-38-kotlin-2.1.20-Beta1"
 
 [libraries]
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
