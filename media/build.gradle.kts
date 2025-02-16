@@ -1,9 +1,25 @@
 plugins {
-    alias(libs.plugins.xbot.android.library.compose)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xbot.compose)
 }
 
 android {
     namespace = "com.xbot.media"
+    compileSdk = 35
+
+    defaultConfig {
+        minSdk = 24
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
@@ -20,9 +36,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.guava)
 
     // Compose dependencies
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(compose.material3)
+    implementation(compose.materialIconsExtended)
+    implementation(compose.preview)
 
     // Jetpack Media 3 dependencies
     implementation(libs.androidx.media3.exoplayer)

@@ -39,8 +39,11 @@ class PagingViewController <T: Any> {
         pagingDataPresenter.refresh()
     }
 
-    fun getItem(index: Int): T? {
+    fun fetchAt(index: Int) {
         pagingDataPresenter[index]
+    }
+
+    fun getItem(index: Int): T? {
         return pagingDataPresenter.snapshot()[index]
     }
 

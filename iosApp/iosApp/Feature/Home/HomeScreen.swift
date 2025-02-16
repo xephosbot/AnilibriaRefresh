@@ -14,8 +14,11 @@ struct HomeScreen: View {
     
     var body: some View {
         List {
-            ForEach(0..<viewModel.itemsCount, id:\.self) {
-                TitleItem(title: viewModel.getItem(index: $0))
+            ForEach(0..<viewModel.itemsCount, id:\.self) { index in
+                TitleItem(title: viewModel.getItem(index: index))
+                    .onFirstAppear {
+                        viewModel.fetchAt(index: index)
+                    }
             }
         }.onFirstAppear {
             viewModel.collectPagingData()

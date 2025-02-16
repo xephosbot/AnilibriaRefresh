@@ -1,35 +1,66 @@
 package com.xbot.anilibriarefresh.ui
 
+import androidx.compose.material3.Icon
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.res.stringResource
 import com.xbot.anilibriarefresh.navigation.AnilibriaNavGraph
-import com.xbot.anilibriarefresh.navigation.NavigationSuiteType
-import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationBar
-import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationRail
-import com.xbot.anilibriarefresh.ui.components.AnilibriaNavigationSuiteScaffold
+import com.xbot.common.navigation.hasRoute
+import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun AnilibriaApp(modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
+fun AnilibriaApp(
+    appState: AnilibriaAppState = rememberAnilibriaAppState()
+) {
+    val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
+    val currentDestination = appState.currentDestination
+    val currentTopLevelDestination = appState.currentTopLevelDestination
+    val navBackStack = appState.navBackStack
 
-    AnilibriaNavigationSuiteScaffold(
-        modifier = modifier,
-        navigationSuite = {
-            when (layoutType) {
-                NavigationSuiteType.NavigationBar -> AnilibriaNavigationBar(
-                    navController = navController,
-                )
+    LaunchedEffect(currentTopLevelDestination) {
+        snapshotFlow { currentTopLevelDestination }
+            .onEach {
+                if (it != null) {
+                    navigationSuiteScaffoldState.show()
+                } else {
+                    navigationSuiteScaffoldState.hide()
+                }
+            }
+            .collect()
+    }
 
-                NavigationSuiteType.NavigationRail -> AnilibriaNavigationRail(
-                    navController = navController,
-                    navContentPosition = contentPosition
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            appState.topLevelDestinations.forEach { destination ->
+                val isSelected = currentDestination.hasRoute(destination.route)
+                item(
+                    selected = isSelected,
+                    icon = {
+                        Icon(
+                            imageVector = when (isSelected) {
+                                true -> destination.selectedIcon
+                                else -> destination.unselectedIcon
+                            },
+                            contentDescription = stringResource(destination.textResId),
+                        )
+                    },
+                    onClick = {
+                        appState.navigateToTopLevelDestination(destination, navBackStack)
+                    },
                 )
             }
         },
+        layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
+        state = navigationSuiteScaffoldState
     ) {
         AnilibriaNavGraph(
-            navController = navController,
+            appState = appState
         )
     }
 }

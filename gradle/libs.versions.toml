@@ -1,19 +1,18 @@
 [versions]
 androidDesugarJdkLibs = "2.1.4"
-android-gradle-plugin = "8.7.3"
-android-tools = "31.7.3"
-androidxActivity = "1.9.3"
-androidxComposeBom = "2024.12.01"
-androidxComposeBomAlpha = "2024.12.01"
-androidxComposeAdaptive = "1.0.0"
+android-gradle-plugin = "8.8.0"
+android-tools = "31.8.0"
+androidxActivity = "1.10.0"
+androidxComposeBom = "2025.02.00"
+androidxComposeBomAlpha = "2025.02.00"
 androidxCore = "1.15.0"
 androidxCoreSplashscreen = "1.2.0-alpha02"
-androidxDataStore = "1.1.1"
+androidxDataStore = "1.1.2"
 androidxEspresso = "3.6.1"
-androidxLifecycle = "2.8.4"
+androidxLifecycle = "2.8.7"
 androidxMacroBenchmark = "1.3.3"
 androidxMetrics = "1.0.0-beta01"
-androidxNavigation = "2.8.5"
+androidxNavigation = "2.8.7"
 androidxProfileinstaller = "1.4.1"
 androidxTestCore = "1.6.1"
 androidxTestExt = "1.2.1"
@@ -38,19 +37,19 @@ kotlinxSerializationJson = "1.7.3"
 ksp = "2.1.0-1.0.29"
 koin = "4.1.0-Beta1"
 ktor = "3.0.3"
-paging = "3.3.5"
+paging = "3.3.6"
 robolectric = "4.14.1"
 roborazzi = "1.38.0"
 room = "2.6.1"
 slf4jApi = "2.0.16"
 stickyHeaders = "0.1.0-alpha04"
 interpolator = "1.0.0"
-detekt = "1.23.7"
-detektRulesCompose = "0.4.22"
-ktlint = "12.1.1"
 junit = "4.13.2"
 skie = "0.10.0"
 nativecoroutines = "1.0.0-ALPHA-38"
+junitVersion = "1.2.1"
+appcompat = "1.7.0"
+material = "1.12.0"
 
 [libraries]
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
@@ -58,22 +57,6 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxMacroBenchmark" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-bom-alpha = { group = "androidx.compose", name = "compose-bom-alpha", version.ref = "androidxComposeBomAlpha" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
-androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-compose-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "androidxComposeAdaptive" }
-androidx-compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "androidxComposeAdaptive" }
-androidx-compose-material3-adaptive-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeAdaptive" }
-androidx-compose-material-navigation = { group = "androidx.compose.material", name = "material-navigation", version = "1.8.0-alpha07" }
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
@@ -93,23 +76,13 @@ androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiaut
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 androidx-interpolator = { group = "androidx.interpolator", name = "interpolator", version.ref = "interpolator" }
 brotli-dec = { module = "org.brotli:dec", version.ref = "brotli" }
-logback-android = { module = "com.github.tony19:logback-android", version.ref = "logback" }
 material-motion-compose-core = { module = "io.github.fornewid:material-motion-compose-core", version.ref = "materialMotionCompose" }
 shimmer-compose = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
-haze-compose = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-haze-compose-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollections" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-robolectric-shadows = { group = "org.robolectric", name = "shadows-framework", version.ref = "robolectric" }
-roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 sticky-headers = { module = "me.gingerninja.lazy:sticky-headers", version.ref = "stickyHeaders" }
 
 # Paging
@@ -150,19 +123,14 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 
-# Detekt
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
-detekt-rules-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektRulesCompose" }
-
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
-detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-ktlint-gradlePlugin = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -181,13 +149,5 @@ room = { id = "androidx.room", version.ref = "room" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
 nativecoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "nativecoroutines" }
 
-# Static Analyzer
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-
 # Plugins defined by this project
-xbot-android-application = { id = "xbot.android.application" }
-xbot-android-library = { id = "xbot.android.library" }
-xbot-android-library-compose = { id = "xbot.android.library.compose" }
-xbot-android-room = { id = "xbot.android.room" }
-xbot-android-test = { id = "xbot.android.test" }
+xbot-compose = { id = "com.xbot.compose" }

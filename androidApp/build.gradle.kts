@@ -1,19 +1,69 @@
 plugins {
-    alias(libs.plugins.xbot.android.application)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xbot.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.baselineprofile)
 }
 
 android {
     namespace = "com.xbot.anilibriarefresh"
+    compileSdk = 35
+
+    defaultConfig {
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
     // Project-level dependencies
     implementation(projects.shared.together)
     implementation(projects.core.designsystem)
+    implementation(projects.core.common)
     implementation(projects.media)
+    implementation(projects.feature.home)
+    implementation(projects.feature.favorite)
+    implementation(projects.feature.profile)
+    implementation(projects.feature.search)
+    implementation(projects.feature.title)
+    implementation(projects.feature.player)
+
     baselineProfile(projects.baselineprofile)
+    coreLibraryDesugaring(libs.android.desugarJdkLibs)
 
     // Koin dependencies
     implementation(libs.koin.core)
@@ -33,17 +83,15 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.material.navigation)
     implementation(libs.androidx.profileinstaller)
 
     // Compose dependencies
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material3.adaptive)
-    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.google.fonts)
+    implementation(compose.material3)
+    implementation(compose.material3AdaptiveNavigationSuite)
+    implementation(compose.materialIconsExtended)
+    implementation(compose.preview)
+    implementation(compose.googleFonts)
+    implementation(compose.materialNavigation)
     implementation(libs.sticky.headers)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -58,9 +106,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.ext)
-    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(compose.uiTest)
 
     // Debug dependencies
-    debugImplementation(libs.androidx.compose.ui.testManifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(compose.testManifest)
+    debugImplementation(compose.uiTooling)
 }
