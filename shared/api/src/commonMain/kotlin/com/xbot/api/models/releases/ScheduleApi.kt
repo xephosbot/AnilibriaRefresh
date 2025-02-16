@@ -9,5 +9,5 @@ import kotlinx.serialization.Serializable
 data class ScheduleApi(
     @SerialName("release") val release: ReleaseApi,
     @SerialName("new_release_episode") val newEpisode: EpisodeApi?,
-    @SerialName("new_release_episode_ordinal") val newEpisodeOrdinal: Int,
+    @SerialName("new_release_episode_ordinal") val newEpisodeOrdinal: Int?,
 )

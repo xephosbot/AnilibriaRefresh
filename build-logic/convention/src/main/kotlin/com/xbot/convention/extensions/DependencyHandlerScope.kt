@@ -61,21 +61,3 @@ internal fun DependencyHandlerScope.androidTestImplementation(provider: Provider
 internal fun DependencyHandlerScope.testImplementation(provider: Provider<*>) {
     "testImplementation"(provider)
 }
-
-/**
- * Adds a Detekt plugin dependency on the specified provider.
- *
- * @param provider The provider that contains the Detekt plugin dependency to be added.
- */
-internal fun DependencyHandlerScope.detektPlugins(provider: Provider<*>) {
-    "detektPlugins"(provider)
-}
-
-/**
- * Adds a ksp dependency on the specified provider.
- *
- * @param provider The provider that contains the ksp dependency to be added.
- */
-internal fun DependencyHandlerScope.ksp(provider: Provider<*>) {
-    "ksp"(provider)
-}

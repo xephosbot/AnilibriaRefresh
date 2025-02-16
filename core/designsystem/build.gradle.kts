@@ -1,66 +1,67 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.compose.multiplatform)
-}
-
-kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
-    jvm("desktop")
-
-    sourceSets {
-        val desktopMain by getting
-
-        androidMain.dependencies {
-            implementation(compose.preview)
-        }
-        commonMain.dependencies {
-            implementation(projects.shared.domain)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.coil.compose)
-            implementation(libs.sticky.headers)
-            implementation(libs.shimmer.compose)
-        }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-        }
-    }
-}
-
-compose.resources {
-    publicResClass = false
-    packageOfResClass = "com.xbot.designsystem.resources"
-    generateResClass = always
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.xbot.compose)
 }
 
 android {
     namespace = "com.xbot.designsystem"
     compileSdk = 35
 
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
     defaultConfig {
         minSdk = 24
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+}
+
+dependencies {
+    // Project-level dependencies
+    implementation(projects.shared.domain)
+
+    // Koin dependencies
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
+
+    // Kotlin dependencies
+    implementation(libs.kotlinx.datetime)
+
+    // AndroidX dependencies
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.navigation.compose)
+
+    // Compose dependencies
+    implementation(compose.material3)
+    implementation(compose.material3AdaptiveNavigationSuite)
+    implementation(compose.materialIconsExtended)
+    implementation(compose.preview)
+    implementation(libs.sticky.headers)
+    implementation(libs.shimmer.compose)
+    implementation(libs.coil.compose)
+
+    // Testing dependencies
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(compose.uiTest)
+
+    // Debug dependencies
+    debugImplementation(compose.testManifest)
+    debugImplementation(compose.uiTooling)
 }

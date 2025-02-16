@@ -15,5 +15,5 @@ data class CatalogFilters(
     val seasons: List<Season>,
     val sortingTypes: List<SortingType>,
     val releaseTypes: List<ReleaseType>,
-    val years: List<Int>
+    val years: ClosedRange<Int>
 )

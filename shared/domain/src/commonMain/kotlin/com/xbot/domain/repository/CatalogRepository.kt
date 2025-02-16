@@ -16,5 +16,5 @@ interface CatalogRepository {
     suspend fun getSeasons(): Result<List<Season>>
     suspend fun getSortingTypes(): Result<List<SortingType>>
     suspend fun getReleaseTypes(): Result<List<ReleaseType>>
-    suspend fun getYears(): Result<List<Int>>
+    suspend fun getYears(): Result<ClosedRange<Int>>
 }

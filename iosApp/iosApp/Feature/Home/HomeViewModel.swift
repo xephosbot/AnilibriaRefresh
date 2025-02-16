@@ -22,13 +22,18 @@ extension HomeScreen {
             delegate = PagingViewController()
         }
         
+        func fetchAt(index: Int) {
+            print(index)
+            delegate.fetchAt(index: Int32(index))
+        }
+        
         func getItem(index: Int) -> Release? {
             return delegate.getItem(index: Int32(index))
         }
         
         func collectPagingData() {
             Task {
-                try? await asyncSequence(for: pager.invoke()).collect { pagingData in
+                try? await asyncSequence(for: pager.invoke(search: nil)).collect { pagingData in
                     try? await delegate.submitData(pagingData: pagingData)
                 }
             }

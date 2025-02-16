@@ -30,7 +30,8 @@ class PlayerViewModel(
         .onEach { player ->
             val title = repository.getRelease(titleId).getOrThrow()
             with(player) {
-                if (mediaItemCount == 0) addMediaItem(title.toMediaItem())
+                clearMediaItems()
+                addMediaItem(title.toMediaItem())
                 prepare()
                 play()
             }
@@ -55,7 +56,7 @@ class PlayerViewModel(
             .build()
         return MediaItem.Builder()
             .setMediaMetadata(mediaMetadata)
-            .setUri(episodes[3].hls1080)
+            .setUri(episodes[0].hls1080)
             .setMimeType(MimeTypes.APPLICATION_M3U8)
             .build()
     }

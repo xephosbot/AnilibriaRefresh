@@ -24,10 +24,6 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
-    compileOnly(libs.room.gradlePlugin)
-    compileOnly(libs.detekt.gradlePlugin)
-    compileOnly(libs.ktlint.gradlePlugin)
 }
 
 tasks {
@@ -39,25 +35,9 @@ tasks {
 
 gradlePlugin {
     plugins {
-        register("androidApplication") {
-            id = "xbot.android.application"
-            implementationClass = "AndroidApplicationConventionPlugin"
-        }
-        register("androidLibraryCompose") {
-            id = "xbot.android.library.compose"
-            implementationClass = "AndroidLibraryComposeConventionPlugin"
-        }
-        register("androidLibrary") {
-            id = "xbot.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
-        }
-        register("androidTest") {
-            id = "xbot.android.test"
-            implementationClass = "AndroidTestConventionPlugin"
-        }
-        register("androidRoom") {
-            id = "xbot.android.room"
-            implementationClass = "AndroidRoomConventionPlugin"
+        register("compose") {
+            id = "com.xbot.compose"
+            implementationClass = "ComposePlugin"
         }
     }
 }

@@ -5,19 +5,15 @@
 package com.xbot.anilibriarefresh.di
 
 import com.xbot.anilibriarefresh.ui.PlayerViewModel
-import com.xbot.anilibriarefresh.ui.feature.favorite.FavoriteViewModel
-import com.xbot.anilibriarefresh.ui.feature.home.feed.HomeFeedViewModel
-import com.xbot.anilibriarefresh.ui.feature.home.search.FiltersViewModel
-import com.xbot.anilibriarefresh.ui.feature.home.search.SearchResultViewModel
-import com.xbot.anilibriarefresh.ui.feature.title.TitleViewModel
+import com.xbot.title.TitleViewModel
+import com.xbot.home.HomeViewModel
+import com.xbot.search.SearchViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModelOf(::FavoriteViewModel)
-    viewModelOf(::HomeFeedViewModel)
-    viewModelOf(::FiltersViewModel)
-    viewModelOf(::SearchResultViewModel)
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::SearchViewModel)
     viewModelOf(::TitleViewModel)
     viewModelOf(::PlayerViewModel)
 }

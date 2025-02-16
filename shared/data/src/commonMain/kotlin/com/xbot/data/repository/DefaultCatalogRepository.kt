@@ -57,7 +57,9 @@ internal class DefaultCatalogRepository(
         client.getCatalogReleaseTypes().map(ReleaseTypeApi::toDomain)
     }
 
-    override suspend fun getYears(): Result<List<Int>> = runCatching {
-        client.getCatalogYears()
+    override suspend fun getYears(): Result<ClosedRange<Int>> = runCatching {
+        client.getCatalogYears().let { years ->
+            years.first()..years.last()
+        }
     }
 }
