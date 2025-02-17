@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
 import androidx.compose.material3.LocalNavigationBarComponentOverride
+import androidx.compose.material3.LocalNavigationRailComponentOverride
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldComponentOverride
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.xbot.designsystem.components.AnilibriaNavigationBar
+import com.xbot.designsystem.components.AnilibriaNavigationRail
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 internal val lightScheme = lightColorScheme(
@@ -266,7 +268,8 @@ fun AnilibriaTheme(
 
     CompositionLocalProvider(
         LocalNavigationSuiteScaffoldComponentOverride provides AnilibriaNavigationSuiteScaffold,
-        LocalNavigationBarComponentOverride provides AnilibriaNavigationBar
+        LocalNavigationBarComponentOverride provides AnilibriaNavigationBar,
+        LocalNavigationRailComponentOverride provides AnilibriaNavigationRail,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
