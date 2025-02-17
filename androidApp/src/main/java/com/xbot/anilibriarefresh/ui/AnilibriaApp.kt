@@ -21,7 +21,6 @@ fun AnilibriaApp(
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
     val currentDestination = appState.currentDestination
     val currentTopLevelDestination = appState.currentTopLevelDestination
-    val navBackStack = appState.navBackStack
 
     LaunchedEffect(currentTopLevelDestination) {
         snapshotFlow { currentTopLevelDestination }
@@ -51,7 +50,7 @@ fun AnilibriaApp(
                         )
                     },
                     onClick = {
-                        appState.navigateToTopLevelDestination(destination, navBackStack)
+                        appState.navigateToTopLevelDestination(destination)
                     },
                 )
             }
