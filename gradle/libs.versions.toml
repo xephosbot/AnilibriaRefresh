@@ -1,6 +1,6 @@
 [versions]
 androidDesugarJdkLibs = "2.1.4"
-android-gradle-plugin = "8.8.0"
+android-gradle-plugin = "8.8.1"
 android-tools = "31.8.1"
 androidxActivity = "1.10.0"
 androidxComposeBom = "2025.02.00"
