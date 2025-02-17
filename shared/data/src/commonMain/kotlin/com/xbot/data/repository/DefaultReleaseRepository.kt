@@ -21,7 +21,6 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.utils.PagedResponse
 import com.xbot.domain.repository.ReleaseRepository
 import kotlinx.datetime.DayOfWeek
 
@@ -55,7 +54,7 @@ internal class DefaultReleaseRepository(
                     publishStatuses = publishStatuses?.map(PublishStatus::toApi),
                     productionStatuses = productionStatuses?.map(ProductionStatus::toApi),
                 )
-                PagedResponse(
+                CommonPagingSource.PagedResponse(
                     items = result.data.map(ReleaseApi::toDomain),
                     total = result.meta.pagination.total
                 )

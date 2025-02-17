@@ -2,7 +2,6 @@ package com.xbot.data.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.xbot.domain.models.utils.PagedResponse
 import kotlin.math.max
 
 internal class CommonPagingSource<T : Any>(
@@ -41,6 +40,11 @@ internal class CommonPagingSource<T : Any>(
     }
 
     override val jumpingSupported: Boolean = true
+
+    data class PagedResponse<T>(
+        val items: List<T>,
+        val total: Int,
+    )
 
     companion object {
         const val NETWORK_PAGE_SIZE = 20
