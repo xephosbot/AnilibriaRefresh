@@ -1,6 +1,9 @@
 package com.xbot.search
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
@@ -101,6 +105,7 @@ private fun SearchScreenContent(
     onBackClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
+    var showSortingType by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -138,9 +143,9 @@ private fun SearchScreenContent(
                 ChipGroup {
                     AssistChip(
                         onClick = {
-                            showFilters = true
+                            showSortingType = true
                         },
-                        label = { Text(text = "Sorting type") },
+                        label = { Text(text = stringResource(state.selectedSortingType.stringRes)) },
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
@@ -167,7 +172,7 @@ private fun SearchScreenContent(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
-        SearchResult(
+        SearchResultScreen(
             items = searchResult,
             contentPadding = innerPadding,
             onRetry = { error, action ->
@@ -195,9 +200,6 @@ private fun SearchScreenContent(
                 onProductionStatusClick = { productionStatus ->
                     onAction(SearchScreenAction.ToggleProductionStatus(productionStatus))
                 },
-                onSortingTypeClick = { sortingType ->
-                    onAction(SearchScreenAction.UpdateSortingType(sortingType))
-                },
                 onSeasonClick = { season ->
                     onAction(SearchScreenAction.ToggleSeason(season))
                 },
@@ -210,10 +212,23 @@ private fun SearchScreenContent(
             )
         }
     }
+
+    if (showSortingType) {
+        ModalBottomSheet(
+            onDismissRequest = { showSortingType = false }
+        ) {
+            SortingTypeScreen(
+                state = state,
+                onSortingTypeClick = { sortingType ->
+                    onAction(SearchScreenAction.UpdateSortingType(sortingType))
+                },
+            )
+        }
+    }
 }
 
 @Composable
-private fun SearchResult(
+private fun SearchResultScreen(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<Release>,
     contentPadding: PaddingValues,
@@ -235,24 +250,104 @@ private fun SearchResult(
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
     ProvideShimmer(shimmer) {
-        Feed(
-            modifier = modifier.shimmerUpdater(shimmer),
-            columns = GridCells.Adaptive(350.dp),
-            contentPadding = contentPadding
+        AnimatedVisibility(
+            visible = items.loadState.refresh !is LoadState.Loading,
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
-            header(
-                title = { Text(text = stringResource(R.string.label_search_results)) },
+            SearchResultContent(
+                modifier = modifier.shimmerUpdater(shimmer),
+                items = items,
+                contentPadding = contentPadding,
+                onReleaseClick = onReleaseClick,
             )
-            pagingItems(items) { index, release ->
-                Column {
-                    ReleaseListItem(
-                        modifier = Modifier.feedItemSpacing(index),
-                        release = release,
-                        onClick = { onReleaseClick(it.id) },
-                    )
-                    Spacer(Modifier.height(16.dp))
-                }
+        }
+    }
+}
+
+@Composable
+private fun SearchResultContent(
+    modifier: Modifier = Modifier,
+    items: LazyPagingItems<Release>,
+    contentPadding: PaddingValues,
+    onReleaseClick: (Int) -> Unit,
+) {
+    val feedState = rememberLazyGridState()
+
+    LaunchedEffect(items.itemSnapshotList) {
+        if (items.itemCount > 0) feedState.scrollToItem(0)
+    }
+
+    Feed(
+        modifier = modifier,
+        columns = GridCells.Adaptive(350.dp),
+        contentPadding = contentPadding,
+        state = feedState
+    ) {
+        header(
+            title = { Text(text = stringResource(R.string.label_search_results)) },
+        )
+        pagingItems(items) { index, release ->
+            Column {
+                ReleaseListItem(
+                    modifier = Modifier.feedItemSpacing(index),
+                    release = release,
+                    onClick = { onReleaseClick(it.id) },
+                )
+                Spacer(Modifier.height(16.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun SortingTypeScreen(
+    modifier: Modifier = Modifier,
+    state: SearchScreenState,
+    onSortingTypeClick: (SortingType) -> Unit,
+) {
+    Crossfade(
+        targetState = state.loading
+    ) { targetState ->
+        when (targetState) {
+            true -> LoadingFiltersScreen(modifier)
+            false -> {
+                SortingTypeScreenContent(
+                    modifier = modifier,
+                    sortingTypes = state.sortingTypes,
+                    selectedSortingType = state.selectedSortingType,
+                    onSortingTypeClick = onSortingTypeClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SortingTypeScreenContent(
+    modifier: Modifier = Modifier,
+    sortingTypes: List<SortingType>,
+    selectedSortingType: SortingType,
+    onSortingTypeClick: (SortingType) -> Unit,
+) {
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) {
+        Header(
+            title = { Text(stringResource(R.string.label_sorting_types)) }
+        )
+        SingleChoiceChipGroup(
+            items = sortingTypes,
+            selectedItem = selectedSortingType
+        ) { selected, item ->
+            FilterChip(
+                selected = selected,
+                onClick = { onSortingTypeClick(item) },
+                label = { Text(stringResource(item.stringRes)) },
+                leadingIcon = {
+                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                }
+            )
         }
     }
 }
@@ -265,7 +360,6 @@ private fun FiltersScreen(
     onReleaseTypeClick: (ReleaseType) -> Unit,
     onPublishStatusClick: (PublishStatus) -> Unit,
     onProductionStatusClick: (ProductionStatus) -> Unit,
-    onSortingTypeClick: (SortingType) -> Unit,
     onSeasonClick: (Season) -> Unit,
     onYearsRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
     onAgeRatingClick: (AgeRating) -> Unit,
@@ -289,9 +383,6 @@ private fun FiltersScreen(
                 productionStatuses = state.productionStatuses,
                 selectedProductionStatuses = state.selectedProductionStatuses.toList(),
                 onProductionStatusClick = onProductionStatusClick,
-                sortingTypes = state.sortingTypes,
-                selectedSortingType = state.selectedSortingType,
-                onSortingTypeClick = onSortingTypeClick,
                 seasons = state.seasons,
                 selectedSeasons = state.selectedSeasons.toList(),
                 onSeasonClick = onSeasonClick,
@@ -321,9 +412,6 @@ private fun FiltersScreenContent(
     productionStatuses: List<ProductionStatus>,
     selectedProductionStatuses: List<ProductionStatus>,
     onProductionStatusClick: (ProductionStatus) -> Unit,
-    sortingTypes: List<SortingType>,
-    selectedSortingType: SortingType,
-    onSortingTypeClick: (SortingType) -> Unit,
     seasons: List<Season>,
     selectedSeasons: List<Season>,
     onSeasonClick: (Season) -> Unit,
@@ -335,8 +423,7 @@ private fun FiltersScreenContent(
     onAgeRatingClick: (AgeRating) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
+        modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         Header(
             title = { Text(stringResource(R.string.label_genres)) }
@@ -399,23 +486,6 @@ private fun FiltersScreenContent(
             FilterChip(
                 selected = selected,
                 onClick = { onProductionStatusClick(item) },
-                label = { Text(stringResource(item.stringRes)) },
-                leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
-                }
-            )
-        }
-
-        Header(
-            title = { Text(stringResource(R.string.label_sorting_types)) }
-        )
-        SingleChoiceChipGroup(
-            items = sortingTypes,
-            selectedItem = selectedSortingType
-        ) { selected, item ->
-            FilterChip(
-                selected = selected,
-                onClick = { onSortingTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
                     if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
