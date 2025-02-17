@@ -61,7 +61,7 @@ class SearchViewModel(
     @OptIn(FlowPreview::class)
     val searchResult: Flow<PagingData<Release>> = combine(
         searchQuery.debounce(500L),
-        _filters.debounce(500L)
+        filters.debounce(500L)
     ) { searchQuery, filters ->
         searchQuery to filters
     }
