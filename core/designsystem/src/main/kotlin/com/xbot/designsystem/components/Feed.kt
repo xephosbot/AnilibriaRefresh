@@ -379,11 +379,12 @@ inline fun FeedScope.header(
 
 inline fun <T : Any> FeedScope.pagingItems(
     items: LazyPagingItems<T>,
+    noinline key: ((index: Int) -> Any)? = items.itemKey(),
     crossinline itemContent: @Composable FeedItemScope.(index: Int, item: T?) -> Unit,
 ) {
     items(
         count = items.itemCount,
-        key = items.itemKey(),
+        key = key,
         contentType = items.itemContentType { "Paging Items" },
     ) {
         itemContent(it, items[it])
