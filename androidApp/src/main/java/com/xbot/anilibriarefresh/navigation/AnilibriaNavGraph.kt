@@ -44,7 +44,7 @@ fun AnilibriaNavGraph(
         profileSection()
         titleScreen(
             onBackClick = {
-                navController.popBackStack()
+                navController.navigateUp()
             },
             onPlayClick = { releaseId ->
                 navController.navigate(Route.Player(releaseId))
@@ -52,7 +52,7 @@ fun AnilibriaNavGraph(
         )
         searchScreen(
             onBackClick = {
-                navController.popBackStack()
+                navController.navigateUp()
             },
             onReleaseClick = { releaseId ->
                 navController.navigateToTitle(releaseId)
