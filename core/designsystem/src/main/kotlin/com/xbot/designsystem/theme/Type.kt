@@ -5,6 +5,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.xbot.designsystem.R
 
 val NotoSansFontFamily = FontFamily(
@@ -28,6 +29,13 @@ val NotoSansFontFamily = FontFamily(
     Font(R.font.notosans_blackitalic, FontWeight.Black, FontStyle.Italic)
 )
 
+val BebesNeueFontFamily = FontFamily(
+    Font(R.font.bebesneue_thin, FontWeight.Thin),
+    Font(R.font.bebesneue_light, FontWeight.Light),
+    Font(R.font.bebesneue_regular, FontWeight.Normal),
+    Font(R.font.bebesneue_bold, FontWeight.Bold),
+)
+
 // Default Material 3 typography values
 val baseline = Typography()
 
@@ -38,7 +46,11 @@ val AnilibriaTypography = Typography(
     headlineLarge = baseline.headlineLarge.copy(fontFamily = NotoSansFontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = NotoSansFontFamily),
     headlineSmall = baseline.headlineSmall.copy(fontFamily = NotoSansFontFamily),
-    titleLarge = baseline.titleLarge.copy(fontFamily = NotoSansFontFamily),
+    titleLarge = baseline.titleLarge.copy(
+        fontFamily = BebesNeueFontFamily,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
+    ),
     titleMedium = baseline.titleMedium.copy(fontFamily = NotoSansFontFamily),
     titleSmall = baseline.titleSmall.copy(fontFamily = NotoSansFontFamily),
     bodyLarge = baseline.bodyLarge.copy(fontFamily = NotoSansFontFamily),
