@@ -65,8 +65,6 @@ import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import kotlinx.datetime.DayOfWeek
 import org.koin.androidx.compose.koinViewModel
-import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -226,11 +224,9 @@ private fun ReleaseFeed(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 stickyHeader = { dayOfWeek ->
                     Column {
-                        // TODO: Use MaterialTheme.typography style
                         Text(
-                            text = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                            fontSize = 12.sp,
-                            lineHeight = 12.sp,
+                            text = dayOfWeek.toLocalizedString(),
+                            style = MaterialTheme.typography.labelMedium
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
