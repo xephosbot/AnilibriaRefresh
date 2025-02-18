@@ -40,13 +40,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.localization.toLocalizedString
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.ReleaseCardItem
@@ -160,12 +160,13 @@ private fun HomeScreenContent(
                 label = "Loading state transition in HomeScreenContent",
             ) { targetState ->
                 when (targetState) {
-                    is HomeScreenState.Loading -> LoadingScreen()
+                    is HomeScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
                     is HomeScreenState.Success -> {
                         ReleaseFeed(
                             items = items,
                             recommendedList = targetState.releasesFeed.recommendedReleases,
                             scheduleList = targetState.releasesFeed.schedule,
+                            contentPadding = innerPadding,
                             onReleaseClick = { onReleaseClick(it.id) },
                         )
                     }
@@ -189,6 +190,7 @@ private fun ReleaseFeed(
     items: LazyPagingItems<Release>,
     recommendedList: List<Release>,
     scheduleList: Map<DayOfWeek, List<Release>>,
+    contentPadding: PaddingValues,
     onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
@@ -198,6 +200,7 @@ private fun ReleaseFeed(
         Feed(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(350.dp),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
             horizontalPagerItems(
                 items = recommendedList,
@@ -262,12 +265,14 @@ private fun ReleaseFeed(
 @Composable
 private fun LoadingScreen(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
     ProvideShimmer(shimmer) {
         Column(
             modifier = modifier
+                .padding(contentPadding.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
             ReleaseLargeCard(null)

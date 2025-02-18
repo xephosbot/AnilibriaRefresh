@@ -3,7 +3,9 @@ package com.xbot.title
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -50,6 +53,7 @@ import com.xbot.designsystem.components.pinnedScrollBehaviorFixed
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.effects.ProvideShimmer
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetail
 import org.koin.androidx.compose.koinViewModel
@@ -107,16 +111,16 @@ private fun TitleScreenContent(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
-        innerPadding
         Crossfade(
             targetState = state,
             label = ""
         ) { targetState ->
-            when(targetState) {
-                is TitleScreenState.Loading -> LoadingScreen()
+            when (targetState) {
+                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
                 is TitleScreenState.Success -> {
                     TitleDetails(
                         title = targetState.title,
+                        contentPadding = innerPadding,
                         onPlayClick = onPlayClick
                     )
                 }
@@ -129,11 +133,13 @@ private fun TitleScreenContent(
 private fun TitleDetails(
     modifier: Modifier = Modifier,
     title: ReleaseDetail,
+    contentPadding: PaddingValues,
     onPlayClick: (Int) -> Unit
 ) {
     Feed(
         modifier = modifier,
-        columns = GridCells.Adaptive(350.dp)
+        columns = GridCells.Adaptive(350.dp),
+        contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
     ) {
         row {
             ReleaseLargeCard(release = title.toRelease())
@@ -235,13 +241,15 @@ private fun PlayButton(
 
 @Composable
 private fun LoadingScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
     ProvideShimmer(shimmer) {
         Column(
             modifier = modifier
+                .padding(contentPadding.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
             ReleaseLargeCard(null)
