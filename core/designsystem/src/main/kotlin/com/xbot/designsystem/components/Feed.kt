@@ -72,6 +72,7 @@ fun Feed(
                 span = if (feedItem.span != null) {
                     {
                         feedItem.span!!(this, it).also { itemSpan ->
+                            feedItemScope._maxLineSpan = this.maxLineSpan
                             feedItemScope._currentLineSpan = itemSpan.currentLineSpan
                         }
                     }
@@ -105,6 +106,7 @@ interface FeedScope {
 
 interface FeedItemScope {
     val currentLineSpan: Int
+    val maxLineSpan: Int
 
     fun Modifier.feedItemSpacing(
         index: Int,
@@ -113,8 +115,8 @@ interface FeedItemScope {
         val halfSpacing = horizontalSpacing / 2
 
         try {
-            val isFirstColumn = index % currentLineSpan == 0
-            val isLastColumn = (index + 1) % currentLineSpan == 0
+            val isFirstColumn = index % maxLineSpan == 0
+            val isLastColumn = (index + 1) % maxLineSpan == 0
 
             return padding(
                 start = if (isFirstColumn) horizontalSpacing else halfSpacing,
@@ -186,9 +188,13 @@ internal class DefaultFeedScope : FeedScope {
 
 internal class DefaultFeedItemScope : FeedItemScope {
     internal var _currentLineSpan: Int = 0
+    internal var _maxLineSpan: Int = 0
 
     override val currentLineSpan: Int
         get() = _currentLineSpan
+
+    override val maxLineSpan: Int
+        get() = _maxLineSpan
 }
 
 inline fun <T> FeedScope.items(
