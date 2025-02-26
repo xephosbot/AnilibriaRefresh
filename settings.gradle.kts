@@ -28,7 +28,6 @@ dependencyResolutionManagement {
 rootProject.name = "AnilibriaRefresh"
 
 include(":androidApp")
-include(":media")
 include(":baselineprofile")
 include(":core:designsystem")
 include(":core:common")

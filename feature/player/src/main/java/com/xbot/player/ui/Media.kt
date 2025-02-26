@@ -1,4 +1,4 @@
-package com.xbot.media.ui
+package com.xbot.player.ui
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
@@ -165,7 +165,7 @@ fun Media(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = state,
-                surfaceType = surfaceType,
+                surfaceType = surfaceType
             )
 
             // shutter

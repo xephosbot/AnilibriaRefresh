@@ -1,4 +1,4 @@
-package com.xbot.media.ui
+package com.xbot.player.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -1,4 +1,4 @@
-package com.xbot.media.ui
+package com.xbot.player.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaMetadata
+import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import kotlinx.coroutines.delay
 
 /**
@@ -71,7 +72,7 @@ fun PlayerController(
     bottomActions: @Composable RowScope.() -> Unit = {},
     windowInsets: WindowInsets = WindowInsets.displayCutout,
 ) {
-    Crossfade(targetState = mediaState.isControllerShowing, modifier = modifier) { isShowing ->
+    Crossfade(targetState = mediaState.isControllerShowing,) { isShowing ->
         if (isShowing) {
             val controllerState = rememberControllerState(mediaState)
             var dragging by remember { mutableStateOf(false) }
@@ -93,7 +94,7 @@ fun PlayerController(
             }
 
             ControllerLayout(
-                modifier = Modifier.background(BackgroundOverlayColor),
+                modifier = modifier.background(BackgroundOverlayColor),
                 mediaState = mediaState,
                 controllerState = controllerState,
                 isBuffering = isBuffering,

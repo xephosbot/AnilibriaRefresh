@@ -1,4 +1,4 @@
-package com.xbot.media.ui
+package com.xbot.player.ui
 
 import android.view.Surface
 import android.view.SurfaceView
