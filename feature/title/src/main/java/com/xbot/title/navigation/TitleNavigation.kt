@@ -14,7 +14,8 @@ fun NavHostController.navigateToTitle(id: Int) = navigate(TitleRoute(id))
 
 fun NavGraphBuilder.titleScreen(
     onBackClick: () -> Unit,
-    onPlayClick: (Int) -> Unit
+    onPlayClick: (Int) -> Unit,
+    onReleaseClick: (Int) -> Unit
 ) {
     composable<TitleRoute> { navBackStackEntry ->
         TitleScreen(
@@ -23,6 +24,9 @@ fun NavGraphBuilder.titleScreen(
             },
             onPlayClick = { releaseId ->
                 if (navBackStackEntry.lifecycleIsResumed()) onPlayClick(releaseId)
+            },
+            onReleaseClick = { releaseId ->
+                if (navBackStackEntry.lifecycleIsResumed()) onReleaseClick(releaseId)
             }
         )
     }
