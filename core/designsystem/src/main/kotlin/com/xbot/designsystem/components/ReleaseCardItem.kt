@@ -6,8 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,8 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.xbot.common.localization.localizedName
 import com.xbot.designsystem.effects.LocalShimmer
-import com.xbot.designsystem.effects.dimmedEdge
+import com.xbot.designsystem.effects.scrim
 import com.xbot.designsystem.effects.shimmerSafe
 import com.xbot.domain.models.Release
 
@@ -51,7 +52,7 @@ private fun ReleaseCardItemContent(
 ) {
     Box(
         modifier = modifier
-            .height(ReleaseCardHeight)
+            .width(ReleaseCardWidth)
             .aspectRatio(7f / 10f)
             .clip(shape)
             .clickable { onClick(release) },
@@ -60,18 +61,14 @@ private fun ReleaseCardItemContent(
         PosterImage(
             modifier = Modifier
                 .fillMaxSize()
-                .dimmedEdge(0.75f),
+                .scrim(1.0f),
             poster = release.poster,
         )
         Text(
-            modifier = Modifier
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 16.dp
-                ),
-            text = release.name,
+            modifier = Modifier.padding(12.dp),
+            text = release.localizedName(),
             color = Color.White,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleSmall,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
@@ -87,12 +84,13 @@ private fun LoadingReleaseCardItem(
 
     Box(
         modifier = modifier
-            .height(ReleaseCardHeight)
+            .width(ReleaseCardWidth)
             .aspectRatio(7f / 10f)
-            .shimmerSafe(shimmer)
             .clip(shape)
+            .scrim(1.0f)
+            .shimmerSafe(shimmer)
             .background(Color.LightGray),
     )
 }
 
-private val ReleaseCardHeight = 192.dp
+private val ReleaseCardWidth = 124.dp

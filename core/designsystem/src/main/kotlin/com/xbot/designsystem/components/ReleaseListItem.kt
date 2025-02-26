@@ -10,23 +10,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import com.xbot.common.localization.localizedName
 import com.xbot.designsystem.R
 import com.xbot.designsystem.effects.LocalShimmer
 import com.xbot.designsystem.effects.shimmerSafe
@@ -70,7 +70,7 @@ private fun ReleaseListItemContent(
         modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
             Text(
-                text = release.name,
+                text = release.localizedName(),
                 overflow = TextOverflow.Ellipsis,
             )
         },
@@ -156,30 +156,22 @@ private fun ListItemLayout(
     tags: @Composable () -> Unit,
 ) {
     val headlineBox = @Composable {
-        Box {
-            ProvideTextStyle(
-                value = MaterialTheme.typography.bodyLarge,
-                content = headlineContent,
-            )
-        }
+        ProvideTextStyle(
+            value = MaterialTheme.typography.titleMedium,
+            content = headlineContent,
+        )
     }
     val supportingBox = @Composable {
-        Box {
-            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
-                ProvideTextStyle(
-                    value = MaterialTheme.typography.bodyMedium,
-                    content = supportingContent,
-                )
+        ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
+            Box(modifier = Modifier.graphicsLayer { alpha = DescriptionAlpha }) {
+                supportingContent.invoke()
             }
         }
     }
     val tagsBox = @Composable {
-        Box {
-            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
-                ProvideTextStyle(
-                    value = MaterialTheme.typography.labelSmall,
-                    content = tags
-                )
+        ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
+            Box(modifier = Modifier.graphicsLayer { alpha = SubtitleAlpha }) {
+                tags.invoke()
             }
         }
     }
@@ -216,7 +208,7 @@ private fun ListItemLayout(
         val verticalPadding = ReleaseItemContainerPaddingVertical.roundToPx()
         val doubleVerticalPadding = (ReleaseItemContainerPaddingVertical * 2).roundToPx()
         val headlineHeight =
-            (constraints.maxHeight - doubleVerticalPadding - tagsPlaceable.height - spacing).coerceAtLeast(0)
+            (constraints.maxHeight - doubleVerticalPadding - tagsPlaceable.height).coerceAtLeast(0)
 
         val headlinePlaceable = headlineMeasurable.first()
             .measure(
@@ -227,10 +219,10 @@ private fun ListItemLayout(
                 ),
             )
 
-        val headlineOffset = verticalPadding + headlinePlaceable.height + spacing
+        val headlineOffset = verticalPadding + headlinePlaceable.height
         val tagsOffset = headlineOffset + tagsPlaceable.height + spacing
         val supportingHeight =
-            (constraints.maxHeight - doubleVerticalPadding - headlinePlaceable.height - tagsPlaceable.height - spacing * 2).coerceAtLeast(0)
+            (constraints.maxHeight - doubleVerticalPadding - headlinePlaceable.height - tagsPlaceable.height - spacing).coerceAtLeast(0)
 
         val supportingPlaceable = supportingMeasurable.first()
             .measure(
@@ -273,4 +265,6 @@ private val ReleaseItemContainerPaddingHorizontal = 16.dp
 private val ReleaseItemContainerHeight = 160.dp
 private val ReleaseItemContentSpacingVertical = 4.dp
 private val ReleaseItemTagsSpacing = 8.dp
-private val ReleaseItemMinContentSize = 20.dp
+private val ReleaseItemMinContentSize = 16.dp
+private const val SubtitleAlpha = 0.6f
+private const val DescriptionAlpha = 0.8f
