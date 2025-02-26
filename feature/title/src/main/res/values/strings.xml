@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Подзаголовки -->
+    <string name="label_description">Description</string>
+    <string name="label_genres">Genres</string>
+
+    <!-- Кнопки -->
+    <string name="button_retry">Retry</string>
+    <string name="button_watch">Watch</string>
+    <string name="button_watch_continue">Continue watching</string>
+    <string name="button_add_to_favorites">Add to watchlist</string>
+    <string name="button_watched_it">Watched it?</string>
+    <string name="button_share">Share</string>
+    <string name="button_telegram">Watch in Telegram</string>
+</resources>

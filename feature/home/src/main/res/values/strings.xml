@@ -1,16 +1,13 @@
 <resources>
     <!-- Подзаголовки -->
-    <string name="label_schedule">Расписание</string>
-    <string name="label_new_episodes">Новые эпизоды</string>
+    <string name="label_schedule">Schedule</string>
+    <string name="label_new_episodes">New episodes</string>
 
     <!-- Кнопки -->
-    <string name="button_retry">Повторить</string>
-    <string name="button_watch">Смотреть</string>
-
-    <!-- Строка поиска -->
-    <string name="search_bar_placeholder">Поиск по названию</string>
+    <string name="button_retry">Retry</string>
+    <string name="button_watch">Watch</string>
 
     <!-- Сообщения ошибок -->
-    <string name="error_unknown">Неизвестная ошибка</string>
-    <string name="error_name_not_found">Имя не найдено</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_name_not_found">Name not found</string>
 </resources>
