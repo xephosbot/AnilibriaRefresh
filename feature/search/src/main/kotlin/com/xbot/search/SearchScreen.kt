@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -105,6 +106,8 @@ private fun SearchScreenContent(
     onBackClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
+    val sortingTypeBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val filtersBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSortingType by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
 
@@ -184,7 +187,8 @@ private fun SearchScreenContent(
 
     if (showFilters) {
         ModalBottomSheet(
-            onDismissRequest = { showFilters = false }
+            onDismissRequest = { showFilters = false },
+            sheetState = filtersBottomSheetState
         ) {
             FiltersScreen(
                 state = state,
@@ -215,7 +219,8 @@ private fun SearchScreenContent(
 
     if (showSortingType) {
         ModalBottomSheet(
-            onDismissRequest = { showSortingType = false }
+            onDismissRequest = { showSortingType = false },
+            sheetState = sortingTypeBottomSheetState
         ) {
             SortingTypeScreen(
                 state = state,
@@ -274,7 +279,7 @@ private fun SearchResultContent(
 ) {
     val feedState = rememberLazyGridState()
 
-    LaunchedEffect(items.itemSnapshotList) {
+    LaunchedEffect(Unit) {
         if (items.itemCount > 0) feedState.scrollToItem(0)
     }
 
