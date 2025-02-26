@@ -9,7 +9,7 @@ data class FranchiseApi(
     @SerialName("id") val id: String,
     @SerialName("name") val name: String,
     @SerialName("name_english") val nameEnglish: String,
-    @SerialName("rating") val rating: Double,
+    @SerialName("rating") val rating: Double? = null,
     @SerialName("last_year") val lastYear: Int,
     @SerialName("first_year") val firstYear: Int,
     @SerialName("total_releases") val totalReleases: Int,

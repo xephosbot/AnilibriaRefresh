@@ -7,6 +7,7 @@ data class Release(
     val type: ReleaseType?,
     val year: Int,
     val name: String,
+    val englishName: String,
     val description: String,
     val episodesCount: Int?,
     val episodeDuration: Int?,

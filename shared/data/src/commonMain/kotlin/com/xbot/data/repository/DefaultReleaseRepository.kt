@@ -2,8 +2,12 @@ package com.xbot.data.repository
 
 import androidx.paging.PagingSource
 import com.xbot.api.client.AnilibriaClient
+import com.xbot.api.models.shared.EpisodeApi
+import com.xbot.api.models.shared.GenreApi
+import com.xbot.api.models.shared.MemberApi
 import com.xbot.api.models.shared.ReleaseApi
 import com.xbot.api.request.getCatalogReleases
+import com.xbot.api.request.getFranchisesByRelease
 import com.xbot.api.request.getRandomReleases
 import com.xbot.api.request.getRelease
 import com.xbot.api.request.getScheduleWeek
@@ -11,7 +15,6 @@ import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toApi
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
-import com.xbot.data.mapper.toReleaseDetail
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetail
@@ -83,6 +86,21 @@ internal class DefaultReleaseRepository(
     }
 
     override suspend fun getRelease(id: Int): Result<ReleaseDetail> = runCatching {
-        client.getRelease(id).toReleaseDetail()
+        val relatedReleases = client.getFranchisesByRelease(id)
+            .flatMap { it.franchiseReleases ?: emptyList() }
+            .filterNot { it.release.id == id }
+        val release = client.getRelease(id)
+        ReleaseDetail(
+            release = release.toDomain(),
+            season = release.season?.toDomain(),
+            isOngoing = release.isOngoing,
+            ageRating = release.ageRating!!.toDomain(),
+            publishDay = release.publishDay!!.toDayOfWeek(),
+            notification = release.notification.orEmpty(),
+            genres = release.genres?.map(GenreApi::toDomain) ?: emptyList(),
+            members = release.members?.map(MemberApi::toDomain) ?: emptyList(),
+            episodes = release.episodes?.map(EpisodeApi::toDomain) ?: emptyList(),
+            relatedReleases = relatedReleases.map { it.release.toDomain() }
+        )
     }
 }
