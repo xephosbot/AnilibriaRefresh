@@ -41,7 +41,12 @@ val baseline = Typography()
 
 val AnilibriaTypography = Typography(
     displayLarge = baseline.displayLarge.copy(fontFamily = NotoSansFontFamily),
-    displayMedium = baseline.displayMedium.copy(fontFamily = NotoSansFontFamily),
+    displayMedium = baseline.displayMedium.copy(
+        fontFamily = NotoSansFontFamily,
+        fontSize = 40.sp,
+        lineHeight = 50.sp,
+        fontWeight = FontWeight.SemiBold
+    ),
     displaySmall = baseline.displaySmall.copy(fontFamily = NotoSansFontFamily),
     headlineLarge = baseline.headlineLarge.copy(fontFamily = NotoSansFontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = NotoSansFontFamily),
@@ -51,7 +56,10 @@ val AnilibriaTypography = Typography(
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold
     ),
-    titleMedium = baseline.titleMedium.copy(fontFamily = NotoSansFontFamily),
+    titleMedium = baseline.titleMedium.copy(
+        fontFamily = NotoSansFontFamily,
+        fontWeight = FontWeight.Medium
+    ),
     titleSmall = baseline.titleSmall.copy(fontFamily = NotoSansFontFamily),
     bodyLarge = baseline.bodyLarge.copy(fontFamily = NotoSansFontFamily),
     bodyMedium = baseline.bodyMedium.copy(fontFamily = NotoSansFontFamily),
