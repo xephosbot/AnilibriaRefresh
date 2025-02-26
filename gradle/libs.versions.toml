@@ -1,5 +1,5 @@
 [versions]
-androidDesugarJdkLibs = "2.1.4"
+androidDesugarJdkLibs = "2.1.5"
 android-gradle-plugin = "8.8.1"
 android-tools = "31.8.1"
 androidxActivity = "1.10.0"
