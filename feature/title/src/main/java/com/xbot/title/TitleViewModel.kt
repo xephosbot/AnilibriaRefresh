@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.ReleaseDetail
@@ -46,15 +47,19 @@ class TitleViewModel(
                     _state.update { TitleScreenState.Success(title = title) }
                 },
                 onFailure = {
-                    showErrorMessage(it.localizedMessage.orEmpty())
+                    showErrorMessage(it.localizedMessage.orEmpty(), ::fetchTitleDetails)
                 }
             )
         }
     }
 
-    private fun showErrorMessage(error: String) {
+    private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
         snackbarManager.showMessage(
-            title = StringResource.String(error)
+            title = StringResource.String(error),
+            action = MessageAction(
+                title = StringResource.Text(R.string.button_retry),
+                action = onConfirmAction,
+            ),
         )
     }
 }
