@@ -7,12 +7,6 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.favorite.navigation.FavoriteRoute
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.profile.navigation.ProfileRoute
-import kotlinx.serialization.Serializable
-
-sealed interface Route {
-    @Serializable
-    data class Player(val titleId: Int)
-}
 
 enum class TopLevelDestination(
     @StringRes
@@ -38,10 +32,5 @@ enum class TopLevelDestination(
         selectedIcon = AnilibriaIcons.Filled.Person,
         unselectedIcon = AnilibriaIcons.Outlined.Person,
         route = ProfileRoute,
-    ),
-    ;
-
-    companion object {
-        val classNames = entries.map { it::route::class.qualifiedName }
-    }
+    );
 }
