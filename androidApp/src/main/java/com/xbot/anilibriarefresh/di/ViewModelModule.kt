@@ -4,10 +4,10 @@
 
 package com.xbot.anilibriarefresh.di
 
-import com.xbot.anilibriarefresh.ui.PlayerViewModel
 import com.xbot.title.TitleViewModel
 import com.xbot.home.HomeViewModel
 import com.xbot.search.SearchViewModel
+import com.xbot.player.PlayerViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
