@@ -16,27 +16,29 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.fadedEdge(
     edgeHeight: Dp = DefaultFadingEdgeHeight,
+    opacity: Float = 1.0f,
     bottomEdge: Boolean = true,
 ) = graphicsLayer {
     compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithCache {
     val edgeHeightPx = edgeHeight.toPx()
-    drawFadedEdge(edgeHeightPx, bottomEdge)
+    drawFadedEdge(edgeHeightPx, opacity, bottomEdge)
 }
 
 fun Modifier.fadedEdge(
     edgeHeightRatio: Float = 0.5f,
+    opacity: Float = 1.0f,
     bottomEdge: Boolean = true
 ) = graphicsLayer {
      compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithCache {
     val edgeHeightPx = size.width * edgeHeightRatio
-    drawFadedEdge(edgeHeightPx, bottomEdge)
+    drawFadedEdge(edgeHeightPx, opacity, bottomEdge)
 }
 
-private fun CacheDrawScope.drawFadedEdge(edgeHeight: Float, bottomEdge: Boolean): DrawResult {
+private fun CacheDrawScope.drawFadedEdge(edgeHeight: Float, opacity: Float, bottomEdge: Boolean): DrawResult {
     val brush = Brush.verticalGradient(
-        colors = listOf(Color.Transparent, Color.Black),
+        colors = listOf(Color.Transparent.copy(alpha = 1f - opacity), Color.Black),
         startY = if (bottomEdge) size.height else 0f,
         endY = if (bottomEdge) size.height - edgeHeight else edgeHeight,
     )
