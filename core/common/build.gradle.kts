@@ -13,12 +13,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -30,6 +24,9 @@ android {
 }
 
 dependencies {
+    // Project-level dependencies
+    api(projects.shared.domain)
+
     coreLibraryDesugaring(libs.android.desugarJdkLibs)
 
     // Kotlin dependencies

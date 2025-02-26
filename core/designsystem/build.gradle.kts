@@ -30,6 +30,7 @@ android {
 
 dependencies {
     // Project-level dependencies
+    implementation(projects.core.common)
     implementation(projects.shared.domain)
 
     // Koin dependencies

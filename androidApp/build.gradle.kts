@@ -58,7 +58,6 @@ dependencies {
     implementation(projects.shared.together)
     implementation(projects.core.designsystem)
     implementation(projects.core.common)
-    implementation(projects.media)
     implementation(projects.feature.home)
     implementation(projects.feature.favorite)
     implementation(projects.feature.profile)
