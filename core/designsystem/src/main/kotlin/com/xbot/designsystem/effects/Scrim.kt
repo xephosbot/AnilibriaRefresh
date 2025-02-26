@@ -7,9 +7,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-fun Modifier.dimmedEdge(
+fun Modifier.scrim(
     edgeHeightRatio: Float = 0.5f,
-    opacity: Float = 1.0f,
+    opacity: Float = 0.8f,
     bottomEdge: Boolean = true,
 ) = drawWithCache {
     val edgeHeightPx = size.width * edgeHeightRatio
