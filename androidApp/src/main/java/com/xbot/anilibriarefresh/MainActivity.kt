@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.ui
+package com.xbot.anilibriarefresh
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -11,6 +11,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import com.xbot.anilibriarefresh.ui.AnilibriaApp
 import com.xbot.designsystem.theme.AnilibriaTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            AnilibriaTheme {
+            AnilibriaTheme(dynamicColor = false) {
                 AnilibriaApp()
             }
         }
