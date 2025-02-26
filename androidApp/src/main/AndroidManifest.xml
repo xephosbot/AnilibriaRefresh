@@ -20,7 +20,7 @@
         android:theme="@style/Theme.AnilibriaRefresh.Splash"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,13 +30,14 @@
         </activity>
 
         <activity
-            android:name=".ui.PlayerActivity"
+            android:name="com.xbot.player.PlayerActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:configChanges="screenLayout|screenSize|orientation"
             android:theme="@style/NightAdjusted.Theme.AnilibriaRefresh" />
 
         <service
-            android:name=".service.PlaybackService"
+            android:name="com.xbot.player.service.PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="android.permission.FOREGROUND_SERVICE">
