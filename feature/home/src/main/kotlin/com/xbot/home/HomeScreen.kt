@@ -287,7 +287,7 @@ private fun LoadingScreen(
                     .padding(horizontal = 16.dp)
                     .padding(top = 20.dp),
             ) {
-                repeat(6) {
+                repeat(10) {
                     ReleaseCardItem(release = null) {}
                 }
             }
