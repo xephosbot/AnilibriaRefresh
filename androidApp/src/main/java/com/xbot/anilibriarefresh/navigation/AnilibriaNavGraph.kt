@@ -3,13 +3,13 @@ package com.xbot.anilibriarefresh.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import com.xbot.anilibriarefresh.ui.AnilibriaAppState
-import com.xbot.anilibriarefresh.ui.PlayerActivity
 import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
+import com.xbot.player.navigation.navigateToPlayer
+import com.xbot.player.navigation.playerScreen
 import com.xbot.profile.navigation.profileSection
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.search.navigation.searchScreen
@@ -42,12 +42,16 @@ fun AnilibriaNavGraph(
         )
         favoriteSection()
         profileSection()
+
         titleScreen(
             onBackClick = {
                 navController.navigateUp()
             },
             onPlayClick = { releaseId ->
-                navController.navigate(Route.Player(releaseId))
+                navController.navigateToPlayer(releaseId)
+            },
+            onReleaseClick = { releaseId ->
+                navController.navigateToTitle(releaseId)
             }
         )
         searchScreen(
@@ -58,8 +62,6 @@ fun AnilibriaNavGraph(
                 navController.navigateToTitle(releaseId)
             }
         )
-        activity<Route.Player> {
-            this.activityClass = PlayerActivity::class
-        }
+        playerScreen()
     }
 }
