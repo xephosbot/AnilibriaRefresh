@@ -13,7 +13,9 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
+import androidx.media3.common.listen
 import androidx.media3.common.text.CueGroup
+import androidx.media3.common.util.Util
 
 /**
  * Create a instance of [PlayerState] and register a [listener][Player.Listener] to the [Player] to

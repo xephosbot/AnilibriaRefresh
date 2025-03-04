@@ -9,8 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.player.ui.rememberPlayer
+import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.player.service.PlaybackService
+import com.xbot.player.ui.rememberPlayer
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : ComponentActivity() {
@@ -21,21 +22,25 @@ class PlayerActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val player by rememberPlayer<PlaybackService>()
+            val player = rememberPlayer<PlaybackService>()
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             LaunchedEffect(player, state) {
+                player?.clearMediaItems()
                 player?.addMediaItems(state.playList)
+                player?.seekTo(state.currentPlayingItemId, 0L)
                 player?.playWhenReady = true
                 player?.prepare()
             }
 
-            PlayerScreen(
-                player = player,
-                onCloseClick = { closeActivity() },
-                onSettingsClick = { /*TODO*/ },
-                onToggleFullScreen = { /*TODO*/ }
-            )
+            AnilibriaTheme {
+                PlayerScreen(
+                    player = player,
+                    onCloseClick = { closeActivity() },
+                    onSettingsClick = { /*TODO*/ },
+                    onToggleFullScreen = { /*TODO*/ }
+                )
+            }
         }
 
         onBackPressedDispatcher.addCallback {

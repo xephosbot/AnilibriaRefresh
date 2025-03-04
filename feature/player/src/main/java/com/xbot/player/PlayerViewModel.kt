@@ -22,6 +22,7 @@ class PlayerViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val releaseId: Int = savedStateHandle.toRoute<PlayerRoute>().id
+    private val episodeOrdinal: Int = savedStateHandle.toRoute<PlayerRoute>().episodeOrdinal
 
     private val _state: MutableStateFlow<PlayerUiState> = MutableStateFlow(PlayerUiState())
     val state: StateFlow<PlayerUiState> = _state.asStateFlow()
@@ -38,7 +39,8 @@ class PlayerViewModel(
     private fun updatePlaylist(release: ReleaseDetail) {
         _state.update {
             it.copy(
-                playList = release.toMediaItems()
+                playList = release.toMediaItems(),
+                currentPlayingItemId = episodeOrdinal
             )
         }
     }
@@ -61,4 +63,5 @@ class PlayerViewModel(
 
 data class PlayerUiState(
     val playList: List<MediaItem> = emptyList(),
+    val currentPlayingItemId: Int = 0
 )

@@ -3,13 +3,10 @@ package com.xbot.player.service
 import android.app.PendingIntent
 import android.content.Intent
 import androidx.annotation.OptIn
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.koin.androidContext
 
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaSessionService() {

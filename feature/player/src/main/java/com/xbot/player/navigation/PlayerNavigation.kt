@@ -7,9 +7,9 @@ import com.xbot.player.PlayerActivity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PlayerRoute(val id: Int)
+data class PlayerRoute(val id: Int, val episodeOrdinal: Int)
 
-fun NavHostController.navigateToPlayer(id: Int) = navigate(PlayerRoute(id))
+fun NavHostController.navigateToPlayer(id: Int, episodeOrdinal: Int) = navigate(PlayerRoute(id, episodeOrdinal))
 
 fun NavGraphBuilder.playerScreen() {
     activity<PlayerRoute> {

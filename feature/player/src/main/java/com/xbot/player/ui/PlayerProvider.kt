@@ -5,9 +5,10 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.Player
@@ -18,7 +19,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 
 @Composable
-inline fun <reified T: MediaSessionService> rememberPlayer(): State<Player?> {
+inline fun <reified T: MediaSessionService> rememberPlayer(): Player? {
     val context = LocalContext.current
     val playerProvider = remember(context) { PlayerProvider.create<T>(context) }
 
@@ -41,7 +42,7 @@ class PlayerProvider @PublishedApi internal constructor(
     private val sessionToken: SessionToken = SessionToken(context, ComponentName(applicationContext, componentClass))
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
-    var player = mutableStateOf<Player?>(null)
+    var player: Player? by mutableStateOf(null)
         private set
 
     init {
@@ -61,8 +62,8 @@ class PlayerProvider @PublishedApi internal constructor(
         }
         controllerFuture?.addListener(
             {
-                player.value = controllerFuture?.let { controller ->
-                    if (controller.isDone) controller.get() else null
+                player = controllerFuture?.let { future ->
+                    if (future.isDone) future.get() else null
                 }
             },
             MoreExecutors.directExecutor()
@@ -71,9 +72,9 @@ class PlayerProvider @PublishedApi internal constructor(
 
     @PublishedApi
     internal fun release() {
-        controllerFuture?.let { controller ->
-            MediaController.releaseFuture(controller)
-            player.value = null
+        controllerFuture?.let { future ->
+            MediaController.releaseFuture(future)
+            player = null
         }
         controllerFuture = null
     }

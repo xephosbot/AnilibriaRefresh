@@ -22,6 +22,9 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.compose.PlayerSurface
+import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
+import androidx.media3.ui.compose.SurfaceType
 
 /**
  * Determines when the buffering indicator is shown.
@@ -90,7 +93,7 @@ enum class ShowBuffering {
 fun Media(
     state: MediaState,
     modifier: Modifier = Modifier,
-    surfaceType: SurfaceType = SurfaceType.SurfaceView,
+    surfaceType: @SurfaceType Int = SURFACE_TYPE_SURFACE_VIEW,
     resizeMode: ResizeMode = ResizeMode.Fit,
     shutterColor: Color = Color.Black,
     keepContentOnPlayerReset: Boolean = false,
@@ -161,12 +164,14 @@ fun Media(
                     },
                 ),
         ) {
-            PlayerSurface(
-                modifier = Modifier
-                    .fillMaxSize(),
-                state = state,
-                surfaceType = surfaceType
-            )
+            state.player?.let { player ->
+                PlayerSurface(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    player = player,
+                    surfaceType = surfaceType
+                )
+            }
 
             // shutter
             if (state.closeShutter) {
