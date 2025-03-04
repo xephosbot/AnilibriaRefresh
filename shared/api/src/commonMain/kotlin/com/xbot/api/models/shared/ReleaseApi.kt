@@ -34,9 +34,9 @@ data class ReleaseApi(
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
     @SerialName("genres") val genres: List<GenreApi>? = null,
     @SerialName("members") val members: List<MemberApi>? = null,
-    @SerialName("sponsor") val sponsor: SponsorNetworkApi? = null,
+    @SerialName("sponsor") val sponsor: SponsorApi? = null,
     @SerialName("episodes") val episodes: List<EpisodeApi>? = null,
-    @SerialName("torrents") val torrents: List<TorrentNetworkApi>? = null,
+    @SerialName("torrents") val torrents: List<TorrentApi>? = null,
 ) {
     @Serializable
     data class Name(

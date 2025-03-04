@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserNetworkApi(
+data class UserApi(
     @SerialName("id") val id: Int,
     @SerialName("avatar") val avatar: Avatar,
 ) {

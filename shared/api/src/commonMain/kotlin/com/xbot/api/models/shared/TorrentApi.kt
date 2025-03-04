@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TorrentNetworkApi(
+data class TorrentApi(
     @SerialName("id") val id: Int,
     @SerialName("hash") val hash: String,
     @SerialName("size") val size: Long,

@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SponsorNetworkApi(
+data class SponsorApi(
     @SerialName("id") val id: String? = null,
 )

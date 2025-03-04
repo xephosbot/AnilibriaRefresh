@@ -47,8 +47,8 @@ fun AnilibriaNavGraph(
             onBackClick = {
                 navController.navigateUp()
             },
-            onPlayClick = { releaseId ->
-                navController.navigateToPlayer(releaseId)
+            onPlayClick = { releaseId, episodeOrdinal ->
+                navController.navigateToPlayer(releaseId, episodeOrdinal)
             },
             onReleaseClick = { releaseId ->
                 navController.navigateToTitle(releaseId)
