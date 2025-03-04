@@ -24,9 +24,8 @@ class MainActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
-
         setContent {
-            AnilibriaTheme(dynamicColor = false) {
+            AnilibriaTheme(dynamicColor = true) {
                 AnilibriaApp()
             }
         }
