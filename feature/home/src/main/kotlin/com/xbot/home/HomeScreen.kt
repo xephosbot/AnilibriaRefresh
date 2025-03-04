@@ -57,8 +57,8 @@ import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.horizontalPagerItems
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.components.pinnedScrollBehaviorFixed
-import com.xbot.designsystem.effects.ProvideShimmer
-import com.xbot.designsystem.effects.shimmerUpdater
+import com.xbot.designsystem.modifier.ProvideShimmer
+import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
 import com.xbot.designsystem.utils.only
