@@ -1,4 +1,4 @@
-package com.xbot.designsystem.effects
+package com.xbot.designsystem.modifier
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider

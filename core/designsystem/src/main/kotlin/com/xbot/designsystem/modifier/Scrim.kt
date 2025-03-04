@@ -1,4 +1,4 @@
-package com.xbot.designsystem.effects
+package com.xbot.designsystem.modifier
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache

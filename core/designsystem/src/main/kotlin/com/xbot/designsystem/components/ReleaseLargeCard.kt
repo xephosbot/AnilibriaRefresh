@@ -30,9 +30,9 @@ import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.xbot.common.localization.localizedName
 import com.xbot.designsystem.R
-import com.xbot.designsystem.effects.LocalShimmer
-import com.xbot.designsystem.effects.fadedEdge
-import com.xbot.designsystem.effects.shimmerSafe
+import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Release
 
 @Composable

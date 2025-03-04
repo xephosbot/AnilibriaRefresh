@@ -20,9 +20,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.xbot.common.localization.localizedName
-import com.xbot.designsystem.effects.LocalShimmer
-import com.xbot.designsystem.effects.scrim
-import com.xbot.designsystem.effects.shimmerSafe
+import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.scrim
+import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Release
 
 @Composable

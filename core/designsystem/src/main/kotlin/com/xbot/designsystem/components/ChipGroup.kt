@@ -94,7 +94,7 @@ fun ChipGroup(
 
 interface ChipGroupScope : FlowRowScope
 
-internal class DefaultChipGroupScope(scope: FlowRowScope): ChipGroupScope, FlowRowScope by scope
+internal class DefaultChipGroupScope(scope: FlowRowScope) : ChipGroupScope, FlowRowScope by scope
 
 object ChipGroupDefaults {
     val ChipSpacing = 8.dp

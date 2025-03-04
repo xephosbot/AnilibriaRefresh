@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
-import com.xbot.designsystem.effects.LocalShimmer
-import com.xbot.designsystem.effects.shimmerSafe
+import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Poster
 
 @Composable
