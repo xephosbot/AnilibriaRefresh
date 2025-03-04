@@ -1,6 +1,7 @@
 package com.xbot.data.mapper
 
 import com.xbot.api.models.shared.enums.AgeRatingApi
+import com.xbot.api.models.shared.enums.MemberRoleApi
 import com.xbot.api.models.shared.enums.ProductionStatusApi
 import com.xbot.api.models.shared.enums.PublishDayApi
 import com.xbot.api.models.shared.enums.PublishStatusApi
@@ -8,6 +9,7 @@ import com.xbot.api.models.shared.enums.ReleaseTypeApi
 import com.xbot.api.models.shared.enums.SeasonApi
 import com.xbot.api.models.shared.enums.SortingTypeApi
 import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
@@ -113,4 +115,13 @@ internal fun SortingType.toApi(): SortingTypeApi = when (this) {
     SortingType.RATING_DESC -> SortingTypeApi.RATING_DESC
     SortingType.FRESH_AT_ASC -> SortingTypeApi.FRESH_AT_ASC
     SortingType.FRESH_AT_DESC -> SortingTypeApi.FRESH_AT_DESC
+}
+
+internal fun MemberRoleApi.toDomain(): MemberRole = when (this) {
+    MemberRoleApi.POSTER -> MemberRole.POSTER
+    MemberRoleApi.TIMING -> MemberRole.TIMING
+    MemberRoleApi.VOICING -> MemberRole.VOICING
+    MemberRoleApi.EDITING -> MemberRole.EDITING
+    MemberRoleApi.DECORATING -> MemberRole.DECORATING
+    MemberRoleApi.TRANSLATING -> MemberRole.TRANSLATING
 }

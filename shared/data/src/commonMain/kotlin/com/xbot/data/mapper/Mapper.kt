@@ -9,6 +9,10 @@ import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Member
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.toLocalDateTime
 
 internal fun GenreApi.toDomain() = Genre(
     id = id,
@@ -34,6 +38,7 @@ internal fun ReleaseApi.toDomain() = Release(
 internal fun EpisodeApi.toDomain() = Episode(
     id = id,
     name = name,
+    englishName = nameEnglish,
     duration = duration,
     preview = Poster(
         src = preview.optimized.src,
@@ -43,10 +48,18 @@ internal fun EpisodeApi.toDomain() = Episode(
     hls720 = hls720,
     hls1080 = hls1080,
     ordinal = ordinal,
+    updatedAt = Instant.parse(
+        input = updatedAt,
+        format = DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET
+    ).toLocalDateTime(TimeZone.currentSystemDefault())
 )
 
 internal fun MemberApi.toDomain() = Member(
     id = id,
     name = nickname.orEmpty(),
-    role = role!!.name,
+    role = role?.toDomain(),
+    avatar = Poster(
+        src = user?.avatar?.preview,
+        thumbnail = user?.avatar?.thumbnail
+    )
 )
