@@ -13,6 +13,7 @@
 
     <!-- Кнопки -->
     <string name="button_retry">Retry</string>
+    <string name="button_filters">Filters</string>
 
     <!-- Строка поиска -->
     <string name="search_bar_placeholder">Search by name…</string>
@@ -53,10 +54,10 @@
     <string name="season_spring">Spring</string>
 
     <!-- Типы сортировок -->
-    <string name="sorting_types_fresh_at_desc">Fresh at desc</string>
-    <string name="sorting_types_fresh_at_asc">Fresh at asc</string>
-    <string name="sorting_types_rating_desc">Rating desc</string>
-    <string name="sorting_types_rating_asc">Rating asc</string>
-    <string name="sorting_types_year_desc">Year desc</string>
-    <string name="sorting_types_year_asc">Year asc</string>
+    <string name="sorting_types_fresh_at_desc">Updated recently</string>
+    <string name="sorting_types_fresh_at_asc">Updated a long time ago</string>
+    <string name="sorting_types_rating_desc">Top rated</string>
+    <string name="sorting_types_rating_asc">Low rated</string>
+    <string name="sorting_types_year_desc">Newest</string>
+    <string name="sorting_types_year_asc">Oldest</string>
 </resources>

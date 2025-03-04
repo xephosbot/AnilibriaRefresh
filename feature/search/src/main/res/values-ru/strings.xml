@@ -13,6 +13,7 @@
 
     <!-- Кнопки -->
     <string name="button_retry">Повторить</string>
+    <string name="button_filters">Фильтры</string>
 
     <!-- Строка поиска -->
     <string name="search_bar_placeholder">Поиск по названию…</string>
