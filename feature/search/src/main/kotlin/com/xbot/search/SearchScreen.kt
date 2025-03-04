@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,23 +21,19 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -49,9 +46,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.AssistChip
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.Feed
+import com.xbot.designsystem.components.FilterChip
 import com.xbot.designsystem.components.Header
+import com.xbot.designsystem.components.ModalScrollableBottomSheet
 import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.RangeSlider
 import com.xbot.designsystem.components.ReleaseListItem
@@ -59,8 +59,9 @@ import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.components.TopSearchInputField
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.pagingItems
-import com.xbot.designsystem.effects.ProvideShimmer
-import com.xbot.designsystem.effects.shimmerUpdater
+import com.xbot.designsystem.modifier.ProvideShimmer
+import com.xbot.designsystem.modifier.animatePlacement
+import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -71,6 +72,7 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.search.utils.stringRes
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
 
@@ -95,7 +97,6 @@ fun SearchScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreenContent(
     modifier: Modifier = Modifier,
@@ -106,8 +107,6 @@ private fun SearchScreenContent(
     onBackClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
-    val sortingTypeBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val filtersBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSortingType by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
 
@@ -160,7 +159,7 @@ private fun SearchScreenContent(
                         onClick = {
                             showFilters = true
                         },
-                        label = { Text(text = "Filters") },
+                        label = { Text(text = stringResource(R.string.button_filters)) },
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
@@ -185,13 +184,23 @@ private fun SearchScreenContent(
         )
     }
 
+    val sortingTypeScrollState = rememberScrollState()
+    val filtersScrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
+
     if (showFilters) {
-        ModalBottomSheet(
-            onDismissRequest = { showFilters = false },
-            sheetState = filtersBottomSheetState
+        ModalScrollableBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    filtersScrollState.scrollTo(0)
+                }
+                showFilters = false
+            },
+            scrollableState = filtersScrollState
         ) {
             FiltersScreen(
                 state = state,
+                scrollState = filtersScrollState,
                 onGenreClick = { genre ->
                     onAction(SearchScreenAction.ToggleGenre(genre))
                 },
@@ -218,12 +227,18 @@ private fun SearchScreenContent(
     }
 
     if (showSortingType) {
-        ModalBottomSheet(
-            onDismissRequest = { showSortingType = false },
-            sheetState = sortingTypeBottomSheetState
+        ModalScrollableBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    sortingTypeScrollState.scrollTo(0)
+                }
+                showSortingType = false
+            },
+            scrollableState = sortingTypeScrollState
         ) {
             SortingTypeScreen(
                 state = state,
+                scrollState = sortingTypeScrollState,
                 onSortingTypeClick = { sortingType ->
                     onAction(SearchScreenAction.UpdateSortingType(sortingType))
                 },
@@ -307,8 +322,9 @@ private fun SearchResultContent(
 
 @Composable
 private fun SortingTypeScreen(
-    modifier: Modifier = Modifier,
     state: SearchScreenState,
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
     onSortingTypeClick: (SortingType) -> Unit,
 ) {
     Crossfade(
@@ -318,7 +334,7 @@ private fun SortingTypeScreen(
             true -> LoadingFiltersScreen(modifier)
             false -> {
                 SortingTypeScreenContent(
-                    modifier = modifier,
+                    modifier = modifier.verticalScroll(scrollState),
                     sortingTypes = state.sortingTypes,
                     selectedSortingType = state.selectedSortingType,
                     onSortingTypeClick = onSortingTypeClick
@@ -335,9 +351,7 @@ private fun SortingTypeScreenContent(
     selectedSortingType: SortingType,
     onSortingTypeClick: (SortingType) -> Unit,
 ) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = modifier) {
         Header(
             title = { Text(stringResource(R.string.label_sorting_types)) }
         )
@@ -346,11 +360,12 @@ private fun SortingTypeScreenContent(
             selectedItem = selectedSortingType
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onSortingTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -361,6 +376,7 @@ private fun SortingTypeScreenContent(
 private fun FiltersScreen(
     modifier: Modifier = Modifier,
     state: SearchScreenState,
+    scrollState: ScrollState,
     onGenreClick: (Genre) -> Unit,
     onReleaseTypeClick: (ReleaseType) -> Unit,
     onPublishStatusClick: (PublishStatus) -> Unit,
@@ -375,7 +391,7 @@ private fun FiltersScreen(
         when (targetState) {
             true -> LoadingFiltersScreen(modifier)
             false -> FiltersScreenContent(
-                modifier = modifier,
+                modifier = modifier.verticalScroll(scrollState),
                 genres = state.genres,
                 selectedGenres = state.selectedGenres.toList(),
                 onGenreClick = onGenreClick,
@@ -427,9 +443,7 @@ private fun FiltersScreenContent(
     selectedAgeRatings: List<AgeRating>,
     onAgeRatingClick: (AgeRating) -> Unit,
 ) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = modifier) {
         Header(
             title = { Text(stringResource(R.string.label_genres)) }
         )
@@ -438,11 +452,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedGenres
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onGenreClick(item) },
                 label = { Text(item.name) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -455,11 +470,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedReleaseTypes
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onReleaseTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -472,11 +488,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedPublishStatuses
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onPublishStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -489,11 +506,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedProductionStatuses
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onProductionStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -506,11 +524,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedSeasons
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onSeasonClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
@@ -532,11 +551,12 @@ private fun FiltersScreenContent(
             selectedItems = selectedAgeRatings
         ) { selected, item ->
             FilterChip(
+                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onAgeRatingClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    if (selected) Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null)
                 }
             )
         }
