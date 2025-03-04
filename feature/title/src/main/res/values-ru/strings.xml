@@ -3,6 +3,8 @@
     <!-- Подзаголовки -->
     <string name="label_description">Описание</string>
     <string name="label_genres">Жанры</string>
+    <string name="label_members">Работа над релизом</string>
+    <string name="label_related_releases">Связанное</string>
 
     <!-- Кнопки -->
     <string name="button_retry">Повторить</string>
@@ -12,4 +14,15 @@
     <string name="button_watched_it">Уже смотрели?</string>
     <string name="button_share">Поделиться</string>
     <string name="button_telegram">Смотреть в Telegram</string>
+
+    <!-- Роли -->
+    <string name="member_role_poster">Работа над постером</string>
+    <string name="member_role_timing">Работа со звуком</string>
+    <string name="member_role_voicing">Озвучка</string>
+    <string name="member_role_editing">Редактура</string>
+    <string name="member_role_decorating">Оформление</string>
+    <string name="member_role_translating">Перевод и адаптация</string>
+
+
+    <string name="episode_title">Серия</string>
 </resources>
