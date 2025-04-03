@@ -7,7 +7,7 @@ data class Episode(
     val name: String?,
     val englishName: String?,
     val ordinal: Float,
-    val preview: Poster,
+    val preview: Poster?,
     val hls480: String?,
     val hls720: String?,
     val hls1080: String?,

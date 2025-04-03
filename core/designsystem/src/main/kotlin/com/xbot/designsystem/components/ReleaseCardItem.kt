@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.xbot.common.localization.localizedName
+import com.xbot.common.localization.parseAsHtml
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.modifier.shimmerSafe
@@ -66,7 +67,7 @@ private fun ReleaseCardItemContent(
         )
         Text(
             modifier = Modifier.padding(12.dp),
-            text = release.localizedName(),
+            text = release.localizedName().parseAsHtml(),
             color = Color.White,
             style = MaterialTheme.typography.titleSmall,
             maxLines = 2,

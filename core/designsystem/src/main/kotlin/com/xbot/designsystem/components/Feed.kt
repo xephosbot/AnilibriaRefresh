@@ -1,5 +1,7 @@
 package com.xbot.designsystem.components
 
+import android.content.Context
+import android.view.accessibility.AccessibilityManager
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.snapping.SnapPosition
@@ -21,19 +23,18 @@ import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.xbot.domain.models.Release
 
 @Composable
 fun Feed(
@@ -358,6 +359,17 @@ inline fun <T> FeedScope.horizontalPagerItems(
     snapPosition: SnapPosition = SnapPosition.Start,
     crossinline pagerContent: @Composable PagerScope.(index: Int, item: T) -> Unit,
 ) = row {
+    val context = LocalContext.current
+    val accessibilityManager = remember {
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    }
+
+    AutoScrollSideEffect(
+        autoScrollDurationMillis = 5000L,
+        pagerState = state,
+        doAutoScroll = shouldPerformAutoScroll(state.interactionSource, accessibilityManager)
+    )
+
     HorizontalPager(
         state = state,
         key = key,

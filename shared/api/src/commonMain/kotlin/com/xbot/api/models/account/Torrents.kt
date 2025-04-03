@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Torrents(
-    @SerialName("passkey") var passkey: String,
-    @SerialName("uploaded") var uploaded: Int,
-    @SerialName("downloaded") var downloaded: Int
+    @SerialName("passkey") val passkey: String,
+    @SerialName("uploaded") val uploaded: Int?,
+    @SerialName("downloaded") val downloaded: Int?
 )

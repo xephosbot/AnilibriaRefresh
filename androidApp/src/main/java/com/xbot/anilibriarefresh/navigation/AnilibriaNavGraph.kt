@@ -8,6 +8,7 @@ import com.xbot.anilibriarefresh.ui.AnilibriaAppState
 import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
+import com.xbot.home.navigation.navigateToSchedule
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.player.navigation.playerScreen
 import com.xbot.profile.navigation.profileSection
@@ -33,8 +34,14 @@ fun AnilibriaNavGraph(
         exitTransition = { materialFadeThroughOut() },
     ) {
         homeSection(
+            onBackClick = {
+                navController.navigateUp()
+            },
             onSearchClick = {
                 navController.navigateToSearch()
+            },
+            onScheduleClick = {
+                navController.navigateToSchedule()
             },
             onReleaseClick = { releaseId ->
                 navController.navigateToTitle(releaseId)

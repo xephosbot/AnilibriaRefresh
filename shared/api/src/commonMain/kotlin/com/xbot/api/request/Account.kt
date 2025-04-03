@@ -12,7 +12,7 @@ import com.xbot.api.models.account.ReleaseWithCollectionType
 import com.xbot.api.models.account.RemoveFromCollectionRequest
 import com.xbot.api.models.account.AddToFavoriteRequest
 import com.xbot.api.models.account.RemoveFromFavoriteRequest
-import com.xbot.api.models.account.Profile
+import com.xbot.api.models.account.ProfileApi
 import com.xbot.api.models.account.AddTimeCodeRequest
 import com.xbot.api.models.account.DeleteTimeCodeRequest
 import com.xbot.api.models.account.EpisodeWithTimeCode
@@ -176,7 +176,7 @@ suspend fun AnilibriaClient.removeFromFavorite(request: List<RemoveFromFavoriteR
     }
 }
 
-suspend fun AnilibriaClient.getUserProfile() = request<Profile> {
+suspend fun AnilibriaClient.getUserProfile() = request<ProfileApi> {
     get("accounts/users/me/profile")
 }
 

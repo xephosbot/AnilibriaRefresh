@@ -24,7 +24,7 @@ class TitleViewModel(
     private val snackbarManager: SnackbarManager,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val titleId = savedStateHandle.toRoute<TitleRoute>().id
+    private val aliasOrId = savedStateHandle.toRoute<TitleRoute>().aliasOrId
 
     private val _state: MutableStateFlow<TitleScreenState> =
         MutableStateFlow(TitleScreenState.Loading)
@@ -42,7 +42,7 @@ class TitleViewModel(
 
     private fun fetchTitleDetails() {
         viewModelScope.launch {
-            repository.getRelease(titleId).fold(
+            repository.getRelease(aliasOrId).fold(
                 onSuccess = { title ->
                     _state.update { TitleScreenState.Success(title = title) }
                 },

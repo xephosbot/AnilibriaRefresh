@@ -1,6 +1,7 @@
 package com.xbot.player
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -8,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.player.service.PlaybackService
@@ -38,13 +41,38 @@ class PlayerActivity : ComponentActivity() {
                     player = player,
                     onCloseClick = { closeActivity() },
                     onSettingsClick = { /*TODO*/ },
-                    onToggleFullScreen = { /*TODO*/ }
+                    onToggleFullScreen = { isFullscreen ->
+                        setFullscreen(!isFullscreen)
+                    }
                 )
             }
         }
 
         onBackPressedDispatcher.addCallback {
             closeActivity()
+        }
+    }
+
+    private fun setFullscreen(isFullscreen: Boolean) {
+        val orientation = when (isFullscreen) {
+            true -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        requestedOrientation = orientation
+        if (isFullscreen) hideSystemUi() else showSystemUi()
+    }
+
+    private fun hideSystemUi() {
+        WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun showSystemUi() {
+        WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+            controller.show(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
     }
 

@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
-import androidx.compose.material3.NavigationBarComponentOverride
-import androidx.compose.material3.NavigationBarComponentOverrideContext
+import androidx.compose.material3.NavigationBarOverride
+import androidx.compose.material3.NavigationBarOverrideScope
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ComponentOverrideApi::class)
-object AnilibriaNavigationBar : NavigationBarComponentOverride {
+object AnilibriaNavigationBar : NavigationBarOverride {
     @Composable
-    override fun NavigationBarComponentOverrideContext.NavigationBar() {
+    override fun NavigationBarOverrideScope.NavigationBar() {
         Surface(
             color = containerColor,
             contentColor = contentColor,

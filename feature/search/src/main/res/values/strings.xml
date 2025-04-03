@@ -21,43 +21,4 @@
     <!-- Сообщения ошибок -->
     <string name="error_unknown">Unknown error</string>
     <string name="error_name_not_found">Name not found</string>
-
-    <!-- Типы релизов -->
-    <string name="release_type_tv">TV</string>
-    <string name="release_type_ona">ONA</string>
-    <string name="release_type_web">WEB</string>
-    <string name="release_type_ova">OVA</string>
-    <string name="release_type_oad">OAD</string>
-    <string name="release_type_movie">Movie</string>
-    <string name="release_type_dorama">Dorama</string>
-    <string name="release_type_special">Special</string>
-
-    <!-- Возрастные рейтинги -->
-    <string name="age_rating_0_plus">0+</string>
-    <string name="age_rating_6_plus">6+</string>
-    <string name="age_rating_12_plus">12+</string>
-    <string name="age_rating_16_plus">16+</string>
-    <string name="age_rating_18_plus">18+</string>
-
-    <!-- Статус озвучки -->
-    <string name="production_status_is_in_production">In production</string>
-    <string name="production_status_is_not_in_production">Not in production</string>
-
-    <!-- Статус выхода -->
-    <string name="publish_status_is_ongoing">Ongoing</string>
-    <string name="publish_status_is_not_ongoing">Not ongoing</string>
-
-    <!-- Сезоны -->
-    <string name="season_winter">Winter</string>
-    <string name="season_autumn">Autumn</string>
-    <string name="season_summer">Summer</string>
-    <string name="season_spring">Spring</string>
-
-    <!-- Типы сортировок -->
-    <string name="sorting_types_fresh_at_desc">Updated recently</string>
-    <string name="sorting_types_fresh_at_asc">Updated a long time ago</string>
-    <string name="sorting_types_rating_desc">Top rated</string>
-    <string name="sorting_types_rating_asc">Low rated</string>
-    <string name="sorting_types_year_desc">Newest</string>
-    <string name="sorting_types_year_asc">Oldest</string>
 </resources>

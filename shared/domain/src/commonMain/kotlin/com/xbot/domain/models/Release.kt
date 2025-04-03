@@ -1,5 +1,6 @@
 package com.xbot.domain.models
 
+import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ReleaseType
 
 data class Release(
@@ -8,9 +9,10 @@ data class Release(
     val year: Int,
     val name: String,
     val englishName: String,
-    val description: String,
+    val description: String?,
+    val ageRating: AgeRating,
     val episodesCount: Int?,
     val episodeDuration: Int?,
     val favoritesCount: Int,
-    val poster: Poster,
+    val poster: Poster?,
 )

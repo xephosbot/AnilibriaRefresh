@@ -35,10 +35,10 @@ internal fun PlayButton(
     onLeadingClick: () -> Unit,
     onTrailingClick: () -> Unit,
     colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-        disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.38f),
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+        disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.1f),
+        disabledContentColor = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.38f),
     ),
     trailingEnabled: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(8.dp),
@@ -56,12 +56,12 @@ internal fun PlayButton(
                     modifier = Modifier
                         .size(40.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.tertiary,
                             shape = CircleShape,
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimary) {
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onTertiary) {
                         Icon(
                             imageVector = AnilibriaIcons.Outlined.PlayArrow,
                             contentDescription = null

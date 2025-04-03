@@ -8,6 +8,7 @@ import com.xbot.api.models.shared.MemberApi
 import com.xbot.api.models.shared.ReleaseApi
 import com.xbot.api.request.getCatalogReleases
 import com.xbot.api.request.getFranchisesByRelease
+import com.xbot.api.request.getRandomGenres
 import com.xbot.api.request.getRandomReleases
 import com.xbot.api.request.getRelease
 import com.xbot.api.request.getScheduleWeek
@@ -19,6 +20,7 @@ import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
@@ -70,6 +72,11 @@ internal class DefaultReleaseRepository(
         client.getRandomReleases(10).map(ReleaseApi::toDomain)
     }
 
+    override suspend fun getRecommendedGenres(): Result<List<Genre>> = runCatching {
+        // просто заглушка выдающая рандомные жанры
+        client.getRandomGenres(10).map(GenreApi::toDomain)
+    }
+
     override suspend fun getScheduleWeek(): Result<Map<DayOfWeek, List<Release>>> = runCatching {
         client.getScheduleWeek()
             .map { it.release }
@@ -85,18 +92,23 @@ internal class DefaultReleaseRepository(
             }
     }
 
-    override suspend fun getRelease(id: Int): Result<ReleaseDetail> = runCatching {
-        val relatedReleases = client.getFranchisesByRelease(id)
+    override suspend fun getRelease(aliasOrId: String): Result<ReleaseDetail> = runCatching {
+        val release = client.getRelease(aliasOrId)
+        val relatedReleases = client.getFranchisesByRelease(release.id)
             .flatMap { it.franchiseReleases ?: emptyList() }
-            .filterNot { it.release.id == id }
-        val release = client.getRelease(id)
+            .filterNot { it.release.id == release.id }
+        val availabilityStatus = when {
+            release.isBlockedByGeo -> AvailabilityStatus.GeoBlocked
+            release.isBlockedByCopyrights -> AvailabilityStatus.CopyrightBlocked
+            else -> AvailabilityStatus.Available
+        }
         ReleaseDetail(
             release = release.toDomain(),
             season = release.season?.toDomain(),
             isOngoing = release.isOngoing,
-            ageRating = release.ageRating!!.toDomain(),
             publishDay = release.publishDay!!.toDayOfWeek(),
-            notification = release.notification.orEmpty(),
+            notification = release.notification,
+            availabilityStatus = availabilityStatus,
             genres = release.genres?.map(GenreApi::toDomain) ?: emptyList(),
             members = release.members?.map(MemberApi::toDomain) ?: emptyList(),
             episodes = release.episodes?.map(EpisodeApi::toDomain) ?: emptyList(),

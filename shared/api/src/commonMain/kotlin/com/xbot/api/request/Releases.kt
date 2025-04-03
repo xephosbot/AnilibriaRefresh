@@ -19,8 +19,8 @@ suspend fun AnilibriaClient.getRandomReleases(limit: Int) = request<List<Release
     }
 }
 
-suspend fun AnilibriaClient.getRelease(id: Int) = request<ReleaseApi> {
-    get("anime/releases/${id}")
+suspend fun AnilibriaClient.getRelease(aliasOrId: String) = request<ReleaseApi> {
+    get("anime/releases/${aliasOrId}")
 }
 
 //TODO:

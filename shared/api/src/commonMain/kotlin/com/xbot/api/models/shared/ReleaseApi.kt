@@ -28,7 +28,6 @@ data class ReleaseApi(
     @SerialName("external_player") val externalPlayer: String?,
     @SerialName("is_in_production") val isInProduction: Boolean,
     @SerialName("is_blocked_by_geo") val isBlockedByGeo: Boolean,
-    @SerialName("episodes_are_unknown") val episodesAreUnknown: Boolean,
     @SerialName("is_blocked_by_copyrights") val isBlockedByCopyrights: Boolean,
     @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
@@ -37,6 +36,9 @@ data class ReleaseApi(
     @SerialName("sponsor") val sponsor: SponsorApi? = null,
     @SerialName("episodes") val episodes: List<EpisodeApi>? = null,
     @SerialName("torrents") val torrents: List<TorrentApi>? = null,
+    @SerialName("full_season_is_released") val fullSeasonIsReleased: Boolean? = null,
+    @SerialName("new_release_episode") val newReleaseEpisode: EpisodeApi? = null,
+    @SerialName("new_release_episode_ordinal") val newReleaseEpisodeOrdinal: Int? = null,
 ) {
     @Serializable
     data class Name(

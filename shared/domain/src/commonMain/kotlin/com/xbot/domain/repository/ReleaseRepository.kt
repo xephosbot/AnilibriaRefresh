@@ -25,6 +25,7 @@ interface ReleaseRepository {
         productionStatuses: List<ProductionStatus>?,
     ): PagingSource<Int, Release>
     suspend fun getRecommendedReleases(): Result<List<Release>>
+    suspend fun getRecommendedGenres(): Result<List<Genre>>
     suspend fun getScheduleWeek(): Result<Map<DayOfWeek, List<Release>>>
-    suspend fun getRelease(id: Int): Result<ReleaseDetail>
+    suspend fun getRelease(aliasOrId: String): Result<ReleaseDetail>
 }

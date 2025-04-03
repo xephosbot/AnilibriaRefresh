@@ -53,15 +53,20 @@ val AnilibriaTypography = Typography(
     headlineSmall = baseline.headlineSmall.copy(fontFamily = NotoSansFontFamily),
     titleLarge = baseline.titleLarge.copy(
         fontFamily = BebesNeueFontFamily,
-        fontSize = 20.sp,
+        fontSize = 24.sp,
         fontWeight = FontWeight.Bold
     ),
     titleMedium = baseline.titleMedium.copy(
-        fontFamily = NotoSansFontFamily,
-        fontWeight = FontWeight.Medium
+        fontFamily = BebesNeueFontFamily,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
     ),
     titleSmall = baseline.titleSmall.copy(fontFamily = NotoSansFontFamily),
-    bodyLarge = baseline.bodyLarge.copy(fontFamily = NotoSansFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(
+        fontFamily = NotoSansFontFamily,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium
+    ),
     bodyMedium = baseline.bodyMedium.copy(fontFamily = NotoSansFontFamily),
     bodySmall = baseline.bodySmall.copy(fontFamily = NotoSansFontFamily),
     labelLarge = baseline.labelLarge.copy(fontFamily = NotoSansFontFamily),

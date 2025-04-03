@@ -1,7 +1,8 @@
 <resources>
     <!-- Подзаголовки -->
     <string name="label_schedule">Schedule</string>
-    <string name="label_new_episodes">New episodes</string>
+    <string name="label_updates">Updates</string>
+    <string name="label_genres">Genres</string>
 
     <!-- Кнопки -->
     <string name="button_retry">Retry</string>

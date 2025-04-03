@@ -23,9 +23,9 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponen
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldComponentOverride
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldComponentOverrideContext
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverride
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverrideScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldState
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldValue
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
@@ -38,7 +38,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.offset
-import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
@@ -200,9 +199,9 @@ private val AnimationSpec: SpringSpec<Float> =
     spring(dampingRatio = SpringDefaultSpatialDamping, stiffness = SpringDefaultSpatialStiffness)
 
 @OptIn(ExperimentalMaterial3AdaptiveComponentOverrideApi::class)
-object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldComponentOverride {
+object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
     @Composable
-    override fun NavigationSuiteScaffoldComponentOverrideContext.NavigationSuiteScaffold() {
+    override fun NavigationSuiteScaffoldOverrideScope.NavigationSuiteScaffold() {
         Surface(modifier = modifier, color = containerColor, contentColor = contentColor) {
             val scaffoldState = rememberScaffoldState()
 

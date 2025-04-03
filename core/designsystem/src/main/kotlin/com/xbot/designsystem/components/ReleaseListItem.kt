@@ -1,5 +1,6 @@
 package com.xbot.designsystem.components
 
+import android.content.Context
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,15 +23,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xbot.common.localization.localizedName
+import com.xbot.common.localization.parseAsHtml
+import com.xbot.common.localization.stringRes
 import com.xbot.designsystem.R
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.shimmerSafe
+import com.xbot.designsystem.utils.withRoundedCorner
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.enums.ReleaseType
 
 @Composable
 fun ReleaseListItem(
@@ -70,13 +79,13 @@ private fun ReleaseListItemContent(
         modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
             Text(
-                text = release.localizedName(),
+                text = release.localizedName().parseAsHtml(),
                 overflow = TextOverflow.Ellipsis,
             )
         },
         supportingContent = {
             Text(
-                text = release.description.lines().joinToString(" "),
+                text = release.description?.lines()?.joinToString(" ").orEmpty(),
                 overflow = TextOverflow.Ellipsis,
             )
         },
@@ -85,7 +94,7 @@ private fun ReleaseListItemContent(
         },
         tags = {
             Text(
-                text = stringResource(R.string.subtitle_release_template, release.year, release.episodesCount ?: 0, release.episodeDuration ?: 0, release.favoritesCount),
+                text = buildReleaseTitle(release, LocalContext.current),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -108,6 +117,7 @@ private fun LoadingReleaseListItem(
                 modifier = Modifier
                     .height(16.dp)
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray),
             )
         },
@@ -122,7 +132,6 @@ private fun LoadingReleaseListItem(
         leadingContent = {
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray),
             )
         },
@@ -157,7 +166,7 @@ private fun ListItemLayout(
 ) {
     val headlineBox = @Composable {
         ProvideTextStyle(
-            value = MaterialTheme.typography.titleMedium,
+            value = MaterialTheme.typography.bodyLarge,
             content = headlineContent,
         )
     }

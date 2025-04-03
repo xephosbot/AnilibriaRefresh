@@ -6,11 +6,12 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
-import androidx.compose.material3.LocalNavigationBarComponentOverride
-import androidx.compose.material3.LocalNavigationRailComponentOverride
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LocalNavigationBarOverride
+import androidx.compose.material3.LocalNavigationRailOverride
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
-import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldComponentOverride
+import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldOverride
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -250,7 +251,8 @@ internal val highContrastDarkColorScheme = darkColorScheme(
 
 @OptIn(
     ExperimentalMaterial3AdaptiveComponentOverrideApi::class,
-    ExperimentalMaterial3ComponentOverrideApi::class
+    ExperimentalMaterial3ComponentOverrideApi::class,
+    ExperimentalMaterial3ExpressiveApi::class,
 )
 @Composable
 fun AnilibriaTheme(
@@ -267,11 +269,11 @@ fun AnilibriaTheme(
     }
 
     CompositionLocalProvider(
-        LocalNavigationSuiteScaffoldComponentOverride provides AnilibriaNavigationSuiteScaffold,
-        LocalNavigationBarComponentOverride provides AnilibriaNavigationBar,
-        LocalNavigationRailComponentOverride provides AnilibriaNavigationRail,
+        LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold,
+        LocalNavigationBarOverride provides AnilibriaNavigationBar,
+        LocalNavigationRailOverride provides AnilibriaNavigationRail,
     ) {
-        MaterialTheme(
+        MaterialExpressiveTheme(
             colorScheme = colorScheme,
             typography = AnilibriaTypography,
             content = content,

@@ -1,19 +1,25 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.xbot.search
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
@@ -21,11 +27,16 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedToggleButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +57,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.localization.stringRes
 import com.xbot.designsystem.components.AssistChip
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.Feed
@@ -55,14 +67,14 @@ import com.xbot.designsystem.components.ModalScrollableBottomSheet
 import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.RangeSlider
 import com.xbot.designsystem.components.ReleaseListItem
-import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.components.TopSearchInputField
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.pagingItems
+import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.utils.union
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -71,7 +83,6 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.search.utils.stringRes
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -150,6 +161,7 @@ private fun SearchScreenContent(
                         label = { Text(text = stringResource(state.selectedSortingType.stringRes)) },
                         trailingIcon = {
                             Icon(
+                                modifier = Modifier.size(AssistChipDefaults.IconSize),
                                 imageVector = Icons.Default.ArrowDropDown,
                                 contentDescription = null
                             )
@@ -162,6 +174,7 @@ private fun SearchScreenContent(
                         label = { Text(text = stringResource(R.string.button_filters)) },
                         trailingIcon = {
                             Icon(
+                                modifier = Modifier.size(AssistChipDefaults.IconSize),
                                 imageVector = Icons.Default.ArrowDropDown,
                                 contentDescription = null
                             )
@@ -267,21 +280,17 @@ private fun SearchResultScreen(
         }
     }
 
+    val feedState = rememberLazyGridState()
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
     ProvideShimmer(shimmer) {
-        AnimatedVisibility(
-            visible = items.loadState.refresh !is LoadState.Loading,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            SearchResultContent(
-                modifier = modifier.shimmerUpdater(shimmer),
-                items = items,
-                contentPadding = contentPadding,
-                onReleaseClick = onReleaseClick,
-            )
-        }
+        SearchResultContent(
+            modifier = modifier.shimmerUpdater(shimmer),
+            items = items,
+            state = feedState,
+            contentPadding = contentPadding,
+            onReleaseClick = onReleaseClick,
+        )
     }
 }
 
@@ -289,20 +298,15 @@ private fun SearchResultScreen(
 private fun SearchResultContent(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<Release>,
+    state: LazyGridState,
     contentPadding: PaddingValues,
     onReleaseClick: (Int) -> Unit,
 ) {
-    val feedState = rememberLazyGridState()
-
-    LaunchedEffect(Unit) {
-        if (items.itemCount > 0) feedState.scrollToItem(0)
-    }
-
     Feed(
         modifier = modifier,
         columns = GridCells.Adaptive(350.dp),
-        contentPadding = contentPadding,
-        state = feedState
+        contentPadding = contentPadding.union(WindowInsets.ime.asPaddingValues()),
+        state = state,
     ) {
         header(
             title = { Text(text = stringResource(R.string.label_search_results)) },
@@ -344,6 +348,7 @@ private fun SortingTypeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SortingTypeScreenContent(
     modifier: Modifier = Modifier,
@@ -355,19 +360,24 @@ private fun SortingTypeScreenContent(
         Header(
             title = { Text(stringResource(R.string.label_sorting_types)) }
         )
-        SingleChoiceChipGroup(
-            items = sortingTypes,
-            selectedItem = selectedSortingType
-        ) { selected, item ->
-            FilterChip(
-                modifier = Modifier.animatePlacement(),
-                selected = selected,
-                onClick = { onSortingTypeClick(item) },
-                label = { Text(stringResource(item.stringRes)) },
-                leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            sortingTypes.forEachIndexed { index, item ->
+                OutlinedToggleButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    checked = selectedSortingType == item,
+                    onCheckedChange = { onSortingTypeClick(item) },
+                ) {
+                    if (selectedSortingType == item) {
+                        Icon(AnilibriaIcons.Outlined.Check, null)
+                        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                    }
+                    Text(stringResource(item.stringRes))
                 }
-            )
+            }
         }
     }
 }
@@ -457,7 +467,7 @@ private fun FiltersScreenContent(
                 onClick = { onGenreClick(item) },
                 label = { Text(item.name) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -475,7 +485,7 @@ private fun FiltersScreenContent(
                 onClick = { onReleaseTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -493,7 +503,7 @@ private fun FiltersScreenContent(
                 onClick = { onPublishStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -511,7 +521,7 @@ private fun FiltersScreenContent(
                 onClick = { onProductionStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -529,7 +539,7 @@ private fun FiltersScreenContent(
                 onClick = { onSeasonClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -556,7 +566,7 @@ private fun FiltersScreenContent(
                 onClick = { onAgeRatingClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = {
-                    Icon(AnilibriaIcons.Outlined.Check, null)
+                    Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                 }
             )
         }
@@ -567,7 +577,9 @@ private fun FiltersScreenContent(
 @Composable
 private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()

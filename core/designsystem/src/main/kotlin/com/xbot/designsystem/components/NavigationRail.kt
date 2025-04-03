@@ -12,8 +12,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
-import androidx.compose.material3.NavigationRailComponentOverride
-import androidx.compose.material3.NavigationRailComponentOverrideContext
+import androidx.compose.material3.NavigationRailOverride
+import androidx.compose.material3.NavigationRailOverrideScope
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ComponentOverrideApi::class)
-object AnilibriaNavigationRail : NavigationRailComponentOverride {
+object AnilibriaNavigationRail : NavigationRailOverride {
     @Composable
-    override fun NavigationRailComponentOverrideContext.NavigationRail() {
+    override fun NavigationRailOverrideScope.NavigationRail() {
         Surface(
             color = containerColor,
             contentColor = contentColor,

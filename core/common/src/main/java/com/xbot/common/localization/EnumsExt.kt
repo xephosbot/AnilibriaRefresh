@@ -1,4 +1,4 @@
-package com.xbot.search.utils
+package com.xbot.common.localization
 
 import androidx.annotation.StringRes
 import com.xbot.domain.models.enums.AgeRating
@@ -7,7 +7,8 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.search.R
+import com.xbot.domain.models.enums.MemberRole
+import com.xbot.common.R
 
 @get:StringRes
 val AgeRating.stringRes: Int
@@ -64,4 +65,15 @@ val Season.stringRes: Int
         Season.SPRING -> R.string.season_spring
         Season.SUMMER -> R.string.season_summer
         Season.AUTUMN -> R.string.season_autumn
+    }
+
+@get:StringRes
+val MemberRole.stringRes: Int
+    get() = when (this) {
+        MemberRole.POSTER -> R.string.member_role_poster
+        MemberRole.TIMING -> R.string.member_role_timing
+        MemberRole.VOICING -> R.string.member_role_voicing
+        MemberRole.EDITING -> R.string.member_role_editing
+        MemberRole.DECORATING -> R.string.member_role_decorating
+        MemberRole.TRANSLATING -> R.string.member_role_translating
     }

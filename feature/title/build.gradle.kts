@@ -26,6 +26,7 @@ android {
 
 dependencies {
     // Project-level dependencies
+    api(projects.shared.api)
     api(projects.shared.domain)
     api(projects.core.designsystem)
     api(projects.core.common)

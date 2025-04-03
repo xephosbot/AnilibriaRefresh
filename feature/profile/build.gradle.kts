@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.xbot.player"
+    namespace = "com.xbot.profile"
     compileSdk = 35
 
     defaultConfig {

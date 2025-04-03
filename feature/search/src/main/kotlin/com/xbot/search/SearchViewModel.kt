@@ -121,7 +121,7 @@ class SearchViewModel(
     private fun toggleGenre(genre: Genre) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedGenres = it.selectedGenres.toggleItem(genre))
+                it.copy(selectedGenres = it.selectedGenres.addOrRemove(genre))
             }
         }
     }
@@ -129,7 +129,7 @@ class SearchViewModel(
     private fun toggleReleaseType(releaseType: ReleaseType) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedReleaseTypes = it.selectedReleaseTypes.toggleItem(releaseType))
+                it.copy(selectedReleaseTypes = it.selectedReleaseTypes.addOrRemove(releaseType))
             }
         }
     }
@@ -137,7 +137,7 @@ class SearchViewModel(
     private fun togglePublishStatus(publishStatus: PublishStatus) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedPublishStatuses = it.selectedPublishStatuses.toggleItem(publishStatus))
+                it.copy(selectedPublishStatuses = it.selectedPublishStatuses.addOrRemove(publishStatus))
             }
         }
     }
@@ -145,7 +145,7 @@ class SearchViewModel(
     private fun toggleProductionStatus(productionStatus: ProductionStatus) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedProductionStatuses = it.selectedProductionStatuses.toggleItem(productionStatus))
+                it.copy(selectedProductionStatuses = it.selectedProductionStatuses.addOrRemove(productionStatus))
             }
         }
     }
@@ -161,7 +161,7 @@ class SearchViewModel(
     private fun toggleSeason(season: Season) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedSeasons = it.selectedSeasons.toggleItem(season))
+                it.copy(selectedSeasons = it.selectedSeasons.addOrRemove(season))
             }
         }
     }
@@ -177,7 +177,7 @@ class SearchViewModel(
     private fun toggleAgeRating(ageRating: AgeRating) {
         viewModelScope.launch {
             _filters.update {
-                it.copy(selectedAgeRatings = it.selectedAgeRatings.toggleItem(ageRating))
+                it.copy(selectedAgeRatings = it.selectedAgeRatings.addOrRemove(ageRating))
             }
         }
     }
@@ -192,7 +192,7 @@ class SearchViewModel(
         )
     }
 
-    private fun <T> Set<T>.toggleItem(item: T): Set<T> {
+    private fun <T> Set<T>.addOrRemove(item: T): Set<T> {
         return if (item in this) {
             this - item
         } else {

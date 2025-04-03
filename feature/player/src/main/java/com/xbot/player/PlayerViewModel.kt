@@ -1,6 +1,6 @@
 package com.xbot.player
 
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +29,7 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            releaseRepository.getRelease(releaseId).fold(
+            releaseRepository.getRelease(releaseId.toString()).fold(
                 onSuccess = { updatePlaylist(it) },
                 onFailure = {}
             )
@@ -49,7 +49,7 @@ class PlayerViewModel(
         val mediaMetadata = MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
             .setTitle(release.name)
-            .setArtworkUri(Uri.parse("https://anilibria.top${release.poster.src}"))
+            .setArtworkUri(release.poster?.src?.toUri())
             .build()
         return episodes.map { episode ->
             MediaItem.Builder()

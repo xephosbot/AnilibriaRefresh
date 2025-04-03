@@ -30,7 +30,7 @@ fun PlayerScreen(
     player: Player?,
     onCloseClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onToggleFullScreen: () -> Unit
+    onToggleFullScreen: (Boolean) -> Unit
 ) {
     val mediaState = rememberMediaState(player)
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -69,7 +69,7 @@ fun PlayerScreen(
                                     contentDescription = null,
                                 )
                             }
-                            IconButton(onClick = onToggleFullScreen) {
+                            IconButton(onClick = { onToggleFullScreen(isLandscape) }) {
                                 Icon(
                                     imageVector = when (isLandscape) {
                                         true -> Icons.Default.FullscreenExit

@@ -29,7 +29,7 @@ fun Header(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ProvideTextStyle(MaterialTheme.typography.titleLarge) {
+            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
                 title()
             }
 

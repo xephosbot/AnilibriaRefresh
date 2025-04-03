@@ -1,3 +1,5 @@
 <resources>
-    <string name="subtitle_release_template">%1$d \u2022 %2$d ep. \u2022 %3$d min. \u2022 %4$d \u2605</string>
+    <string name="minutes_abbreviation">%s min.</string>
+    <string name="episode_abbreviation">%s ep.</string>
+    <string name="releases_count">%1$d releases</string>
 </resources>

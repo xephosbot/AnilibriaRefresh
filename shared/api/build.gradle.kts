@@ -20,16 +20,20 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.brotli.dec)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
+            implementation(libs.androidx.dataStore.core)
+            implementation(libs.androidx.dataStore.preferences)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

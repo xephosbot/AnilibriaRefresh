@@ -73,16 +73,11 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
 
-    // Kotlin dependencies
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.serialization.json)
-
     // AndroidX dependencies
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.interpolator)
-    implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.navigation.compose)
@@ -91,19 +86,11 @@ dependencies {
     // Compose dependencies
     implementation(compose.material3)
     implementation(compose.material3AdaptiveNavigationSuite)
-    implementation(compose.materialIconsExtended)
     implementation(compose.preview)
-    implementation(compose.googleFonts)
     implementation(compose.materialNavigation)
-    implementation(libs.sticky.headers)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.material.motion.compose.core)
-    implementation(libs.shimmer.compose)
-
-    // Jetpack Media 3 dependencies
-    implementation(libs.androidx.media3.common.ktx)
-    implementation(libs.androidx.media3.session)
 
     // Testing dependencies
     testImplementation(libs.junit)

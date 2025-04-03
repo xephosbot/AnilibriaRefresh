@@ -1,19 +1,15 @@
 package com.xbot.title
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -22,9 +18,10 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,12 +32,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -53,27 +50,29 @@ import com.xbot.designsystem.components.ExpandableText
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.FeedItemScope
 import com.xbot.designsystem.components.FeedScope
+import com.xbot.designsystem.components.LabeledIconButton
+import com.xbot.designsystem.components.MemberItem
 import com.xbot.designsystem.components.ModalScrollableBottomSheet
-import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.components.ReleaseCardItem
 import com.xbot.designsystem.components.ReleaseLargeCard
-import com.xbot.designsystem.components.SuggestionButton
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
-import com.xbot.designsystem.components.pinnedScrollBehaviorFixed
 import com.xbot.designsystem.components.row
-import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.TelegramLogo
+import com.xbot.designsystem.modifier.ProvideShimmer
+import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.models.enums.AvailabilityStatus
+import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.EpisodeListItem
-import com.xbot.title.ui.MemberItem
+import com.xbot.title.ui.NotificationCard
 import com.xbot.title.ui.PlayButton
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import com.xbot.title.R
 
 @Composable
 fun TitleScreen(
@@ -105,7 +104,7 @@ private fun TitleScreenContent(
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehaviorFixed()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         modifier = modifier
@@ -133,7 +132,6 @@ private fun TitleScreenContent(
     ) { innerPadding ->
         Crossfade(
             targetState = state,
-            label = ""
         ) { targetState ->
             when (targetState) {
                 is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
@@ -178,34 +176,65 @@ private fun TitleDetails(
             row {
                 ReleaseLargeCard(release = details.release)
             }
+            row { Spacer(Modifier.height(12.dp)) }
 
-            swapItems(
-                content1 = {
-                    SuggestionRow(
-                        onAddToFavoritesClick = onAddToFavoritesClick,
-                        onAlreadyWatchedClick = onAlreadyWatchedClick,
-                        onShareClick = onShareClick,
-                        onTelegramClick = onTelegramClick
-                    )
-                },
-                content2 = {
-                    PlayButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onLeadingClick = { onPlayClick(details.release.id, 0) },
-                        onTrailingClick = { showEpisodesList = true },
-                        trailingEnabled = details.episodes.isNotEmpty()
-                    )
+            if (details.availabilityStatus == AvailabilityStatus.Available) {
+                swapItems(
+                    content1 = {
+                        SuggestionRow(
+                            onAddToFavoritesClick = onAddToFavoritesClick,
+                            onAlreadyWatchedClick = onAlreadyWatchedClick,
+                            onShareClick = onShareClick,
+                            onTelegramClick = onTelegramClick
+                        )
+                    },
+                    content2 = {
+                        PlayButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onLeadingClick = { onPlayClick(details.release.id, 0) },
+                            onTrailingClick = { showEpisodesList = true },
+                            trailingEnabled = details.episodes.isNotEmpty()
+                        )
+                    }
+                )
+            } else {
+                row { Spacer(Modifier.height(16.dp)) }
+
+                row {
+                    AlertCard(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    ) {
+                        Text(
+                            text = when(details.availabilityStatus) {
+                                AvailabilityStatus.GeoBlocked -> stringResource(R.string.alert_blocked_geo)
+                                AvailabilityStatus.CopyrightBlocked -> stringResource(R.string.alert_blocked_copyright)
+                                AvailabilityStatus.Available -> ""
+                            }
+                        )
+                    }
                 }
-            )
+            }
 
-            if (details.release.description.isNotEmpty()) {
+            if (details.notification != null) {
+                row { Spacer(Modifier.height(16.dp)) }
+
+                row {
+                    NotificationCard(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    ) {
+                        Text(text = details.notification!!)
+                    }
+                }
+            }
+
+            if (details.release.description != null) {
                 header(
                     title = { Text(text = stringResource(R.string.label_description)) }
                 )
                 row {
                     ExpandableText(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        text = details.release.description,
+                        text = details.release.description!!,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -276,7 +305,7 @@ private fun TitleDetails(
                 episodes = details.episodes.reversed(),
                 state = episodesListState
             ) { ordinal ->
-                onPlayClick(details.release.id, ordinal)
+                onPlayClick(details.release.id, details.episodes.size - ordinal)
             }
         }
     }
@@ -298,13 +327,14 @@ private fun EpisodesList(
         ) {
             itemsIndexed(episodes) { index, episode ->
                 EpisodeListItem(episode) {
-                    onEpisodeClick(index)
+                    onEpisodeClick(index + 1)
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SuggestionRow(
     modifier: Modifier = Modifier,
@@ -313,33 +343,43 @@ private fun SuggestionRow(
     onShareClick: () -> Unit,
     onTelegramClick: () -> Unit,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        SuggestionButton(
-            modifier = Modifier.weight(1f),
+    ButtonGroup(modifier = modifier) {
+        val interactionSources = remember { List(4) { MutableInteractionSource() } }
+        LabeledIconButton(
+            modifier = Modifier
+                .weight(1f)
+                .animateWidth(interactionSources[0]),
             onClick = onAddToFavoritesClick,
             text = stringResource(R.string.button_add_to_favorites),
             icon = AnilibriaIcons.Filled.Star,
+            interactionSource = interactionSources[0]
         )
-        SuggestionButton(
-            modifier = Modifier.weight(1f),
+        LabeledIconButton(
+            modifier = Modifier
+                .weight(1f)
+                .animateWidth(interactionSources[1]),
             onClick = onAlreadyWatchedClick,
             text = stringResource(R.string.button_watched_it),
             icon = AnilibriaIcons.Outlined.CheckList,
+            interactionSource = interactionSources[1]
         )
-        SuggestionButton(
-            modifier = Modifier.weight(1f),
+        LabeledIconButton(
+            modifier = Modifier
+                .weight(1f)
+                .animateWidth(interactionSources[2]),
             onClick = onShareClick,
             text = stringResource(R.string.button_share),
             icon = AnilibriaIcons.Filled.Share,
+            interactionSource = interactionSources[2]
         )
-        SuggestionButton(
-            modifier = Modifier.weight(1f),
+        LabeledIconButton(
+            modifier = Modifier
+                .weight(1f)
+                .animateWidth(interactionSources[3]),
             onClick = onTelegramClick,
             text = stringResource(R.string.button_telegram),
             icon = AnilibriaIcons.Filled.TelegramLogo,
+            interactionSource = interactionSources[3]
         )
     }
 }
