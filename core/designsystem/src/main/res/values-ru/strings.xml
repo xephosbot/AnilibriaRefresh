@@ -1,0 +1,5 @@
+<resources>
+    <string name="minutes_abbreviation">%s мин.</string>
+    <string name="episode_abbreviation">%s эп.</string>
+    <string name="releases_count">%1$d релизов</string>
+</resources>

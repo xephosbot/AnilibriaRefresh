@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Anilibria Refresh</string>
+
+    <!-- Главные вкладки -->
+    <string name="tab_home">Главная</string>
+    <string name="tab_favorite">Избранное</string>
+    <string name="tab_profile">Профиль</string>
+</resources>
