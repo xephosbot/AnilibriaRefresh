@@ -4,4 +4,6 @@ dependencies:
   - ../shared
 
 settings:
-  compose: enabled
+  compose:
+    version: 1.8.0-beta01
+    enabled: true
