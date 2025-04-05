@@ -4,3 +4,5 @@ modules:
   - jvm-app
   - shared
   - shared/api
+  - shared/data
+  - shared/domain

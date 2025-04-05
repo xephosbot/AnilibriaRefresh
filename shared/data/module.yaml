@@ -1,0 +1,10 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../api
+  - ../domain
+  - androidx.paging:paging-common:3.3.6
+  - org.jetbrains.kotlinx:kotlinx-datetime:0.6.1
+  - io.insert-koin:koin-core:3.5.6
