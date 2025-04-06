@@ -3,7 +3,6 @@ package com.xbot.domain.usecase
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 class GetReleasesPager(
     private val releaseRepository: ReleaseRepository
 ) {
-    @NativeCoroutines
     operator fun invoke(
         search: String? = null,
         genres: List<Genre>? = null,

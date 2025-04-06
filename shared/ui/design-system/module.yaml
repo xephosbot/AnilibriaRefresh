@@ -1,0 +1,26 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../../domain
+  - $compose.foundation
+  - $compose.material3
+  - $compose.materialIconsExtended
+  - $compose.components.resources
+  - androidx.paging:paging-common:3.3.0-alpha02
+  - app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1
+  - me.gingerninja.lazy:sticky-headers:0.1.0-alpha04
+  - com.valentinilk.shimmer:compose-shimmer:1.3.2
+  - io.coil-kt.coil3:coil-compose:3.0.0
+
+dependencies@android:
+  - androidx.paging:paging-compose:3.3.0-alpha02
+
+settings:
+  compose:
+    version: 1.7.3
+    enabled: true
+    resources:
+      packageName: com.xbot.designsystem
+      exposedAccessors: true

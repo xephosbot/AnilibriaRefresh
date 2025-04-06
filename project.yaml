@@ -6,3 +6,7 @@ modules:
   - shared/api
   - shared/data
   - shared/domain
+  - shared/ui/design-system
+  - shared/ui/feature/home
+  - shared/ui/feature/title
+  - shared/ui/feature/profile
