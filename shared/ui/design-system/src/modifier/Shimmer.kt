@@ -9,13 +9,6 @@ import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.shimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
 
-val LocalShimmer = compositionLocalOf<Shimmer?> { null }
-
-@Composable
-fun ProvideShimmer(value: Shimmer, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalShimmer provides value, content = content)
-}
-
 @Composable
 fun Modifier.shimmerSafe(shimmer: Shimmer?) = then(
     if (shimmer != null) {
@@ -29,3 +22,10 @@ fun Modifier.shimmerUpdater(shimmer: Shimmer) = onGloballyPositioned {
     val position = it.unclippedBoundsInWindow()
     shimmer.updateBounds(position)
 }
+
+@Composable
+fun ProvideShimmer(value: Shimmer, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalShimmer provides value, content = content)
+}
+
+val LocalShimmer = compositionLocalOf<Shimmer?> { null }

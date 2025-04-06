@@ -1,0 +1,9 @@
+{
+    "configurations": [
+        {
+            "type": "android-app",
+            "name": "android-app",
+            "module": "android-app.android"
+        },
+    ]
+}

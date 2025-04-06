@@ -2,10 +2,10 @@ modules:
   - android-app
   - ios-app
   - jvm-app
-  - shared
   - shared/api
   - shared/data
   - shared/domain
+  - shared/ui/resources
   - shared/ui/design-system
   - shared/ui/feature/home
   - shared/ui/feature/title

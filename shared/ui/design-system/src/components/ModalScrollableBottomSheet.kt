@@ -38,7 +38,7 @@ fun ModalScrollableBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-        //sheetGesturesEnabled = scrollAtTop,
+        sheetGesturesEnabled = scrollAtTop,
         content = content
     )
 }

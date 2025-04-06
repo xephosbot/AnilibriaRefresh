@@ -8,20 +8,8 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LinearWavyProgressIndicator
-import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -32,17 +20,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
-import com.xbot.common.localization.stringRes
-import com.xbot.designsystem.R
+import com.xbot.designsystem.placeholder_profile
+import com.xbot.designsystem.utils.MorphPolygonShape
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Member
 import com.xbot.domain.models.Poster
+import com.xbot.resources.Res
+import com.xbot.resources.releases_count
+import com.xbot.resources.localization.stringRes
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GenreItem(
@@ -63,7 +54,7 @@ fun GenreItem(
         subtitle = {
             genre.releasesCount?.let { count ->
                 Text(
-                    text = stringResource(R.string.releases_count, count),
+                    text = stringResource(Res.string.releases_count, count),
                     textAlign = TextAlign.Center
                 )
             }
@@ -81,7 +72,7 @@ fun MemberItem(
         modifier = modifier,
         onClick = onClick,
         poster = member.avatar,
-        placeholder = painterResource(R.drawable.placeholder_profile),
+        placeholder = painterResource(com.xbot.designsystem.Res.drawable.placeholder_profile),
         title = {
             Text(
                 text = member.name,

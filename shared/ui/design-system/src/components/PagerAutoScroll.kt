@@ -40,5 +40,5 @@ fun shouldPerformAutoScroll(
     val pagerIsPressed by interactionSource.collectIsPressedAsState()
     val pagerIsDragged by interactionSource.collectIsDraggedAsState()
 
-    return pagerIsPressed || pagerIsDragged
+    return !(pagerIsPressed || pagerIsDragged)
 }

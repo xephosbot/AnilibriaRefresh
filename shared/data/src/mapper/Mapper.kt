@@ -16,6 +16,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.seconds
 
 internal fun GenreApi.toDomain() = Genre(
     id = id,
@@ -62,7 +63,7 @@ internal fun EpisodeApi.toDomain() = Episode(
     id = id,
     name = name,
     englishName = nameEnglish,
-    duration = duration,
+    duration = duration.seconds,
     preview = preview.optimized.let { poster ->
         val src = poster.src
         val thumbnail = poster.thumbnail

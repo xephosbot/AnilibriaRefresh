@@ -3,11 +3,7 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,12 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.xbot.common.localization.localizedName
-import com.xbot.common.localization.parseAsHtml
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Release
+import com.xbot.resources.localization.localizedName
 
 @Composable
 fun ReleaseCardItem(
@@ -67,7 +62,7 @@ private fun ReleaseCardItemContent(
         )
         Text(
             modifier = Modifier.padding(12.dp),
-            text = release.localizedName().parseAsHtml(),
+            text = release.localizedName(),
             color = Color.White,
             style = MaterialTheme.typography.titleSmall,
             maxLines = 2,

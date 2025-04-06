@@ -1,19 +1,8 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -23,33 +12,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import com.xbot.designsystem.utils.rememberRoundedCornerSpan
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
-import com.xbot.designsystem.utils.withRoundedCorner
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.xbot.common.localization.localizedName
-import com.xbot.common.localization.parseAsHtml
-import com.xbot.common.localization.stringRes
-import com.xbot.designsystem.R
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.resources.Res
+import com.xbot.resources.episode_abbreviation
+import com.xbot.resources.localization.localizedName
+import com.xbot.resources.localization.stringRes
+import com.xbot.resources.minutes_abbreviation
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.getString
 
 @Composable
 fun ReleaseLargeCard(
@@ -95,13 +76,9 @@ private fun ReleaseLargeCard(
                 poster = release.poster
             )
 
-            val surfaceColor = MaterialTheme.colorScheme.surface
-            val roundedCornerSpan = rememberRoundedCornerSpan(
-                cornerSize = CornerSize(4.dp),
-                background = SolidColor(MaterialTheme.colorScheme.inverseSurface),
-                stroke = null,
-                padding = PaddingValues(horizontal = 4.dp)
-            )
+            val releaseTitle = remember {
+                runBlocking { buildReleaseTitle(release) }
+            }
 
             ReleaseLargeCardContent(
                 modifier = modifier
@@ -109,29 +86,16 @@ private fun ReleaseLargeCard(
                     .align(Alignment.BottomStart),
                 title = {
                     Text(
-                        text = release.localizedName().parseAsHtml(),
+                        text = release.localizedName(),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 subtitle = {
                     Text(
-                        modifier = Modifier.drawBehind { roundedCornerSpan.onDraw(this) },
-                        text = buildAnnotatedString {
-                            append(" ")
-                            withRoundedCorner {
-                                withStyle(SpanStyle(color = surfaceColor)) {
-                                    append(context.getString(release.ageRating.stringRes))
-                                }
-                            }
-                            append("  \u2022 ")
-                            append(buildReleaseTitle(release, context))
-                        },
+                        text = releaseTitle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { layoutResult ->
-                            roundedCornerSpan.onTextLayout(layoutResult)
-                        }
                     )
                 }
             )
@@ -245,26 +209,26 @@ private fun calculateLargeCardState(
     }
 }
 
-internal fun buildReleaseTitle(release: Release) = buildString {
+internal suspend fun buildReleaseTitle(release: Release) = buildString {
     append(release.year.toString())
     append(" \u2022 ")
     release.type?.let { type ->
         when (type) {
             ReleaseType.MOVIE -> {
-                append(context.getString(type.stringRes))
+                append(getString(type.stringRes))
                 append(" \u2022 ")
             }
 
             else -> {
                 release.episodesCount?.let { episodesCount ->
-                    append(context.getString(R.string.episode_abbreviation, episodesCount.toString()))
+                    append(getString(Res.string.episode_abbreviation, episodesCount.toString()))
                     append(" \u2022 ")
                 }
             }
         }
     }
     release.episodeDuration?.let { episodeDuration ->
-        append(context.getString(R.string.minutes_abbreviation, episodeDuration.toString()))
+        append(getString(Res.string.minutes_abbreviation, episodeDuration.toString()))
         append(" \u2022 ")
     }
     append(release.favoritesCount.toString())

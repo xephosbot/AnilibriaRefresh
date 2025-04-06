@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FilterChip(
     selected: Boolean,
@@ -40,6 +41,9 @@ fun FilterChip(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+
+    val defaultAnimationSpec = MaterialTheme.motionScheme.defaultEffectsSpec<Float>()
+    val pressed by interactionSource.collectIsPressedAsState()
 
     androidx.compose.material3.FilterChip(
         selected = selected,
@@ -83,6 +87,7 @@ fun FilterChip(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AssistChip(
     onClick: () -> Unit,
@@ -95,6 +100,9 @@ fun AssistChip(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+
+    val defaultAnimationSpec = MaterialTheme.motionScheme.defaultEffectsSpec<Float>()
+    val pressed by interactionSource.collectIsPressedAsState()
 
     androidx.compose.material3.AssistChip(
         onClick = onClick,
@@ -123,6 +131,22 @@ fun AssistChip(
         ),
         interactionSource = interactionSource
     )
+}
+
+@Composable
+private fun shapeByInteraction(
+    shape: Shape,
+    pressedShape: Shape,
+    selectedShape: Shape,
+    pressed: Boolean,
+    selected: Boolean,
+    animationSpec: FiniteAnimationSpec<Float>
+): Shape {
+    val currentShape = if (selected) selectedShape else if (pressed) pressedShape else shape
+    if (currentShape is RoundedCornerShape) {
+        return rememberAnimatedShape(currentShape, animationSpec)
+    }
+    return currentShape
 }
 
 @Stable

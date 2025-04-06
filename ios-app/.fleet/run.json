@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        
+        {
+            "name": "app (1)",
+            "type": "xcode-app",
+            "workingDir": "$PROJECT_DIR$",
+            "allowParallelRun": true,
+            "buildTarget": {
+                "project": "module",
+                "target": "app"
+            },
+            "configuration": "Debug"
+        }
+    ]
+}

@@ -1,9 +1,25 @@
 product: android/app
 
 dependencies:
-  - ../shared
+  - ../shared/api
+  - ../shared/domain
+  - ../shared/data
+  - ../shared/ui/design-system
+  - ../shared/ui/feature/home
+  - androidx.appcompat:appcompat:1.7.0
+  - androidx.activity:activity-compose:1.9.2
+  - androidx.core:core-splashscreen:1.0.0
+  - io.insert-koin:koin-core:4.0.0
+  - io.insert-koin:koin-android:4.0.0
+  - io.insert-koin:koin-androidx-compose:4.0.0
+  - io.coil-kt.coil3:coil-compose:3.1.0
+  - io.coil-kt.coil3:coil-compose-core:3.1.0
+  - io.coil-kt.coil3:coil-network-okhttp:3.1.0
 
 settings:
   compose:
     version: 1.7.3
     enabled: true
+  android:
+    namespace: com.xbot.anilibriarefresh
+    compileSdk: 35

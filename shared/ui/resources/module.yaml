@@ -1,0 +1,17 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../../domain
+  - $compose.foundation
+  - $compose.components.resources
+  - org.jetbrains.kotlinx:kotlinx-datetime:0.6.2
+
+settings:
+  compose:
+    version: 1.7.3
+    enabled: true
+    resources:
+      packageName: com.xbot.resources
+      exposedAccessors: true

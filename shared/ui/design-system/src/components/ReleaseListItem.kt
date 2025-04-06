@@ -10,6 +10,8 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,11 +22,13 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.xbot.common.localization.localizedName
-import com.xbot.common.localization.parseAsHtml
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Release
+import com.xbot.resources.localization.localizedName
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ReleaseListItem(
@@ -60,11 +64,16 @@ private fun ReleaseListItemContent(
     release: Release,
     modifier: Modifier = Modifier,
 ) {
+    val scope = rememberCoroutineScope()
+    val releaseTitle = remember {
+        runBlocking { buildReleaseTitle(release) }
+    }
+
     ListItemLayout(
         modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
             Text(
-                text = release.localizedName().parseAsHtml(),
+                text = release.localizedName(),
                 overflow = TextOverflow.Ellipsis,
             )
         },
@@ -79,7 +88,7 @@ private fun ReleaseListItemContent(
         },
         tags = {
             Text(
-                text = buildReleaseTitle(release),
+                text = releaseTitle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

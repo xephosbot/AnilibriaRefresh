@@ -1,56 +1,95 @@
 package com.xbot.designsystem.components
 
-import android.content.res.Resources
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.only
-import androidx.compose.material3.DrawerDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationRailDefaults
-import androidx.compose.material3.ScaffoldDefaults
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
+import androidx.compose.material3.adaptive.navigationsuite.*
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverride
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverrideScope
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldState
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldValue
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
-import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.resources
 import com.xbot.designsystem.utils.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
+fun NavigationSuiteScaffold(
+    navigationSuiteItems: NavigationSuiteScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    state: NavigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState(),
+    layoutType: NavigationSuiteType =
+        com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
+    navigationSuiteColors: NavigationSuiteColors = NavigationSuiteDefaults.colors(),
+    containerColor: Color = NavigationSuiteScaffoldDefaults.containerColor,
+    contentColor: Color = NavigationSuiteScaffoldDefaults.contentColor,
+    content: @Composable () -> Unit
+) {
+    Surface(modifier = modifier, color = containerColor, contentColor = contentColor) {
+        val scaffoldState = rememberScaffoldState()
+
+        NavigationSuiteScaffoldLayout(
+            navigationSuite = {
+                NavigationSuite(
+                    layoutType = layoutType,
+                    colors = navigationSuiteColors,
+                    content = navigationSuiteItems
+                )
+            },
+            state = state,
+            layoutType = layoutType,
+            snackbar = {
+                SnackbarHost(hostState = scaffoldState.snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        shape = MaterialTheme.shapes.medium,
+                    )
+                }
+            },
+            content = {
+                Box(
+                    Modifier.consumeWindowInsets(
+                        if (
+                            state.currentValue == NavigationSuiteScaffoldValue.Hidden &&
+                            !state.isAnimating
+                        ) {
+                            NoWindowInsets
+                        } else {
+                            when (layoutType) {
+                                NavigationSuiteType.NavigationBar ->
+                                    NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
+
+                                NavigationSuiteType.NavigationRail ->
+                                    NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
+
+                                NavigationSuiteType.NavigationDrawer ->
+                                    DrawerDefaults.windowInsets.only(WindowInsetsSides.Start)
+
+                                else -> NoWindowInsets
+                            }
+                        }
+                    )
+                ) {
+                    content()
+                }
+            }
+        )
+    }
+}
+
+@Composable
 internal fun NavigationSuiteScaffoldLayout(
     navigationSuite: @Composable () -> Unit,
     layoutType: NavigationSuiteType =
-        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
+        com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
     state: NavigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState(),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     snackbar: @Composable () -> Unit = {},
