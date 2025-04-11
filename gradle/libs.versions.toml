@@ -25,9 +25,8 @@ brotli = "0.1.2"
 materialMotionCompose = "2.0.1"
 media3 = "1.6.0"
 shimmer = "1.3.2"
-kotlin = "2.1.10"
-compose-multiplatform = "1.7.3"
-kotlinCompiler = "1.5.15"
+kotlin = "2.1.20"
+composeMultiplatform = "1.8.0-beta02"
 kotlinxCollections = "0.3.8"
 kotlinxCoroutines = "1.10.1"
 kotlinxDatetime = "0.6.2"
@@ -35,13 +34,13 @@ kotlinxSerializationJson = "1.8.1"
 ksp = "2.1.10-1.0.30"
 koin = "4.1.0-Beta6"
 ktor = "3.1.2"
-paging = "3.3.6"
+#noinspection GradleDependency
+paging = "3.3.0-alpha02"
+cashappPaging = "3.3.0-alpha02-0.5.1"
 room = "2.6.1"
 stickyHeaders = "0.1.0-alpha04"
 interpolator = "1.0.0"
 junit = "4.13.2"
-skie = "0.10.1"
-nativecoroutines = "1.0.0-ALPHA-38"
 junitVersion = "1.2.1"
 appcompat = "1.7.0"
 material = "1.12.0"
@@ -83,8 +82,8 @@ sticky-headers = { module = "me.gingerninja.lazy:sticky-headers", version.ref = 
 
 # Paging
 androidx-paging-core = { module = "androidx.paging:paging-common", version.ref = "paging" }
-androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-androidx-paging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+androidx-paging-android = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+androidx-paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "cashappPaging" }
 
 # Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -101,48 +100,46 @@ androidx-media3-session = { module = "androidx.media3:media3-session", version.r
 androidx-media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref = "media3" }
 
 # Ktor
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 # Coil
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewModel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
-# Dependencies of the included build-logic
-android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
-android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
-compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
-kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+[bundles]
+ktor = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-client-encoding", "ktor-client-logging", "ktor-client-auth", "ktor-serialization-kotlinx-json"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark"}
+android-library-multiplatform = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
+
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-multiplatform-android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxMacroBenchmark"}
+
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
-skie = { id = "co.touchlab.skie", version.ref = "skie" }
-nativecoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "nativecoroutines" }
-
-# Plugins defined by this project
-xbot-compose = { id = "com.xbot.compose" }

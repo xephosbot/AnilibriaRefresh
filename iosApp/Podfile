@@ -1,0 +1,9 @@
+# Uncomment the next line to define a global platform for your project
+use_frameworks!
+
+platform :ios, '16.0'
+
+target 'AnilibriaRefresh' do
+  # Pods for AnilibriaRefresh
+  pod 'shared', :path => '../shared'
+end

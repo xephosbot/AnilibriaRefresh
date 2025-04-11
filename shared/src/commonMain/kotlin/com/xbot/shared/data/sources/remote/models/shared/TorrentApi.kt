@@ -1,0 +1,29 @@
+package com.xbot.shared.data.sources.remote.models.shared
+
+import com.xbot.shared.data.sources.remote.models.shared.enums.CodecApi
+import com.xbot.shared.data.sources.remote.models.shared.enums.ColorDepthNetwork
+import com.xbot.shared.data.sources.remote.models.shared.enums.QualityNetwork
+import com.xbot.shared.data.sources.remote.models.shared.enums.TorrentTypeApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TorrentApi(
+    @SerialName("id") val id: Int,
+    @SerialName("hash") val hash: String,
+    @SerialName("size") val size: Long,
+    @SerialName("type") val type: TorrentTypeApi?,
+    @SerialName("label") val label: String,
+    @SerialName("magnet") val magnet: String,
+    @SerialName("filename") val fileName: String,
+    @SerialName("seeders") val seeders: Int,
+    @SerialName("quality") val quality: QualityNetwork?,
+    @SerialName("codec") val codec: CodecApi?,
+    @SerialName("color") val color: ColorDepthNetwork?,
+    @SerialName("bitrate") val bitrate: Int?,
+    @SerialName("leechers") val leechers: Int,
+    @SerialName("sort_order") val sortOrder: Int,
+    @SerialName("updated_at") val updatedAt: String,
+    @SerialName("description") val description: String,
+    @SerialName("completed_times") val completedTimes: Int,
+)
