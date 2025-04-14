@@ -27,7 +27,7 @@ ksp = "2.1.10-1.0.30"
 koin = "4.1.0-Beta7"
 ktor = "3.1.2"
 #noinspection GradleDependency
-paging = "3.3.0-alpha02"
+paging = "3.3.6"
 cashappPaging = "3.3.0-alpha02-0.5.1"
 room = "2.7.0"
 stickyHeaders = "0.1.0-alpha04"
