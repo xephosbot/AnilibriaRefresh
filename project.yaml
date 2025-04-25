@@ -1,0 +1,17 @@
+modules:
+  - android-app
+  - ios-app
+  - jvm-app
+  - shared
+  - shared/network
+  - shared/data
+  - shared/domain
+  - shared-ui
+  - shared-ui/resource
+  - shared-ui/design-system
+  - shared-ui/feature/home
+  - shared-ui/feature/title
+  - shared-ui/feature/search
+  - shared-ui/feature/profile
+  - shared-ui/feature/favorite
+  - shared-ui/feature/player

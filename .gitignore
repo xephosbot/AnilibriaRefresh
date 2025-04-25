@@ -24,7 +24,7 @@
 
 # Ignore local properties
 local.properties
-keystore.properties
+android-app/keystore.properties
 
 *.jks
 

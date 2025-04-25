@@ -1,0 +1,10 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../network
+  - ../domain
+  - $libs.koin.core
+  - $libs.androidx.paging.core
+  - $libs.kotlinx.datetime
