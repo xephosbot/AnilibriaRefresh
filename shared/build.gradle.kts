@@ -51,7 +51,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.10-alpha01")
             implementation(libs.sticky.headers)
             implementation(libs.shimmer.compose)
             implementation(libs.material.motion.compose.core)
