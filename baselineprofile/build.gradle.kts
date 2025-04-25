@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.android.test)
     alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -16,6 +17,10 @@ android {
     }
 
     targetProjectPath = ":androidApp"
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 // This is the configuration block for the Baseline Profile plugin.
@@ -32,6 +37,7 @@ dependencies {
     implementation(libs.androidx.test.rules)
     implementation(libs.androidx.test.runner)
     implementation(libs.androidx.test.uiautomator)
+    implementation(libs.androidx.core.ktx)
 }
 
 androidComponents {

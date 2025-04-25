@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,8 +23,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -63,7 +66,8 @@ import com.xbot.shared.ui.designsystem.components.pagingItems
 import com.xbot.shared.ui.designsystem.icons.AnilibriaIcons
 import com.xbot.shared.ui.designsystem.icons.AnilibriaLogoLarge
 import com.xbot.shared.ui.designsystem.modifier.ProvideShimmer
-import com.xbot.shared.ui.designsystem.modifier.parallaxOffset
+import com.xbot.shared.ui.designsystem.modifier.verticalParallax
+import com.xbot.shared.ui.designsystem.modifier.horizontalParallax
 import com.xbot.shared.ui.designsystem.modifier.shimmerUpdater
 import com.xbot.shared.ui.designsystem.utils.only
 import com.xbot.shared.domain.models.Genre
@@ -73,6 +77,7 @@ import com.xbot.shared.resources.button_watch
 import com.xbot.shared.resources.label_genres
 import com.xbot.shared.resources.label_schedule
 import com.xbot.shared.resources.label_updates
+import com.xbot.shared.ui.designsystem.modifier.fadeWithParallax
 import com.xbot.shared.ui.localization.toLocalizedString
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
@@ -215,10 +220,12 @@ private fun ReleaseFeed(
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val pagerState = rememberPagerState(pageCount = { recommendedReleases.size })
+    val gridState = rememberLazyGridState()
 
     ProvideShimmer(shimmer) {
         Feed(
             modifier = modifier.shimmerUpdater(shimmer),
+            state = gridState,
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
@@ -227,24 +234,44 @@ private fun ReleaseFeed(
                 state = pagerState
             ) { page, release ->
                 ReleaseLargeCard(
-                    modifier = Modifier.parallaxOffset(pagerState, page),
+                    modifier = Modifier
+                        .horizontalParallax(pagerState, page)
+                        .verticalParallax(gridState),
+                    contentModifier = Modifier
+                        .fadeWithParallax(pagerState, page),
                     release = release
                 ) {
-                    Button(
-                        onClick = { onReleaseClick(release) },
-                        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.onTertiary
-                        )
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                            imageVector = AnilibriaIcons.Outlined.PlayArrow,
-                            contentDescription = null
-                        )
-                        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
-                        Text(text = stringResource(Res.string.button_watch))
+                    Row {
+                        Button(
+                            onClick = { onReleaseClick(release) },
+                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onTertiary
+                            )
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                                imageVector = AnilibriaIcons.Outlined.PlayArrow,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                            Text(text = stringResource(Res.string.button_watch))
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        FilledTonalIconButton(
+                            onClick = {},
+                            colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                                imageVector = AnilibriaIcons.Outlined.Star,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }

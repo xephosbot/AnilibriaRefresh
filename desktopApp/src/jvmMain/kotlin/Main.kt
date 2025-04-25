@@ -1,11 +1,13 @@
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowState
-import androidx.compose.ui.window.singleWindowApplication
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.xbot.shared.di.initKoin
 
-fun main() = singleWindowApplication(
-    title = "Anilibria Refresh",
-    state = WindowState(size = DpSize(500.dp, 800.dp))
-) {
-    MainView()
+fun main() = application {
+    initKoin {
+        printLogger()
+    }
+
+    Window(::exitApplication) {
+        MainView()
+    }
 }

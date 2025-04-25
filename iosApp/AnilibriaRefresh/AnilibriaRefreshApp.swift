@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import shared
 
 @main
 struct AnilibriaRefreshApp: App {
+    init () {
+        StartKoinKt.doInitKoin()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

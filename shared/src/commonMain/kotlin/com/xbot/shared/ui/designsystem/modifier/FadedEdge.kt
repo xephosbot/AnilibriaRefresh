@@ -18,7 +18,7 @@ fun Modifier.fadedEdge(
     edgeHeight: Dp = DefaultFadingEdgeHeight,
     opacity: Float = 1.0f,
     bottomEdge: Boolean = true,
-) = graphicsLayer {
+) = this.graphicsLayer {
     compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithCache {
     val edgeHeightPx = edgeHeight.toPx()
@@ -29,12 +29,44 @@ fun Modifier.fadedEdge(
     edgeHeightRatio: Float = 0.5f,
     opacity: Float = 1.0f,
     bottomEdge: Boolean = true
-) = graphicsLayer {
+) = this.graphicsLayer {
      compositingStrategy = CompositingStrategy.Offscreen
 }.drawWithCache {
     val edgeHeightPx = size.width * edgeHeightRatio
     drawFadedEdge(edgeHeightPx, opacity, bottomEdge)
 }
+
+fun Modifier.cinematicScrim(opacity: Float = 1.0f) = this
+    .graphicsLayer {
+        compositingStrategy = CompositingStrategy.Offscreen
+    }.drawWithCache {
+        onDrawWithContent {
+            drawContent()
+            drawRect(
+                Brush.verticalGradient(
+                    colors = listOf(Color.Black, Color.Transparent.copy(alpha = 1f - opacity)),
+                    startY = 600f
+                ),
+                blendMode = BlendMode.DstIn,
+            )
+            drawRect(
+                Brush.horizontalGradient(
+                    colors = listOf(Color.Transparent.copy(alpha = 1f - opacity), Color.Black),
+                    endX = 1000f,
+                    startX = 300f
+                ),
+                blendMode = BlendMode.DstIn,
+            )
+            drawRect(
+                Brush.linearGradient(
+                    colors = listOf(Color.Transparent.copy(alpha = 1f - opacity), Color.Black),
+                    start = Offset(x = 500f, y = 500f),
+                    end = Offset(x = 1000f, y = 0f)
+                ),
+                blendMode = BlendMode.DstIn,
+            )
+        }
+    }
 
 private fun CacheDrawScope.drawFadedEdge(edgeHeight: Float, opacity: Float, bottomEdge: Boolean): DrawResult {
     val brush = Brush.verticalGradient(

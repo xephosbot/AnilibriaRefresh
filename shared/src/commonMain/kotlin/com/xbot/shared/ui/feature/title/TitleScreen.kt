@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -72,6 +73,7 @@ import com.xbot.shared.ui.designsystem.components.row
 import com.xbot.shared.ui.designsystem.icons.AnilibriaIcons
 import com.xbot.shared.ui.designsystem.icons.TelegramLogo
 import com.xbot.shared.ui.designsystem.modifier.ProvideShimmer
+import com.xbot.shared.ui.designsystem.modifier.verticalParallax
 import com.xbot.shared.ui.designsystem.modifier.shimmerUpdater
 import com.xbot.shared.ui.designsystem.utils.only
 import com.xbot.shared.ui.feature.title.ui.AlertCard
@@ -174,17 +176,21 @@ private fun TitleDetails(
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     var showEpisodesList by rememberSaveable { mutableStateOf(false) }
+    val gridState = rememberLazyGridState()
 
     ProvideShimmer(shimmer) {
         Feed(
             modifier = modifier.shimmerUpdater(shimmer),
+            state = gridState,
             columns = GridCells.Adaptive(350.dp),
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
             row {
-                ReleaseLargeCard(release = details.release)
+                ReleaseLargeCard(
+                    modifier = Modifier.verticalParallax(gridState),
+                    release = details.release
+                )
             }
-            row { Spacer(Modifier.height(12.dp)) }
 
             if (details.availabilityStatus == AvailabilityStatus.Available) {
                 swapItems(

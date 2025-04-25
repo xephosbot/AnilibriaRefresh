@@ -4,6 +4,6 @@ import com.xbot.shared.data.sources.local.createDataStore
 import com.xbot.shared.data.sources.local.dataStoreFileName
 import org.koin.dsl.module
 
-actual val localDataSourceModule = module {
+actual val platformModule = module {
     single { createDataStore { dataStoreFileName } }
 }

@@ -24,6 +24,9 @@
 
 # Ignore local properties
 local.properties
+keystore.properties
+
+*.jks
 
 # Ignore macOS-specific files
 .DS_Store

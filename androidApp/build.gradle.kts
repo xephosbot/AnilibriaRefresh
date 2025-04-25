@@ -1,10 +1,17 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.android.application)
-    //alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.baselineprofile)
 }
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 kotlin {
     androidTarget()
@@ -14,8 +21,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.interpolator)
-            implementation(libs.androidx.profileinstaller)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
         }
     }
 }
@@ -33,6 +40,19 @@ android {
         versionName = "1.0"
     }
 
+    androidResources {
+        localeFilters += setOf("en", "ru")
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -43,13 +63,19 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        debug {
             isMinifyEnabled = false
+        }
+        release {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            signingConfig = signingConfigs.named("release").get()
+            baselineProfile.automaticGenerationDuringBuild = true
         }
     }
 }
 
-/*dependencies {
-    implementation(projects.shared)
+dependencies {
     baselineProfile(projects.baselineprofile)
-}*/
+    implementation(libs.androidx.profileinstaller)
+}

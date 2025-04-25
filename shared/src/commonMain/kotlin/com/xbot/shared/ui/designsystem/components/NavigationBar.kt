@@ -37,5 +37,4 @@ object AnilibriaNavigationBar : NavigationBarComponentOverride {
             )
         }
     }
-
 }

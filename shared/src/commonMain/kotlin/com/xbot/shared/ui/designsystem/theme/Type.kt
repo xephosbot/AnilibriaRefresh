@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.xbot.shared.resources.Res
 import com.xbot.shared.resources.bebesneue_bold
@@ -80,12 +82,22 @@ fun AnilibriaTypography() = Typography(
     titleLarge = baseline.titleLarge.copy(
         fontFamily = BebesNeueFontFamily(),
         fontSize = 24.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        lineHeightStyle = LineHeightStyle(
+            alignment = LineHeightStyle.Alignment.Center,
+            trim = LineHeightStyle.Trim.Both
+        ),
+        baselineShift = BaselineShift(-0.3f),
     ),
     titleMedium = baseline.titleMedium.copy(
         fontFamily = BebesNeueFontFamily(),
         fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        lineHeightStyle = LineHeightStyle(
+            alignment = LineHeightStyle.Alignment.Center,
+            trim = LineHeightStyle.Trim.Both
+        ),
+        baselineShift = BaselineShift(-0.3f),
     ),
     titleSmall = baseline.titleSmall.copy(fontFamily = NotoSansFontFamily()),
     bodyLarge = baseline.bodyLarge.copy(
