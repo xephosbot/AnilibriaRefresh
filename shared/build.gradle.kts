@@ -44,7 +44,7 @@ kotlin {
             implementation(compose.foundation)
             //implementation(compose.material3)
             implementation("org.jetbrains.compose.material3:material3:1.8.0-alpha03")
-            implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.8.0-alpha03")
+            implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.9.0+dev2416")
             implementation("org.jetbrains.compose.material3:material3-window-size-class:1.8.0-beta02")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.0-beta02")
             implementation(compose.components.resources)
