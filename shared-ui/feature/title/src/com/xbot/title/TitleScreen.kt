@@ -124,14 +124,18 @@ private fun TitleScreenContent(
     var topAppbarHeight by remember { mutableStateOf(0) }
     val topAppBarAlpha by remember {
         derivedStateOf {
-            if (gridState.layoutInfo.visibleItemsInfo.isEmpty()) {
+            val firstItem = gridState.layoutInfo.visibleItemsInfo.firstOrNull()
+            if (firstItem == null) {
                 0f
-            } else if (gridState.firstVisibleItemIndex == 0) {
-                gridState.layoutInfo.visibleItemsInfo.first().let {
-                    (it.offset.y / (it.size.height - topAppbarHeight).toFloat()).absoluteValue
-                }
-            } else {
+            } else if (gridState.firstVisibleItemIndex > 0) {
                 1f
+            } else {
+                val scrollProgress = (firstItem.offset.y.absoluteValue / (firstItem.size.height - topAppbarHeight).toFloat()).coerceIn(0f, 1f)
+                if (scrollProgress < 0.5f) {
+                    0f
+                } else {
+                    ((scrollProgress - 0.5f) * 2f).coerceIn(0f, 1f)
+                }
             }
         }
     }
@@ -378,7 +382,9 @@ private fun SuggestionRow(
     onShareClick: () -> Unit,
     onTelegramClick: () -> Unit,
 ) {
-    ButtonGroup(modifier = modifier) {
+    ButtonGroup(
+        modifier = modifier,
+    ) {
         LabeledIconButton(
             modifier = Modifier
                 .weight(1f),

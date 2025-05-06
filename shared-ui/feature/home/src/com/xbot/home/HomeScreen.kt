@@ -3,28 +3,16 @@ package com.xbot.home
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -36,18 +24,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.LoadingIndicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +36,9 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.ExpressiveButton
 import com.xbot.designsystem.components.Feed
+import com.xbot.designsystem.components.FilledIconButton
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.ReleaseCardItem
@@ -68,20 +50,15 @@ import com.xbot.designsystem.components.horizontalPagerItems
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
-import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.modifier.fadeWithParallax
-import com.xbot.designsystem.modifier.horizontalParallax
-import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.modifier.*
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
-import com.xbot.resources.*
 import com.xbot.localization.toLocalizedString
+import com.xbot.resources.*
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 @Composable
@@ -127,14 +104,18 @@ private fun HomeScreenContent(
     var topAppbarHeight by remember { mutableStateOf(0) }
     val topAppBarAlpha by remember {
         derivedStateOf {
-            if (gridState.layoutInfo.visibleItemsInfo.isEmpty()) {
+            val firstItem = gridState.layoutInfo.visibleItemsInfo.firstOrNull()
+            if (firstItem == null) {
                 0f
-            } else if (gridState.firstVisibleItemIndex == 0) {
-                gridState.layoutInfo.visibleItemsInfo.first().let {
-                    (it.offset.y / (it.size.height - topAppbarHeight).toFloat()).absoluteValue
-                }
-            } else {
+            } else if (gridState.firstVisibleItemIndex > 0) {
                 1f
+            } else {
+                val scrollProgress = (firstItem.offset.y.absoluteValue / (firstItem.size.height - topAppbarHeight).toFloat()).coerceIn(0f, 1f)
+                if (scrollProgress < 0.5f) {
+                    0f
+                } else {
+                    ((scrollProgress - 0.5f) * 2f).coerceIn(0f, 1f)
+                }
             }
         }
     }
@@ -256,14 +237,12 @@ private fun ReleaseFeed(
                         .fadeWithParallax(pagerState, page),
                     release = release
                 ) {
-                    Row {
-                        Button(
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ExpressiveButton(
                             onClick = { onReleaseClick(release) },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = MaterialTheme.colorScheme.onTertiary
-                            )
                         ) {
                             Icon(
                                 modifier = Modifier.size(ButtonDefaults.MediumIconSize),
@@ -274,7 +253,7 @@ private fun ReleaseFeed(
                             Text(text = stringResource(Res.string.button_watch))
                         }
                         Spacer(Modifier.width(8.dp))
-                        FilledTonalIconButton(
+                        FilledIconButton(
                             onClick = {},
                             colors = IconButtonDefaults.filledTonalIconButtonColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -364,7 +343,7 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
             ReleaseLargeCard(null) {
-                Button(
+                ExpressiveButton(
                     onClick = {  },
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                     colors = ButtonDefaults.buttonColors(
