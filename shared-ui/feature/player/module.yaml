@@ -1,0 +1,33 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../../../shared/domain
+  - ../../design-system
+  - $compose.foundation
+  - $compose.components.resources
+  - org.jetbrains.compose.material3:material3:1.8.0-alpha03
+  - org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4
+  - org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.4
+  - org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10
+  - $libs.kotlinx.datetime
+  - $libs.koin.compose
+  - $libs.koin.compose.viewModel
+
+dependencies@android:
+  - $libs.androidx.media3.common.ktx
+  - $libs.androidx.media3.exoplayer
+  - $libs.androidx.media3.exoplayer.hls
+
+dependencies@jvm:
+  - uk.co.caprica:vlcj:4.8.3
+  - uk.co.caprica:vlcj-natives:4.8.3: runtime-only
+  - $libs.kotlinx.coroutines.swing
+
+settings:
+  compose:
+    version: 1.8.0-rc01
+    enabled: true
+  kotlin:
+    serialization: json

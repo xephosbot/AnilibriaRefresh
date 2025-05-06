@@ -1,0 +1,17 @@
+product: android/app
+
+dependencies:
+  - ../shared-ui
+  - $libs.androidx.activity.compose
+  - $libs.androidx.core.splashscreen
+  - $libs.androidx.interpolator
+  - $libs.kotlinx.coroutines.android
+  - $libs.koin.android
+
+settings:
+  android:
+    namespace: com.xbot.anilibriarefresh
+    signing: enabled
+  compose:
+    version: 1.8.0-rc01
+    enabled: true

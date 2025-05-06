@@ -1,0 +1,17 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../../shared/domain
+  - $compose.foundation
+  - $compose.components.resources
+  - $libs.kotlinx.datetime
+
+settings:
+  compose:
+    version: 1.8.0-rc01
+    enabled: true
+    resources:
+      packageName: com.xbot.resources
+      exposedAccessors: true
