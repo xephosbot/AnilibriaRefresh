@@ -8,6 +8,8 @@ import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
 import com.xbot.home.navigation.navigateToSchedule
+import com.xbot.player.navigation.navigateToPlayer
+import com.xbot.player.navigation.playerScreen
 import com.xbot.profile.navigation.profileSection
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.search.navigation.searchScreen
@@ -53,7 +55,7 @@ fun AnilibriaNavGraph(
                 if (lifecycleIsResumed()) navController.navigateUp()
             },
             onPlayClick = { releaseId, episodeOrdinal ->
-                //TODO: navController.navigateToPlayer(releaseId, episodeOrdinal)
+                if (lifecycleIsResumed()) navController.navigateToPlayer(releaseId, episodeOrdinal)
             },
             onReleaseClick = { releaseId ->
                 if (lifecycleIsResumed()) navController.navigateToTitle(releaseId)
@@ -67,6 +69,10 @@ fun AnilibriaNavGraph(
                 if (lifecycleIsResumed()) navController.navigateToTitle(releaseId)
             }
         )
-        //TODo: playerScreen()
+        playerScreen(
+            onBackClick = {
+                navController.navigateUp()
+            }
+        )
     }
 }

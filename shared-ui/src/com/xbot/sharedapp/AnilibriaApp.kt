@@ -1,6 +1,8 @@
 package com.xbot.sharedapp
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,6 +79,11 @@ fun AnilibriaApp(
                     )
                 }
             },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            navigationSuiteColors = NavigationSuiteDefaults.colors(
+                navigationBarContainerColor = MaterialTheme.colorScheme.surface,
+                navigationRailContainerColor = MaterialTheme.colorScheme.surface,
+            ),
             state = navigationSuiteScaffoldState
         ) {
             AnilibriaNavGraph(
