@@ -19,7 +19,7 @@ struct iosApp: App {
     init() {
         StartKoinKt.doInitKoin()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()
