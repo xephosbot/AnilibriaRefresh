@@ -15,6 +15,16 @@ dependencies:
   - $libs.koin.compose
   - $libs.koin.compose.viewModel
 
+dependencies@android:
+  - $libs.androidx.media3.common.ktx
+  - $libs.androidx.media3.exoplayer
+  - $libs.androidx.media3.exoplayer.hls
+
+dependencies@jvm:
+  - uk.co.caprica:vlcj:4.8.3
+  - uk.co.caprica:vlcj-natives:4.8.3: runtime-only
+  - $libs.kotlinx.coroutines.swing
+
 settings:
   compose:
     version: 1.8.0-rc01
