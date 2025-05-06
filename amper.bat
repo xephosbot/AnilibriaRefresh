@@ -16,9 +16,9 @@
 setlocal
 
 @rem The version of the Amper distribution to provision and use
-set amper_version=0.7.0-dev-2704
+set amper_version=0.7.0-dev-2769
 @rem Establish chain of trust from here by specifying exact checksum of Amper distribution to be run
-set amper_sha256=2a57f758a35d1d3b26284861cd38d986e4305c50508873616c3cfe0ae642e452
+set amper_sha256=1a2cdb65df449d15b7da4945f2e8db055f9b8e7b7d69c51d746cd1cd595ca529
 
 if not defined AMPER_DOWNLOAD_ROOT set AMPER_DOWNLOAD_ROOT=https://packages.jetbrains.team/maven/p/amper/amper
 if not defined AMPER_JRE_DOWNLOAD_ROOT set AMPER_JRE_DOWNLOAD_ROOT=https:/
@@ -141,7 +141,7 @@ if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
 )
 
 REM !! DO NOT REMOVE !!
-REM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                exit /b %ERRORLEVEL%
+REM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         exit /b %ERRORLEVEL%
 REM
 REM The above comment is strategically placed to compensate for a bug in the update command in Amper 0.5.0.
 REM During the update, the wrapper script is overwritten in-place while running. The problem is that cmd.exe doesn't
