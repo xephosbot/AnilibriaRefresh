@@ -130,14 +130,13 @@ internal fun NavigationSuiteScaffoldLayout(
             )
 
         val leftInset = contentWindowInsets.getLeft(this, layoutDirection)
-        val rightInset =
-            contentWindowInsets.getRight(this, layoutDirection)
+        val rightInset = contentWindowInsets.getRight(this, layoutDirection)
         val bottomInset = contentWindowInsets.getBottom(this)
         val snackbarPlaceable = snackbarMeasurable
             .first()
             .measure(
                 looseConstraints.offset(
-                    -leftInset - rightInset,
+                    - rightInset - (if (!isNavigationBar) (navigationPlaceable.width * animationProgress).toInt() else leftInset),
                     -bottomInset,
                 ),
             )
@@ -175,8 +174,9 @@ internal fun NavigationSuiteScaffoldLayout(
                 )
 
                 snackbarPlaceable.placeRelative(
-                    (layoutWidth - snackbarWidth - navigationPlaceable.width) / 2 +
-                            contentWindowInsets.getLeft(this@Layout, layoutDirection),
+                    (navigationPlaceable.width * animationProgress).toInt().let { navWidth ->
+                        navWidth + (layoutWidth - navWidth - snackbarWidth) / 2
+                    },
                     layoutHeight - (snackbarHeight + contentWindowInsets.getBottom(this@Layout))
                 )
             }

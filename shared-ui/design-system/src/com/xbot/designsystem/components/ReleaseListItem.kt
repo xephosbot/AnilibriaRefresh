@@ -1,22 +1,22 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.shimmerSafe
+import com.xbot.designsystem.theme.ExpressiveShape
+import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.utils.releaseTitleState
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ReleaseListItem(
@@ -34,18 +36,28 @@ fun ReleaseListItem(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceBright,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    shape: Shape = RoundedCornerShape(16.dp),
+    shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
+    interactionSource: MutableInteractionSource? = null,
     onClick: (Release) -> Unit = {},
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+
     Surface(
         modifier = modifier,
-        shape = shape,
+        shape = shape.shapeForInteraction(pressed, false),
         color = color,
         contentColor = contentColor
     ) {
         Crossfade(
             modifier = Modifier
-                .clickable { release?.let { onClick(it) } },
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                ) {
+                    release?.let { onClick(it) }
+                },
             targetState = release,
             label = "ReleaseListItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
         ) { state ->
@@ -62,10 +74,7 @@ private fun ReleaseListItemContent(
     release: Release,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
-    val releaseTitle = remember {
-        runBlocking { buildReleaseTitle(release) }
-    }
+    val releaseTitle by releaseTitleState(release)
 
     ListItemLayout(
         modifier = modifier.height(ReleaseItemContainerHeight),
@@ -220,11 +229,10 @@ private fun ListItemLayout(
                 ),
             )
 
-        val headlineOffset = verticalPadding + headlinePlaceable.height
-        val tagsOffset = headlineOffset + tagsPlaceable.height + spacing
-        val supportingHeight =
-            (constraints.maxHeight - doubleVerticalPadding - headlinePlaceable.height - tagsPlaceable.height - spacing).coerceAtLeast(0)
+        val headlineOffset = verticalPadding
+        val tagsOffset = headlineOffset + headlinePlaceable.height
 
+        val supportingHeight = (headlineHeight - headlinePlaceable.height - spacing).coerceAtLeast(0)
         val supportingPlaceable = supportingMeasurable.first()
             .measure(
                 constraints = constraints.copy(
@@ -244,20 +252,32 @@ private fun ListItemLayout(
             )
             headlinePlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = verticalPadding,
+                y = headlineOffset,
             )
             tagsPlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = headlineOffset,
+                y = tagsOffset,
             )
-            // Place content only if it has a size of at least 1 line.
-            if (supportingPlaceable.height > ReleaseItemMinContentSize.roundToPx()) {
-                supportingPlaceable.placeRelative(
-                    x = leadingWidth + leadingPadding,
-                    y = tagsOffset,
-                )
-            }
+            supportingPlaceable.placeRelative(
+                x = leadingWidth + leadingPadding,
+                y = tagsOffset + tagsPlaceable.height + spacing,
+            )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+object ExpressiveReleaseListItemDefaults {
+    private var _shape: ExpressiveShape? = null
+
+    @Composable
+    fun shape(): ExpressiveShape {
+        return _shape ?: RoundedCornerExpressiveShape(
+            shape = RoundedCornerShape(24.dp),
+            pressedShape = RoundedCornerShape(8.dp),
+            selectedShape = RoundedCornerShape(8.dp),
+            animationSpec = spring()
+        ).also { _shape = it }
     }
 }
 
@@ -266,6 +286,5 @@ private val ReleaseItemContainerPaddingHorizontal = 16.dp
 private val ReleaseItemContainerHeight = 160.dp
 private val ReleaseItemContentSpacingVertical = 4.dp
 private val ReleaseItemTagsSpacing = 8.dp
-private val ReleaseItemMinContentSize = 16.dp
 private const val SubtitleAlpha = 0.6f
 private const val DescriptionAlpha = 0.8f

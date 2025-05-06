@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
-
 package com.xbot.designsystem.components
 
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,27 +8,28 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
-import androidx.graphics.shapes.Morph
-import androidx.graphics.shapes.RoundedPolygon
-import com.xbot.resources.placeholder_profile
-import com.xbot.designsystem.utils.MorphPolygonShape
+import com.xbot.designsystem.theme.ExpressiveShape
+import com.xbot.designsystem.theme.ExpressiveTextStyle
+import com.xbot.designsystem.theme.MorphingExpressiveShape
+import com.xbot.designsystem.theme.MorphingExpressiveTextStyle
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Member
 import com.xbot.domain.models.Poster
-import com.xbot.resources.Res
-import com.xbot.resources.releases_count
 import com.xbot.localization.stringRes
+import com.xbot.resources.Res
+import com.xbot.resources.placeholder_profile
+import com.xbot.resources.releases_count
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -97,16 +95,17 @@ fun CircleContentItem(
     poster: Poster?,
     modifier: Modifier = Modifier,
     placeholder: Painter? = null,
-    shapes: CircleItemShapes = CircleContentItemDefaults.shapes(),
+    shape: ExpressiveShape = CircleContentItemDefaults.shape(),
+    textStyle: ExpressiveTextStyle = CircleContentItemDefaults.textStyle(),
     title: @Composable () -> Unit,
     subtitle: @Composable () -> Unit,
     interactionSource: MutableInteractionSource? = null,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val defaultAnimationSpec = MaterialTheme.motionScheme.defaultSpatialSpec<Float>()
     val pressed by interactionSource.collectIsPressedAsState()
-    val shape = shapeByInteraction(shapes, pressed, defaultAnimationSpec)
+
+    val titleTextStyle = textStyle.textStyleForInteraction(pressed)
 
     Column(
         modifier = modifier.width(IntrinsicSize.Min),
@@ -115,7 +114,7 @@ fun CircleContentItem(
         PosterImage(
             modifier = Modifier
                 .size(PosterSize)
-                .clip(shape)
+                .clip(shape.shapeForInteraction(pressed, false))
                 .clickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
@@ -125,7 +124,7 @@ fun CircleContentItem(
             placeholder = placeholder,
         )
         Spacer(Modifier.height(SpaceHeight))
-        ProvideTextStyle(MaterialTheme.typography.labelMedium) {
+        ProvideTextStyle(titleTextStyle.copy(textMotion = TextMotion.Animated)) {
             title()
         }
         ProvideTextStyle(MaterialTheme.typography.bodySmall) {
@@ -136,37 +135,28 @@ fun CircleContentItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object CircleContentItemDefaults {
-    fun shapes(): CircleItemShapes {
-        return CircleItemShapes(
+    private var _shape: ExpressiveShape? = null
+    private var _textStyle: ExpressiveTextStyle? = null
+
+    @Composable
+    fun shape(): ExpressiveShape {
+        return _shape ?: MorphingExpressiveShape(
             shape = MaterialShapes.Circle,
-            pressedShape = MaterialShapes.Cookie12Sided
-        )
+            pressedShape = MaterialShapes.Cookie12Sided,
+            animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec()
+        ).also { _shape = it }
     }
-}
 
-@Immutable
-data class CircleItemShapes(
-    val shape: RoundedPolygon,
-    val pressedShape: RoundedPolygon
-)
-
-@Composable
-private fun shapeByInteraction(
-    shapes: CircleItemShapes,
-    pressed: Boolean,
-    animationSpec: FiniteAnimationSpec<Float>
-): Shape {
-    val morph = remember {
-        Morph(shapes.shape, shapes.pressedShape)
+    @Composable
+    fun textStyle(): ExpressiveTextStyle {
+        return _textStyle ?: MorphingExpressiveTextStyle(
+            from = MaterialTheme.typography.labelMedium,
+            to = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraBold),
+            animationSpec = spring()
+        ).also { _textStyle = it }
     }
-    val animatedProgress = animateFloatAsState(
-        targetValue = if (pressed) 1f else 0f,
-        label = "progress",
-        animationSpec = animationSpec
-    )
-
-    return MorphPolygonShape(morph, animatedProgress.value)
 }
 
 private val PosterSize = 100.dp

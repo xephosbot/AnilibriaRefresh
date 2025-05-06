@@ -1,10 +1,6 @@
 package com.xbot.designsystem.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
 import androidx.compose.material3.NavigationBarComponentOverride
@@ -37,5 +33,4 @@ object AnilibriaNavigationBar : NavigationBarComponentOverride {
             )
         }
     }
-
 }

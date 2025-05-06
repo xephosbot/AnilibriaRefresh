@@ -30,8 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
-import app.cash.paging.compose.itemKey
 import app.cash.paging.compose.itemContentType
+import app.cash.paging.compose.itemKey
 
 @Composable
 fun Feed(
@@ -48,8 +48,12 @@ fun Feed(
     content: FeedScope.() -> Unit
 ) {
     val latestContent = rememberUpdatedState(content)
-    val feedScope by remember { derivedStateOf { DefaultFeedScope().apply(latestContent.value) } }
-    val feedItemScope = remember { DefaultFeedItemScope() }
+    val feedScope by remember {
+        derivedStateOf { DefaultFeedScope().apply(latestContent.value) }
+    }
+    val feedItemScope by remember(state.layoutInfo.maxSpan) {
+        derivedStateOf { DefaultFeedItemScope().apply { _maxLineSpan = state.layoutInfo.maxSpan } }
+    }
 
     LazyVerticalGrid(
         columns = columns,
@@ -68,17 +72,12 @@ fun Feed(
                 key = feedItem.key,
                 contentType = feedItem.contentType,
                 span = if (feedItem.span != null) {
-                    {
-                        feedItem.span!!(this, it).also { itemSpan ->
-                            feedItemScope._maxLineSpan = this.maxLineSpan
-                            feedItemScope._currentLineSpan = itemSpan.currentLineSpan
-                        }
+                    { index ->
+                        feedItem.span.invoke(this, index)
                     }
-                } else {
-                    null
-                },
-                itemContent = {
-                    feedItem.itemContent(feedItemScope, it)
+                } else null,
+                itemContent = { index ->
+                    feedItem.itemContent(feedItemScope, index)
                 }
             )
         }
@@ -103,7 +102,6 @@ interface FeedScope {
 }
 
 interface FeedItemScope {
-    val currentLineSpan: Int
     val maxLineSpan: Int
 
     fun Modifier.feedItemSpacing(
@@ -185,11 +183,7 @@ internal class DefaultFeedScope : FeedScope {
 }
 
 internal class DefaultFeedItemScope : FeedItemScope {
-    internal var _currentLineSpan: Int = 0
     internal var _maxLineSpan: Int = 0
-
-    override val currentLineSpan: Int
-        get() = _currentLineSpan
 
     override val maxLineSpan: Int
         get() = _maxLineSpan

@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,15 +23,9 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.modifier.shimmerSafe
+import com.xbot.designsystem.utils.releaseTitleState
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.resources.Res
-import com.xbot.resources.episode_abbreviation
 import com.xbot.localization.localizedName
-import com.xbot.localization.stringRes
-import com.xbot.resources.minutes_abbreviation
-import kotlinx.coroutines.runBlocking
-import org.jetbrains.compose.resources.getString
 
 @Composable
 fun ReleaseLargeCard(
@@ -42,102 +35,91 @@ fun ReleaseLargeCard(
     content: @Composable (() -> Unit)? = null
 ) {
     BoxWithConstraints {
-        val state = calculateLargeCardState(maxWidth)
+        val width = maxWidth
+        val height = calculateContainerHeight(width)
+        val posterWidth = calculatePosterWidth(width)
+        val contentWidth = calculateContentWidth(width)
 
-        Crossfade(
-            targetState = release,
-        ) { targetState ->
-            when (targetState) {
-                null -> LoadingReleaseLargeCard(modifier, state, content)
-                else -> ReleaseLargeCard(modifier, contentModifier, state, targetState, content)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ReleaseLargeCard(
-    modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
-    state: LargeCardState,
-    release: Release,
-    content: @Composable (() -> Unit)?
-) {
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(state.containerHeight),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(state.posterWidth)
-                    .fillMaxHeight()
-                    .fadedEdge(edgeHeight = 350.dp)
-                    .fadedEdge(edgeHeight = 200.dp, opacity = 0.7f, bottomEdge = false)
-                    .align(Alignment.BottomEnd)
-                    .clip(RectangleShape)
-            ) {
-                PosterImage(
-                    modifier = modifier.fillMaxSize(),
-                    poster = release.poster
-                )
-            }
-
-            val releaseTitle = remember {
-                runBlocking { buildReleaseTitle(release) }
-            }
-
-            ReleaseLargeCardContent(
-                modifier = contentModifier
-                    .width(state.contentWidth)
-                    .align(Alignment.BottomStart),
-                title = {
-                    Text(
-                        text = release.localizedName(),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+        Crossfade(targetState = release) { state ->
+            Column {
+                when (state) {
+                    null -> LoadingReleaseLargeCard(
+                        height = height,
+                        modifier = modifier.fillMaxWidth()
                     )
-                },
-                subtitle = {
-                    Text(
-                        text = releaseTitle,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    else -> ReleaseLargeCardContent(
+                        release = state,
+                        height = height,
+                        posterWidth = posterWidth,
+                        contentWidth = contentWidth,
+                        modifier = modifier.fillMaxWidth(),
+                        contentModifier = contentModifier
                     )
                 }
-            )
-        }
-        if (content != null) {
-            Spacer(Modifier.height(20.dp))
-            Box(Modifier.padding(horizontal = 16.dp)) {
-                content()
+                content?.let {
+                    Spacer(Modifier.height(20.dp))
+                    Box(Modifier.padding(horizontal = 16.dp)) {
+                        it()
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
             }
         }
-        Spacer(Modifier.height(8.dp))
     }
 }
 
 @Composable
 private fun ReleaseLargeCardContent(
+    release: Release,
+    height: Dp,
+    posterWidth: Dp,
+    contentWidth: Dp,
     modifier: Modifier = Modifier,
-    title: @Composable () -> Unit,
-    subtitle: @Composable () -> Unit
+    contentModifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp)
+    val releaseTitle by releaseTitleState(release)
+
+    Box(
+        modifier = Modifier
+            .heightIn(max = height)
+            .height(height)
     ) {
-        ProvideTextStyle(MaterialTheme.typography.displayMedium) {
-            title()
+        Box(
+            modifier = Modifier
+                .width(posterWidth)
+                .fillMaxHeight()
+                .fadedEdge(edgeHeight = 350.dp)
+                .fadedEdge(edgeHeight = 200.dp, opacity = 0.7f, bottomEdge = false)
+                .align(Alignment.BottomEnd)
+                .clip(RectangleShape)
+        ) {
+            PosterImage(
+                poster = release.poster,
+                modifier = modifier.fillMaxSize()
+            )
         }
-        Spacer(Modifier.height(4.dp))
-        ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
-            Box(modifier = Modifier.graphicsLayer {
-                alpha = 0.8f
-                clip = false
-            }) {
-                subtitle()
+
+        Column(
+            modifier = contentModifier
+                .width(contentWidth)
+                .align(Alignment.BottomStart)
+                .padding(horizontal = 16.dp)
+        ) {
+            ProvideTextStyle(MaterialTheme.typography.displayMedium) {
+                Text(
+                    text = release.localizedName(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                Text(
+                    text = releaseTitle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.graphicsLayer { alpha = 0.8f }
+                )
             }
         }
     }
@@ -145,101 +127,57 @@ private fun ReleaseLargeCardContent(
 
 @Composable
 private fun LoadingReleaseLargeCard(
+    height: Dp,
     modifier: Modifier = Modifier,
-    state: LargeCardState,
-    content: @Composable (() -> Unit)?
 ) {
     val shimmer = LocalShimmer.current
-
-    Column {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(state.containerHeight)
-                .shimmerSafe(shimmer)
-                .fadedEdge(edgeHeight = 400.dp)
-                .fadedEdge(edgeHeight = 250.dp, bottomEdge = false)
-                .background(Color.LightGray),
-        )
-        if (content != null) {
-            Spacer(Modifier.height(20.dp))
-            Box(Modifier.padding(horizontal = 16.dp)) {
-                content()
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-    }
+    Box(
+        modifier = modifier
+            .heightIn(max = height)
+            .height(height)
+            .shimmerSafe(shimmer)
+            .fadedEdge(edgeHeight = 350.dp)
+            .fadedEdge(edgeHeight = 200.dp, bottomEdge = false)
+            .background(Color.LightGray)
+    )
 }
 
-internal data class LargeCardState(
-    val containerHeight: Dp,
-    val contentWidth: Dp,
-    val posterWidth: Dp
-)
 
 @Composable
-private fun calculateLargeCardState(
-    availableWidth: Dp,
-    adaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
-): LargeCardState {
-    val heightSizeClass = adaptiveInfo.windowSizeClass.windowHeightSizeClass
-    val widthSizeClass = adaptiveInfo.windowSizeClass.windowWidthSizeClass
+private fun calculateContainerHeight(width: Dp): Dp {
+    val info = currentWindowAdaptiveInfo()
+    val widthClass = info.windowSizeClass.windowWidthSizeClass
+    val heightClass = info.windowSizeClass.windowHeightSizeClass
 
-    val containerHeight = when {
-        widthSizeClass == WindowWidthSizeClass.COMPACT -> Dp(availableWidth.value / 7f * 10f)
-        widthSizeClass == WindowWidthSizeClass.MEDIUM &&
-                heightSizeClass == WindowHeightSizeClass.COMPACT -> Dp(availableWidth.value / 7f * 2.75f)
-
-        widthSizeClass == WindowWidthSizeClass.MEDIUM -> Dp(availableWidth.value / 7f * 4f)
-        widthSizeClass == WindowWidthSizeClass.EXPANDED -> Dp(availableWidth.value / 7f * 3f)
-        else -> Dp(availableWidth.value / 7f * 10f)
+    val rawHeight = when {
+        widthClass == WindowWidthSizeClass.COMPACT -> width * 10f / 7f
+        widthClass == WindowWidthSizeClass.MEDIUM && heightClass == WindowHeightSizeClass.COMPACT -> width * 2.75f / 7f
+        else -> width * 4f / 7f
     }
 
-    val contentWidth = when {
-        widthSizeClass == WindowWidthSizeClass.COMPACT -> availableWidth
-        widthSizeClass == WindowWidthSizeClass.MEDIUM -> Dp(availableWidth.value * 0.6f)
-        widthSizeClass == WindowWidthSizeClass.EXPANDED -> Dp(availableWidth.value * 0.6f)
-        else -> availableWidth
-    }
-
-    val posterWidth = when {
-        widthSizeClass == WindowWidthSizeClass.COMPACT -> availableWidth
-        widthSizeClass == WindowWidthSizeClass.MEDIUM -> Dp(availableWidth.value * 0.8f)
-        widthSizeClass == WindowWidthSizeClass.EXPANDED -> Dp(availableWidth.value * 0.7f)
-        else -> availableWidth
-    }
-
-    return remember(containerHeight, contentWidth, posterWidth) {
-        LargeCardState(
-            containerHeight = containerHeight,
-            contentWidth = contentWidth,
-            posterWidth = availableWidth,
-        )
+    return if (widthClass == WindowWidthSizeClass.COMPACT) {
+        rawHeight
+    } else {
+        rawHeight.coerceAtMost(400.dp)
     }
 }
 
-internal suspend fun buildReleaseTitle(release: Release) = buildString {
-    append(release.year.toString())
-    append(" \u2022 ")
-    release.type?.let { type ->
-        when (type) {
-            ReleaseType.MOVIE -> {
-                append(getString(type.stringRes))
-                append(" \u2022 ")
-            }
+@Composable
+private fun calculatePosterWidth(width: Dp): Dp {
+    val widthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+    return when (widthClass) {
+        WindowWidthSizeClass.COMPACT -> width
+        WindowWidthSizeClass.MEDIUM -> width
+        WindowWidthSizeClass.EXPANDED -> width
+        else -> width
+    }
+}
 
-            else -> {
-                release.episodesCount?.let { episodesCount ->
-                    append(getString(Res.string.episode_abbreviation, episodesCount.toString()))
-                    append(" \u2022 ")
-                }
-            }
-        }
+@Composable
+private fun calculateContentWidth(width: Dp): Dp {
+    val widthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+    return when (widthClass) {
+        WindowWidthSizeClass.COMPACT -> width
+        else -> width * 0.6f
     }
-    release.episodeDuration?.let { episodeDuration ->
-        append(getString(Res.string.minutes_abbreviation, episodeDuration.toString()))
-        append(" \u2022 ")
-    }
-    append(release.favoritesCount.toString())
-    append(" \u2605")
 }
