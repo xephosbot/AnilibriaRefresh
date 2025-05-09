@@ -10,7 +10,7 @@ dependencies:
 
 settings:
   compose:
-    version: 1.8.0-rc01
+    version: 1.8.0
     enabled: true
     resources:
       packageName: com.xbot.resources
