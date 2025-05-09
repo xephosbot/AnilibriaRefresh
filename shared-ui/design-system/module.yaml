@@ -7,12 +7,12 @@ dependencies:
   - ../resource: exported
   - $compose.foundation
   - $compose.components.resources
-  # Remove after Compose Multiplatform 1.8.0 will release
-  - org.jetbrains.compose.material3:material3:1.8.0-alpha03
+  # Remove after Compose Multiplatform 1.9.0 will release
+  - org.jetbrains.compose.material3:material3:1.8.0-alpha03: exported
   - org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.8.0-alpha03
-  - org.jetbrains.compose.material3:material3-window-size-class:1.8.0-beta02
+  - org.jetbrains.compose.material3:material3-window-size-class:1.8.0
   - org.jetbrains.compose.material:material-icons-extended:1.7.3
-  - org.jetbrains.compose.ui:ui-backhandler:1.8.0-rc01
+  - org.jetbrains.compose.ui:ui-backhandler:1.8.0: exported
   - org.jetbrains.compose.material3.adaptive:adaptive:1.1.0-rc01: exported
   - org.jetbrains.compose.material3.adaptive:adaptive-layout:1.1.0-rc01: exported
   - org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.1.0-rc01: exported
@@ -25,4 +25,4 @@ dependencies:
 settings:
   compose:
     enabled: true
-    version: 1.8.0-rc01
+    version: 1.8.0

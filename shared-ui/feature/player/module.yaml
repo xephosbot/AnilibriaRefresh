@@ -7,10 +7,9 @@ dependencies:
   - ../../design-system
   - $compose.foundation
   - $compose.components.resources
-  - org.jetbrains.compose.material3:material3:1.8.0-alpha03
-  - org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4
-  - org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.4
-  - org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10
+  - $libs.lifecycle.viewmodel.compose
+  - $libs.lifecycle.runtime.compose
+  - $libs.navigation.compose
   - $libs.kotlinx.datetime
   - $libs.koin.compose
   - $libs.koin.compose.viewModel
@@ -21,13 +20,12 @@ dependencies@android:
   - $libs.androidx.media3.exoplayer.hls
 
 dependencies@jvm:
-  - uk.co.caprica:vlcj:4.8.3
-  - uk.co.caprica:vlcj-natives:4.8.3: runtime-only
+  - $libs.vlcj
   - $libs.kotlinx.coroutines.swing
 
 settings:
   compose:
-    version: 1.8.0-rc01
+    version: 1.8.0
     enabled: true
   kotlin:
     serialization: json
