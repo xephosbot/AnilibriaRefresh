@@ -3,6 +3,8 @@ package com.xbot.player.platform
 import com.xbot.player.ui.VideoPlayerController
 import org.openani.mediamp.vlc.SkiaBitmapVideoSurface
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
+import uk.co.caprica.vlcj.player.base.MediaPlayer
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
@@ -20,6 +22,30 @@ class VLCPlayerController : VideoPlayerController {
     val surface: SkiaBitmapVideoSurface = SkiaBitmapVideoSurface().apply {
         player.videoSurface().set(this)
         attach(player)
+    }
+
+    init {
+        player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
+            override fun playing(mediaPlayer: MediaPlayer?) {
+                surface.enableRendering.value = true
+            }
+
+            override fun stopped(mediaPlayer: MediaPlayer?) {
+                surface.enableRendering.value = false
+            }
+
+            override fun paused(mediaPlayer: MediaPlayer) {
+                surface.enableRendering.value = false
+            }
+
+            override fun finished(mediaPlayer: MediaPlayer) {
+                surface.enableRendering.value = false
+            }
+
+            override fun error(mediaPlayer: MediaPlayer) {
+                surface.enableRendering.value = false
+            }
+        })
     }
 
     private fun initializeMediaPlayerComponent(): Component {
@@ -44,6 +70,7 @@ class VLCPlayerController : VideoPlayerController {
             player.controls().stop()
         }
         surface.clearBitmap()
+        surface.enableRendering.value = false
     }
 
     override fun setUrl(url: String) {

@@ -33,13 +33,15 @@ import javax.swing.SwingUtilities
 public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideoSurfaceAdapter()) {
     private val videoSurface = SkiaVideoSurface()
 
+    @Volatile
     private lateinit var imageInfo: ImageInfo
 
+    @Volatile
     private lateinit var frameBytes: ByteArray
     private val skiaBitmap: Bitmap = Bitmap()
-    private val composeBitmap = mutableStateOf<ImageBitmap?>(null)
+    internal val composeBitmap = mutableStateOf<ImageBitmap?>(null)
 
-    public val enableRendering: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    public val enableRendering: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
      * Set this to non-zero to draw frames even if [enableRendering] is true.
@@ -54,11 +56,9 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
         ALLOWED_DRAW_FRAMES.set(this, value)
     }
 
-    public val bitmap: ImageBitmap?
-        get() = composeBitmap.value
+    public val bitmap: ImageBitmap? by composeBitmap
 
     public fun clearBitmap() {
-        println("Clear bitmap")
         composeBitmap.value = null
     }
 
