@@ -21,7 +21,7 @@ dependencies@android:
 
 dependencies@jvm:
   - $libs.vlcj
-  - $libs.kotlinx.coroutines.swing
+  - $libs.vlcj.natives
 
 settings:
   compose:

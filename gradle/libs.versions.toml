@@ -83,7 +83,8 @@ androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
 androidx-media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref = "media3" }
 
-vlcj = "uk.co.caprica:vlcj:4.8.3"
+vlcj = "uk.co.caprica:vlcj:4.11.0"
+vlcj-natives = "uk.co.caprica:vlcj-natives:4.8.3"
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
