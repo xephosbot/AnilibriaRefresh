@@ -1,8 +1,15 @@
 package com.xbot.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -10,10 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.player.platform.PlatformPlayerSurface
+import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.modifier.resizeWithContentScale
 import com.xbot.player.ui.rememberVideoPlayerController
+import com.xbot.player.ui.state.rememberPlayPauseButtonState
 import com.xbot.player.ui.state.rememberPresentationState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -84,12 +95,30 @@ private fun PlayerScreenContent(
             Box(Modifier.matchParentSize().background(Color.Black))
         }
 
+        PlayPauseButton(player)
+
         Button(
+            modifier = modifier.align(Alignment.BottomCenter),
             onClick = {
                 onBackClick()
             }
         ) {
             Text("Back")
         }
+    }
+}
+
+@Composable
+internal fun PlayPauseButton(player: VideoPlayerController, modifier: Modifier = Modifier) {
+    val state = rememberPlayPauseButtonState(player)
+    val icon = if (state.isPlaying) AnilibriaIcons.Outlined.PlayArrow else AnilibriaIcons.Outlined.Pause
+    IconButton(
+        modifier = modifier.size(80.dp),
+        onClick = state::onClick
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+        )
     }
 }

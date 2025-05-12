@@ -13,7 +13,8 @@ interface VideoPlayerController {
     fun stop()
     fun setUrl(url: String)
     fun setUrls(urls: List<String>)
-    fun release()
     fun seekTo(position: Duration)
-    fun currentPosition(): Duration
+    fun release()
+    fun addEventListener(listener: VideoPlayerEvents)
+    fun removeEventListener(listener: VideoPlayerEvents)
 }

@@ -1,109 +1,201 @@
 package com.xbot.player.platform
 
+import androidx.compose.ui.util.fastForEach
+import com.xbot.player.ui.PlaybackState
 import com.xbot.player.ui.VideoPlayerController
+import com.xbot.player.ui.VideoPlayerEvents
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.openani.mediamp.vlc.SkiaBitmapVideoSurface
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
+import uk.co.caprica.vlcj.media.MediaRef
+import uk.co.caprica.vlcj.media.TrackType
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
-import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
-import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
-import java.awt.Component
-import java.util.*
+import javax.swing.SwingUtilities
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
 
-class VLCPlayerController : VideoPlayerController {
+class VLCPlayerController(
+    dispatcher: CoroutineDispatcher = Dispatchers.Main,
+) : VideoPlayerController {
+    private val mediaPlayer: EmbeddedMediaPlayer = MediaPlayerFactory("-v")
+        .mediaPlayers()
+        .newEmbeddedMediaPlayer()
+    internal val surface: SkiaBitmapVideoSurface = SkiaBitmapVideoSurface().apply {
+        mediaPlayer.videoSurface().set(this)
+        attach(mediaPlayer)
+    }
 
-    val component: Component = initializeMediaPlayerComponent()
+    private val playerScope = CoroutineScope(SupervisorJob() + dispatcher)
+    private val listeners = mutableListOf<VideoPlayerEvents>()
+    private val mediaPlayerListener = object : MediaPlayerEventAdapter() {
+        override fun playing(mediaPlayer: MediaPlayer) {
+            surface.enableRendering.value = true
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.PLAYING)
+                }
+            }
+        }
 
-    val player: EmbeddedMediaPlayer = component.mediaPlayer()
+        override fun paused(mediaPlayer: MediaPlayer) {
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.PAUSED)
+                }
+            }
+        }
 
-    val surface: SkiaBitmapVideoSurface = SkiaBitmapVideoSurface().apply {
-        player.videoSurface().set(this)
-        attach(player)
+        override fun stopped(mediaPlayer: MediaPlayer) {
+            surface.enableRendering.value = false
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.STOPPED)
+                }
+            }
+        }
+
+        override fun buffering(mediaPlayer: MediaPlayer, newCache: Float) {
+            if (newCache < 1f) {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.BUFFERING)
+                }
+            }
+        }
+
+        override fun finished(mediaPlayer: MediaPlayer) {
+            surface.enableRendering.value = false
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.STOPPED)
+                }
+            }
+        }
+
+        override fun videoOutput(mediaPlayer: MediaPlayer, newCount: Int) {
+            if (newCount > 0) {
+                SwingUtilities.invokeLater {
+                    listeners.fastForEach { listener ->
+                        listener.onRenderedFirstFrame()
+                    }
+                }
+            }
+        }
+
+        override fun timeChanged(mediaPlayer: MediaPlayer, newTime: Long) {
+            listeners.fastForEach { listener ->
+                listener.onCurrentPositionChanged(
+                    newTime.milliseconds,
+                    newTime.milliseconds
+                )
+            }
+        }
+
+        override fun lengthChanged(mediaPlayer: MediaPlayer, newLength: Long) {
+            listeners.fastForEach { listener ->
+                listener.onDurationChanged(newLength.milliseconds)
+            }
+        }
+
+        override fun error(mediaPlayer: MediaPlayer) {
+            surface.enableRendering.value = false
+            listeners.fastForEach { listener ->
+                listener.onPlaybackStateChanged(PlaybackState.ERROR)
+                listener.onPlaybackError(RuntimeException("VLC playback error"))
+            }
+        }
+
+        override fun mediaPlayerReady(mediaPlayer: MediaPlayer) {
+            val videoTrack = mediaPlayer.media().info()?.videoTracks()?.firstOrNull()
+            val width = videoTrack?.width() ?: 0
+            val height = videoTrack?.height() ?: 0
+            val pixelAspectRatio =
+                videoTrack?.let { it.sampleAspectRatio().toFloat() / it.sampleAspectRatioBase() } ?: 1f
+            listeners.fastForEach { listener ->
+                listener.onVideoSizeChanged(width, height, pixelAspectRatio)
+            }
+        }
+
+        override fun mediaChanged(mediaPlayer: MediaPlayer, media: MediaRef) {
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.READY)
+                }
+            }
+        }
+
+        override fun elementaryStreamSelected(mediaPlayer: MediaPlayer, type: TrackType, id: Int) {
+            if (type == TrackType.VIDEO && id != -1) {
+                val videoTrack = mediaPlayer.media().info()?.videoTracks()?.firstOrNull()
+                val width = videoTrack?.width() ?: 0
+                val height = videoTrack?.height() ?: 0
+                val pixelAspectRatio =
+                    videoTrack?.let { it.sampleAspectRatio().toFloat() / it.sampleAspectRatioBase() } ?: 1f
+                listeners.fastForEach { listener ->
+                    listener.onVideoSizeChanged(width, height, pixelAspectRatio)
+                }
+            }
+        }
     }
 
     init {
-        player.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
-            override fun playing(mediaPlayer: MediaPlayer?) {
-                surface.enableRendering.value = true
-            }
-
-            override fun stopped(mediaPlayer: MediaPlayer?) {
-                surface.enableRendering.value = false
-            }
-
-            override fun paused(mediaPlayer: MediaPlayer) {
-                surface.enableRendering.value = false
-            }
-
-            override fun finished(mediaPlayer: MediaPlayer) {
-                surface.enableRendering.value = false
-            }
-
-            override fun error(mediaPlayer: MediaPlayer) {
-                surface.enableRendering.value = false
-            }
-        })
-    }
-
-    private fun initializeMediaPlayerComponent(): Component {
         NativeDiscovery().discover()
-        return if (isMacOS()) {
-            CallbackMediaPlayerComponent()
-        } else {
-            EmbeddedMediaPlayerComponent()
-        }
+        mediaPlayer.events().addMediaPlayerEventListener(mediaPlayerListener)
     }
 
     override fun play() {
-        player.controls()?.start()
+        mediaPlayer.submit {
+            mediaPlayer.controls().play()
+        }
     }
 
     override fun pause() {
-        player.controls()?.pause()
+        mediaPlayer.submit {
+            mediaPlayer.controls().pause()
+        }
     }
 
     override fun stop() {
-        player.submit {
-            player.controls().stop()
-        }
         surface.clearBitmap()
         surface.enableRendering.value = false
+        mediaPlayer.controls().stop()
     }
 
     override fun setUrl(url: String) {
-        player.media()?.play(url)
+        setUrls(listOf(url))
     }
 
     override fun setUrls(urls: List<String>) {
-        //TODO("Not yet implemented")
-    }
+        mediaPlayer.controls().stop()
 
-    override fun release() {
-        player.release()
+        if (urls.isNotEmpty()) {
+            mediaPlayer.media().prepare(urls.first())
+            mediaPlayer.media().parsing().parse()
+        }
     }
 
     override fun seekTo(position: Duration) {
-        player.controls()?.setTime(position.inWholeSeconds)
+        mediaPlayer.controls().setTime(position.inWholeMilliseconds)
     }
 
-    override fun currentPosition(): Duration {
-        //TODO("Not yet implemented")
-        return 0.seconds
+    override fun release() {
+        surface.clearBitmap()
+        surface.enableRendering.value = false
+        listeners.clear()
+        mediaPlayer.events().removeMediaPlayerEventListener(mediaPlayerListener)
+        mediaPlayer.release()
     }
 
-    private fun Component.mediaPlayer() = when (this) {
-        is CallbackMediaPlayerComponent -> mediaPlayer()
-        is EmbeddedMediaPlayerComponent -> mediaPlayer()
-        else -> error("mediaPlayer() can only be called on vlcj player components")
+    override fun addEventListener(listener: VideoPlayerEvents) {
+        listeners.add(listener)
     }
 
-    private fun isMacOS(): Boolean {
-        val os = System
-            .getProperty("os.name", "generic")
-            .lowercase(Locale.ENGLISH)
-        return "mac" in os || "darwin" in os
+    override fun removeEventListener(listener: VideoPlayerEvents) {
+        listeners.remove(listener)
     }
 }

@@ -76,6 +76,15 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
             return RV32BufferFormat(sourceWidth, sourceHeight)
         }
 
+        override fun newFormatSize(
+            bufferWidth: Int,
+            bufferHeight: Int,
+            displayWidth: Int,
+            displayHeight: Int
+        ) {
+            //TODO("Not yet implemented")
+        }
+
         override fun allocatedBuffers(buffers: Array<ByteBuffer>) {
             frameBytes = buffers[0].run { ByteArray(remaining()).also(::get) }
             imageInfo = ImageInfo(
@@ -92,6 +101,8 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
             mediaPlayer: MediaPlayer,
             nativeBuffers: Array<ByteBuffer>,
             bufferFormat: BufferFormat,
+            displayWidth: Int,
+            displayHeight: Int
         ) {
             val allowedDrawFramesValue = ALLOWED_DRAW_FRAMES.get(this@SkiaBitmapVideoSurface)
 
@@ -110,6 +121,14 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
                 skiaBitmap.installPixels(imageInfo, frameBytes, bufferFormat.width * 4)
                 composeBitmap.value = skiaBitmap.asComposeImageBitmap()
             }
+        }
+
+        override fun lock(mediaPlayer: MediaPlayer?) {
+            //TODO("Not yet implemented")
+        }
+
+        override fun unlock(mediaPlayer: MediaPlayer?) {
+            //TODO("Not yet implemented")
         }
     }
 
