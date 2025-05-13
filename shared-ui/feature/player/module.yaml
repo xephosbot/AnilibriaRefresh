@@ -11,6 +11,7 @@ dependencies:
   - $libs.lifecycle.runtime.compose
   - $libs.navigation.compose
   - $libs.kotlinx.datetime
+  - $libs.kotlinx.atomicfu
   - $libs.koin.compose
   - $libs.koin.compose.viewModel
 
