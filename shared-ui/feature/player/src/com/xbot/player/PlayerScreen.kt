@@ -61,7 +61,6 @@ private fun PlayerScreenContent(
         if (!isPlaying) {
             if (state is PlayerScreenState.Success) {
                 player.setUrl(state.url)
-                player.play()
                 isPlaying = true
             }
         }

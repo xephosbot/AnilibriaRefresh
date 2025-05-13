@@ -95,6 +95,7 @@ class ExoPlayerController(
 
         if (urls.isNotEmpty()) {
             exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
         }
     }
 
