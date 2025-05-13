@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.openani.mediamp.vlc.SkiaBitmapVideoSurface
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
-import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.media.MediaRef
 import uk.co.caprica.vlcj.media.TrackType
 import uk.co.caprica.vlcj.player.base.MediaPlayer
@@ -23,7 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class VLCPlayerController(
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) : VideoPlayerController {
-    private val mediaPlayer: EmbeddedMediaPlayer = MediaPlayerFactory("-v")
+    private val mediaPlayer: EmbeddedMediaPlayer = MediaPlayerFactory()
         .mediaPlayers()
         .newEmbeddedMediaPlayer()
     internal val surface: SkiaBitmapVideoSurface = SkiaBitmapVideoSurface().apply {
@@ -35,7 +34,6 @@ class VLCPlayerController(
     private val listeners = mutableListOf<VideoPlayerEvents>()
     private val mediaPlayerListener = object : MediaPlayerEventAdapter() {
         override fun playing(mediaPlayer: MediaPlayer) {
-            surface.enableRendering.value = true
             SwingUtilities.invokeLater {
                 listeners.fastForEach { listener ->
                     listener.onPlaybackStateChanged(PlaybackState.PLAYING)
@@ -52,7 +50,7 @@ class VLCPlayerController(
         }
 
         override fun stopped(mediaPlayer: MediaPlayer) {
-            surface.enableRendering.value = false
+            surface.setRenderingEnabled(false)
             SwingUtilities.invokeLater {
                 listeners.fastForEach { listener ->
                     listener.onPlaybackStateChanged(PlaybackState.STOPPED)
@@ -65,24 +63,18 @@ class VLCPlayerController(
                 listeners.fastForEach { listener ->
                     listener.onPlaybackStateChanged(PlaybackState.BUFFERING)
                 }
-            }
-        }
-
-        override fun finished(mediaPlayer: MediaPlayer) {
-            surface.enableRendering.value = false
-            SwingUtilities.invokeLater {
+            } else {
                 listeners.fastForEach { listener ->
-                    listener.onPlaybackStateChanged(PlaybackState.STOPPED)
+                    listener.onPlaybackStateChanged(PlaybackState.READY)
                 }
             }
         }
 
-        override fun videoOutput(mediaPlayer: MediaPlayer, newCount: Int) {
-            if (newCount > 0) {
-                SwingUtilities.invokeLater {
-                    listeners.fastForEach { listener ->
-                        listener.onRenderedFirstFrame()
-                    }
+        override fun finished(mediaPlayer: MediaPlayer) {
+            surface.setRenderingEnabled(false)
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onPlaybackStateChanged(PlaybackState.STOPPED)
                 }
             }
         }
@@ -103,7 +95,7 @@ class VLCPlayerController(
         }
 
         override fun error(mediaPlayer: MediaPlayer) {
-            surface.enableRendering.value = false
+            surface.setRenderingEnabled(false)
             listeners.fastForEach { listener ->
                 listener.onPlaybackStateChanged(PlaybackState.ERROR)
                 listener.onPlaybackError(RuntimeException("VLC playback error"))
@@ -111,13 +103,17 @@ class VLCPlayerController(
         }
 
         override fun mediaPlayerReady(mediaPlayer: MediaPlayer) {
+            surface.setRenderingEnabled(true)
             val videoTrack = mediaPlayer.media().info()?.videoTracks()?.firstOrNull()
             val width = videoTrack?.width() ?: 0
             val height = videoTrack?.height() ?: 0
             val pixelAspectRatio =
                 videoTrack?.let { it.sampleAspectRatio().toFloat() / it.sampleAspectRatioBase() } ?: 1f
-            listeners.fastForEach { listener ->
-                listener.onVideoSizeChanged(width, height, pixelAspectRatio)
+            SwingUtilities.invokeLater {
+                listeners.fastForEach { listener ->
+                    listener.onRenderedFirstFrame()
+                    listener.onVideoSizeChanged(width, height, pixelAspectRatio)
+                }
             }
         }
 
@@ -144,25 +140,20 @@ class VLCPlayerController(
     }
 
     init {
-        NativeDiscovery().discover()
         mediaPlayer.events().addMediaPlayerEventListener(mediaPlayerListener)
     }
 
     override fun play() {
-        mediaPlayer.submit {
-            mediaPlayer.controls().play()
-        }
+        mediaPlayer.controls().setPause(false)
     }
 
     override fun pause() {
-        mediaPlayer.submit {
-            mediaPlayer.controls().pause()
-        }
+        mediaPlayer.controls().setPause(true)
     }
 
     override fun stop() {
+        surface.setRenderingEnabled(false)
         surface.clearBitmap()
-        surface.enableRendering.value = false
         mediaPlayer.controls().stop()
     }
 
@@ -176,6 +167,7 @@ class VLCPlayerController(
         if (urls.isNotEmpty()) {
             mediaPlayer.media().prepare(urls.first())
             mediaPlayer.media().parsing().parse()
+            mediaPlayer.controls().start()
         }
     }
 
@@ -184,8 +176,8 @@ class VLCPlayerController(
     }
 
     override fun release() {
+        surface.setRenderingEnabled(false)
         surface.clearBitmap()
-        surface.enableRendering.value = false
         listeners.clear()
         mediaPlayer.events().removeMediaPlayerEventListener(mediaPlayerListener)
         mediaPlayer.release()

@@ -12,12 +12,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asComposeImageBitmap
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.ImageInfo
-import org.openani.mediamp.vlc.SkiaBitmapVideoSurface.Companion.ALLOWED_DRAW_FRAMES
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.embedded.videosurface.CallbackVideoSurface
 import uk.co.caprica.vlcj.player.embedded.videosurface.VideoSurface
@@ -27,39 +28,33 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormatCall
 import uk.co.caprica.vlcj.player.embedded.videosurface.callback.RenderCallback
 import uk.co.caprica.vlcj.player.embedded.videosurface.callback.format.RV32BufferFormat
 import java.nio.ByteBuffer
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import javax.swing.SwingUtilities
 
-public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideoSurfaceAdapter()) {
-    private val videoSurface = SkiaVideoSurface()
+class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideoSurfaceAdapter()) {
 
-    @Volatile
+    private val _enableRendering = MutableStateFlow(false)
+    private val _composeBitmap = mutableStateOf<ImageBitmap?>(null)
+    private val allowedDrawFrames = atomic(0)
+
+    private val videoSurface = SkiaBitmapVideoSurface()
+
+    private val skiaBitmap = Bitmap()
     private lateinit var imageInfo: ImageInfo
-
-    @Volatile
     private lateinit var frameBytes: ByteArray
-    private val skiaBitmap: Bitmap = Bitmap()
-    internal val composeBitmap = mutableStateOf<ImageBitmap?>(null)
 
-    public val enableRendering: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val enableRendering = _enableRendering.asStateFlow()
+    val bitmap: ImageBitmap? by _composeBitmap
 
-    /**
-     * Set this to non-zero to draw frames even if [enableRendering] is true.
-     *
-     * @see ALLOWED_DRAW_FRAMES
-     */
-    @JvmField
-    @Volatile
-    public var allowedDrawFrames: Int = 0
-
-    public fun setAllowedDrawFrames(value: Int) {
-        ALLOWED_DRAW_FRAMES.set(this, value)
+    fun setRenderingEnabled(enabled: Boolean) {
+        _enableRendering.value = enabled
     }
 
-    public val bitmap: ImageBitmap? by composeBitmap
+    fun setAllowedDrawFrames(count: Int) {
+        allowedDrawFrames.value = count
+    }
 
-    public fun clearBitmap() {
-        composeBitmap.value = null
+    fun clearBitmap() {
+        _composeBitmap.value = null
     }
 
     override fun attach(mediaPlayer: MediaPlayer) {
@@ -82,7 +77,7 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
             displayWidth: Int,
             displayHeight: Int
         ) {
-            //TODO("Not yet implemented")
+            // Not implemented yet, but could handle resizing logic
         }
 
         override fun allocatedBuffers(buffers: Array<ByteBuffer>) {
@@ -104,45 +99,37 @@ public class SkiaBitmapVideoSurface : VideoSurface(VideoSurfaceAdapters.getVideo
             displayWidth: Int,
             displayHeight: Int
         ) {
-            val allowedDrawFramesValue = ALLOWED_DRAW_FRAMES.get(this@SkiaBitmapVideoSurface)
+            val allowedDrawFramesValue = allowedDrawFrames.value
 
+            // Skip rendering if disabled and no allowed frames remain
             if (!enableRendering.value) {
                 if (allowedDrawFramesValue <= 0) {
                     return
                 }
-                if (ALLOWED_DRAW_FRAMES.decrementAndGet(this@SkiaBitmapVideoSurface) < 0) return
-            } else {
-                // 允许渲染, 不考虑 allowedDrawFrames
+                if (allowedDrawFrames.decrementAndGet() < 0) return
             }
 
             SwingUtilities.invokeLater {
                 nativeBuffers[0].rewind()
                 nativeBuffers[0].get(frameBytes)
                 skiaBitmap.installPixels(imageInfo, frameBytes, bufferFormat.width * 4)
-                composeBitmap.value = skiaBitmap.asComposeImageBitmap()
+                _composeBitmap.value = skiaBitmap.asComposeImageBitmap()
             }
         }
 
         override fun lock(mediaPlayer: MediaPlayer?) {
-            //TODO("Not yet implemented")
+            // Not implemented yet
         }
 
         override fun unlock(mediaPlayer: MediaPlayer?) {
-            //TODO("Not yet implemented")
+            // Not implemented yet
         }
     }
 
-    private inner class SkiaVideoSurface : CallbackVideoSurface(
+    private inner class SkiaBitmapVideoSurface : CallbackVideoSurface(
         SkiaBitmapBufferFormatCallback(),
         SkiaBitmapRenderCallback(),
         true,
         videoSurfaceAdapter,
     )
-
-    private companion object {
-        private val ALLOWED_DRAW_FRAMES = AtomicIntegerFieldUpdater.newUpdater(
-            SkiaBitmapVideoSurface::class.java,
-            "allowedDrawFrames",
-        )
-    }
 }
