@@ -7,8 +7,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,15 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.player.ui.state.PlayPauseButtonState
 import com.xbot.player.ui.state.rememberPlayPauseButtonState
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoPlayerController(
     player: VideoPlayer,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickBack: () -> Unit,
 ) {
     var isControllerShowing by rememberSaveable { mutableStateOf(true) }
+    val playPauseButtonState = rememberPlayPauseButtonState(player)
 
     Crossfade(
         targetState = isControllerShowing,
@@ -55,15 +62,33 @@ fun VideoPlayerController(
                     .background(Color.Black.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
-                PlayPauseButton(player)
+                TopAppBar(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    title = {},
+                    navigationIcon = {
+                        IconButton(
+                            onClick = onClickBack
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                )
+
+                PlayPauseButton(playPauseButtonState)
             }
         }
     }
 }
 
 @Composable
-internal fun PlayPauseButton(player: VideoPlayer, modifier: Modifier = Modifier) {
-    val state = rememberPlayPauseButtonState(player)
+internal fun PlayPauseButton(
+    state: PlayPauseButtonState,
+    modifier: Modifier = Modifier
+) {
     val icon = if (state.isPlaying) AnilibriaIcons.Outlined.PlayArrow else AnilibriaIcons.Outlined.Pause
     IconButton(
         modifier = modifier.size(80.dp),

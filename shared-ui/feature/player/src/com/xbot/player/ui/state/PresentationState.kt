@@ -1,6 +1,7 @@
 package com.xbot.player.ui.state
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,25 +17,27 @@ fun rememberPresentationState(
     return remember(player) { PresentationState(player) }
 }
 
-class PresentationState(player: VideoPlayer) {
+class PresentationState(private val player: VideoPlayer) : RememberObserver {
     var videoSizeDp: Size? by mutableStateOf(null)
         private set
     var coverSurface: Boolean by mutableStateOf(true)
         private set
 
-    init {
-        player.addEventListener(
-            object : VideoPlayerEvents {
-                override fun onVideoSizeChanged(width: Int, height: Int, pixelAspectRatio: Float) {
-                    videoSizeDp = getVideoSizeDp(width, height, pixelAspectRatio)
-                }
+    private val listener = object : VideoPlayerEvents {
+        override fun onVideoSizeChanged(width: Int, height: Int, pixelAspectRatio: Float) {
+            videoSizeDp = getVideoSizeDp(width, height, pixelAspectRatio)
+        }
 
-                override fun onRenderedFirstFrame() {
-                    coverSurface = false
-                }
-            }
-        )
+        override fun onRenderedFirstFrame() {
+            coverSurface = false
+        }
     }
+
+    override fun onRemembered() = player.addEventListener(listener)
+
+    override fun onForgotten() = player.removeEventListener(listener)
+
+    override fun onAbandoned() = Unit
 
     private fun getVideoSizeDp(width: Int, height: Int, pixelAspectRatio: Float): Size? {
         var videoSize = Size(width.toFloat(), height.toFloat())

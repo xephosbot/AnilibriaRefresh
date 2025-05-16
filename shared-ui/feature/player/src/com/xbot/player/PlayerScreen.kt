@@ -46,7 +46,10 @@ private fun PlayerScreenContent(
     VideoPlayerLayout(
         player = player,
         controls = {
-            VideoPlayerController(player)
+            VideoPlayerController(
+                player = player,
+                onClickBack = onBackClick
+            )
         },
         buffering = {
             CircularProgressIndicator()
