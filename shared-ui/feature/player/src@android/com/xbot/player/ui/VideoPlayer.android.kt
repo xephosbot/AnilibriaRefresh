@@ -8,15 +8,15 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
-actual fun rememberVideoPlayerController(controller: VideoPlayerController): VideoPlayerController {
+actual fun rememberVideoPlayer(player: VideoPlayer): VideoPlayer {
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_START -> controller.play()
-                Lifecycle.Event.ON_STOP -> controller.pause()
-                Lifecycle.Event.ON_DESTROY -> controller.stop()
+                Lifecycle.Event.ON_START -> player.play()
+                Lifecycle.Event.ON_STOP -> player.pause()
+                Lifecycle.Event.ON_DESTROY -> player.stop()
                 else -> Unit
             }
         }
@@ -24,8 +24,8 @@ actual fun rememberVideoPlayerController(controller: VideoPlayerController): Vid
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
-            controller.stop()
+            player.stop()
         }
     }
-    return remember { controller }
+    return remember { player }
 }

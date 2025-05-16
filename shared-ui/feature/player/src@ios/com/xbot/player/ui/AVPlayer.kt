@@ -1,9 +1,8 @@
-package com.xbot.player.platform
+package com.xbot.player.ui
 
-import com.xbot.player.ui.VideoPlayerController
 import kotlin.time.Duration
 
-class AVPlayerController : VideoPlayerController {
+class AVPlayer : VideoPlayer {
     override fun play() {
         TODO("Not yet implemented")
     }
@@ -32,7 +31,11 @@ class AVPlayerController : VideoPlayerController {
         TODO("Not yet implemented")
     }
 
-    override fun currentPosition(): Duration {
+    override fun addEventListener(listener: VideoPlayerEvents) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeEventListener(listener: VideoPlayerEvents) {
         TODO("Not yet implemented")
     }
 }

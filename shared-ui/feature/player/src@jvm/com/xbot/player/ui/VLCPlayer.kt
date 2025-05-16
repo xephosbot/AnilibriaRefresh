@@ -1,9 +1,6 @@
-package com.xbot.player.platform
+package com.xbot.player.ui
 
 import androidx.compose.ui.util.fastForEach
-import com.xbot.player.ui.PlaybackState
-import com.xbot.player.ui.VideoPlayerController
-import com.xbot.player.ui.VideoPlayerEvents
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +16,9 @@ import javax.swing.SwingUtilities
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-class VLCPlayerController(
+class VLCPlayer(
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
-) : VideoPlayerController {
+) : VideoPlayer {
     private val mediaPlayer: EmbeddedMediaPlayer = MediaPlayerFactory()
         .mediaPlayers()
         .newEmbeddedMediaPlayer()

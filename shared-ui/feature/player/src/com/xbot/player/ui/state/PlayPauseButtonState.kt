@@ -6,17 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.xbot.player.ui.PlaybackState
-import com.xbot.player.ui.VideoPlayerController
+import com.xbot.player.ui.VideoPlayer
 import com.xbot.player.ui.VideoPlayerEvents
 
 @Composable
 fun rememberPlayPauseButtonState(
-    player: VideoPlayerController,
+    player: VideoPlayer,
 ): PlayPauseButtonState {
     return remember(player) { PlayPauseButtonState(player) }
 }
 
-class PlayPauseButtonState(private val player: VideoPlayerController) {
+class PlayPauseButtonState(private val player: VideoPlayer) {
     var isPlaying: Boolean by mutableStateOf(false)
         private set
 

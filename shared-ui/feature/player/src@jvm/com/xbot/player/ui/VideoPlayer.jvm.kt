@@ -5,11 +5,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 
 @Composable
-actual fun rememberVideoPlayerController(controller: VideoPlayerController): VideoPlayerController {
+actual fun rememberVideoPlayer(player: VideoPlayer): VideoPlayer {
     DisposableEffect(Unit) {
         onDispose {
-            controller.stop()
+            player.stop()
         }
     }
-    return remember { controller }
+    return remember { player }
 }

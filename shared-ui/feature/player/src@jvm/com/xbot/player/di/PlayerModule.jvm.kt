@@ -1,9 +1,9 @@
 package com.xbot.player.di
 
-import com.xbot.player.platform.VLCPlayerController
-import com.xbot.player.ui.VideoPlayerController
+import com.xbot.player.ui.VLCPlayer
+import com.xbot.player.ui.VideoPlayer
 import org.koin.dsl.module
 
 actual val playerModule = module {
-    single<VideoPlayerController>(createdAtStart = true) { VLCPlayerController() }
+    single<VideoPlayer>(createdAtStart = true) { VLCPlayer() }
 }

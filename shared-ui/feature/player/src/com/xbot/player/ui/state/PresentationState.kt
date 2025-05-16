@@ -6,17 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
-import com.xbot.player.ui.VideoPlayerController
+import com.xbot.player.ui.VideoPlayer
 import com.xbot.player.ui.VideoPlayerEvents
 
 @Composable
 fun rememberPresentationState(
-    player: VideoPlayerController,
+    player: VideoPlayer,
 ): PresentationState {
     return remember(player) { PresentationState(player) }
 }
 
-class PresentationState(player: VideoPlayerController) {
+class PresentationState(player: VideoPlayer) {
     var videoSizeDp: Size? by mutableStateOf(null)
         private set
     var coverSurface: Boolean by mutableStateOf(true)

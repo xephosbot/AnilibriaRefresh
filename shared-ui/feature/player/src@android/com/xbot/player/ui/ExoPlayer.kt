@@ -1,4 +1,4 @@
-package com.xbot.player.platform
+package com.xbot.player.ui
 
 import android.content.Context
 import androidx.compose.ui.util.fastForEach
@@ -7,19 +7,16 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
-import com.xbot.player.ui.PlaybackState
-import com.xbot.player.ui.VideoPlayerController
-import com.xbot.player.ui.VideoPlayerEvents
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.time.Duration
 
-class ExoPlayerController(
+class ExoPlayer(
     context: Context,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
-) : VideoPlayerController {
+) : VideoPlayer {
     internal val exoPlayer = ExoPlayer.Builder(context).build()
 
     private val playerScope = CoroutineScope(SupervisorJob() + dispatcher)
