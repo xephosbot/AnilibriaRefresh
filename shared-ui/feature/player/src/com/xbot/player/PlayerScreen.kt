@@ -1,16 +1,13 @@
 package com.xbot.player
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.player.platform.PlatformPlayerSurface
-import com.xbot.player.ui.rememberVideoPlayerController
+import com.xbot.player.ui.VideoPlayerController
+import com.xbot.player.ui.VideoPlayerLayout
+import com.xbot.player.ui.rememberVideoPlayer
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -34,33 +31,28 @@ private fun PlayerScreenContent(
     state: PlayerScreenState,
     onBackClick: () -> Unit
 ) {
-    val player = rememberVideoPlayerController()
+    val player = rememberVideoPlayer()
     var isPlaying by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(state) {
         if (!isPlaying) {
             if (state is PlayerScreenState.Success) {
                 player.setUrl(state.url)
-                player.play()
                 isPlaying = true
             }
         }
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
-    ) {
-        PlatformPlayerSurface(
-            player = player,
-            modifier = modifier.fillMaxSize(),
-        )
-
-        Button(
-            onClick = {
-                onBackClick()
-            }
-        ) {
-            Text("Back")
+    VideoPlayerLayout(
+        player = player,
+        controls = {
+            VideoPlayerController(
+                player = player,
+                onClickBack = onBackClick
+            )
+        },
+        buffering = {
+            CircularProgressIndicator()
         }
-    }
+    )
 }

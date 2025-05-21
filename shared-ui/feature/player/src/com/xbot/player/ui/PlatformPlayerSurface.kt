@@ -1,11 +1,10 @@
-package com.xbot.player.platform
+package com.xbot.player.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xbot.player.ui.VideoPlayerController
 
 @Composable
 internal expect fun PlatformPlayerSurface(
-    player: VideoPlayerController,
+    player: VideoPlayer,
     modifier: Modifier = Modifier,
 )

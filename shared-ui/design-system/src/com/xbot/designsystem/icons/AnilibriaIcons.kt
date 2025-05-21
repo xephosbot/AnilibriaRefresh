@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Search
@@ -31,6 +32,7 @@ object AnilibriaIcons {
         val ChevronRight get() = Icons.Outlined.ChevronRight
         val ArrowBack get() = Icons.AutoMirrored.Outlined.ArrowBack
         val PlayArrow get() = Icons.Outlined.PlayArrow
+        val Pause get() = Icons.Outlined.Pause
         val Check get() = Icons.Outlined.Check
         val Clear get() = Icons.Outlined.Clear
         val CheckList get() = Icons.Outlined.Checklist

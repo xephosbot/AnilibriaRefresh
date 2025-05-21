@@ -1,13 +1,12 @@
-package com.xbot.player.platform
+package com.xbot.player.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xbot.player.ui.VideoPlayerController
 
 @Composable
 internal actual fun PlatformPlayerSurface(
-    player: VideoPlayerController,
+    player: VideoPlayer,
     modifier: Modifier,
 ) {
-
+    check(player is AVPlayer) { "Player is not an instance of AVPlayerController" }
 }
