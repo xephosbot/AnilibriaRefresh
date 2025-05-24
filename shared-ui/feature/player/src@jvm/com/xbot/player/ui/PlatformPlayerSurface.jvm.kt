@@ -15,7 +15,7 @@ internal actual fun PlatformPlayerSurface(
     check(player is VLCPlayer) { "Player is not an instance of VLCPlayerController" }
 
     Canvas(modifier = modifier.fillMaxSize()) {
-        val bitmap = player.surface.bitmap ?: return@Canvas
+        val bitmap = player.surface?.bitmap ?: return@Canvas
         drawImage(
             bitmap,
             dstSize = size.toIntSize(),

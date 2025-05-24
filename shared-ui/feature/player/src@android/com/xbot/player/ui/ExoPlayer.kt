@@ -1,7 +1,10 @@
 package com.xbot.player.ui
 
 import android.content.Context
-import androidx.compose.ui.util.fastForEach
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Size
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -11,106 +14,171 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlin.time.Duration
 
 class ExoPlayer(
-    context: Context,
+    private val context: Context,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) : VideoPlayer {
-    internal val exoPlayer = ExoPlayer.Builder(context).build()
+    internal var exoPlayer: Player? by mutableStateOf(null)
+        private set
 
     private val playerScope = CoroutineScope(SupervisorJob() + dispatcher)
-    private val listeners = mutableListOf<VideoPlayerEvents>()
-    private val exoPlayerListener = object : Player.Listener {
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            val playerState = when (playbackState) {
-                Player.STATE_IDLE -> PlaybackState.IDLE
-                Player.STATE_BUFFERING -> PlaybackState.BUFFERING
-                Player.STATE_READY -> PlaybackState.READY
-                Player.STATE_ENDED -> PlaybackState.STOPPED
-                else -> PlaybackState.IDLE
-            }
+    private val _state = MutableStateFlow(VideoPlayerState.EMPTY)
 
-            listeners.fastForEach { listener ->
-                listener.onPlaybackStateChanged(playerState)
-            }
-        }
+    private val exoPlayerListener = ExoPlayerListener()
 
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            val playerState = when (isPlaying) {
-                true -> PlaybackState.PLAYING
-                false -> PlaybackState.PAUSED
-            }
+    override val state: StateFlow<VideoPlayerState> = _state.asStateFlow()
 
-            listeners.fastForEach { listener ->
-                listener.onPlaybackStateChanged(playerState)
-            }
-        }
+    override fun play() = executePlayerAction { play() }
 
-        override fun onPlayerError(error: PlaybackException) {
-            listeners.fastForEach { listener ->
-                listener.onPlaybackStateChanged(PlaybackState.ERROR)
-                listener.onPlaybackError(error)
-            }
-            error.printStackTrace()
-        }
+    override fun pause() = executePlayerAction { pause() }
 
-        override fun onVideoSizeChanged(videoSize: VideoSize) {
-            listeners.fastForEach { listener ->
-                listener.onVideoSizeChanged(videoSize.width, videoSize.height, videoSize.pixelWidthHeightRatio)
-            }
-        }
-
-        override fun onRenderedFirstFrame() {
-            listeners.fastForEach(VideoPlayerEvents::onRenderedFirstFrame)
-        }
-    }
-
-    init {
-        exoPlayer.addListener(exoPlayerListener)
-    }
-
-    override fun play() {
-        exoPlayer.play()
-    }
-
-    override fun pause() {
-        exoPlayer.pause()
-    }
-
-    override fun stop() {
-        exoPlayer.stop()
-    }
+    override fun stop() = executePlayerAction { stop() }
 
     override fun setUrl(url: String) {
+        require(url.isNotBlank()) { "URL cannot be blank" }
         setUrls(listOf(url))
     }
 
     override fun setUrls(urls: List<String>) {
-        exoPlayer.clearMediaItems()
-        exoPlayer.setMediaItems(urls.map(MediaItem::fromUri))
+        require(urls.isNotEmpty()) { "URLs list cannot be empty" }
+        require(urls.all { it.isNotBlank() }) { "All URLs must be non-blank" }
 
-        if (urls.isNotEmpty()) {
-            exoPlayer.prepare()
-            exoPlayer.playWhenReady = true
+        updateState {
+            copy(
+                playlist = urls,
+                currentIndex = 0
+            )
+        }
+
+        executePlayerAction {
+            clearMediaItems()
+            setMediaItems(urls.map(MediaItem::fromUri))
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    override fun playAt(index: Int) {
+        val currentState = _state.value
+        require(index >= 0 && index < currentState.playlist.size) {
+            "Index $index is out of bounds for playlist of size ${currentState.playlist.size}"
+        }
+
+        updateState { copy(currentIndex = index) }
+
+        executePlayerAction {
+            seekToDefaultPosition(index)
+            play()
+        }
+    }
+
+    override fun playNext() {
+        val currentState = _state.value
+        if (currentState.hasNext) {
+            playAt(currentState.currentIndex + 1)
+        }
+    }
+
+    override fun playPrevious() {
+        val currentState = _state.value
+        if (currentState.hasPrevious) {
+            playAt(currentState.currentIndex - 1)
         }
     }
 
     override fun seekTo(position: Duration) {
-        exoPlayer.seekTo(position.inWholeMilliseconds)
+        require(position >= Duration.ZERO) { "Position must be non-negative" }
+        executePlayerAction {
+            seekTo(position.inWholeMilliseconds)
+        }
+    }
+
+    override fun init() {
+        check(exoPlayer == null) { "Player already initialized" }
+
+        exoPlayer = ExoPlayer.Builder(context).build().apply {
+            addListener(exoPlayerListener)
+        }
     }
 
     override fun release() {
-        listeners.clear()
-        exoPlayer.removeListener(exoPlayerListener)
-        exoPlayer.release()
+        exoPlayer?.let { player ->
+            stop()
+            player.removeListener(exoPlayerListener)
+            player.release()
+        }
+        exoPlayer = null
+
+        // Reset state
+        updateState { VideoPlayerState.EMPTY }
     }
 
-    override fun addEventListener(listener: VideoPlayerEvents) {
-        listeners.add(listener)
+    private fun updateState(transform: VideoPlayerState.() -> VideoPlayerState) {
+        _state.update(transform)
     }
 
-    override fun removeEventListener(listener: VideoPlayerEvents) {
-        listeners.remove(listener)
+    private fun executePlayerAction(action: Player.() -> Unit) {
+        exoPlayer?.action()
+    }
+
+    private inner class ExoPlayerListener : Player.Listener {
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            val newState = when (playbackState) {
+                Player.STATE_IDLE -> VideoPlayerState.PlaybackState.Idle
+                Player.STATE_READY -> VideoPlayerState.PlaybackState.Ready
+                Player.STATE_BUFFERING -> VideoPlayerState.PlaybackState.Buffering
+                Player.STATE_ENDED -> VideoPlayerState.PlaybackState.Stopped
+                else -> VideoPlayerState.PlaybackState.Idle
+            }
+
+            updateState { copy(playbackState = newState) }
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            val newState = if (isPlaying) {
+                VideoPlayerState.PlaybackState.Playing
+            } else {
+                VideoPlayerState.PlaybackState.Paused
+            }
+
+            updateState { copy(playbackState = newState) }
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            updateState {
+                copy(playbackState = VideoPlayerState.PlaybackState.Error(error))
+            }
+        }
+
+        override fun onVideoSizeChanged(videoSize: VideoSize) {
+            val correctedSize = calculateCorrectedVideoSize(videoSize)
+            updateState { copy(videoSize = correctedSize) }
+        }
+
+        override fun onRenderedFirstFrame() {
+            updateState { copy(coverSurface = false) }
+        }
+
+        private fun calculateCorrectedVideoSize(videoSize: VideoSize): Size? {
+            val width = videoSize.width.toFloat()
+            val height = videoSize.height.toFloat()
+
+            if (width <= 0f || height <= 0f) return null
+
+            val aspectRatio = videoSize.pixelWidthHeightRatio
+
+            return when {
+                aspectRatio < 1.0f -> Size(width * aspectRatio, height)
+                aspectRatio > 1.0f -> Size(width, height / aspectRatio)
+                else -> Size(width, height)
+            }
+        }
     }
 }

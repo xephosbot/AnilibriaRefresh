@@ -1,6 +1,5 @@
 package com.xbot.designsystem.components
 
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
+import androidx.compose.material3.IconButtonDefaults.IconButtonWidthOption
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.ExpressiveTextStyle
 import com.xbot.designsystem.theme.MorphingExpressiveTextStyle
@@ -35,8 +36,8 @@ fun FilledIconButton(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
     ),
-    shape: ExpressiveShape = ExpressiveIconButtonDefaults.shape(),
-    iconButtonWidthOption: IconButtonDefaults.IconButtonWidthOption = IconButtonDefaults.IconButtonWidthOption.Uniform,
+    shape: ExpressiveShape = ExpressiveIconButtonDefaults.smallShape(),
+    containerSize: DpSize = IconButtonDefaults.smallContainerSize(),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable () -> Unit
 ) {
@@ -53,7 +54,41 @@ fun FilledIconButton(
         interactionSource = interactionSource
     ) {
         Box(
-            modifier = Modifier.size(IconButtonDefaults.smallContainerSize(iconButtonWidthOption)),
+            modifier = Modifier.size(containerSize),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun FilledToggleIconButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: IconToggleButtonColors = IconButtonDefaults.filledIconToggleButtonColors(),
+    shape: ExpressiveShape = ExpressiveIconButtonDefaults.largeShape(),
+    containerSize: DpSize = IconButtonDefaults.smallContainerSize(),
+    interactionSource: MutableInteractionSource? = null,
+    content: @Composable () -> Unit
+) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+
+    Surface(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier.semantics { role = Role.Checkbox },
+        shape = shape.shapeForInteraction(pressed, checked),
+        color = colors.containerColor,
+        contentColor = colors.contentColor,
+        interactionSource = interactionSource
+    ) {
+        Box(
+            modifier = Modifier.size(containerSize),
             contentAlignment = Alignment.Center
         ) {
             content()
@@ -67,7 +102,7 @@ fun LabeledIconButton(
     icon: ImageVector,
     text: String,
     modifier: Modifier = Modifier,
-    shape: ExpressiveShape = ExpressiveIconButtonDefaults.shape(),
+    shape: ExpressiveShape = ExpressiveIconButtonDefaults.smallShape(),
     textStyle: ExpressiveTextStyle = ExpressiveIconButtonDefaults.textStyle(),
     colors: IconButtonColors = IconButtonDefaults.filledIconButtonColors(
         containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -114,12 +149,22 @@ object ExpressiveIconButtonDefaults {
     private var _textStyle: ExpressiveTextStyle? = null
 
     @Composable
-    fun shape(): ExpressiveShape {
+    fun smallShape(): ExpressiveShape {
         return _shape ?: RoundedCornerExpressiveShape(
-            shape = IconButtonDefaults.standardShape,
+            shape = IconButtonDefaults.smallRoundShape,
             pressedShape = IconButtonDefaults.smallPressedShape,
-            selectedShape = IconButtonDefaults.smallPressedShape,
-            animationSpec = spring()
+            selectedShape = IconButtonDefaults.smallSquareShape,
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+        ).also { _shape = it }
+    }
+
+    @Composable
+    fun largeShape(): ExpressiveShape {
+        return _shape ?: RoundedCornerExpressiveShape(
+            shape = IconButtonDefaults.largeRoundShape,
+            pressedShape = IconButtonDefaults.largePressedShape,
+            selectedShape = IconButtonDefaults.largeSquareShape,
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }
 
@@ -128,7 +173,7 @@ object ExpressiveIconButtonDefaults {
         return _textStyle ?: MorphingExpressiveTextStyle(
             from = MaterialTheme.typography.labelMedium,
             to = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraBold),
-            animationSpec = spring()
+            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
         ).also { _textStyle = it }
     }
 }

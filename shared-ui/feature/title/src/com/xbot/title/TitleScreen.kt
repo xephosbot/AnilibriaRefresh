@@ -30,17 +30,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,11 +59,12 @@ import com.xbot.designsystem.components.FeedItemScope
 import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.MemberItem
-import com.xbot.designsystem.components.ModalScrollableBottomSheet
+import com.xbot.designsystem.components.NavigableSupportingPaneScaffold
 import com.xbot.designsystem.components.ReleaseCardItem
 import com.xbot.designsystem.components.ReleaseLargeCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
+import com.xbot.designsystem.components.isExpanded
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.TelegramLogo
@@ -69,17 +75,7 @@ import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.resources.Res
-import com.xbot.resources.alert_blocked_copyright
-import com.xbot.resources.alert_blocked_geo
-import com.xbot.resources.button_add_to_favorites
-import com.xbot.resources.button_share
-import com.xbot.resources.button_telegram
-import com.xbot.resources.button_watched_it
-import com.xbot.resources.label_description
-import com.xbot.resources.label_genres
-import com.xbot.resources.label_members
-import com.xbot.resources.label_related_releases
+import com.xbot.resources.*
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.EpisodeListItem
 import com.xbot.title.ui.NotificationCard
@@ -109,7 +105,7 @@ fun TitleScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun TitleScreenContent(
     modifier: Modifier = Modifier,
@@ -118,6 +114,58 @@ private fun TitleScreenContent(
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
+) {
+    val scaffoldNavigator = rememberSupportingPaneScaffoldNavigator<Unit>()
+    val scope = rememberCoroutineScope()
+    val backBehavior =
+        if (scaffoldNavigator.isExpanded(ListDetailPaneScaffoldRole.List) && scaffoldNavigator.isExpanded(ListDetailPaneScaffoldRole.Detail)) {
+            BackNavigationBehavior.PopUntilContentChange
+        } else {
+            BackNavigationBehavior.PopUntilScaffoldValueChange
+        }
+
+    NavigableSupportingPaneScaffold(
+        modifier = modifier,
+        navigator = scaffoldNavigator,
+        defaultBackBehavior = backBehavior,
+        mainPane = {
+            TitleMainPane(
+                state = state,
+                onBackClick = onBackClick,
+                onPlayClick = onPlayClick,
+                onReleaseClick = onReleaseClick,
+                onEpisodesListClick = {
+                    scope.launch {
+                        scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                    }
+                }
+            )
+        },
+        supportingPane = {
+            TitleSupportingPane(
+                state = state,
+                onBackClick = {
+                    scope.launch {
+                        if (scaffoldNavigator.canNavigateBack(backBehavior)) {
+                            scaffoldNavigator.navigateBack(backBehavior)
+                        }
+                    }
+                },
+                onPlayClick = onPlayClick,
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun ThreePaneScaffoldPaneScope.TitleMainPane(
+    modifier: Modifier = Modifier,
+    state: TitleScreenState,
+    onBackClick: () -> Unit,
+    onPlayClick: (Int, Int) -> Unit,
+    onReleaseClick: (Int) -> Unit,
+    onEpisodesListClick: () -> Unit,
 ) {
     val gridState = rememberLazyGridState()
 
@@ -140,47 +188,92 @@ private fun TitleScreenContent(
         }
     }
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBackClick
-                    ) {
-                        Icon(
-                            imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                            contentDescription = null
+    AnimatedPane(modifier = modifier) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(
+                            onClick = onBackClick
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha)
+                    )
+                )
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) { innerPadding ->
+            topAppbarHeight = with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+
+            Crossfade(
+                targetState = state,
+            ) { targetState ->
+                when (targetState) {
+                    is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                    is TitleScreenState.Success -> {
+                        TitleDetails(
+                            gridState = gridState,
+                            details = targetState.title,
+                            contentPadding = innerPadding,
+                            onPlayClick = onPlayClick,
+                            onReleaseClick = onReleaseClick,
+                            onEpisodesListClick = onEpisodesListClick,
+                            onAddToFavoritesClick = {},
+                            onAlreadyWatchedClick = {},
+                            onShareClick = {},
+                            onTelegramClick = {}
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha)
-                )
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ) { innerPadding ->
-        topAppbarHeight = with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+                }
+            }
+        }
+    }
+}
 
-        Crossfade(
-            targetState = state,
-        ) { targetState ->
-            when (targetState) {
-                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                is TitleScreenState.Success -> {
-                    TitleDetails(
-                        gridState = gridState,
-                        details = targetState.title,
-                        contentPadding = innerPadding,
-                        onPlayClick = onPlayClick,
-                        onReleaseClick = onReleaseClick,
-                        onAddToFavoritesClick = {},
-                        onAlreadyWatchedClick = {},
-                        onShareClick = {},
-                        onTelegramClick = {}
-                    )
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun ThreePaneScaffoldPaneScope.TitleSupportingPane(
+    modifier: Modifier = Modifier,
+    state: TitleScreenState,
+    onBackClick: () -> Unit,
+    onPlayClick: (Int, Int) -> Unit,
+) {
+    AnimatedPane(modifier = modifier) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Crossfade(
+                targetState = state
+            ) { targetState ->
+                when (targetState) {
+                    is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                    is TitleScreenState.Success -> {
+                        EpisodesList(
+                            episodes = targetState.title.episodes.reversed(),
+                            contentPadding = innerPadding,
+                        ) { ordinal ->
+                            onPlayClick(targetState.title.release.id, targetState.title.episodes.size - ordinal)
+                        }
+                    }
                 }
             }
         }
@@ -195,13 +288,13 @@ private fun TitleDetails(
     contentPadding: PaddingValues,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
+    onEpisodesListClick: () -> Unit,
     onAddToFavoritesClick: () -> Unit,
     onAlreadyWatchedClick: () -> Unit,
     onShareClick: () -> Unit,
     onTelegramClick: () -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    var showEpisodesList by rememberSaveable { mutableStateOf(false) }
 
     ProvideShimmer(shimmer) {
         Feed(
@@ -231,7 +324,7 @@ private fun TitleDetails(
                         PlayButton(
                             modifier = Modifier.fillMaxWidth(),
                             onLeadingClick = { onPlayClick(details.release.id, 0) },
-                            onTrailingClick = { showEpisodesList = true },
+                            onTrailingClick = { onEpisodesListClick() },
                             trailingEnabled = details.episodes.isNotEmpty()
                         )
                     }
@@ -326,42 +419,20 @@ private fun TitleDetails(
             row { Spacer(Modifier.height(16.dp)) }
         }
     }
-
-    val episodesListState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
-
-    if (showEpisodesList) {
-        ModalScrollableBottomSheet(
-            onDismissRequest = {
-                scope.launch {
-                    episodesListState.scrollToItem(0)
-                }
-                showEpisodesList = false
-            },
-            scrollableState = episodesListState
-        ) {
-            EpisodesList(
-                episodes = details.episodes.reversed(),
-                state = episodesListState
-            ) { ordinal ->
-                onPlayClick(details.release.id, details.episodes.size - ordinal)
-            }
-        }
-    }
 }
 
 @Composable
 private fun EpisodesList(
     episodes: List<Episode>,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    state: LazyListState,
     onEpisodeClick: (Int) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     ProvideShimmer(shimmer) {
         LazyColumn(
             modifier = modifier.shimmerUpdater(shimmer),
-            state = state,
+            contentPadding = contentPadding,
             reverseLayout = false
         ) {
             itemsIndexed(episodes) { index, episode ->

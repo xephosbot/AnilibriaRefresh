@@ -7,8 +7,9 @@ import androidx.compose.runtime.remember
 @Composable
 actual fun rememberVideoPlayer(player: VideoPlayer): VideoPlayer {
     DisposableEffect(Unit) {
+        player.init()
         onDispose {
-            player.stop()
+            player.release()
         }
     }
     return remember { player }

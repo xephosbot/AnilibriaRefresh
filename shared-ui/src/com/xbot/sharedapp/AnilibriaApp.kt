@@ -11,6 +11,7 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.map.Mapper
 import coil3.memory.MemoryCache
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import com.xbot.designsystem.components.NavigationSuiteScaffold
@@ -18,18 +19,27 @@ import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import com.xbot.sharedapp.navigation.hasRoute
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 
 @Composable
 fun AnilibriaApp(
     appState: AnilibriaAppState = rememberAnilibriaAppState()
 ) {
+    val httpClient: HttpClient = koinInject()
+
     setSingletonImageLoaderFactory { context ->
         ImageLoader.Builder(context)
             .crossfade(true)
             .components {
+                add(
+                    KtorNetworkFetcherFactory(
+                        httpClient = { httpClient }
+                    )
+                )
                 add(Mapper<Poster, String> { data, _ -> data.src })
             }
             .memoryCache {

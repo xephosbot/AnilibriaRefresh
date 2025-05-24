@@ -61,7 +61,7 @@ object ExpressiveButtonDefaults {
             shape = ButtonDefaults.shape,
             pressedShape = ButtonDefaults.pressedShape,
             selectedShape = ButtonDefaults.squareShape,
-            animationSpec = spring()
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }
 
@@ -70,7 +70,7 @@ object ExpressiveButtonDefaults {
         return _textStyle ?: MorphingExpressiveTextStyle(
             from = MaterialTheme.typography.labelLarge,
             to = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraBold),
-            animationSpec = spring()
+            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
         ).also { _textStyle = it }
     }
 }

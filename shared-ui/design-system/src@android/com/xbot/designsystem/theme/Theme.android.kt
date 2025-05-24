@@ -9,7 +9,10 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalNavigationBarComponentOverride
 import androidx.compose.material3.LocalNavigationRailComponentOverride
 import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -179,7 +182,11 @@ actual fun AnilibriaTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            when {
+                isSamsungSDK34 -> if (darkTheme) dynamicDarkColorSchemeSamsung34(context) else dynamicLightColorSchemeSamsung34(context)
+                else -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+
         }
         else -> selectSchemeForContrast(darkTheme)
     }
@@ -190,6 +197,7 @@ actual fun AnilibriaTheme(
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
+            motionScheme = MotionScheme.expressive(),
             typography = AnilibriaTypography(),
             content = content,
         )
@@ -219,3 +227,6 @@ internal fun selectSchemeForContrast(darkTheme: Boolean): ColorScheme {
     } else return colorScheme
 }
 
+val isSamsungSDK34: Boolean
+    get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true) &&
+            Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE

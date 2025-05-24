@@ -5,7 +5,9 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.PlaylistPlay
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Check
@@ -44,5 +46,7 @@ object AnilibriaIcons {
         val Home get() = Icons.Filled.Home
         val Person get() = Icons.Filled.Person
         val Share get() = Icons.Filled.Share
+        val PlayArrow get() = Icons.Filled.PlayArrow
+        val Pause get() = Icons.Filled.Pause
     }
 }

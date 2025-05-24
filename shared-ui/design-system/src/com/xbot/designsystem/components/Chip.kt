@@ -135,7 +135,7 @@ object ExpressiveChipDefaults {
             shape = FilterChipDefaults.shape,
             pressedShape = CircleShape,
             selectedShape = CircleShape,
-            animationSpec = spring()
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }
 }

@@ -28,7 +28,10 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import com.xbot.localization.toLocalizedString
+import com.xbot.resources.Res
+import com.xbot.resources.label_schedule
 import kotlinx.datetime.DayOfWeek
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -63,11 +66,7 @@ private fun ScheduleScreenContent(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Schedule"
-                    )
-                },
+                title = { Text(text = stringResource(Res.string.label_schedule)) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackClick
@@ -79,12 +78,8 @@ private fun ScheduleScreenContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         Crossfade(
             targetState = state

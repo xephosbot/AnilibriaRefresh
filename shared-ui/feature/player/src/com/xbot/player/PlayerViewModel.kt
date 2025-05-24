@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.xbot.domain.models.Episode
 import com.xbot.domain.repository.ReleaseRepository
 import com.xbot.player.navigation.PlayerRoute
 import kotlinx.coroutines.flow.*
@@ -31,7 +32,7 @@ class PlayerViewModel(
             repository.getRelease(releaseId.toString()).fold(
                 onSuccess = { release ->
                     val episode = release.episodes[episodeOrdinal]
-                    _state.update { PlayerScreenState.Success(episode.hls1080 ?: episode.hls720 ?: episode.hls480 ?: "") }
+                    _state.update { PlayerScreenState.Success(release.episodes) }
                 },
                 onFailure = {
 
@@ -43,5 +44,5 @@ class PlayerViewModel(
 
 sealed interface PlayerScreenState {
     object Loading : PlayerScreenState
-    data class Success(val url: String) : PlayerScreenState
+    data class Success(val episodes: List<Episode>) : PlayerScreenState
 }
