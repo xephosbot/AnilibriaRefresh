@@ -1,8 +1,8 @@
 package com.xbot.player
 
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.player.ui.VideoPlayerController
@@ -25,6 +25,7 @@ fun PlayerScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun PlayerScreenContent(
     modifier: Modifier,
@@ -32,13 +33,11 @@ private fun PlayerScreenContent(
     onBackClick: () -> Unit
 ) {
     val player = rememberVideoPlayer()
-    var isPlaying by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(state) {
-        if (!isPlaying) {
+        if (!player.state.value.hasPlaylist) {
             if (state is PlayerScreenState.Success) {
-                player.setUrl(state.url)
-                isPlaying = true
+                player.setUrls(state.episodes.map { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
             }
         }
     }
@@ -48,11 +47,11 @@ private fun PlayerScreenContent(
         controls = {
             VideoPlayerController(
                 player = player,
+                buffering = {
+                    ContainedLoadingIndicator()
+                },
                 onClickBack = onBackClick
             )
         },
-        buffering = {
-            CircularProgressIndicator()
-        }
     )
 }

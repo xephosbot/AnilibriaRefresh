@@ -16,15 +16,16 @@ actual fun rememberVideoPlayer(player: VideoPlayer): VideoPlayer {
             when (event) {
                 Lifecycle.Event.ON_START -> player.play()
                 Lifecycle.Event.ON_STOP -> player.pause()
-                Lifecycle.Event.ON_DESTROY -> player.stop()
+                Lifecycle.Event.ON_DESTROY -> player.release()
                 else -> Unit
             }
         }
+        player.init()
         lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
-            player.stop()
+            player.release()
         }
     }
     return remember { player }
