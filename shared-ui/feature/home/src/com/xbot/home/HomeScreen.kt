@@ -21,6 +21,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.LoadingIndicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -41,12 +48,14 @@ import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.FilledIconButton
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
+import com.xbot.designsystem.components.NavigableSupportingPaneScaffold
 import com.xbot.designsystem.components.ReleaseCardItem
 import com.xbot.designsystem.components.ReleaseLargeCard
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.horizontalPagerItems
+import com.xbot.designsystem.components.isExpanded
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
@@ -56,6 +65,7 @@ import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.*
+import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -66,7 +76,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
     onSearchClick: () -> Unit,
-    onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
@@ -78,12 +87,12 @@ fun HomeScreen(
         items = items,
         onAction = viewModel::onAction,
         onSearchClick = onSearchClick,
-        onScheduleClick = onScheduleClick,
         onReleaseClick = onReleaseClick,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
@@ -91,13 +100,72 @@ private fun HomeScreenContent(
     items: LazyPagingItems<Release>,
     onAction: (HomeScreenAction) -> Unit,
     onSearchClick: () -> Unit,
-    onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
-    val showErrorMessage: (Throwable) -> Unit = { error ->
-        onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
-    }
+    val scaffoldNavigator = rememberSupportingPaneScaffoldNavigator<Unit>()
+    val scope = rememberCoroutineScope()
+    val backBehavior =
+        if (scaffoldNavigator.isExpanded(ListDetailPaneScaffoldRole.List) && scaffoldNavigator.isExpanded(ListDetailPaneScaffoldRole.Detail)) {
+            BackNavigationBehavior.PopUntilContentChange
+        } else {
+            BackNavigationBehavior.PopUntilScaffoldValueChange
+        }
 
+    NavigableSupportingPaneScaffold(
+        modifier = modifier,
+        navigator = scaffoldNavigator,
+        defaultBackBehavior = backBehavior,
+        mainPane = {
+            HomeMainPane(
+                state = state,
+                items = items,
+                onSearchClick = onSearchClick,
+                onScheduleClick = {
+                    scope.launch {
+                        scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                    }
+                },
+                onReleaseClick = onReleaseClick,
+                onRefresh = {
+                    items.refresh()
+                    onAction(HomeScreenAction.Refresh)
+                },
+                onShowErrorMessage = { error ->
+                    onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
+                }
+            )
+        },
+        supportingPane = {
+            HomeSupportingPane(
+                onReleaseClick = onReleaseClick,
+                onBackClick = {
+                    scope.launch {
+                        if (scaffoldNavigator.canNavigateBack(backBehavior)) {
+                            scaffoldNavigator.navigateBack(backBehavior)
+                        }
+                    }
+                }
+            )
+        }
+    )
+}
+
+@OptIn(
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
+@Composable
+private fun ThreePaneScaffoldPaneScope.HomeMainPane(
+    modifier: Modifier = Modifier,
+    state: HomeScreenState,
+    items: LazyPagingItems<Release>,
+    onSearchClick: () -> Unit,
+    onScheduleClick: () -> Unit,
+    onReleaseClick: (Int) -> Unit,
+    onRefresh: () -> Unit,
+    onShowErrorMessage: (Throwable) -> Unit,
+) {
     val pullToRefreshState = rememberPullToRefreshState()
     val gridState = rememberLazyGridState()
 
@@ -122,9 +190,9 @@ private fun HomeScreenContent(
 
     LaunchedEffect(items) {
         snapshotFlow { items.loadState }.collect { loadState ->
-            (loadState.refresh as? LoadState.Error)?.let { showErrorMessage(it.error) }
-            (loadState.append as? LoadState.Error)?.let { showErrorMessage(it.error) }
-            (loadState.prepend as? LoadState.Error)?.let { showErrorMessage(it.error) }
+            (loadState.refresh as? LoadState.Error)?.let { onShowErrorMessage(it.error) }
+            (loadState.append as? LoadState.Error)?.let { onShowErrorMessage(it.error) }
+            (loadState.prepend as? LoadState.Error)?.let { onShowErrorMessage(it.error) }
         }
     }
 
@@ -132,73 +200,87 @@ private fun HomeScreenContent(
         derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeScreenState.Loading }
     }
 
-    Scaffold(
-        modifier = modifier.pullToRefresh(
-            isRefreshing = isRefreshing,
-            state = pullToRefreshState,
-            onRefresh = {
-                items.refresh()
-                onAction(HomeScreenAction.Refresh)
-            }
-        ),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Image(
-                        imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        contentDescription = null
-                    )
-                },
-                actions = {
-                    IconButton(
-                        onClick = onSearchClick
-                    ) {
-                        Icon(
-                            imageVector = AnilibriaIcons.Outlined.Search,
+    AnimatedPane(modifier = modifier) {
+        Scaffold(
+            modifier = Modifier.pullToRefresh(
+                isRefreshing = isRefreshing,
+                state = pullToRefreshState,
+                onRefresh = onRefresh
+            ),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Image(
+                            imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             contentDescription = null
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = onSearchClick
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.Search,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
+                    )
                 )
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ) { innerPadding ->
-        topAppbarHeight = with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) { innerPadding ->
+            topAppbarHeight = with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
 
-        Box {
-            Crossfade(
-                targetState = state,
-                label = "Loading state transition in HomeScreenContent",
-            ) { targetState ->
-                when (targetState) {
-                    is HomeScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                    is HomeScreenState.Success -> {
-                        ReleaseFeed(
-                            gridState = gridState,
-                            items = items,
-                            recommendedReleases = targetState.releasesFeed.recommendedReleases,
-                            genres = targetState.releasesFeed.genres,
-                            scheduleList = targetState.releasesFeed.schedule,
-                            contentPadding = innerPadding,
-                            onScheduleClick = onScheduleClick,
-                            onReleaseClick = { onReleaseClick(it.id) },
-                        )
+            Box {
+                Crossfade(
+                    targetState = state,
+                    label = "Loading state transition in HomeScreenContent",
+                ) { targetState ->
+                    when (targetState) {
+                        is HomeScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                        is HomeScreenState.Success -> {
+                            ReleaseFeed(
+                                gridState = gridState,
+                                items = items,
+                                recommendedReleases = targetState.releasesFeed.recommendedReleases,
+                                genres = targetState.releasesFeed.genres,
+                                scheduleList = targetState.releasesFeed.schedule,
+                                contentPadding = innerPadding,
+                                onScheduleClick = onScheduleClick,
+                                onReleaseClick = { onReleaseClick(it.id) },
+                            )
+                        }
                     }
                 }
-            }
 
-            LoadingIndicator(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(innerPadding.only(WindowInsetsSides.Top)),
-                isRefreshing = isRefreshing,
-                state = pullToRefreshState
-            )
+                LoadingIndicator(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(innerPadding.only(WindowInsetsSides.Top)),
+                    isRefreshing = isRefreshing,
+                    state = pullToRefreshState
+                )
+            }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ThreePaneScaffoldPaneScope.HomeSupportingPane(
+    modifier: Modifier = Modifier,
+    onReleaseClick: (Int) -> Unit,
+    onBackClick: () -> Unit,
+) {
+    AnimatedPane(modifier = modifier) {
+        ScheduleScreen(
+            onReleaseClick = onReleaseClick,
+            onBackClick = onBackClick
+        )
     }
 }
 

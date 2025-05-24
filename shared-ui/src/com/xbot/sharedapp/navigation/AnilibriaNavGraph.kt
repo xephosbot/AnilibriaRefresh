@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
-import com.xbot.home.navigation.navigateToSchedule
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.player.navigation.playerScreen
 import com.xbot.profile.navigation.profileSection
@@ -34,14 +33,8 @@ fun AnilibriaNavGraph(
         exitTransition = { materialFadeThroughOut() },
     ) {
         homeSection(
-            onBackClick = {
-                if (lifecycleIsResumed()) navController.navigateUp()
-            },
             onSearchClick = {
                 if (lifecycleIsResumed()) navController.navigateToSearch()
-            },
-            onScheduleClick = {
-                if (lifecycleIsResumed()) navController.navigateToSchedule()
             },
             onReleaseClick = { releaseId ->
                 if (lifecycleIsResumed()) navController.navigateToTitle(releaseId)
