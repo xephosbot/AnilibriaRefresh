@@ -1,5 +1,8 @@
 product: android/app
 
+apply:
+  - ../compose.module-template.yaml
+
 dependencies:
   - ../shared-ui
   - $libs.androidx.activity.compose
@@ -12,6 +15,3 @@ settings:
   android:
     namespace: com.xbot.anilibriarefresh
     signing: enabled
-  compose:
-    version: 1.8.0
-    enabled: true

@@ -1,5 +1,8 @@
 product: jvm/app
 
+apply:
+  - ../compose.module-template.yaml
+
 dependencies:
   - ../shared-ui
   - $compose.desktop.currentOs
@@ -10,7 +13,5 @@ settings:
   jvm:
     mainClass: MainKt
   compose:
-    version: 1.8.0
-    enabled: true
     experimental:
       hotReload: enabled

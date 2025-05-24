@@ -2,6 +2,9 @@ product:
   type: lib
   platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
 
+apply:
+  - ../../../compose.module-template.yaml
+
 dependencies:
   - ../../../shared/domain
   - ../../design-system
@@ -25,8 +28,5 @@ dependencies@jvm:
   - $libs.vlcj.natives
 
 settings:
-  compose:
-    version: 1.8.0
-    enabled: true
   kotlin:
     serialization: json

@@ -2,6 +2,9 @@ product:
   type: lib
   platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
 
+apply:
+  - ../compose.module-template.yaml
+
 dependencies:
   - ../shared
   - ./design-system
@@ -18,18 +21,6 @@ dependencies:
   - $libs.koin.compose
   - $libs.koin.compose.viewModel
   - $libs.coil.compose
+  - $libs.coil.network.ktor
+  - $libs.ktor.client.core
   - $libs.material.motion.compose.core
-
-dependencies@android:
-  - $libs.coil.network.okhttp
-
-dependencies@jvm:
-  - $libs.coil.network.ktor
-
-dependencies@ios:
-  - $libs.coil.network.ktor
-
-settings:
-  compose:
-    version: 1.8.0
-    enabled: true

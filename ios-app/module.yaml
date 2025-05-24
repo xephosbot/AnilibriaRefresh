@@ -1,10 +1,8 @@
 product:
   type: ios/app
 
+apply:
+  - ../compose.module-template.yaml
+
 dependencies:
   - ../shared-ui
-
-settings:
-  compose:
-    version: 1.8.0
-    enabled: true
