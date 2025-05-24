@@ -31,14 +31,19 @@ data class ReleaseApi(
     @SerialName("is_blocked_by_copyrights") val isBlockedByCopyrights: Boolean,
     @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
     @SerialName("average_duration_of_episode") val averageDurationOfEpisode: Int?,
+    @SerialName("added_in_planned_collection") val addedInPlannedCollection: Int?,
+    @SerialName("added_in_watched_collection") val addedInWatchedCollection: Int?,
+    @SerialName("added_in_watching_collection") val addedInWatchingCollection: Int?,
+    @SerialName("added_in_postponed_collection") val addedInPostponedCollection: Int?,
+    @SerialName("added_in_abandoned_collection") val addedInAbandonedCollection: Int?,
     @SerialName("genres") val genres: List<GenreApi>? = null,
     @SerialName("members") val members: List<MemberApi>? = null,
     @SerialName("sponsor") val sponsor: SponsorApi? = null,
     @SerialName("episodes") val episodes: List<EpisodeApi>? = null,
     @SerialName("torrents") val torrents: List<TorrentApi>? = null,
     @SerialName("full_season_is_released") val fullSeasonIsReleased: Boolean? = null,
-    @SerialName("new_release_episode") val newReleaseEpisode: EpisodeApi? = null,
-    @SerialName("new_release_episode_ordinal") val newReleaseEpisodeOrdinal: Int? = null,
+    @SerialName("published_release_episode") val newReleaseEpisode: EpisodeApi? = null,
+    @SerialName("next_release_episode_number") val nextReleaseEpisodeNumber: Int? = null,
 ) {
     @Serializable
     data class Name(

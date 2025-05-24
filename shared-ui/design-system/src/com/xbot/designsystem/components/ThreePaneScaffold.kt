@@ -4,6 +4,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.PaneExpansionState
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
@@ -42,6 +43,38 @@ fun <T> NavigableListDetailPaneScaffold(
         paneExpansionState = paneExpansionState,
     )
 }
+
+@ExperimentalMaterial3AdaptiveApi
+@Composable
+fun <T> NavigableSupportingPaneScaffold(
+    navigator: ThreePaneScaffoldNavigator<T>,
+    mainPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    supportingPane: @Composable ThreePaneScaffoldPaneScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    extraPane: (@Composable ThreePaneScaffoldPaneScope.() -> Unit)? = null,
+    defaultBackBehavior: BackNavigationBehavior =
+        BackNavigationBehavior.PopUntilScaffoldValueChange,
+    paneExpansionDragHandle: (@Composable ThreePaneScaffoldScope.(PaneExpansionState) -> Unit)? =
+        null,
+    paneExpansionState: PaneExpansionState? = null,
+) {
+    ThreePaneScaffoldPredictiveBackHandler(
+        navigator = navigator,
+        backBehavior = defaultBackBehavior,
+    )
+
+    SupportingPaneScaffold(
+        modifier = modifier,
+        directive = navigator.scaffoldDirective,
+        value = navigator.scaffoldValue,
+        mainPane = mainPane,
+        supportingPane = supportingPane,
+        extraPane = extraPane,
+        paneExpansionDragHandle = paneExpansionDragHandle,
+        paneExpansionState = paneExpansionState,
+    )
+}
+
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun ThreePaneScaffoldNavigator<*>.isExpanded(role: ThreePaneScaffoldRole) =
