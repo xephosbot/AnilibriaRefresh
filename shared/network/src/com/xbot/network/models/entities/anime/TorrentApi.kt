@@ -1,7 +1,7 @@
 package com.xbot.network.models.entities.anime
 
-import com.xbot.network.models.enums.CodecNetwork
-import com.xbot.network.models.enums.ColorDepthNetwork
+import com.xbot.network.models.enums.CodecApi
+import com.xbot.network.models.enums.ColorDepthApi
 import com.xbot.network.models.enums.QualityApi
 import com.xbot.network.models.enums.TorrentTypeApi
 import kotlinx.serialization.SerialName
@@ -13,8 +13,8 @@ data class TorrentApi(
     @SerialName("hash") val hash: String,
     @SerialName("size") val size: Long,
     @SerialName("type") val type: TorrentTypeApi?,
-    @SerialName("color") val color: ColorDepthNetwork?,
-    @SerialName("codec") val codec: CodecNetwork?,
+    @SerialName("color") val color: ColorDepthApi?,
+    @SerialName("codec") val codec: CodecApi?,
     @SerialName("label") val label: String,
     @SerialName("quality") val quality: QualityApi?,
     @SerialName("magnet") val magnet: String,

@@ -5,8 +5,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable(with = CodecNetwork.Companion.Serializer::class)
-enum class CodecNetwork(val value: String) {
+@Serializable(with = CodecApi.Companion.Serializer::class)
+enum class CodecApi(val value: String) {
     @SerialName("AV1") AV1("AV1"),
     @SerialName("x264/AVC") AVC("x264/AVC"),
     @SerialName("x265/HEVC") HEVC("x265/HEVC"), ;
@@ -14,6 +14,6 @@ enum class CodecNetwork(val value: String) {
     override fun toString(): String = value
 
     companion object {
-        object Serializer : KSerializer<CodecNetwork?> by EnumSerializer.create<CodecNetwork>()
+        object Serializer : KSerializer<CodecApi?> by EnumSerializer.create<CodecApi>()
     }
 }
