@@ -1,7 +1,7 @@
 package com.xbot.sharedapp.di
 
-import com.xbot.api.di.dataStoreModule
-import com.xbot.api.di.networkModule
+import com.xbot.network.di.dataStoreModule
+import com.xbot.network.di.networkModule
 import com.xbot.data.di.repositoryModule
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.di.useCaseModule

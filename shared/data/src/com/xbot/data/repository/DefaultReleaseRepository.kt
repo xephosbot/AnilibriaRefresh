@@ -1,17 +1,17 @@
 package com.xbot.data.repository
 
 import androidx.paging.PagingSource
-import com.xbot.api.client.AnilibriaClient
-import com.xbot.api.models.shared.EpisodeApi
-import com.xbot.api.models.shared.GenreApi
-import com.xbot.api.models.shared.MemberApi
-import com.xbot.api.models.shared.ReleaseApi
-import com.xbot.api.request.getCatalogReleases
-import com.xbot.api.request.getFranchisesByRelease
-import com.xbot.api.request.getRandomGenres
-import com.xbot.api.request.getRandomReleases
-import com.xbot.api.request.getRelease
-import com.xbot.api.request.getScheduleWeek
+import com.xbot.network.client.AnilibriaClient
+import com.xbot.network.models.entities.anime.EpisodeApi
+import com.xbot.network.models.entities.anime.GenreApi
+import com.xbot.network.models.entities.anime.ReleaseMemberApi
+import com.xbot.network.models.entities.anime.ReleaseApi
+import com.xbot.network.requests.anime.getCatalogReleases
+import com.xbot.network.requests.anime.getFranchisesByRelease
+import com.xbot.network.requests.anime.getRandomGenres
+import com.xbot.network.requests.anime.getRandomReleases
+import com.xbot.network.requests.anime.getRelease
+import com.xbot.network.requests.anime.getScheduleWeek
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toApi
 import com.xbot.data.mapper.toDayOfWeek
@@ -61,7 +61,7 @@ internal class DefaultReleaseRepository(
                 )
                 CommonPagingSource.PagedResponse(
                     items = result.data.map(ReleaseApi::toDomain),
-                    total = result.meta.pagination.total
+                    total = result.meta.total
                 )
             }
         )
@@ -110,7 +110,7 @@ internal class DefaultReleaseRepository(
             notification = release.notification,
             availabilityStatus = availabilityStatus,
             genres = release.genres?.map(GenreApi::toDomain) ?: emptyList(),
-            members = release.members?.map(MemberApi::toDomain) ?: emptyList(),
+            members = release.members?.map(ReleaseMemberApi::toDomain) ?: emptyList(),
             episodes = release.episodes?.map(EpisodeApi::toDomain) ?: emptyList(),
             relatedReleases = relatedReleases.map { it.release.toDomain() }
         )

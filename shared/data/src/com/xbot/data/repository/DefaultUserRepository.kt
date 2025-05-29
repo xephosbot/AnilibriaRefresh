@@ -1,17 +1,17 @@
 package com.xbot.data.repository
 
-import com.xbot.api.client.AnilibriaClient
-import com.xbot.api.client.AccessTokenManager
-import com.xbot.api.request.getUserProfile
-import com.xbot.api.request.login
-import com.xbot.api.request.logout
 import com.xbot.data.mapper.toDomain
 import com.xbot.domain.models.Profile
 import com.xbot.domain.repository.UserRepository
+import com.xbot.network.client.auth.AuthTokenManager
+import com.xbot.network.client.AnilibriaClient
+import com.xbot.network.requests.account.getProfile
+import com.xbot.network.requests.account.login
+import com.xbot.network.requests.account.logout
 
 internal class DefaultUserRepository(
     private val client: AnilibriaClient,
-    private val accessTokenManager: AccessTokenManager,
+    private val accessTokenManager: AuthTokenManager,
 ) : UserRepository {
     override suspend fun login(
         login: String,
@@ -27,6 +27,6 @@ internal class DefaultUserRepository(
     }
 
     override suspend fun getUserProfile(): Result<Profile> = runCatching {
-        client.getUserProfile().toDomain()
+        client.getProfile().toDomain()
     }
 }

@@ -1,11 +1,11 @@
 package com.xbot.data.mapper
 
-import com.xbot.api.AnilibriaApi
-import com.xbot.api.models.account.ProfileApi
-import com.xbot.api.models.shared.EpisodeApi
-import com.xbot.api.models.shared.GenreApi
-import com.xbot.api.models.shared.MemberApi
-import com.xbot.api.models.shared.ReleaseApi
+import com.xbot.network.AnilibriaApi
+import com.xbot.network.models.entities.accounts.ProfileApi
+import com.xbot.network.models.entities.anime.EpisodeApi
+import com.xbot.network.models.entities.anime.GenreApi
+import com.xbot.network.models.entities.anime.ReleaseMemberApi
+import com.xbot.network.models.entities.anime.ReleaseApi
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Member
@@ -85,7 +85,7 @@ internal fun EpisodeApi.toDomain() = Episode(
     ).toLocalDateTime(TimeZone.currentSystemDefault())
 )
 
-internal fun MemberApi.toDomain() = Member(
+internal fun ReleaseMemberApi.toDomain() = Member(
     id = id,
     name = nickname.orEmpty(),
     role = role?.toDomain(),
@@ -108,8 +108,8 @@ internal fun ProfileApi.toDomain() = Profile(
     email = email,
     nickname = nickname,
     avatar = avatar.optimized.let { avatar ->
-        val src = avatar.preview
-        val thumbnail = avatar.thumbnail
+        val src = avatar?.preview
+        val thumbnail = avatar?.thumbnail
 
         if (src == null) return@let null
 

@@ -1,13 +1,13 @@
 package com.xbot.data.mapper
 
-import com.xbot.api.models.shared.enums.AgeRatingApi
-import com.xbot.api.models.shared.enums.MemberRoleApi
-import com.xbot.api.models.shared.enums.ProductionStatusApi
-import com.xbot.api.models.shared.enums.PublishDayApi
-import com.xbot.api.models.shared.enums.PublishStatusApi
-import com.xbot.api.models.shared.enums.ReleaseTypeApi
-import com.xbot.api.models.shared.enums.SeasonApi
-import com.xbot.api.models.shared.enums.SortingTypeApi
+import com.xbot.network.models.enums.AgeRatingApi
+import com.xbot.network.models.enums.MemberRoleApi
+import com.xbot.network.models.enums.ProductionStatusApi
+import com.xbot.network.models.enums.PublishDayApi
+import com.xbot.network.models.enums.PublishStatusApi
+import com.xbot.network.models.enums.ReleaseTypeApi
+import com.xbot.network.models.enums.SeasonApi
+import com.xbot.network.models.enums.SortingTypeApi
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ProductionStatus
