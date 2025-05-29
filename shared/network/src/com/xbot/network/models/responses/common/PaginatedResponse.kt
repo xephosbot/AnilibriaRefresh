@@ -7,5 +7,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PaginatedResponse<T>(
     @SerialName("data") val data: List<T>,
-    @SerialName("meta") val meta: PaginationMeta,
+    @SerialName("meta") val meta: Meta,
+)
+
+@Serializable
+data class Meta(
+    @SerialName("pagination") val pagination: PaginationMeta,
 )

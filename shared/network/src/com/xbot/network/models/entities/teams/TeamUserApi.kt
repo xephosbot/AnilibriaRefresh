@@ -13,5 +13,5 @@ data class TeamUserApi(
     @SerialName("is_vacation") val isVacation: Boolean,
     @SerialName("team") val team: TeamApi,
     @SerialName("user") val user: UserApi,
-    @SerialName("roles") val roles: List<TeamRoleResponse>
+    @SerialName("roles") val roles: List<TeamRoleApi>
 )

@@ -34,5 +34,5 @@ val networkModule = module {
         get<HttpClientFactory>().create()
     }
 
-    single { AnilibriaClient(client = get()) }
+    single { AnilibriaClient(client = get(), authTokenManager = get()) }
 }

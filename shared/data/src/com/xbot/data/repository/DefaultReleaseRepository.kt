@@ -61,7 +61,7 @@ internal class DefaultReleaseRepository(
                 )
                 CommonPagingSource.PagedResponse(
                     items = result.data.map(ReleaseApi::toDomain),
-                    total = result.meta.total
+                    total = result.meta.pagination.total
                 )
             }
         )
