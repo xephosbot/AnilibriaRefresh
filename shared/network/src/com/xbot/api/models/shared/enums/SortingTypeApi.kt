@@ -1,17 +1,11 @@
 package com.xbot.api.models.shared.enums
 
 import com.xbot.api.models.EnumSerializer
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KeepGeneratedSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-internal object SortingTypeEnumSerializer
-    : EnumSerializer<SortingTypeApi>(SortingTypeApi.entries.toTypedArray(), SortingTypeApi::value)
-
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable(with = SortingTypeEnumSerializer::class)
-@KeepGeneratedSerializer
+@Serializable(with = SortingTypeApi.Companion.Serializer::class)
 enum class SortingTypeApi(val value: String) {
     @SerialName("FRESH_AT_DESC") FRESH_AT_DESC("FRESH_AT_DESC"),
     @SerialName("FRESH_AT_ASC") FRESH_AT_ASC("FRESH_AT_ASC"),
@@ -21,4 +15,8 @@ enum class SortingTypeApi(val value: String) {
     @SerialName("YEAR_ASC") YEAR_ASC("YEAR_ASC");
 
     override fun toString(): String = value
+
+    companion object {
+        object Serializer : KSerializer<SortingTypeApi?> by EnumSerializer.create<SortingTypeApi>()
+    }
 }

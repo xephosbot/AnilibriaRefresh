@@ -1,13 +1,11 @@
 package com.xbot.api.models.shared.enums
 
 import com.xbot.api.models.EnumSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-internal object MemberRoleEnumSerializer
-    : EnumSerializer<MemberRoleApi>(MemberRoleApi.entries.toTypedArray(), MemberRoleApi::value)
-
-@Serializable(with = MemberRoleEnumSerializer::class)
+@Serializable(with = MemberRoleApi.Companion.Serializer::class)
 enum class MemberRoleApi(val value: String) {
     @SerialName("poster") POSTER("poster"),
     @SerialName("timing") TIMING("timing"),
@@ -17,4 +15,8 @@ enum class MemberRoleApi(val value: String) {
     @SerialName("translating") TRANSLATING("translating");
 
     override fun toString(): String = value
+
+    companion object {
+        object Serializer : KSerializer<MemberRoleApi?> by EnumSerializer.create<MemberRoleApi>()
+    }
 }

@@ -1,18 +1,12 @@
 package com.xbot.api.models.shared.enums
 
 import com.xbot.api.models.EnumSerializer
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KeepGeneratedSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-internal object QualityEnumSerializer
-    : EnumSerializer<QualityNetwork>(QualityNetwork.entries.toTypedArray(), QualityNetwork::value)
-
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable(with = QualityEnumSerializer::class)
-@KeepGeneratedSerializer
-enum class QualityNetwork(val value: String) {
+@Serializable(with = QualityApi.Companion.Serializer::class)
+enum class QualityApi(val value: String) {
     @SerialName("360p") RES360p("360p"),
     @SerialName("480p") RES480p("480p"),
     @SerialName("576p") RES576p("576p"),
@@ -23,4 +17,8 @@ enum class QualityNetwork(val value: String) {
     @SerialName("8k") RES8k("8k");
 
     override fun toString(): String = value
+
+    companion object {
+        object Serializer : KSerializer<QualityApi?> by EnumSerializer.create<QualityApi>()
+    }
 }

@@ -1,13 +1,11 @@
 package com.xbot.api.models.shared.enums
 
 import com.xbot.api.models.EnumSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-internal object PublishDayEnumSerializer
-    : EnumSerializer<PublishDayApi>(PublishDayApi.entries.toTypedArray(), { it.value.toString() })
-
-@Serializable(with = PublishDayEnumSerializer::class)
+@Serializable(with = PublishDayApi.Companion.Serializer::class)
 enum class PublishDayApi(val value: Int) {
     @SerialName("1") MONDAY(1),
     @SerialName("2") TUESDAY(2),
@@ -18,4 +16,8 @@ enum class PublishDayApi(val value: Int) {
     @SerialName("7") SUNDAY(7);
 
     override fun toString(): String = value.toString()
+
+    companion object {
+        object Serializer : KSerializer<PublishDayApi?> by EnumSerializer.create<PublishDayApi>()
+    }
 }

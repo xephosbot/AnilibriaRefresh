@@ -6,7 +6,7 @@ import com.xbot.api.models.account.LoginRequest
 import com.xbot.api.models.account.LoginResponse
 import com.xbot.api.models.account.LoginSocialNetworkResponse
 import com.xbot.api.models.account.ResetPasswordRequest
-import com.xbot.api.models.shared.enums.SocialNetwork
+import com.xbot.api.models.shared.enums.SocialNetworkApi
 import com.xbot.api.models.account.AddToCollectionRequest
 import com.xbot.api.models.account.ReleaseWithCollectionType
 import com.xbot.api.models.account.RemoveFromCollectionRequest
@@ -37,7 +37,7 @@ suspend fun AnilibriaClient.logout() = request<LoginResponse> {
     post("accounts/users/auth/logout")
 }
 
-suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetwork) = request<LoginSocialNetworkResponse> {
+suspend fun AnilibriaClient.loginWithSocialNetwork(provider: SocialNetworkApi) = request<LoginSocialNetworkResponse> {
     get("accounts/users/auth/social/${provider}/login")
 }
 

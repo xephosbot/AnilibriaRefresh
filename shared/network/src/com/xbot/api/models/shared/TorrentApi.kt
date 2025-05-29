@@ -2,7 +2,7 @@ package com.xbot.api.models.shared
 
 import com.xbot.api.models.shared.enums.CodecNetwork
 import com.xbot.api.models.shared.enums.ColorDepthNetwork
-import com.xbot.api.models.shared.enums.QualityNetwork
+import com.xbot.api.models.shared.enums.QualityApi
 import com.xbot.api.models.shared.enums.TorrentTypeApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,7 +17,7 @@ data class TorrentApi(
     @SerialName("magnet") val magnet: String,
     @SerialName("filename") val fileName: String,
     @SerialName("seeders") val seeders: Int,
-    @SerialName("quality") val quality: QualityNetwork?,
+    @SerialName("quality") val quality: QualityApi?,
     @SerialName("codec") val codec: CodecNetwork?,
     @SerialName("color") val color: ColorDepthNetwork?,
     @SerialName("bitrate") val bitrate: Int?,
