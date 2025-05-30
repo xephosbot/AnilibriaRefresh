@@ -14,7 +14,9 @@ import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SocialType
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.network.models.enums.SocialTypeApi
 import kotlinx.datetime.DayOfWeek
 
 internal fun AgeRatingApi.toDomain(): AgeRating = when (this) {
@@ -124,4 +126,11 @@ internal fun MemberRoleApi.toDomain(): MemberRole = when (this) {
     MemberRoleApi.EDITING -> MemberRole.EDITING
     MemberRoleApi.DECORATING -> MemberRole.DECORATING
     MemberRoleApi.TRANSLATING -> MemberRole.TRANSLATING
+}
+
+internal fun SocialType.toApi(): SocialTypeApi = when (this) {
+    SocialType.VK -> SocialTypeApi.VK
+    SocialType.GOOGLE -> SocialTypeApi.GOOGLE
+    SocialType.PATREON -> SocialTypeApi.PATREON
+    SocialType.DISCORD -> SocialTypeApi.DISCORD
 }

@@ -7,7 +7,7 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Release
-import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 
 class ScheduleViewModel(
-    private val releaseRepository: ReleaseRepository,
+    private val scheduleRepository: ScheduleRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val _state: MutableStateFlow<ScheduleScreenState> =
@@ -36,7 +36,7 @@ class ScheduleViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.update { ScheduleScreenState.Loading }
-            releaseRepository.getScheduleWeek().fold(
+            scheduleRepository.getScheduleWeek().fold(
                 onSuccess = { schedule ->
                     _state.update { ScheduleScreenState.Success(schedule) }
                 },

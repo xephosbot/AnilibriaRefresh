@@ -8,9 +8,9 @@ import com.xbot.network.models.entities.anime.ReleaseMemberApi
 import com.xbot.network.models.entities.anime.ReleaseApi
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Genre
-import com.xbot.domain.models.Member
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Poster
-import com.xbot.domain.models.Profile
+import com.xbot.domain.models.User
 import com.xbot.domain.models.Release
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -85,7 +85,7 @@ internal fun EpisodeApi.toDomain() = Episode(
     ).toLocalDateTime(TimeZone.currentSystemDefault())
 )
 
-internal fun ReleaseMemberApi.toDomain() = Member(
+internal fun ReleaseMemberApi.toDomain() = ReleaseMember(
     id = id,
     name = nickname.orEmpty(),
     role = role?.toDomain(),
@@ -102,7 +102,7 @@ internal fun ReleaseMemberApi.toDomain() = Member(
     }
 )
 
-internal fun ProfileApi.toDomain() = Profile(
+internal fun ProfileApi.toDomain() = User(
     id = id,
     login = login,
     email = email,

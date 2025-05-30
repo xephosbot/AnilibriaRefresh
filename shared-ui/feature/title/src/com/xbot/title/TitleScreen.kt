@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonGroup
@@ -386,16 +384,16 @@ private fun TitleDetails(
                 }
             }
 
-            if (details.members.isNotEmpty()) {
+            if (details.releaseMembers.isNotEmpty()) {
                 header(
                     title = { Text(text = stringResource(Res.string.label_members)) }
                 )
                 horizontalItems(
-                    items = details.members,
+                    items = details.releaseMembers,
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) { member ->
                     MemberItem(
-                        member = member,
+                        releaseMember = member,
                         onClick = { /*TODO*/ }
                     )
                 }

@@ -9,7 +9,7 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.ReleaseDetail
-import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.title.navigation.TitleRoute
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TitleViewModel(
-    private val repository: ReleaseRepository,
+    private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {

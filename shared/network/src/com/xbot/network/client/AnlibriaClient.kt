@@ -4,6 +4,7 @@ import com.xbot.network.client.auth.AuthTokenManager
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Client for interacting with the Anilibria API.
@@ -38,8 +39,8 @@ class AnilibriaClient(
     /**
      * Get current authentication status
      */
-    suspend fun isAuthenticated(): Boolean {
-        return authTokenManager.isAuthenticated()
+    fun observeAuthState(): Flow<Boolean> {
+        return authTokenManager.observeAuthState()
     }
 
     /**

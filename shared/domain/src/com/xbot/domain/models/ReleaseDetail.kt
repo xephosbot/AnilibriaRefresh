@@ -12,7 +12,7 @@ data class ReleaseDetail(
     val notification: String?,
     val availabilityStatus: AvailabilityStatus,
     val genres: List<Genre>,
-    val members: List<Member>,
+    val releaseMembers: List<ReleaseMember>,
     val episodes: List<Episode>,
     val relatedReleases: List<Release>
 )

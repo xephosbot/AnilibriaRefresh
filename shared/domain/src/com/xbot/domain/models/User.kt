@@ -2,7 +2,7 @@ package com.xbot.domain.models
 
 import kotlinx.datetime.LocalDateTime
 
-data class Profile(
+data class User(
     val id: Int,
     val login: String,
     val email: String,

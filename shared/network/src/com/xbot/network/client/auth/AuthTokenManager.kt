@@ -51,7 +51,6 @@ class AuthTokenManager(
     /**
      * Check if user is authenticated
      */
-    suspend fun isAuthenticated(): Boolean {
-        return getToken() != null
-    }
+    fun observeAuthState(): Flow<Boolean> = authToken
+        .map { it != null }
 }

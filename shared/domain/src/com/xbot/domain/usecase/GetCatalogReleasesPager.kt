@@ -11,22 +11,16 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.repository.CatalogRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetReleasesPager(
-    private val releaseRepository: ReleaseRepository
+class GetCatalogReleasesPager(
+    private val catalogRepository: CatalogRepository
 ) {
     operator fun invoke(
         search: String? = null,
-        genres: List<Genre>? = null,
-        types: List<ReleaseType>? = null,
-        seasons: List<Season>? = null,
-        yearsRange: ClosedRange<Int>? = null,
-        sorting: SortingType? = null,
-        ageRatings: List<AgeRating>? = null,
-        publishStatuses: List<PublishStatus>? = null,
-        productionStatuses: List<ProductionStatus>? = null,
+        filters: CatalogFilters? = null
     ): Flow<PagingData<Release>> {
         return Pager(
             config = PagingConfig(
@@ -37,16 +31,9 @@ class GetReleasesPager(
                 jumpThreshold = PAGE_SIZE * 3,
             ),
             pagingSourceFactory = {
-                releaseRepository.getReleasePagingSource(
+                catalogRepository.getCatalogReleases(
                     search = search,
-                    genres = genres,
-                    types = types,
-                    seasons = seasons,
-                    yearsRange = yearsRange,
-                    sorting = sorting,
-                    ageRatings = ageRatings,
-                    publishStatuses = publishStatuses,
-                    productionStatuses = productionStatuses,
+                    filters = filters
                 )
             }
         ).flow

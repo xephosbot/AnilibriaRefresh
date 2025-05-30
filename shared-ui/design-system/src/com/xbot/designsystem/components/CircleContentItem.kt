@@ -24,7 +24,7 @@ import com.xbot.designsystem.theme.ExpressiveTextStyle
 import com.xbot.designsystem.theme.MorphingExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveTextStyle
 import com.xbot.domain.models.Genre
-import com.xbot.domain.models.Member
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Poster
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
@@ -62,23 +62,23 @@ fun GenreItem(
 
 @Composable
 fun MemberItem(
-    member: Member,
+    releaseMember: ReleaseMember,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     CircleContentItem(
         modifier = modifier,
         onClick = onClick,
-        poster = member.avatar,
+        poster = releaseMember.avatar,
         placeholder = painterResource(Res.drawable.placeholder_profile),
         title = {
             Text(
-                text = member.name,
+                text = releaseMember.name,
                 textAlign = TextAlign.Center
             )
         },
         subtitle = {
-            member.role?.let { role ->
+            releaseMember.role?.let { role ->
                 Text(
                     text = stringResource(role.stringRes),
                     textAlign = TextAlign.Center

@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import kotlin.math.max
 
 internal class CommonPagingSource<T : Any>(
-    private val loadPage: suspend (page: Int, limit: Int) -> PagedResponse<T>,
+    private val loadPage: suspend (page: Int, limit: Int) -> PaginatedResponse<T>,
 ) : PagingSource<Int, T>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val pageIndex = params.key ?: FIRST_PAGE_INDEX
@@ -41,7 +41,7 @@ internal class CommonPagingSource<T : Any>(
 
     override val jumpingSupported: Boolean = true
 
-    data class PagedResponse<T>(
+    data class PaginatedResponse<T>(
         val items: List<T>,
         val total: Int,
     )

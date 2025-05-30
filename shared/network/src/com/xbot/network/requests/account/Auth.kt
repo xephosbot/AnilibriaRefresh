@@ -16,29 +16,15 @@ import io.ktor.http.contentType
 suspend fun AnilibriaClient.login(
     login: String,
     password: String
-): LoginResponse {
-    val response: LoginResponse = request {
-        post("accounts/users/auth/login") {
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("login" to login, "password" to password))
-        }
+): LoginResponse = request {
+    post("accounts/users/auth/login") {
+        contentType(ContentType.Application.Json)
+        setBody(mapOf("login" to login, "password" to password))
     }
-
-    // Save token after successful login
-    setAuthToken(response.token)
-
-    return response
 }
 
-suspend fun AnilibriaClient.logout(): LogoutResponse {
-    val response: LogoutResponse = request {
-        post("accounts/users/auth/logout")
-    }
-
-    // Clear token after logout
-    clearAuth()
-
-    return response
+suspend fun AnilibriaClient.logout(): LogoutResponse = request {
+    post("accounts/users/auth/logout")
 }
 
 suspend fun AnilibriaClient.socialLogin(
@@ -71,10 +57,12 @@ suspend fun AnilibriaClient.resetPassword(
 ): Unit = request {
     post("accounts/users/auth/password/reset") {
         contentType(ContentType.Application.Json)
-        setBody(mapOf(
-            "token" to token,
-            "password" to password,
-            "password_confirmation" to passwordConfirmation
-        ))
+        setBody(
+            mapOf(
+                "token" to token,
+                "password" to password,
+                "password_confirmation" to passwordConfirmation
+            )
+        )
     }
 }

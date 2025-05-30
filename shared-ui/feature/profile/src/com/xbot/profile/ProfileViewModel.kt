@@ -4,23 +4,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
-import com.xbot.domain.models.Profile
-import com.xbot.domain.repository.UserRepository
+import com.xbot.domain.models.User
+import com.xbot.domain.repository.AuthRepository
+import com.xbot.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val repository: UserRepository,
+    private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    private val _state: MutableStateFlow<ProfileScreenState> =
-        MutableStateFlow(ProfileScreenState.Loading)
-    val state: StateFlow<ProfileScreenState> = _state
-        .onStart { fetchUserProfile() }
+    val state: StateFlow<ProfileScreenState> = authRepository.observeAuthState()
+        .map { isAuthenticated ->
+            if (isAuthenticated) {
+                profileRepository.getProfile().fold(
+                    onSuccess = { profile ->
+                        return@map ProfileScreenState.LoggedIn(profile)
+                    },
+                    onFailure = {
+                        logout()
+                        showErrorMessage(it.message.orEmpty())
+                        return@map ProfileScreenState.LoggedOut
+                    }
+                )
+            } else {
+                ProfileScreenState.LoggedOut
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = _state.value
+            initialValue = ProfileScreenState.Loading
         )
 
     fun onAction(action: ProfileScreenAction) {
@@ -30,26 +45,10 @@ class ProfileViewModel(
         }
     }
 
-    private fun fetchUserProfile() {
-        viewModelScope.launch {
-            repository.getUserProfile().fold(
-                onSuccess = { profile ->
-                    _state.update { ProfileScreenState.LoggedIn(profile) }
-                },
-                onFailure = {
-                    logout()
-                    showErrorMessage(it.message.orEmpty())
-                }
-            )
-        }
-    }
-
     private fun login(login: String, password: String) {
         viewModelScope.launch {
-            repository.login(login, password).fold(
-                onSuccess = {
-                    fetchUserProfile()
-                },
+            authRepository.login(login, password).fold(
+                onSuccess = { /*Nothing to do*/ },
                 onFailure = {
                     showErrorMessage(it.message.orEmpty())
                 }
@@ -59,15 +58,12 @@ class ProfileViewModel(
 
     private fun logout() {
         viewModelScope.launch {
-            repository.logout().fold(
-                onSuccess = {
-
-                },
+            authRepository.logout().fold(
+                onSuccess = { /*Nothing to do*/ },
                 onFailure = {
                     showErrorMessage(it.message.orEmpty())
                 }
             )
-            _state.update { ProfileScreenState.LoggedOut }
         }
     }
 
@@ -82,7 +78,7 @@ sealed interface ProfileScreenState {
     data object Loading : ProfileScreenState
     data object LoggedOut : ProfileScreenState
     data class LoggedIn(
-        val userProfile: Profile
+        val userProfile: User
     ) : ProfileScreenState
 }
 

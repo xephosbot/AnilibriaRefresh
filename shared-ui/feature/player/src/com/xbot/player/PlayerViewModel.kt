@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.xbot.domain.models.Episode
-import com.xbot.domain.repository.ReleaseRepository
+import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.player.navigation.PlayerRoute
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val repository: ReleaseRepository,
+    private val repository: ReleasesRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val releaseId = savedStateHandle.toRoute<PlayerRoute>().releaseId

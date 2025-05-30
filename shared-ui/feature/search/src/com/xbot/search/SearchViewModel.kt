@@ -11,7 +11,7 @@ import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetCatalogFilters
-import com.xbot.domain.usecase.GetReleasesPager
+import com.xbot.domain.usecase.GetCatalogReleasesPager
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -19,6 +19,7 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModel(
-    getReleasesPager: GetReleasesPager,
+    getCatalogReleasesPager: GetCatalogReleasesPager,
     private val getCatalogFilters: GetCatalogFilters,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -64,16 +65,18 @@ class SearchViewModel(
         searchQuery to filters
     }
         .flatMapLatest { (searchQuery, filters) ->
-            getReleasesPager(
+            getCatalogReleasesPager(
                 search = searchQuery,
-                genres = filters.selectedGenres.toList(),
-                types = filters.selectedReleaseTypes.toList(),
-                seasons = filters.selectedSeasons.toList(),
-                yearsRange = filters.selectedYears,
-                sorting = filters.selectedSortingType,
-                ageRatings = filters.selectedAgeRatings.toList(),
-                publishStatuses = filters.selectedPublishStatuses.toList(),
-                productionStatuses = filters.selectedProductionStatuses.toList(),
+                filters = CatalogFilters(
+                    genres = filters.selectedGenres.toList(),
+                    types = filters.selectedReleaseTypes.toList(),
+                    seasons = filters.selectedSeasons.toList(),
+                    years = filters.selectedYears,
+                    sortingTypes = listOf(filters.selectedSortingType),
+                    ageRatings = filters.selectedAgeRatings.toList(),
+                    publishStatuses = filters.selectedPublishStatuses.toList(),
+                    productionStatuses = filters.selectedProductionStatuses.toList(),
+                ),
             )
         }
         .cachedIn(viewModelScope)
@@ -102,7 +105,7 @@ class SearchViewModel(
                         it.copy(
                             loading = false,
                             genres = catalogFilters.genres,
-                            releaseTypes = catalogFilters.releaseTypes,
+                            releaseTypes = catalogFilters.types,
                             publishStatuses = catalogFilters.publishStatuses,
                             productionStatuses = catalogFilters.productionStatuses,
                             sortingTypes = catalogFilters.sortingTypes,

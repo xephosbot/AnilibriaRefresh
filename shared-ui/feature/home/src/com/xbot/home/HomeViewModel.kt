@@ -11,7 +11,7 @@ import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.usecase.GetReleasesFeed
-import com.xbot.domain.usecase.GetReleasesPager
+import com.xbot.domain.usecase.GetCatalogReleasesPager
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.Flow
@@ -24,11 +24,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    getReleasesPager: GetReleasesPager,
+    getCatalogReleasesPager: GetCatalogReleasesPager,
     private val getReleasesFeed: GetReleasesFeed,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    val releases: Flow<PagingData<Release>> = getReleasesPager()
+    val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
         .cachedIn(viewModelScope)
 
     private val _state: MutableStateFlow<HomeScreenState> =
