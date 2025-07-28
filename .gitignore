@@ -1,0 +1,32 @@
+# Ignore build directories everywhere
+**/build/**
+
+# Ignore all .idea directories except some files and directories
+/.idea/*
+!.idea/icon.svg
+!.idea/copyright/
+
+# Ignore .kotlin directory
+/.kotlin
+
+# Ignore .iml files
+*.iml
+
+# Ignore Gradle related directories and files
+/.gradle
+
+# Ignore captures directory
+/captures
+
+# Ignore external Native Build files and C++ related files
+.externalNativeBuild/
+.cxx/
+
+# Ignore local properties
+local.properties
+android-app/keystore.properties
+
+*.jks
+
+# Ignore macOS-specific files
+.DS_Store

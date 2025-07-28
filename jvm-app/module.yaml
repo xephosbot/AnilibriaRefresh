@@ -1,0 +1,17 @@
+product: jvm/app
+
+apply:
+  - ../compose.module-template.yaml
+
+dependencies:
+  - ../shared-ui
+  - $compose.desktop.currentOs
+  - $libs.kotlinx.coroutines.swing
+  - $libs.koin.compose
+
+settings:
+  jvm:
+    mainClass: MainKt
+  compose:
+    experimental:
+      hotReload: enabled

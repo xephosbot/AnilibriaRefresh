@@ -1,0 +1,94 @@
+<resources>
+    <!-- Главные вкладки -->
+    <string name="tab_home">Home</string>
+    <string name="tab_favorite">Favorite</string>
+    <string name="tab_profile">Profile</string>
+
+    <!-- Подзаголовки -->
+    <string name="label_schedule">Schedule</string>
+    <string name="label_updates">Updates</string>
+    <string name="label_genres">Genres</string>
+    <string name="label_description">Description</string>
+    <string name="label_members">Working on the release</string>
+    <string name="label_related_releases">Related releases</string>
+    <string name="label_search_results">Search results</string>
+    <string name="label_age_ratings">Age rating</string>
+    <string name="label_release_types">Types</string>
+    <string name="label_production_statuses">Production statuses</string>
+    <string name="label_publish_statuses">Publish statuses</string>
+    <string name="label_sorting_types">Sorting</string>
+    <string name="label_seasons">Seasons</string>
+    <string name="label_years">Years range</string>
+
+    <!-- Кнопки -->
+    <string name="button_retry">Retry</string>
+    <string name="button_watch">Watch</string>
+    <string name="button_filters">Filters</string>
+    <string name="button_watch_continue">Continue watching</string>
+    <string name="button_add_to_favorites">Add to watchlist</string>
+    <string name="button_watched_it">Watched it?</string>
+    <string name="button_share">Share</string>
+    <string name="button_telegram">Watch in Telegram</string>
+
+    <!-- Предупреждения -->
+    <string name="alert_blocked_copyright">Release blocked by request of copyright holders</string>
+    <string name="alert_blocked_geo">Release blocked in your country</string>
+
+    <!-- Компоненты -->
+    <string name="search_bar_placeholder">Search by name…</string>
+    <string name="episode_title">Episode</string>
+    <string name="minutes_abbreviation">%1$s min.</string>
+    <string name="episode_abbreviation">%1$s ep.</string>
+    <string name="releases_count">%1$d releases</string>
+
+    <!-- Сообщения ошибок -->
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_name_not_found">Name not found</string>
+
+    <!-- Типы релизов -->
+    <string name="release_type_tv">TV</string>
+    <string name="release_type_ona">ONA</string>
+    <string name="release_type_web">WEB</string>
+    <string name="release_type_ova">OVA</string>
+    <string name="release_type_oad">OAD</string>
+    <string name="release_type_movie">Movie</string>
+    <string name="release_type_dorama">Dorama</string>
+    <string name="release_type_special">Special</string>
+
+    <!-- Возрастные рейтинги -->
+    <string name="age_rating_0_plus">0+</string>
+    <string name="age_rating_6_plus">6+</string>
+    <string name="age_rating_12_plus">12+</string>
+    <string name="age_rating_16_plus">16+</string>
+    <string name="age_rating_18_plus">18+</string>
+
+    <!-- Статус озвучки -->
+    <string name="production_status_is_in_production">In production</string>
+    <string name="production_status_is_not_in_production">Not in production</string>
+
+    <!-- Статус выхода -->
+    <string name="publish_status_is_ongoing">Ongoing</string>
+    <string name="publish_status_is_not_ongoing">Not ongoing</string>
+
+    <!-- Сезоны -->
+    <string name="season_winter">Winter</string>
+    <string name="season_autumn">Autumn</string>
+    <string name="season_summer">Summer</string>
+    <string name="season_spring">Spring</string>
+
+    <!-- Типы сортировок -->
+    <string name="sorting_types_fresh_at_desc">Updated recently</string>
+    <string name="sorting_types_fresh_at_asc">Updated a long time ago</string>
+    <string name="sorting_types_rating_desc">Top rated</string>
+    <string name="sorting_types_rating_asc">Low rated</string>
+    <string name="sorting_types_year_desc">Newest</string>
+    <string name="sorting_types_year_asc">Oldest</string>
+
+    <!-- Роли -->
+    <string name="member_role_poster">Poster design</string>
+    <string name="member_role_timing">Timing</string>
+    <string name="member_role_voicing">Voicing</string>
+    <string name="member_role_editing">Editing</string>
+    <string name="member_role_decorating">Decorating</string>
+    <string name="member_role_translating">Translating and adapting</string>
+</resources>

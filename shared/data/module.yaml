@@ -1,0 +1,16 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ../network
+  - ../domain
+  - $libs.koin.core
+  - $libs.androidx.paging.core
+  - $libs.kotlinx.datetime
+  - $libs.androidx.dataStore.core
+  - $libs.androidx.dataStore.preferences
+
+dependencies@android:
+  - $libs.koin.android
+  - androidx.credentials:credentials:1.6.0-alpha04

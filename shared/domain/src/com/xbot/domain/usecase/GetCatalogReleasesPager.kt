@@ -1,0 +1,45 @@
+package com.xbot.domain.usecase
+
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.xbot.domain.models.Genre
+import com.xbot.domain.models.Release
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingType
+import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.repository.CatalogRepository
+import kotlinx.coroutines.flow.Flow
+
+class GetCatalogReleasesPager(
+    private val catalogRepository: CatalogRepository
+) {
+    operator fun invoke(
+        search: String? = null,
+        filters: CatalogFilters? = null
+    ): Flow<PagingData<Release>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PAGE_SIZE,
+                enablePlaceholders = true,
+                initialLoadSize = PAGE_SIZE,
+                jumpThreshold = PAGE_SIZE * 3,
+            ),
+            pagingSourceFactory = {
+                catalogRepository.getCatalogReleases(
+                    search = search,
+                    filters = filters
+                )
+            }
+        ).flow
+    }
+
+    companion object {
+        const val PAGE_SIZE = 20
+    }
+}

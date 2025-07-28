@@ -1,0 +1,8 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+dependencies:
+  - ./network: exported
+  - ./data: exported
+  - ./domain: exported

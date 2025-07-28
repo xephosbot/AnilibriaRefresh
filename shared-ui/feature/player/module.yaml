@@ -1,0 +1,32 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+apply:
+  - ../../../compose.module-template.yaml
+
+dependencies:
+  - ../../../shared/domain
+  - ../../design-system
+  - $compose.foundation
+  - $compose.components.resources
+  - $libs.lifecycle.viewmodel.compose
+  - $libs.lifecycle.runtime.compose
+  - $libs.navigation.compose
+  - $libs.kotlinx.datetime
+  - $libs.kotlinx.atomicfu
+  - $libs.koin.compose
+  - $libs.koin.compose.viewModel
+
+dependencies@android:
+  - $libs.androidx.media3.common.ktx
+  - $libs.androidx.media3.exoplayer
+  - $libs.androidx.media3.exoplayer.hls
+
+dependencies@jvm:
+  - $libs.vlcj
+  - $libs.vlcj.natives
+
+settings:
+  kotlin:
+    serialization: json
