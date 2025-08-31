@@ -1,9 +1,0 @@
-product:
-  type: lib
-  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
-
-dependencies:
-  - $libs.koin.core
-  - $libs.androidx.paging.core
-  - $libs.kotlinx.coroutines.core
-  - $libs.kotlinx.datetime

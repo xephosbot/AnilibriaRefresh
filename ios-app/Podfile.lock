@@ -1,0 +1,16 @@
+PODS:
+  - SharedUI (1.0)
+
+DEPENDENCIES:
+  - SharedUI (from `../shared-ui`)
+
+EXTERNAL SOURCES:
+  SharedUI:
+    :path: "../shared-ui"
+
+SPEC CHECKSUMS:
+  SharedUI: b7a69dd9c3de71d02bbbea53dbb23a37660c9390
+
+PODFILE CHECKSUM: 02efe829095731ad4f51a66d8d6fb441bc0324a0
+
+COCOAPODS: 1.16.2

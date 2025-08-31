@@ -3,16 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		11EE8E8359E76DA8FDCFF539 /* Pods-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.debug.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.debug.xcconfig"; sourceTree = "<group>"; };
+		14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.release.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.release.xcconfig"; sourceTree = "<group>"; };
 		279A48D438C7058F3D04C50C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = Info.plist; path = src/Info.plist; sourceTree = "<group>"; };
 		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		279A47B008F3BE03254DB17B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "app" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -22,7 +29,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		279A4173E53941889080E058 /* src */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (279A47B008F3BE03254DB17B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = src; sourceTree = SOURCE_ROOT; };
+		279A4173E53941889080E058 /* src */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "app" target */,
+			);
+			path = src;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,7 +65,26 @@
 				279A476559D7F8A9A59270EB /* Products */,
 				279A48D438C7058F3D04C50C /* Info.plist */,
 				279A4173E53941889080E058 /* src */,
+				791897AF17EE8F87746B839E /* Pods */,
+				A10CF9F4FF4C10049E2416D9 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		791897AF17EE8F87746B839E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				11EE8E8359E76DA8FDCFF539 /* Pods-app.debug.xcconfig */,
+				14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		A10CF9F4FF4C10049E2416D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -60,10 +94,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "app" */;
 			buildPhases = (
-				279A400EF61F75F4FE949FD5 /* Build Kotlin with Amper */,
+				B14CA80658D710079D12222D /* [CP] Check Pods Manifest.lock */,
 				279A43B18AA0A099487C206B /* Sources */,
 				279A4654FFF9A512EBE4ED79 /* Frameworks */,
 				279A4C70E55B02F4D1E9206D /* Resources */,
+				8C9D52A9700FF7E11B0A30B0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -83,16 +118,18 @@
 		279A4D3C956DE91CE7B94022 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1640;
 			};
 			buildConfigurationList = 279A410007A90CD9C2786A5E /* Build configuration list for PBXProject "module" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 279A4C149BE22C4B16DC69BE;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 279A476559D7F8A9A59270EB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -113,20 +150,44 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		279A400EF61F75F4FE949FD5 /* Build Kotlin with Amper */ = {
+		8C9D52A9700FF7E11B0A30B0 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "Build Kotlin with Amper";
-			outputPaths = (
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# !AMPER KMP INTEGRATION STEP!\n# This script is managed by Amper, do not edit manually!\n\"${AMPER_WRAPPER_PATH}\" tool xcode-integration\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B14CA80658D710079D12222D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-app-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -143,14 +204,16 @@
 /* Begin XCBuildConfiguration section */
 		279A404797B8695B3B2EA96E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 11EE8E8359E76DA8FDCFF539 /* Pods-app.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				AMPER_WRAPPER_PATH = ../amper;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
+				ENABLE_USER_SELECTED_FILES = "$(inherited)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(TARGET_BUILD_DIR)/$(FRAMEWORKS_FOLDER_PATH)",
@@ -163,7 +226,7 @@
 					"@loader_path/Frameworks",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
 				PRODUCT_MODULE_NAME = app;
 				PRODUCT_NAME = "ios-app";
 				SDKROOT = iphoneos;
@@ -176,24 +239,91 @@
 		279A422A6669A40E0CFC0393 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
+				ENABLE_USER_SELECTED_FILES = "$(inherited)";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		279A441841C071427DED8B47 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
+				ENABLE_USER_SELECTED_FILES = "$(inherited)";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
 		};
 		279A46EE8014C2FB56B849CB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				AMPER_WRAPPER_PATH = ../amper;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
+				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
+				ENABLE_USER_SELECTED_FILES = "$(inherited)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(TARGET_BUILD_DIR)/$(FRAMEWORKS_FOLDER_PATH)",
@@ -204,7 +334,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
 				PRODUCT_MODULE_NAME = app;
 				PRODUCT_NAME = "ios-app";
 				SDKROOT = iphoneos;
