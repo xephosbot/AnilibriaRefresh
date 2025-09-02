@@ -41,6 +41,7 @@ internal fun ThreePaneScaffoldPaneScope.ProfileDetailPane(
     modifier: Modifier = Modifier,
     selectedItem: PreferenceItem?,
     isTwoPaneLayout: Boolean,
+    onReleaseClick: (Int) -> Unit,
     onBack: () -> Unit,
 ) {
     AnimatedPane(modifier = modifier) {
@@ -86,6 +87,10 @@ internal fun ThreePaneScaffoldPaneScope.ProfileDetailPane(
 
                     PreferenceItem.HISTORY -> {
                         //Box(modifier = Modifier.fillMaxSize().background(Color.Green)) {}
+                        HistoryScreen(
+                            contentPadding = innerPadding,
+                            onReleaseClick = onReleaseClick
+                        )
                     }
 
                     PreferenceItem.TEAM -> {

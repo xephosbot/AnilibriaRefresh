@@ -25,13 +25,15 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = koinViewModel(),
+    onReleaseClick: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ProfileScreenContent(
         modifier = modifier,
         state = state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        onReleaseClick = onReleaseClick
     )
 }
 
@@ -40,7 +42,8 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     modifier: Modifier = Modifier,
     state: ProfileScreenState,
-    onAction: (ProfileScreenAction) -> Unit
+    onAction: (ProfileScreenAction) -> Unit,
+    onReleaseClick: (Int) -> Unit,
 ) {
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<PreferenceItem>()
     val scope = rememberCoroutineScope()
@@ -81,6 +84,7 @@ private fun ProfileScreenContent(
                 modifier = Modifier,
                 selectedItem = selectedItem,
                 isTwoPaneLayout = isTwoPaneLayout,
+                onReleaseClick = onReleaseClick,
                 onBack = {
                     scope.launch {
                         if (scaffoldNavigator.canNavigateBack(backBehavior)) {
