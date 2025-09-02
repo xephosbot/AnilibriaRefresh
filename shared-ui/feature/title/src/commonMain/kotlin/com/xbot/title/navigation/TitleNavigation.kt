@@ -13,9 +13,6 @@ data class TitleRoute(val aliasOrId: String) : Destination {
     override val isTopLevel: Boolean = false
 }
 
-fun NavHostController.navigateToTitle(id: Int) = navigate(TitleRoute(id.toString()))
-fun NavHostController.navigateToTitle(alias: String) = navigate(TitleRoute(alias))
-
 fun NavGraphBuilder.titleScreen(
     onBackClick: NavBackStackEntry.() -> Unit,
     onPlayClick: NavBackStackEntry.(releaseId: Int, episodeOrdinal: Int) -> Unit,

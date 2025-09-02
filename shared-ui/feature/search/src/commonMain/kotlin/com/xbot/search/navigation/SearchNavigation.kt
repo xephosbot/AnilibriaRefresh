@@ -13,8 +13,6 @@ data object SearchRoute : Destination {
     override val isTopLevel: Boolean = false
 }
 
-fun NavHostController.navigateToSearch() = navigate(SearchRoute)
-
 fun NavGraphBuilder.searchScreen(
     onBackClick: NavBackStackEntry.() -> Unit,
     onReleaseClick: NavBackStackEntry.(Int) -> Unit

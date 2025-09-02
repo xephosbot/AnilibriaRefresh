@@ -1,14 +1,10 @@
 package com.xbot.common.navigation
 
-import androidx.compose.runtime.Composable
-
-interface Navigator<T> {
-    @get:Composable
-    val backstack: List<T?>
-    @get:Composable
+interface Navigator<T : Any> {
+    val backstack: List<T>
     val currentDestination: T?
-    @get:Composable
     val currentTopLevelDestination: T?
-    fun navigate(destination: Any, singleTop: Boolean = false)
+    fun navigate(destination: Any)
+    fun navigateTopLevel(destination: Any)
     fun navigateBack()
 }
