@@ -13,7 +13,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.xbot.common.navigation.Navigator
-import com.xbot.sharedapp.navigation.TopLevelDestination
+import com.xbot.common.navigation.TopLevelDestination
+import com.xbot.favorite.navigation.FavoriteRoute
+import com.xbot.home.navigation.HomeRoute
+import com.xbot.profile.navigation.ProfileRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,7 +56,7 @@ internal class AnilibriaNavigator(
 
     override val currentTopLevelDestination: NavBackStackEntry?
         get() = backstack.findLast { entry ->
-            topLevelDestinations.map { it.route::class }.any { entry.destination.hasRoute(it) }
+            topLevelDestinations.map { it::class }.any { entry.destination.hasRoute(it) }
         }
 
     override fun navigate(destination: Any) {
@@ -76,6 +79,6 @@ internal class AnilibriaNavigator(
     }
 
     companion object {
-        val topLevelDestinations = TopLevelDestination.entries
+        val topLevelDestinations: List<TopLevelDestination> = listOf(HomeRoute, FavoriteRoute, ProfileRoute)
     }
 }

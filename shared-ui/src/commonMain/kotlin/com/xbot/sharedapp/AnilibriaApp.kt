@@ -74,7 +74,7 @@ internal fun AnilibriaApp(
         NavigationSuiteScaffold(
             navigationSuiteItems = {
                 AnilibriaNavigator.topLevelDestinations.forEach { destination ->
-                    val isSelected = currentTopLevelDestination?.destination.hasRoute(destination.route)
+                    val isSelected = currentTopLevelDestination?.destination.hasRoute(destination)
                     item(
                         selected = isSelected,
                         icon = {
@@ -87,7 +87,7 @@ internal fun AnilibriaApp(
                             )
                         },
                         onClick = {
-                            navigator.navigateTopLevel(destination.route)
+                            navigator.navigateTopLevel(destination)
                         },
                     )
                 }

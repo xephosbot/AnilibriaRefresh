@@ -1,5 +1,12 @@
 package com.xbot.common.navigation
 
-interface Destination {
-    val isTopLevel: Boolean
+import androidx.compose.ui.graphics.vector.ImageVector
+import org.jetbrains.compose.resources.StringResource
+
+interface Destination
+
+interface TopLevelDestination : Destination {
+    val textRes: StringResource
+    val selectedIcon: ImageVector
+    val unselectedIcon: ImageVector
 }

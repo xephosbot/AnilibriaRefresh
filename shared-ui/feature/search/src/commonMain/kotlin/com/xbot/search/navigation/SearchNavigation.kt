@@ -2,16 +2,13 @@ package com.xbot.search.navigation
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.xbot.common.navigation.Destination
 import com.xbot.search.SearchScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SearchRoute : Destination {
-    override val isTopLevel: Boolean = false
-}
+data object SearchRoute : Destination
 
 fun NavGraphBuilder.searchScreen(
     onBackClick: NavBackStackEntry.() -> Unit,

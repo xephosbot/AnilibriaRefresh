@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.xbot.common.navigation.Destination
 import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
@@ -22,7 +23,7 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navigator: AnilibriaNavigator,
-    startDestination: Any = HomeRoute,
+    startDestination: Destination = HomeRoute,
 ) {
     NavHost(
         modifier = modifier.fillMaxSize(),
