@@ -22,8 +22,8 @@ internal fun NavDestination?.hasRoute(route: Any) =
  * @return состояние, представляющее currentBackStack.
  */
 @Composable
-internal fun NavController.currentBackStackAsState(): State<List<NavBackStackEntry>?> {
-    return currentBackStack.collectAsState(null)
+internal fun NavController.currentBackStackAsState(): State<List<NavBackStackEntry?>> {
+    return currentBackStack.collectAsState(emptyList())
 }
 
 /**
