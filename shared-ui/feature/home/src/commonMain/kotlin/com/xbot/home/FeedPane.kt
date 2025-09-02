@@ -68,7 +68,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import app.cash.paging.compose.LazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.Feed
@@ -97,7 +97,6 @@ import com.xbot.resources.button_watch
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule
 import com.xbot.resources.label_updates
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
