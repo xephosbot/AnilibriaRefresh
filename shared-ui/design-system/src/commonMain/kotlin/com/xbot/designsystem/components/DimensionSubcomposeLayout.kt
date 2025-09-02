@@ -1,4 +1,4 @@
-package com.xbot.shared.ui.designsystem.components
+package com.xbot.designsystem.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

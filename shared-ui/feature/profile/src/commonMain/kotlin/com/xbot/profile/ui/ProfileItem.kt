@@ -28,7 +28,7 @@ import com.xbot.designsystem.components.SplitButtonLayout
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.domain.models.User
-import com.xbot.shared.ui.designsystem.components.DimensionSubcomposeLayout
+import com.xbot.designsystem.components.DimensionSubcomposeLayout
 
 @Composable
 internal fun ProfileItem(
