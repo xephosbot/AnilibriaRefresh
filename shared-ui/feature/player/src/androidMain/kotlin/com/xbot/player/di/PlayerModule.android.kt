@@ -5,6 +5,6 @@ import com.xbot.player.ui.VideoPlayer
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-actual val playerModule = module {
+internal actual val playerModule = module {
     single<VideoPlayer>(createdAtStart = true) { ExoPlayer(androidContext()) }
 }
