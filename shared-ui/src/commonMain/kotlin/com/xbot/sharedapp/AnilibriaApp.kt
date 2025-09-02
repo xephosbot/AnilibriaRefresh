@@ -63,9 +63,9 @@ internal fun AnilibriaApp(
             snapshotFlow { currentDestination }
                 .onEach {
                     if (it != currentTopLevelDestination) {
-                        //navigationSuiteScaffoldState.hide()
+                        navigationSuiteScaffoldState.hide()
                     } else {
-                        //navigationSuiteScaffoldState.show()
+                        navigationSuiteScaffoldState.show()
                     }
                 }
                 .collect()
@@ -87,7 +87,7 @@ internal fun AnilibriaApp(
                             )
                         },
                         onClick = {
-                            navigator.navigate(destination.route, true)
+                            navigator.navigateTopLevel(destination.route)
                         },
                     )
                 }
