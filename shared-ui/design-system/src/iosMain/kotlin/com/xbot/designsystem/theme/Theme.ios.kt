@@ -6,12 +6,19 @@ import androidx.compose.material3.LocalNavigationBarOverride
 import androidx.compose.material3.LocalNavigationRailOverride
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
+import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldOverride
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.xbot.designsystem.components.AnilibriaNavigationBar
 import com.xbot.designsystem.components.AnilibriaNavigationRail
+import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
-@OptIn(ExperimentalMaterial3ComponentOverrideApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(
+    ExperimentalMaterial3ComponentOverrideApi::class,
+    ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalMaterial3AdaptiveComponentOverrideApi::class
+)
 @Composable
 actual fun AnilibriaTheme(
     darkTheme: Boolean,
@@ -22,7 +29,8 @@ actual fun AnilibriaTheme(
 
     CompositionLocalProvider(
         LocalNavigationBarOverride provides AnilibriaNavigationBar,
-        LocalNavigationRailOverride provides AnilibriaNavigationRail
+        LocalNavigationRailOverride provides AnilibriaNavigationRail,
+        LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,

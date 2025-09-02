@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.*
@@ -15,14 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun NavigationSuiteScaffold(
+internal fun NavigationSuiteScaffold(
     navigationSuiteItems: NavigationSuiteScope.() -> Unit,
     modifier: Modifier = Modifier,
     state: NavigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState(),
@@ -235,7 +236,7 @@ private val NoWindowInsets = WindowInsets(0, 0, 0, 0)
 private val AnimationSpec: SpringSpec<Float> =
     spring(dampingRatio = SpringDefaultSpatialDamping, stiffness = SpringDefaultSpatialStiffness)
 
-/*@OptIn(ExperimentalMaterial3AdaptiveComponentOverrideApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveComponentOverrideApi::class)
 object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
     @Composable
     override fun NavigationSuiteScaffoldOverrideScope.NavigationSuiteScaffold() {
@@ -290,7 +291,7 @@ object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
             )
         }
     }
-}*/
+}
 
 object NavigationSuiteScaffoldDefaults {
     fun calculateFromAdaptiveInfo(adaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
@@ -302,4 +303,4 @@ object NavigationSuiteScaffoldDefaults {
     }
 }
 
-private fun WindowSizeClass.isCompact() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT
+private fun WindowSizeClass.isCompact() = !isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)
