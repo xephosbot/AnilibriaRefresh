@@ -39,6 +39,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared)
             implementation(projects.sharedUi.designSystem)
+            implementation(projects.sharedUi.feature.common)
             implementation(projects.sharedUi.feature.favorite)
             implementation(projects.sharedUi.feature.home)
             implementation(projects.sharedUi.feature.player)
@@ -46,17 +47,15 @@ kotlin {
             implementation(projects.sharedUi.feature.search)
             implementation(projects.sharedUi.feature.title)
             implementation(compose.foundation)
-            implementation(compose.material3AdaptiveNavigationSuite)
-            implementation(compose.components.resources)
+            implementation(libs.navigation.compose)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.lifecycle.runtime.compose)
-            implementation(libs.navigation.compose)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewModel)
+            implementation(libs.ktor.client.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
-            implementation(libs.ktor.client.core)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
     }
 }
@@ -64,4 +63,8 @@ kotlin {
 android {
     compileSdk = 36
     namespace = "com.xbot.sharedui"
+
+    defaultConfig {
+        minSdk = 24
+    }
 }

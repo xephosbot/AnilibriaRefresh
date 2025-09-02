@@ -12,6 +12,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -25,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -41,6 +43,7 @@ include(":shared:domain")
 include(":shared-ui")
 include(":shared-ui:resource")
 include(":shared-ui:design-system")
+include(":shared-ui:feature:common")
 include(":shared-ui:feature:favorite")
 include(":shared-ui:feature:home")
 include(":shared-ui:feature:player")

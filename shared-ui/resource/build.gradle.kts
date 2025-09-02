@@ -15,9 +15,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared.domain)
-            implementation(compose.foundation)
-            implementation(compose.components.resources)
             implementation(libs.kotlinx.datetime)
+            implementation(compose.foundation)
+            api(compose.components.resources)
         }
     }
 }

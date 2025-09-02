@@ -12,11 +12,11 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.koin.core)
             implementation(libs.androidx.paging.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.arrow.core)
+            implementation(libs.koin.core)
         }
     }
 }
