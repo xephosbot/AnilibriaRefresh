@@ -4,11 +4,14 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.xbot.common.navigation.Destination
 import com.xbot.title.TitleScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TitleRoute(val aliasOrId: String)
+data class TitleRoute(val aliasOrId: String) : Destination {
+    override val isTopLevel: Boolean = false
+}
 
 fun NavHostController.navigateToTitle(id: Int) = navigate(TitleRoute(id.toString()))
 fun NavHostController.navigateToTitle(alias: String) = navigate(TitleRoute(alias))

@@ -12,7 +12,7 @@ import com.xbot.player.navigation.playerScreen
 import com.xbot.profile.navigation.profileSection
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.search.navigation.searchScreen
-import com.xbot.sharedapp.AnilibriaAppState
+import com.xbot.sharedapp.AnilibriaNavigator
 import com.xbot.title.navigation.navigateToTitle
 import com.xbot.title.navigation.titleScreen
 import soup.compose.material.motion.animation.materialFadeThroughIn
@@ -21,10 +21,10 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 @Composable
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
-    appState: AnilibriaAppState,
+    navigator: AnilibriaNavigator,
     startDestination: Any = HomeRoute,
 ) {
-    val navController = appState.navController
+    val navController = navigator.navController
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = navController,
@@ -41,7 +41,11 @@ internal fun AnilibriaNavGraph(
             }
         )
         favoriteSection()
-        profileSection()
+        profileSection(
+            onReleaseClick = { releaseId ->
+                navController.navigateToTitle(releaseId)
+            }
+        )
 
         titleScreen(
             onBackClick = {

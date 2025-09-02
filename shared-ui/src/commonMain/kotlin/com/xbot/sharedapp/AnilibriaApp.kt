@@ -2,7 +2,9 @@ package com.xbot.sharedapp
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,7 +16,7 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
-import com.xbot.designsystem.components.NavigationSuiteScaffold
+import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
@@ -27,7 +29,7 @@ import org.koin.compose.koinInject
 
 @Composable
 internal fun AnilibriaApp(
-    appState: AnilibriaAppState = rememberAnilibriaAppState()
+    navigator: AnilibriaNavigator = rememberAnilibriaNavigator()
 ) {
     val httpClient: HttpClient = koinInject()
 
@@ -53,16 +55,17 @@ internal fun AnilibriaApp(
 
     AnilibriaTheme {
         val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
-        val currentDestination = appState.currentDestination
-        val currentTopLevelDestination = appState.currentTopLevelDestination
 
-        LaunchedEffect(currentTopLevelDestination) {
-            snapshotFlow { currentTopLevelDestination }
+        val currentDestination = navigator.currentDestination
+        val currentTopLevelDestination = navigator.currentTopLevelDestination
+
+        LaunchedEffect(currentDestination) {
+            snapshotFlow { currentDestination }
                 .onEach {
-                    if (it != null) {
-                        navigationSuiteScaffoldState.show()
+                    if (it != currentTopLevelDestination) {
+                        //navigationSuiteScaffoldState.hide()
                     } else {
-                        navigationSuiteScaffoldState.hide()
+                        //navigationSuiteScaffoldState.show()
                     }
                 }
                 .collect()
@@ -70,8 +73,8 @@ internal fun AnilibriaApp(
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
-                appState.topLevelDestinations.forEach { destination ->
-                    val isSelected = currentDestination.hasRoute(destination.route)
+                AnilibriaNavigator.topLevelDestinations.forEach { destination ->
+                    val isSelected = currentTopLevelDestination?.destination.hasRoute(destination.route)
                     item(
                         selected = isSelected,
                         icon = {
@@ -84,11 +87,12 @@ internal fun AnilibriaApp(
                             )
                         },
                         onClick = {
-                            appState.navigateToTopLevelDestination(destination)
+                            navigator.navigate(destination.route, true)
                         },
                     )
                 }
             },
+            layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             navigationSuiteColors = NavigationSuiteDefaults.colors(
                 navigationBarContainerColor = MaterialTheme.colorScheme.surface,
@@ -97,7 +101,7 @@ internal fun AnilibriaApp(
             state = navigationSuiteScaffoldState
         ) {
             AnilibriaNavGraph(
-                appState = appState
+                navigator = navigator
             )
         }
     }
