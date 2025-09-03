@@ -6,18 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import com.xbot.common.navigation.Destination
+import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.common.navigation.Navigator
-import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
-import com.xbot.home.navigation.homeSection
-import com.xbot.player.navigation.PlayerRoute
-import com.xbot.player.navigation.playerScreen
-import com.xbot.profile.navigation.profileSection
-import com.xbot.search.navigation.SearchRoute
-import com.xbot.search.navigation.searchScreen
 import com.xbot.sharedapp.AnilibriaNavigator
-import com.xbot.title.navigation.TitleRoute
-import com.xbot.title.navigation.titleScreen
+import org.koin.compose.getKoin
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
 
@@ -27,6 +20,8 @@ internal fun AnilibriaNavGraph(
     navigator: Navigator<NavBackStackEntry>,
     startDestination: Destination = HomeRoute,
 ) {
+    val navEntryBuilders: List<NavEntryBuilder> = getKoin().getAll<NavEntryBuilder>()
+
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = (navigator as AnilibriaNavigator).navController,
@@ -34,44 +29,8 @@ internal fun AnilibriaNavGraph(
         enterTransition = { materialFadeThroughIn() },
         exitTransition = { materialFadeThroughOut() },
     ) {
-        homeSection(
-            onSearchClick = {
-                if (lifecycleIsResumed()) navigator.navigate(SearchRoute)
-            },
-            onReleaseClick = { releaseId ->
-                if (lifecycleIsResumed()) navigator.navigate(TitleRoute(releaseId.toString()))
-            }
-        )
-        favoriteSection()
-        profileSection(
-            onReleaseClick = { releaseId ->
-                navigator.navigate(TitleRoute(releaseId.toString()))
-            }
-        )
-
-        titleScreen(
-            onBackClick = {
-                if (lifecycleIsResumed()) navigator.navigateBack()
-            },
-            onPlayClick = { releaseId, episodeOrdinal ->
-                if (lifecycleIsResumed()) navigator.navigate(PlayerRoute(releaseId, episodeOrdinal))
-            },
-            onReleaseClick = { releaseId ->
-                if (lifecycleIsResumed()) navigator.navigate(TitleRoute(releaseId.toString()))
-            }
-        )
-        searchScreen(
-            onBackClick = {
-                if (lifecycleIsResumed()) navigator.navigateBack()
-            },
-            onReleaseClick = { releaseId ->
-                if (lifecycleIsResumed()) navigator.navigate(TitleRoute(releaseId.toString()))
-            }
-        )
-        playerScreen(
-            onBackClick = {
-                navigator.navigateBack()
-            }
-        )
+        navEntryBuilders.forEach { builder ->
+            builder(navigator)
+        }
     }
 }
