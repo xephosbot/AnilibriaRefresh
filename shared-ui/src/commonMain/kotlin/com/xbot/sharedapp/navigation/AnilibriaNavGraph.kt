@@ -10,7 +10,7 @@ import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.common.navigation.Navigator
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.sharedapp.AnilibriaNavigator
-import org.koin.compose.getKoin
+import com.xbot.sharedapp.di.koinInjectAll
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
 
@@ -21,8 +21,6 @@ internal fun AnilibriaNavGraph(
     startNavKey: NavKey = HomeRoute,
     navEntryBuilders: List<NavEntryBuilder> = koinInjectAll()
 ) {
-    val navEntryBuilders: List<NavEntryBuilder> = getKoin().getAll<NavEntryBuilder>()
-
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = (navigator as AnilibriaNavigator).navController,
