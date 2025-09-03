@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
-import com.xbot.common.navigation.Destination
+import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.common.navigation.Navigator
 import com.xbot.home.navigation.HomeRoute
@@ -18,14 +18,15 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navigator: Navigator<NavBackStackEntry>,
-    startDestination: Destination = HomeRoute,
+    startNavKey: NavKey = HomeRoute,
+    navEntryBuilders: List<NavEntryBuilder> = koinInjectAll()
 ) {
     val navEntryBuilders: List<NavEntryBuilder> = getKoin().getAll<NavEntryBuilder>()
 
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = (navigator as AnilibriaNavigator).navController,
-        startDestination = startDestination,
+        startDestination = startNavKey,
         enterTransition = { materialFadeThroughIn() },
         exitTransition = { materialFadeThroughOut() },
     ) {

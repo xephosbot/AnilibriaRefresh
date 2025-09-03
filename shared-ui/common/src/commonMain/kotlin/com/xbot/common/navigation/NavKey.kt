@@ -3,9 +3,9 @@ package com.xbot.common.navigation
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.jetbrains.compose.resources.StringResource
 
-interface Destination
+interface NavKey
 
-interface TopLevelDestination : Destination {
+interface TopLevelNavKey : NavKey {
     val textRes: StringResource
     val selectedIcon: ImageVector
     val unselectedIcon: ImageVector

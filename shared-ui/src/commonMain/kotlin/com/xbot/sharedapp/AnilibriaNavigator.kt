@@ -13,7 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.TopLevelDestination
+import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.favorite.navigation.FavoriteRoute
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.profile.navigation.ProfileRoute
@@ -79,6 +79,6 @@ internal class AnilibriaNavigator(
     }
 
     companion object {
-        val topLevelDestinations: List<TopLevelDestination> = listOf(HomeRoute, FavoriteRoute, ProfileRoute)
+        val topLevelDestinations: List<TopLevelNavKey> = listOf(HomeRoute, FavoriteRoute, ProfileRoute)
     }
 }
