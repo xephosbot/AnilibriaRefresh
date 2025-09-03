@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 internal fun rememberAnilibriaNavigator(
     navController: NavHostController = rememberNavController(),
-): AnilibriaNavigator {
+): Navigator<NavBackStackEntry> {
     val scope = rememberCoroutineScope()
     return remember(navController, scope) { AnilibriaNavigator(navController, scope) }
 }

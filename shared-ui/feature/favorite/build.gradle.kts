@@ -17,7 +17,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared.domain)
             implementation(projects.sharedUi.designSystem)
-            implementation(projects.sharedUi.feature.common)
+            implementation(projects.sharedUi.common)
             implementation(compose.foundation)
             implementation(libs.navigation.compose)
             implementation(libs.lifecycle.viewmodel.compose)

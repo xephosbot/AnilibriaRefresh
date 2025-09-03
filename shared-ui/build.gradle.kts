@@ -39,7 +39,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared)
             implementation(projects.sharedUi.designSystem)
-            implementation(projects.sharedUi.feature.common)
+            implementation(projects.sharedUi.common)
             implementation(projects.sharedUi.feature.favorite)
             implementation(projects.sharedUi.feature.home)
             implementation(projects.sharedUi.feature.player)

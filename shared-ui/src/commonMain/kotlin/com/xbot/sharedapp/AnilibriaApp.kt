@@ -9,13 +9,16 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
+import androidx.navigation.NavBackStackEntry
 import coil3.ImageLoader
+import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.map.Mapper
 import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
+import com.xbot.common.navigation.Navigator
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
@@ -29,28 +32,12 @@ import org.koin.compose.koinInject
 
 @Composable
 internal fun AnilibriaApp(
-    navigator: AnilibriaNavigator = rememberAnilibriaNavigator()
+    navigator: Navigator<NavBackStackEntry> = rememberAnilibriaNavigator()
 ) {
     val httpClient: HttpClient = koinInject()
 
     setSingletonImageLoaderFactory { context ->
-        ImageLoader.Builder(context)
-            .crossfade(true)
-            .components {
-                add(
-                    KtorNetworkFetcherFactory(
-                        httpClient = { httpClient }
-                    )
-                )
-                add(Mapper<Poster, String> { data, _ -> data.src })
-            }
-            .memoryCache {
-                MemoryCache.Builder()
-                    .maxSizePercent(context)
-                    .build()
-            }
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .build()
+        getImageLoader(context, httpClient)
     }
 
     AnilibriaTheme {
@@ -106,3 +93,24 @@ internal fun AnilibriaApp(
         }
     }
 }
+
+private fun getImageLoader(
+    context: PlatformContext,
+    httpClient: HttpClient
+): ImageLoader = ImageLoader.Builder(context)
+    .crossfade(true)
+    .components {
+        add(
+            KtorNetworkFetcherFactory(
+                httpClient = { httpClient }
+            )
+        )
+        add(Mapper<Poster, String> { data, _ -> data.src })
+    }
+    .memoryCache {
+        MemoryCache.Builder()
+            .maxSizePercent(context)
+            .build()
+    }
+    .diskCachePolicy(CachePolicy.ENABLED)
+    .build()

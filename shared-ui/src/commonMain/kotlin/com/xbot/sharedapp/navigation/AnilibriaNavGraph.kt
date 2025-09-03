@@ -3,8 +3,10 @@ package com.xbot.sharedapp.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import com.xbot.common.navigation.Destination
+import com.xbot.common.navigation.Navigator
 import com.xbot.favorite.navigation.favoriteSection
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.homeSection
@@ -22,12 +24,12 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 @Composable
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
-    navigator: AnilibriaNavigator,
+    navigator: Navigator<NavBackStackEntry>,
     startDestination: Destination = HomeRoute,
 ) {
     NavHost(
         modifier = modifier.fillMaxSize(),
-        navController = navigator.navController,
+        navController = (navigator as AnilibriaNavigator).navController,
         startDestination = startDestination,
         enterTransition = { materialFadeThroughIn() },
         exitTransition = { materialFadeThroughOut() },
