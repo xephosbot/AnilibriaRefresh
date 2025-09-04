@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -45,7 +46,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.designsystem.components.AssistChip
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.ExpandableText
 import com.xbot.designsystem.components.Feed
@@ -53,7 +53,7 @@ import com.xbot.designsystem.components.FeedItemScope
 import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.MemberItem
-import com.xbot.designsystem.components.ReleaseCardItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.ReleaseLargeCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
@@ -77,7 +77,7 @@ import com.xbot.resources.label_description
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
-import com.xbot.shared.ui.feature.title.ui.PlayButton
+import com.xbot.title.ui.PlayButton
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource

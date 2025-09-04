@@ -23,10 +23,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -54,27 +54,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.domain.models.Genre
-import com.xbot.domain.models.Release
-import com.xbot.domain.models.enums.AgeRating
-import com.xbot.domain.models.enums.ProductionStatus
-import com.xbot.domain.models.enums.PublishStatus
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingType
-import com.xbot.resources.Res
-import com.xbot.resources.button_filters
-import com.xbot.resources.label_age_ratings
-import com.xbot.resources.label_genres
-import com.xbot.resources.label_production_statuses
-import com.xbot.resources.label_publish_statuses
-import com.xbot.resources.label_release_types
-import com.xbot.resources.label_search_results
-import com.xbot.resources.label_seasons
-import com.xbot.resources.label_sorting_types
-import com.xbot.resources.label_years
-import com.xbot.resources.search_bar_placeholder
-import com.xbot.designsystem.components.AssistChip
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.Header
@@ -90,7 +69,27 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.union
+import com.xbot.domain.models.Genre
+import com.xbot.domain.models.Release
+import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.ProductionStatus
+import com.xbot.domain.models.enums.PublishStatus
+import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.domain.models.enums.Season
+import com.xbot.domain.models.enums.SortingType
 import com.xbot.localization.stringRes
+import com.xbot.resources.Res
+import com.xbot.resources.button_filters
+import com.xbot.resources.label_age_ratings
+import com.xbot.resources.label_genres
+import com.xbot.resources.label_production_statuses
+import com.xbot.resources.label_publish_statuses
+import com.xbot.resources.label_release_types
+import com.xbot.resources.label_search_results
+import com.xbot.resources.label_seasons
+import com.xbot.resources.label_sorting_types
+import com.xbot.resources.label_years
+import com.xbot.resources.search_bar_placeholder
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -193,8 +192,7 @@ private fun SearchScreenContent(
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider()
             }
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        }
     ) { innerPadding ->
         SearchResultScreen(
             items = searchResult,
