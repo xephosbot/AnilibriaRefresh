@@ -33,13 +33,14 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.Header
-import com.xbot.designsystem.components.ReleaseCardItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
+import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import com.xbot.localization.toLocalizedString
@@ -128,10 +129,12 @@ private fun ScheduleContent(
                     items = releases,
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) { release ->
-                    ReleaseCardItem(
-                        release = release,
-                        onClick = { onReleaseClick(it.id) }
-                    )
+                    AnilibriaTheme(darkTheme = false) {
+                        SmallReleaseCard(
+                            release = release,
+                            onClick = { onReleaseClick(it.id) }
+                        )
+                    }
                 }
             }
             row { Spacer(Modifier.height(16.dp)) }
@@ -162,7 +165,7 @@ private fun LoadingScreen(
                         .padding(horizontal = 16.dp)
                 ) {
                     repeat(10) {
-                        ReleaseCardItem(release = null) {}
+                        SmallReleaseCard(release = null) {}
                     }
                 }
             }
