@@ -306,7 +306,7 @@ private fun TitleDetails(
                     items = details.relatedReleases,
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) { release ->
-                    ReleaseCardItem(
+                    SmallReleaseCard(
                         release = release,
                         onClick = { onReleaseClick(it.id) }
                     )
