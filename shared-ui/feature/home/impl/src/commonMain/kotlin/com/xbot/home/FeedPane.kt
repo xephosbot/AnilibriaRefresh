@@ -65,6 +65,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -74,7 +75,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
-import com.xbot.designsystem.components.ReleaseCardItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.ReleaseLargeCard
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.header
@@ -86,13 +87,18 @@ import com.xbot.designsystem.icons.AnilibriaLogoLarge
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.fadeWithParallax
 import com.xbot.designsystem.modifier.horizontalParallax
+import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
+import com.xbot.resources.badge_1
+import com.xbot.resources.badge_2
+import com.xbot.resources.badge_3
 import com.xbot.resources.button_watch
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule
@@ -132,7 +138,10 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
                 1f
             } else {
                 val scrollProgress =
-                    (firstItem.offset.y.absoluteValue / (firstItem.size.height - topAppbarHeight).toFloat()).coerceIn(0f, 1f)
+                    (firstItem.offset.y.absoluteValue / (firstItem.size.height - topAppbarHeight).toFloat()).coerceIn(
+                        0f,
+                        1f
+                    )
                 if (scrollProgress < 0.5f) {
                     0f
                 } else {
@@ -215,9 +224,9 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
                 }
             },
             floatingActionButtonPosition = FabPosition.Center,
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) { innerPadding ->
-            topAppbarHeight = with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+            topAppbarHeight =
+                with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
 
             Box {
                 Crossfade(
@@ -288,7 +297,8 @@ private fun ReleaseFeed(
                         .fadeWithParallax(pagerState, page),
                     release = release
                 ) {
-                    val releaseCardInteractionSources = remember { List(2) { MutableInteractionSource() } }
+                    val releaseCardInteractionSources =
+                        remember { List(2) { MutableInteractionSource() } }
                     var checked by remember { mutableStateOf(false) }
 
                     ButtonGroup {
@@ -324,7 +334,9 @@ private fun ReleaseFeed(
                             shapes = IconButtonDefaults.toggleableShapes(),
                             colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
                                 checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.inverseSurface),
+                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(
+                                    MaterialTheme.colorScheme.inverseSurface
+                                ),
                             ),
                             interactionSource = releaseCardInteractionSources[1],
                         ) {
@@ -354,11 +366,34 @@ private fun ReleaseFeed(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 },
-                itemContent = { title ->
-                    ReleaseCardItem(
-                        release = title,
-                        onClick = onReleaseClick,
-                    )
+                itemContent = { index, release ->
+                    AnilibriaTheme(darkTheme = false) {
+                        SmallReleaseCard(
+                            modifier = Modifier
+                                .then(
+                                    when (index) {
+                                        0 -> Modifier.overlayDrawable(
+                                            resource = Res.drawable.badge_1,
+                                            offset = DpOffset(x = 70.dp, y = 11.dp)
+                                        )
+
+                                        1 -> Modifier.overlayDrawable(
+                                            resource = Res.drawable.badge_2,
+                                            offset = DpOffset(x = 70.dp, y = 11.dp)
+                                        )
+
+                                        2 -> Modifier.overlayDrawable(
+                                            resource = Res.drawable.badge_3,
+                                            offset = DpOffset(x = 70.dp, y = 11.dp)
+                                        )
+
+                                        else -> Modifier
+                                    }
+                                ),
+                            release = release,
+                            onClick = onReleaseClick,
+                        )
+                    }
                 },
             )
 
@@ -459,7 +494,7 @@ private fun LoadingScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 repeat(10) {
-                    ReleaseCardItem(release = null) {}
+                    SmallReleaseCard(release = null) {}
                 }
             }
         }

@@ -326,14 +326,14 @@ inline fun <K, V> FeedScope.horizontalItems(
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
     crossinline stickyHeader: @Composable (K) -> Unit,
-    crossinline itemContent: @Composable LazyItemScope.(V) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(Int, V) -> Unit,
 ) = row {
     LazyRowWithStickyHeader(
         items = items,
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
         stickyHeader = { stickyHeader(it) },
-        itemContent = { itemContent(it) },
+        itemContent = { index, it -> itemContent(index, it) },
     )
 }
 

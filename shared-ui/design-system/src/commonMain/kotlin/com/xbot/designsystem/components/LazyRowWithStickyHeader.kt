@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,7 +35,7 @@ fun <K, V> LazyRowWithStickyHeader(
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     stickyHeader: @Composable (K) -> Unit,
-    itemContent: @Composable LazyItemScope.(V) -> Unit,
+    itemContent: @Composable LazyItemScope.(Int, V) -> Unit,
 ) {
     val itemsWithKeys = remember(items) {
         items.flatMap { entry -> entry.value.map { entry.key to it } }
@@ -63,10 +64,10 @@ fun <K, V> LazyRowWithStickyHeader(
             flingBehavior = flingBehavior,
             userScrollEnabled = userScrollEnabled,
         ) {
-            items(
+            itemsIndexed(
                 items = itemsWithKeys,
-            ) { (_, value) ->
-                itemContent(value)
+            ) { index, (_, value) ->
+                itemContent(index, value)
             }
         }
     }
