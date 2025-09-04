@@ -1,13 +1,17 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -21,16 +25,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.modifier.shimmerSafe
+import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.enums.AgeRating
 import com.xbot.localization.localizedName
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ReleaseCardItem(
+fun SmallReleaseCard(
     release: Release?,
     modifier: Modifier = Modifier,
     shape: ExpressiveShape = ExpressiveReleaseCardItemDefaults.shape(),
@@ -54,14 +64,14 @@ fun ReleaseCardItem(
         label = "ReleaseCardItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
     ) { state ->
         when (state) {
-            null -> LoadingReleaseCardItem(modifier)
-            else -> ReleaseCardItemContent(modifier, state)
+            null -> SmallReleaseCardPlaceholder(modifier)
+            else -> SmallReleaseCardContent(modifier, state)
         }
     }
 }
 
 @Composable
-private fun ReleaseCardItemContent(
+private fun SmallReleaseCardContent(
     modifier: Modifier = Modifier,
     release: Release,
 ) {
@@ -74,14 +84,16 @@ private fun ReleaseCardItemContent(
         PosterImage(
             modifier = Modifier
                 .fillMaxSize()
-                .scrim(1.0f),
+                .scrim(edgeHeightRatio = 1.0f),
             poster = release.poster,
         )
         Text(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             text = release.localizedName(),
-            color = Color.White,
-            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.inverseOnSurface,
+            style = MaterialTheme.typography.labelLarge,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
@@ -89,7 +101,7 @@ private fun ReleaseCardItemContent(
 }
 
 @Composable
-private fun LoadingReleaseCardItem(
+private fun SmallReleaseCardPlaceholder(
     modifier: Modifier = Modifier,
 ) {
     val shimmer = LocalShimmer.current
@@ -98,10 +110,42 @@ private fun LoadingReleaseCardItem(
         modifier = modifier
             .width(ReleaseCardWidth)
             .aspectRatio(7f / 10f)
-            .scrim(1.0f)
-            .shimmerSafe(shimmer)
+            .scrim(edgeHeightRatio = 1.0f)
+            .shimmer(shimmer)
             .background(Color.LightGray),
     )
+}
+
+@Preview
+@Composable
+private fun SmallReleaseCardPreview() {
+    val release = remember {
+        Release(
+            id = 0,
+            name = "Title",
+            englishName = "Title",
+            ageRating = AgeRating.R18_PLUS,
+            favoritesCount = 10456,
+            type = null,
+            year = 2024,
+            description = null,
+            episodesCount = null,
+            episodeDuration = null,
+            poster = null
+        )
+    }
+    val shimmer = rememberShimmer(ShimmerBounds.View)
+
+    AnilibriaTheme {
+        ProvideShimmer(shimmer) {
+            SmallReleaseCard(
+                release = release,
+                onClick = {
+                    // Handle the click event here
+                }
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -111,12 +155,12 @@ object ExpressiveReleaseCardItemDefaults {
     @Composable
     fun shape(): ExpressiveShape {
         return _shape ?: RoundedCornerExpressiveShape(
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(16.dp),
             pressedShape = RoundedCornerShape(8.dp),
             selectedShape = RoundedCornerShape(8.dp),
-            animationSpec = spring()
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }
 }
 
-private val ReleaseCardWidth = 124.dp
+private val ReleaseCardWidth = 132.dp
