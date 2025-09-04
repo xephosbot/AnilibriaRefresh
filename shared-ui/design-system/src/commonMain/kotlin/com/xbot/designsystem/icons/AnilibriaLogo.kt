@@ -6,16 +6,16 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-
 @Suppress("UnusedReceiverParameter")
 val AnilibriaIcons.Filled.AnilibriaLogo: ImageVector
     get() {
         if (_anilibriaLogo != null) {
             return _anilibriaLogo!!
         }
-        _anilibriaLogo = ImageVector.Builder(
+        _anilibriaLogo = Builder(
             name = "AnilibriaLogo",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
@@ -80,5 +80,4 @@ val AnilibriaIcons.Filled.AnilibriaLogo: ImageVector
         return _anilibriaLogo!!
     }
 
-@Suppress("ObjectPropertyName")
 private var _anilibriaLogo: ImageVector? = null
