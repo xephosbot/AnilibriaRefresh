@@ -12,6 +12,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.favorite.navigation.FavoriteRoute
@@ -59,19 +60,20 @@ internal class AnilibriaNavigator(
             topLevelDestinations.map { it::class }.any { entry.destination.hasRoute(it) }
         }
 
-    override fun navigate(destination: Any) {
-        navController.navigate(destination)
-    }
-
-    override fun navigateTopLevel(destination: Any) {
-        val topLevelNavOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().route.orEmpty()) {
-                saveState = true
+    override fun navigate(key: NavKey) {
+        when (key) {
+            is TopLevelNavKey -> {
+                val topLevelNavOptions = navOptions {
+                    popUpTo(navController.graph.findStartDestination().route.orEmpty()) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                navController.navigate(key, topLevelNavOptions)
             }
-            launchSingleTop = true
-            restoreState = true
+            else -> navController.navigate(key)
         }
-        navController.navigate(destination, topLevelNavOptions)
     }
 
     override fun navigateBack() {

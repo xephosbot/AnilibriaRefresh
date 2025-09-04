@@ -4,7 +4,6 @@ interface Navigator<T : Any> {
     val backstack: List<T>
     val currentDestination: T?
     val currentTopLevelDestination: T?
-    fun navigate(destination: Any)
-    fun navigateTopLevel(destination: Any)
+    fun navigate(key: NavKey)
     fun navigateBack()
 }
