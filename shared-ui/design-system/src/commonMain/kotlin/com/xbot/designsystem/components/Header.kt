@@ -14,6 +14,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -21,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.theme.AnilibriaTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -37,7 +41,7 @@ fun Header(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+            ProvideTextStyle(MaterialTheme.typography.titleLarge) {
                 title()
             }
 
@@ -45,17 +49,48 @@ fun Header(
                 Spacer(Modifier.weight(1f))
                 CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Hairline) {
                     FilledTonalIconButton(
-                        modifier = Modifier.size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+                        modifier = Modifier.size(
+                            IconButtonDefaults.smallContainerSize(
+                                IconButtonDefaults.IconButtonWidthOption.Narrow
+                            )
+                        ),
                         onClick = onClick,
                         shapes = IconButtonDefaults.shapes()
                     ) {
                         Icon(
+                            modifier = Modifier.size(IconButtonDefaults.smallIconSize),
                             imageVector = AnilibriaIcons.Outlined.ChevronRight,
                             contentDescription = null
                         )
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(name = "Header", widthDp = 278)
+@Composable
+private fun HeaderPreview() {
+    AnilibriaTheme {
+        Surface {
+            Header(
+                title = { Text("Title") },
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "Header Dark", widthDp = 278)
+@Composable
+private fun HeaderPreviewDark() {
+    AnilibriaTheme(darkTheme = true) {
+        Surface {
+            Header(
+                title = { Text("Title") },
+                onClick = {}
+            )
         }
     }
 }
