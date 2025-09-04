@@ -74,13 +74,12 @@ internal fun AnilibriaApp(
                             )
                         },
                         onClick = {
-                            navigator.navigateTopLevel(destination)
+                            navigator.navigate(destination)
                         },
                     )
                 }
             },
             layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             navigationSuiteColors = NavigationSuiteDefaults.colors(
                 navigationBarContainerColor = MaterialTheme.colorScheme.surface,
                 navigationRailContainerColor = MaterialTheme.colorScheme.surface,
