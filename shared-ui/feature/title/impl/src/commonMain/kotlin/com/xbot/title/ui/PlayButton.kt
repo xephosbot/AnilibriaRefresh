@@ -1,4 +1,4 @@
-package com.xbot.shared.ui.feature.title.ui
+package com.xbot.title.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
