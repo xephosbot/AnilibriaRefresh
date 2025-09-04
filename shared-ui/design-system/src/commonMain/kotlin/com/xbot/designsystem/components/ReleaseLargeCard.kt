@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
+import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.designsystem.utils.releaseTitleState
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -136,7 +136,7 @@ private fun LoadingReleaseLargeCard(
         modifier = modifier
             .heightIn(max = height)
             .height(height)
-            .shimmerSafe(shimmer)
+            .shimmer(shimmer)
             .fadedEdge(edgeHeight = 350.dp)
             .fadedEdge(edgeHeight = 200.dp, bottomEdge = false)
             .background(Color.LightGray)

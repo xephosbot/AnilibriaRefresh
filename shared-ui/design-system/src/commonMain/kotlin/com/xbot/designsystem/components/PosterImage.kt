@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import com.valentinilk.shimmer.shimmer
 import com.xbot.resources.*
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.domain.models.Poster
 import org.jetbrains.compose.resources.painterResource
 
@@ -64,7 +64,7 @@ fun PosterImage(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .shimmerSafe(shimmer)
+                    .shimmer(shimmer)
                     .background(Color.LightGray),
             )
         }

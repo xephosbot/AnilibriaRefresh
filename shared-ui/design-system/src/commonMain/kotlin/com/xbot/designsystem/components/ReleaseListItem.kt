@@ -22,8 +22,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.releaseTitleState
@@ -112,7 +112,7 @@ private fun LoadingReleaseListItem(
     ListItemLayout(
         modifier = modifier
             .height(ReleaseItemContainerHeight)
-            .shimmerSafe(shimmer),
+            .shimmer(shimmer),
         headlineContent = {
             Box(
                 modifier = Modifier

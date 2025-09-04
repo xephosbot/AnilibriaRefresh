@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.components.PreferenceLayout
 import com.xbot.designsystem.components.preferenceItem
@@ -38,7 +39,6 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.modifier.shimmerSafe
 import com.xbot.designsystem.modifier.shimmerUpdater
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -178,7 +178,7 @@ private fun ProfileItem(
             when (targetState) {
                 ProfileScreenState.Loading -> {
                     Row(
-                        modifier = Modifier.shimmerSafe(shimmer),
+                        modifier = Modifier.shimmer(shimmer),
                     ) {
                         Box(
                             modifier = Modifier
