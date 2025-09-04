@@ -16,24 +16,24 @@ import org.jetbrains.compose.resources.FontResource
 
 @Composable
 fun NotoSansFontFamily() = FontFamily(
-    FontVariable(Res.font.notosans_variable, 100, 100f),
-    FontVariable(Res.font.notosans_variable, 200, 100f),
-    FontVariable(Res.font.notosans_variable, 300, 100f),
-    FontVariable(Res.font.notosans_variable, 400, 100f),
-    FontVariable(Res.font.notosans_variable, 500, 100f),
-    FontVariable(Res.font.notosans_variable, 600, 100f),
-    FontVariable(Res.font.notosans_variable, 700, 100f),
-    FontVariable(Res.font.notosans_variable, 800, 100f),
-    FontVariable(Res.font.notosans_variable, 900, 100f),
-    FontVariable(Res.font.notosans_varialbe_italic, 100, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 200, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 300, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 400, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 500, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 600, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 700, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 800, 100f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 900, 100f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_variable, 100, 87.5f),
+    FontVariable(Res.font.notosans_variable, 200, 87.5f),
+    FontVariable(Res.font.notosans_variable, 300, 87.5f),
+    FontVariable(Res.font.notosans_variable, 400, 87.5f),
+    FontVariable(Res.font.notosans_variable, 500, 87.5f),
+    FontVariable(Res.font.notosans_variable, 600, 87.5f),
+    FontVariable(Res.font.notosans_variable, 700, 87.5f),
+    FontVariable(Res.font.notosans_variable, 800, 87.5f),
+    FontVariable(Res.font.notosans_variable, 900, 87.5f),
+    FontVariable(Res.font.notosans_varialbe_italic, 100, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 200, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 300, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 400, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 500, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 600, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 700, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 800, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 900, 87.5f, FontStyle.Italic),
 )
 
 @Composable
@@ -69,6 +69,7 @@ fun AnilibriaTypography() = Typography(
 @Composable
 private fun TextStyle.applyDisplayFontFamily() = copy(
     fontFamily = BebesNeueFontFamily(),
+    fontWeight = FontWeight.Bold,
     lineHeightStyle = LineHeightStyle(
         alignment = LineHeightStyle.Alignment.Center,
         trim = LineHeightStyle.Trim.Both
