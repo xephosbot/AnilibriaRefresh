@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -28,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -54,7 +57,8 @@ import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.MemberItem
 import com.xbot.designsystem.components.SmallReleaseCard
-import com.xbot.designsystem.components.ReleaseLargeCard
+import com.xbot.designsystem.components.LargeReleaseCard
+import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.row
@@ -72,12 +76,13 @@ import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_add_to_favorites
 import com.xbot.resources.button_share
 import com.xbot.resources.button_telegram
+import com.xbot.resources.button_watch
+import com.xbot.resources.button_watch_continue
 import com.xbot.resources.button_watched_it
 import com.xbot.resources.label_description
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
-import com.xbot.title.ui.PlayButton
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
@@ -177,6 +182,7 @@ internal fun ThreePaneScaffoldPaneScope.TitleDetailsPane(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun TitleDetails(
     modifier: Modifier = Modifier,
@@ -201,7 +207,7 @@ private fun TitleDetails(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
             row {
-                ReleaseLargeCard(
+                LargeReleaseCard(
                     modifier = Modifier.verticalParallax(gridState),
                     release = details.release
                 )
@@ -218,11 +224,32 @@ private fun TitleDetails(
                         )
                     },
                     content2 = {
-                        PlayButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onLeadingClick = { onPlayClick(details.release.id, 0) },
-                            onTrailingClick = { onEpisodesListClick() },
-                            trailingEnabled = details.episodes.isNotEmpty()
+                        MediumSplitButton(
+                            onLeadingClick = {
+                                onPlayClick(details.release.id, 0)
+                            },
+                            onTrailingClick = {
+                                onEpisodesListClick()
+                            },
+                            leadingContent = {
+                                Icon(
+                                    modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                                    imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                    contentDescription = null
+                                )
+                                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                                Text(
+                                    text = stringResource(Res.string.button_watch_continue),
+                                    maxLines = 1
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
+                                    imageVector = AnilibriaIcons.Outlined.PlayList,
+                                    contentDescription = null
+                                )
+                            }
                         )
                     }
                 )
@@ -384,7 +411,7 @@ private fun LoadingScreen(
                 .padding(contentPadding.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
-            ReleaseLargeCard(null)
+            LargeReleaseCard(null)
         }
     }
 }
