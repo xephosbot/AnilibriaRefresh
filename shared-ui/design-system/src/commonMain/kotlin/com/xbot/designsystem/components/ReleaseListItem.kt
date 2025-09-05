@@ -26,7 +26,6 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.releaseTitleState
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
 
@@ -74,8 +73,6 @@ private fun ReleaseListItemContent(
     release: Release,
     modifier: Modifier = Modifier,
 ) {
-    val releaseTitle by releaseTitleState(release)
-
     ListItemLayout(
         modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
@@ -94,11 +91,7 @@ private fun ReleaseListItemContent(
             PosterImage(release.poster)
         },
         tags = {
-            Text(
-                text = releaseTitle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            ReleaseMetaText(release = release)
         },
     )
 }
