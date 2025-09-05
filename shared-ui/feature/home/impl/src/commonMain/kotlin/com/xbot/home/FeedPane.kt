@@ -2,12 +2,11 @@ package com.xbot.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.runtime.State
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,41 +15,41 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
-import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.LoadingIndicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,12 +61,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
@@ -75,9 +72,10 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
-import com.xbot.designsystem.components.SmallReleaseCard
-import com.xbot.designsystem.components.ReleaseLargeCard
+import com.xbot.designsystem.components.LargeReleaseCard
+import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.ReleaseListItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.horizontalPagerItems
@@ -289,7 +287,7 @@ private fun ReleaseFeed(
                 items = recommendedReleases,
                 state = pagerState
             ) { page, release ->
-                ReleaseLargeCard(
+                LargeReleaseCard(
                     modifier = Modifier
                         .horizontalParallax(pagerState, page)
                         .verticalParallax(gridState),
@@ -297,53 +295,60 @@ private fun ReleaseFeed(
                         .fadeWithParallax(pagerState, page),
                     release = release
                 ) {
-                    val releaseCardInteractionSources =
-                        remember { List(2) { MutableInteractionSource() } }
                     var checked by remember { mutableStateOf(false) }
 
-                    ButtonGroup {
-                        Button(
-                            modifier = Modifier
-                                .heightIn(ButtonDefaults.MediumContainerHeight)
-                                .animateWidth(releaseCardInteractionSources[0]),
-                            onClick = { onReleaseClick(release) },
-                            shapes = ButtonDefaults.shapes(),
-                            contentPadding = ButtonDefaults.MediumContentPadding,
-                            interactionSource = releaseCardInteractionSources[0]
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                            Text(
-                                text = stringResource(Res.string.button_watch),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1
-                            )
-                        }
+                    Box(
+                        modifier = Modifier.wrapContentSize()
+                    ) {
+                        MediumSplitButton(
+                            onLeadingClick = {
+                                onReleaseClick(release)
+                            },
+                            trailingChecked = checked,
+                            onTrailingCheckedChange = { checked = it },
+                            leadingContent = {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                                    imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                    contentDescription = null
+                                )
+                                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                                Text(
+                                    text = stringResource(Res.string.button_watch),
+                                    maxLines = 1
+                                )
+                            },
+                            trailingContent = {
+                                val rotation by animateFloatAsState(if (checked) 180f else 0f)
 
-                        FilledTonalIconToggleButton(
-                            checked = checked,
-                            onCheckedChange = { checked = it },
-                            modifier = Modifier
-                                .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                                .animateWidth(releaseCardInteractionSources[1]),
-                            shapes = IconButtonDefaults.toggleableShapes(),
-                            colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
-                                checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(
-                                    MaterialTheme.colorScheme.inverseSurface
-                                ),
-                            ),
-                            interactionSource = releaseCardInteractionSources[1],
+                                Icon(
+                                    modifier = Modifier
+                                        .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                        .graphicsLayer {
+                                            rotationZ = rotation
+                                        },
+                                    imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+
+                        DropdownMenu(
+                            expanded = checked,
+                            onDismissRequest = { checked = false }
                         ) {
-                            Icon(
-                                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                                imageVector = AnilibriaIcons.Outlined.Star,
-                                contentDescription = null
+                            DropdownMenuItem(
+                                text = { Text(text = "Item 1") },
+                                onClick = { /* Handle item 1 click */ }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(text = "Item 2") },
+                                onClick = { /* Handle item 3 click */ }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(text = "Item 3") },
+                                onClick = { /* Handle item 3 click */ }
                             )
                         }
                     }
@@ -446,41 +451,7 @@ private fun LoadingScreen(
                 .padding(contentPadding.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
-            ReleaseLargeCard(null) {
-                ButtonGroup {
-                    Button(
-                        modifier = Modifier.heightIn(ButtonDefaults.MediumContainerHeight),
-                        onClick = { },
-                        shapes = ButtonDefaults.shapes(),
-                        contentPadding = ButtonDefaults.MediumContentPadding,
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                            imageVector = AnilibriaIcons.Filled.PlayArrow,
-                            contentDescription = null
-                        )
-                        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                        Text(
-                            text = stringResource(Res.string.button_watch),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-
-                    FilledTonalIconButton(
-                        modifier = Modifier
-                            .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
-                        onClick = {},
-                        shapes = IconButtonDefaults.shapes(),
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                            imageVector = AnilibriaIcons.Outlined.Star,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
+            LargeReleaseCard(null)
             Header(
                 title = { Text(stringResource(Res.string.label_schedule)) },
                 onClick = {},
