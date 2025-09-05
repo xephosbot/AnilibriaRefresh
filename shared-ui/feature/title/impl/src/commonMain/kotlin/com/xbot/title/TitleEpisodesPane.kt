@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.designsystem.components.ReleaseLargeCard
+import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
@@ -113,7 +113,7 @@ private fun LoadingScreen(
                 .padding(contentPadding.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
-            ReleaseLargeCard(null)
+            LargeReleaseCard(null)
         }
     }
 }
