@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.RoundedPolygon
 import com.xbot.designsystem.components.PosterImage
-import com.xbot.designsystem.components.SplitButtonLayout
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.domain.models.User
