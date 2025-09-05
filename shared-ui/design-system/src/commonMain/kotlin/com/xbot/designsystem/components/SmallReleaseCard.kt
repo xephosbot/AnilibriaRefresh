@@ -34,8 +34,8 @@ import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.utils.dummyReleaseList
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.enums.AgeRating
 import com.xbot.localization.localizedName
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -119,27 +119,12 @@ private fun SmallReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun SmallReleaseCardPreview() {
-    val release = remember {
-        Release(
-            id = 0,
-            name = "Title",
-            englishName = "Title",
-            ageRating = AgeRating.R18_PLUS,
-            favoritesCount = 10456,
-            type = null,
-            year = 2024,
-            description = null,
-            episodesCount = null,
-            episodeDuration = null,
-            poster = null
-        )
-    }
     val shimmer = rememberShimmer(ShimmerBounds.View)
 
     AnilibriaTheme {
         ProvideShimmer(shimmer) {
             SmallReleaseCard(
-                release = release,
+                release = dummyReleaseList[1],
                 onClick = {
                     // Handle the click event here
                 }
