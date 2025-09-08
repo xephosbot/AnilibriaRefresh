@@ -58,6 +58,28 @@ internal class DefaultCatalogRepository(
         )
     }
 
+    override suspend fun getCatalogReleases(
+        search: String?,
+        filters: CatalogFilters?,
+        limit: Int
+    ): Either<Error, List<Release>> = catalogApi
+        .getCatalogReleases(
+            page = 1,
+            limit = limit,
+            search = search,
+            genres = filters?.genres?.map(Genre::id),
+            types = filters?.types?.map(ReleaseType::toDto),
+            seasons = filters?.seasons?.map(Season::toDto),
+            fromYear = filters?.years?.start,
+            toYear = filters?.years?.endInclusive,
+            sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
+            ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
+            publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
+            productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
+        )
+        .mapLeft(NetworkError::toDomain)
+        .map { it.data.map(ReleaseDto::toDomain) }
+
     override suspend fun getCatalogAgeRatings(): Either<Error, List<AgeRating>> = catalogApi
         .getCatalogAgeRatings()
         .mapLeft(NetworkError::toDomain)
@@ -68,15 +90,17 @@ internal class DefaultCatalogRepository(
         .mapLeft(NetworkError::toDomain)
         .map { it.map(GenreDto::toDomain) }
 
-    override suspend fun getCatalogProductionStatuses(): Either<Error, List<ProductionStatus>> = catalogApi
-        .getCatalogProductionStatuses()
-        .mapLeft(NetworkError::toDomain)
-        .map { it.map(ProductionStatusDto::toDomain) }
+    override suspend fun getCatalogProductionStatuses(): Either<Error, List<ProductionStatus>> =
+        catalogApi
+            .getCatalogProductionStatuses()
+            .mapLeft(NetworkError::toDomain)
+            .map { it.map(ProductionStatusDto::toDomain) }
 
-    override suspend fun getCatalogPublishStatuses(): Either<Error, List<PublishStatus>> = catalogApi
-        .getCatalogPublishStatuses()
-        .mapLeft(NetworkError::toDomain)
-        .map { it.map(PublishStatusDto::toDomain) }
+    override suspend fun getCatalogPublishStatuses(): Either<Error, List<PublishStatus>> =
+        catalogApi
+            .getCatalogPublishStatuses()
+            .mapLeft(NetworkError::toDomain)
+            .map { it.map(PublishStatusDto::toDomain) }
 
     override suspend fun getCatalogSeasons(): Either<Error, List<Season>> = catalogApi
         .getCatalogSeasons()
@@ -93,7 +117,7 @@ internal class DefaultCatalogRepository(
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseTypeDto::toDomain) }
 
-    override suspend fun getCatalogYears(): Either<Error, ClosedRange<Int>> = catalogApi
+    override suspend fun getCatalogYears(): Either<Error, IntRange> = catalogApi
         .getCatalogYears()
         .mapLeft(NetworkError::toDomain)
         .map { years -> years.first()..years.last() }
