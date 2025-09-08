@@ -171,7 +171,7 @@ class SearchViewModel(
         }
     }
 
-    private fun updateYearsRange(years: ClosedRange<Int>) {
+    private fun updateYearsRange(years: IntRange) {
         viewModelScope.launch {
             _filters.update {
                 it.copy(selectedYears = years)
@@ -222,8 +222,8 @@ data class SearchScreenState(
     val selectedSeasons: Set<Season> = emptySet(),
     val ageRatings: List<AgeRating> = emptyList(),
     val selectedAgeRatings: Set<AgeRating> = emptySet(),
-    val years: ClosedRange<Int> = -1..-1,
-    val selectedYears: ClosedRange<Int> = years,
+    val years: IntRange = -1..-1,
+    val selectedYears: IntRange = years,
 )
 
 sealed interface SearchScreenAction {
@@ -233,7 +233,7 @@ sealed interface SearchScreenAction {
     data class ToggleReleaseType(val releaseType: ReleaseType) : SearchScreenAction
     data class ToggleSeason(val season: Season) : SearchScreenAction
     data class UpdateSortingType(val sortingType: SortingType) : SearchScreenAction
-    data class UpdateYearsRange(val years: ClosedRange<Int>) : SearchScreenAction
+    data class UpdateYearsRange(val years: IntRange) : SearchScreenAction
     data class ToggleAgeRating(val ageRating: AgeRating) : SearchScreenAction
     data class ShowErrorMessage(
         val error: Throwable,

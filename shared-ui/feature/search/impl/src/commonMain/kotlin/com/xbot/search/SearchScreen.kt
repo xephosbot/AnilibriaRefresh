@@ -237,7 +237,7 @@ private fun SearchScreenContent(
                     onAction(SearchScreenAction.ToggleSeason(season))
                 },
                 onYearsRangeChange = { yearsRange ->
-                    onAction(SearchScreenAction.UpdateYearsRange(yearsRange.toIntRange()))
+                    onAction(SearchScreenAction.UpdateYearsRange(yearsRange))
                 },
                 onAgeRatingClick = { ageRating ->
                     onAction(SearchScreenAction.ToggleAgeRating(ageRating))
@@ -399,7 +399,7 @@ private fun FiltersScreen(
     onPublishStatusClick: (PublishStatus) -> Unit,
     onProductionStatusClick: (ProductionStatus) -> Unit,
     onSeasonClick: (Season) -> Unit,
-    onYearsRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    onYearsRangeChange: (IntRange) -> Unit,
     onAgeRatingClick: (AgeRating) -> Unit,
 ) {
     Crossfade(
@@ -424,8 +424,8 @@ private fun FiltersScreen(
                 seasons = state.seasons,
                 selectedSeasons = state.selectedSeasons.toList(),
                 onSeasonClick = onSeasonClick,
-                years = state.years.toFloatRange(),
-                selectedYears = state.selectedYears.toFloatRange(),
+                years = state.years,
+                selectedYears = state.selectedYears,
                 onYearsRangeChange = onYearsRangeChange,
                 ageRatings = state.ageRatings,
                 selectedAgeRatings = state.selectedAgeRatings.toList(),
@@ -453,9 +453,9 @@ private fun FiltersScreenContent(
     seasons: List<Season>,
     selectedSeasons: List<Season>,
     onSeasonClick: (Season) -> Unit,
-    years: ClosedFloatingPointRange<Float>,
-    selectedYears: ClosedFloatingPointRange<Float>,
-    onYearsRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    years: IntRange,
+    selectedYears: IntRange,
+    onYearsRangeChange: (IntRange) -> Unit,
     ageRatings: List<AgeRating>,
     selectedAgeRatings: List<AgeRating>,
     onAgeRatingClick: (AgeRating) -> Unit,
@@ -565,9 +565,11 @@ private fun FiltersScreenContent(
             title = { Text(stringResource(Res.string.label_years)) }
         )
         RangeSlider(
-            sliderPosition = selectedYears,
-            onValueChange = onYearsRangeChange,
-            valueRange = years,
+            sliderPosition = selectedYears.toFloatRange(),
+            onValueChange = {
+                onYearsRangeChange(it.toIntRange())
+            },
+            valueRange = years.toFloatRange(),
         )
 
         Header(
@@ -605,10 +607,10 @@ private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
     }
 }
 
-private fun ClosedRange<Int>.toFloatRange(): ClosedFloatingPointRange<Float> {
+private fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> {
     return start.toFloat()..endInclusive.toFloat()
 }
 
-private fun ClosedFloatingPointRange<Float>.toIntRange(): ClosedRange<Int> {
+private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
     return start.roundToInt()..endInclusive.roundToInt()
 }

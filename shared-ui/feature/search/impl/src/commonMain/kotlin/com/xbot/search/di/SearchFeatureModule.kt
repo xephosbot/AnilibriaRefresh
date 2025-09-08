@@ -5,6 +5,7 @@ import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.search.SearchScreen
 import com.xbot.search.SearchViewModel
 import com.xbot.search.navigation.SearchRoute
+import com.xbot.title.navigation.navigateToTitle
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -18,7 +19,7 @@ val searchFeatureModule = module {
                         navigator.navigateBack()
                     },
                     onReleaseClick = { releaseId ->
-                        //navigator.onReleaseClick(releaseId)
+                        navigator.navigateToTitle(releaseId)
                     }
                 )
             }
