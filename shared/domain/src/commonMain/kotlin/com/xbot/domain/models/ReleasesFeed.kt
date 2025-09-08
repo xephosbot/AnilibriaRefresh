@@ -1,9 +1,9 @@
 package com.xbot.domain.models
 
-import kotlinx.datetime.DayOfWeek
-
 data class ReleasesFeed(
     val recommendedReleases: List<Release>,
-    val schedule: Map<DayOfWeek, List<Release>>,
+    val scheduleNow: List<Schedule>,
+    val bestReleases: List<Release>,
+    val recommendedFranchises: List<Franchise>,
     val genres: List<Genre>
 )
