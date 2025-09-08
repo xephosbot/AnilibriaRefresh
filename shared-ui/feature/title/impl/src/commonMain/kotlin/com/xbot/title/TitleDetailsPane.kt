@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,10 +54,10 @@ import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.FeedItemScope
 import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
-import com.xbot.designsystem.components.MemberItem
-import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
+import com.xbot.designsystem.components.MemberItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.row
@@ -67,6 +66,7 @@ import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
@@ -76,7 +76,6 @@ import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_add_to_favorites
 import com.xbot.resources.button_share
 import com.xbot.resources.button_telegram
-import com.xbot.resources.button_watch
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.button_watched_it
 import com.xbot.resources.label_description
@@ -333,10 +332,12 @@ private fun TitleDetails(
                     items = details.relatedReleases,
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) { release ->
-                    SmallReleaseCard(
-                        release = release,
-                        onClick = { onReleaseClick(it.id) }
-                    )
+                    AnilibriaTheme(darkTheme = false) {
+                        SmallReleaseCard(
+                            release = release,
+                            onClick = { onReleaseClick(it.id) }
+                        )
+                    }
                 }
             }
 
