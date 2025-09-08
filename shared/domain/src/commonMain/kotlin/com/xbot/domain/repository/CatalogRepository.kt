@@ -15,6 +15,7 @@ import com.xbot.domain.models.filters.CatalogFilters
 
 interface CatalogRepository {
     fun getCatalogReleases(search: String? = null, filters: CatalogFilters? = null): PagingSource<Int, Release>
+    suspend fun getCatalogReleases(search: String? = null, filters: CatalogFilters? = null, limit: Int): Either<Error, List<Release>>
     suspend fun getCatalogAgeRatings(): Either<Error, List<AgeRating>>
     suspend fun getCatalogGenres(): Either<Error, List<Genre>>
     suspend fun getCatalogProductionStatuses(): Either<Error, List<ProductionStatus>>
@@ -22,5 +23,5 @@ interface CatalogRepository {
     suspend fun getCatalogSeasons(): Either<Error, List<Season>>
     suspend fun getCatalogSortingTypes(): Either<Error, List<SortingType>>
     suspend fun getCatalogReleaseTypes(): Either<Error, List<ReleaseType>>
-    suspend fun getCatalogYears(): Either<Error, ClosedRange<Int>>
+    suspend fun getCatalogYears(): Either<Error, IntRange>
 }
