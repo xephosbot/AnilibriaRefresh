@@ -10,7 +10,7 @@ import io.ktor.client.request.parameter
 
 interface FranchisesApi {
     suspend fun getFranchises(): Either<NetworkError, List<FranchiseDto>>
-    suspend fun getFranchise(franchiseId: Int): Either<NetworkError, FranchiseDto>
+    suspend fun getFranchise(franchiseId: String): Either<NetworkError, FranchiseDto>
     suspend fun getFranchisesRandom(limit: Int): Either<NetworkError, List<FranchiseDto>>
     suspend fun getFranchisesByRelease(releaseId: Int): Either<NetworkError, List<FranchiseDto>>
 }
@@ -20,7 +20,7 @@ internal class DefaultFranchisesApi(private val client: HttpClient) : Franchises
         get("anime/franchises")
     }
 
-    override suspend fun getFranchise(franchiseId: Int): Either<NetworkError, FranchiseDto> = client.request {
+    override suspend fun getFranchise(franchiseId: String): Either<NetworkError, FranchiseDto> = client.request {
         get("anime/franchises/${franchiseId}")
     }
 
