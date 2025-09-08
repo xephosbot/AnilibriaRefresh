@@ -6,6 +6,8 @@
 
     <!-- Подзаголовки -->
     <string name="label_schedule">Schedule</string>
+    <string name="label_schedule_now">Coming today</string>
+    <string name="label_best_releases">Season’s best</string>
     <string name="label_updates">Updates</string>
     <string name="label_genres">Genres</string>
     <string name="label_description">Description</string>
