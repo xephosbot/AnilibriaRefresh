@@ -1,40 +1,69 @@
 package com.xbot.data.repository
 
 import arrow.core.Either
+import arrow.core.raise.either
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
 import com.xbot.domain.models.Error
-import com.xbot.domain.models.Release
+import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.enums.Season
 import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.network.client.NetworkError
-import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.api.ScheduleApi
+import com.xbot.network.models.dto.ScheduleDto
 import kotlinx.datetime.DayOfWeek
 
 internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
 ) : ScheduleRepository {
-    override suspend fun getScheduleNow(): Either<Error, List<Release>> = scheduleApi
+    override suspend fun getScheduleNow(): Either<Error, List<Schedule>> = scheduleApi
         .getScheduleNow()
         .mapLeft(NetworkError::toDomain)
-        .map { schedule -> schedule.map { it.value.release.toDomain() } }
+        .map { schedule -> schedule["today"]?.map(ScheduleDto::toDomain) ?: emptyList() }
 
-    override suspend fun getScheduleWeek(): Either<Error, Map<DayOfWeek, List<Release>>> = scheduleApi
+    override suspend fun getScheduleWeek(): Either<Error, Map<DayOfWeek, List<Schedule>>> = scheduleApi
         .getScheduleWeek()
         .mapLeft(NetworkError::toDomain)
         .map { schedule ->
             schedule
-                .map { it.release }
                 .groupBy(
-                    keySelector = { title ->
-                        title.publishDay!!.toDayOfWeek()
+                    keySelector = { schedule ->
+                        schedule.release.publishDay!!.toDayOfWeek()
                     },
-                    valueTransform = ReleaseDto::toDomain,
+                    valueTransform = ScheduleDto::toDomain,
                 )
                 .let { map ->
                     map.entries
                         .sortedBy { it.key }
                         .associateBy({ it.key }) { it.value }
                 }
+        }
+
+    override suspend fun getCurrentDay(): Either<Error, DayOfWeek> = either {
+        DayOfWeek.MONDAY // Replace with actual logic to get the current day
+    }
+
+    override suspend fun getCurrentSeason(): Either<Error, Season> = scheduleApi
+        .getScheduleNow()
+        .mapLeft(NetworkError::toDomain)
+        .map { schedule ->
+            schedule["today"]
+                ?.map { it.release.season?.toDomain() }
+                ?.groupingBy { it }
+                ?.eachCount()
+                ?.maxBy { it.value }
+                ?.key!!
+        }
+
+    override suspend fun getCurrentYear(): Either<Error, Int> = scheduleApi
+        .getScheduleNow()
+        .mapLeft(NetworkError::toDomain)
+        .map { schedule ->
+            schedule["today"]
+                ?.map { it.release.year }
+                ?.groupingBy { it }
+                ?.eachCount()
+                ?.maxBy { it.value }
+                ?.key!!
         }
 }
