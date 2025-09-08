@@ -19,6 +19,7 @@ kotlin {
             implementation(projects.sharedUi.designSystem)
             implementation(projects.sharedUi.common)
             implementation(projects.sharedUi.feature.search.api)
+            implementation(projects.sharedUi.feature.title.api)
             implementation(compose.foundation)
             implementation(libs.navigation.compose)
             implementation(libs.lifecycle.viewmodel.compose)
