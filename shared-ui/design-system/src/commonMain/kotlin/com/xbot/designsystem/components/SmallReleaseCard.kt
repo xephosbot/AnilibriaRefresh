@@ -25,15 +25,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.valentinilk.shimmer.ShimmerBounds
-import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.utils.PreviewContainer
 import com.xbot.designsystem.utils.dummyReleaseList
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -119,17 +116,13 @@ private fun SmallReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun SmallReleaseCardPreview() {
-    val shimmer = rememberShimmer(ShimmerBounds.View)
-
-    AnilibriaTheme {
-        ProvideShimmer(shimmer) {
-            SmallReleaseCard(
-                release = dummyReleaseList[1],
-                onClick = {
-                    // Handle the click event here
-                }
-            )
-        }
+    PreviewContainer {
+        SmallReleaseCard(
+            release = dummyReleaseList[1],
+            onClick = {
+                // Handle the click event here
+            }
+        )
     }
 }
 
