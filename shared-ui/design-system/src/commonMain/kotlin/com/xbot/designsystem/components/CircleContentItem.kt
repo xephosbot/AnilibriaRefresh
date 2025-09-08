@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.ExpressiveTextStyle
@@ -96,7 +95,6 @@ fun CircleContentItem(
     modifier: Modifier = Modifier,
     placeholder: Painter? = null,
     shape: ExpressiveShape = CircleContentItemDefaults.shape(),
-    textStyle: ExpressiveTextStyle = CircleContentItemDefaults.textStyle(),
     title: @Composable () -> Unit,
     subtitle: @Composable () -> Unit,
     interactionSource: MutableInteractionSource? = null,
@@ -105,13 +103,11 @@ fun CircleContentItem(
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
 
-    val titleTextStyle = textStyle.textStyleForInteraction(pressed)
-
     Column(
         modifier = modifier.width(IntrinsicSize.Min),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PosterImage(
+        Box(
             modifier = Modifier
                 .size(PosterSize)
                 .clip(shape.shapeForInteraction(pressed, false))
@@ -119,12 +115,16 @@ fun CircleContentItem(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
                     onClick = onClick
-                ),
-            poster = poster,
-            placeholder = placeholder,
-        )
+                )
+        ) {
+            PosterImage(
+                modifier = Modifier.matchParentSize(),
+                poster = poster,
+                placeholder = placeholder,
+            )
+        }
         Spacer(Modifier.height(SpaceHeight))
-        ProvideTextStyle(titleTextStyle.copy(textMotion = TextMotion.Animated)) {
+        ProvideTextStyle(MaterialTheme.typography.labelMedium) {
             title()
         }
         ProvideTextStyle(MaterialTheme.typography.bodySmall) {
