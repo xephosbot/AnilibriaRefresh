@@ -9,12 +9,12 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 
 data class CatalogFilters(
-    val genres: List<Genre>,
-    val types: List<ReleaseType>,
-    val seasons: List<Season>,
-    val years: ClosedRange<Int>,
-    val sortingTypes: List<SortingType>,
-    val ageRatings: List<AgeRating>,
-    val publishStatuses: List<PublishStatus>,
-    val productionStatuses: List<ProductionStatus>,
+    val genres: List<Genre> = emptyList(),
+    val types: List<ReleaseType> = emptyList(),
+    val seasons: List<Season> = emptyList(),
+    val years: IntRange = -1..-1,
+    val sortingTypes: List<SortingType> = emptyList(),
+    val ageRatings: List<AgeRating> = emptyList(),
+    val publishStatuses: List<PublishStatus> = emptyList(),
+    val productionStatuses: List<ProductionStatus> = emptyList(),
 )
