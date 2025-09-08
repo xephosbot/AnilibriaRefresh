@@ -75,7 +75,6 @@ fun <T> NavigableSupportingPaneScaffold(
     )
 }
 
-
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun ThreePaneScaffoldNavigator<*>.isExpanded(role: ThreePaneScaffoldRole) =
     scaffoldValue[role] == PaneAdaptedValue.Expanded
