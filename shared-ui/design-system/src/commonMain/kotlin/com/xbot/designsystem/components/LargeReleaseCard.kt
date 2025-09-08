@@ -19,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SplitButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -32,14 +31,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
-import com.valentinilk.shimmer.ShimmerBounds
-import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.utils.PreviewContainer
 import com.xbot.designsystem.utils.dummyReleaseList
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -98,7 +94,7 @@ private fun LargeReleaseCardContent(
             ReleaseMetaText(release = release)
             release.description?.let { description ->
                 Text(
-                    text = description,
+                    text = description.lines().joinToString(" "),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     maxLines = 3,
@@ -172,43 +168,37 @@ private fun LargeReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun LargeReleaseCardPreview() {
-    val shimmer = rememberShimmer(ShimmerBounds.View)
-
-    AnilibriaTheme {
-        ProvideShimmer(shimmer) {
-            Surface {
-                LargeReleaseCard(
-                    release = dummyReleaseList[2],
-                ) {
-                    MediumSplitButton(
-                        onLeadingClick = {
-                            // Handle leading button click
-                        },
-                        onTrailingClick = {
-                            // Handle trailing button click
-                        },
-                        leadingContent = {
-                            Icon(
-                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                            Text(
-                                text = stringResource(Res.string.button_watch),
-                                maxLines = 1
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                                imageVector = AnilibriaIcons.Outlined.MoreVert,
-                                contentDescription = null
-                            )
-                        }
+    PreviewContainer {
+        LargeReleaseCard(
+            release = dummyReleaseList[2],
+        ) {
+            MediumSplitButton(
+                onLeadingClick = {
+                    // Handle leading button click
+                },
+                onTrailingClick = {
+                    // Handle trailing button click
+                },
+                leadingContent = {
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                        imageVector = AnilibriaIcons.Filled.PlayArrow,
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                    Text(
+                        text = stringResource(Res.string.button_watch),
+                        maxLines = 1
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
+                        imageVector = AnilibriaIcons.Outlined.MoreVert,
+                        contentDescription = null
                     )
                 }
-            }
+            )
         }
     }
 }
