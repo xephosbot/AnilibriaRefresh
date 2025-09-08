@@ -6,18 +6,23 @@ import com.xbot.network.models.dto.EpisodeDto
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseMemberDto
 import com.xbot.network.models.dto.ReleaseDto
+import com.xbot.network.models.dto.FranchiseDto
+import com.xbot.network.models.dto.ScheduleDto
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Error
+import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.User
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.Schedule
 import com.xbot.network.client.NetworkError
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -131,7 +136,44 @@ internal fun ProfileDto.toDomain() = User(
     ).toLocalDateTime(TimeZone.currentSystemDefault())
 )
 
-internal fun NetworkError.toDomain(): Error = when(this) {
+@OptIn(ExperimentalTime::class)
+internal fun ScheduleDto.toDomain() = Schedule(
+    release = release.toDomain(),
+    fullSeasonIsReleased = fullSeasonIsReleased,
+    publishedReleaseEpisode = publishedReleaseEpisode?.toDomain() ?: Episode(
+        id = release.id.toString(),
+        ordinal = nextReleaseEpisodeNumber!!.toFloat(),
+        //TODO: Update it
+        updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    )
+)
+
+internal fun FranchiseDto.toDomain() = Franchise(
+    id = id,
+    name = name,
+    englishName = nameEnglish,
+    rating = rating,
+    lastYear = lastYear,
+    firstYear = firstYear,
+    totalReleases = totalReleases,
+    totalEpisodes = totalEpisodes,
+    totalDuration = totalDuration,
+    totalDurationInSeconds = totalDurationInSeconds,
+    poster = image.let { image ->
+        val src = image.preview
+        val thumbnail = image.thumbnail
+
+        if (src == null) return@let null
+
+        Poster(
+            src = src.let(Constants::withBaseUrl),
+            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+        )
+    },
+    franchiseReleases = franchiseReleases?.map { it.release.toDomain() },
+)
+
+internal fun NetworkError.toDomain(): Error = when (this) {
     is NetworkError.HttpError -> Error.HttpError(this.code, this.message)
     is NetworkError.NetworkException -> Error.NetworkException(this.cause)
     is NetworkError.SerializationError -> Error.SerializationError(this.cause)
