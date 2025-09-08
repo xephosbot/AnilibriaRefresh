@@ -2,7 +2,9 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,8 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
@@ -27,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -51,7 +56,7 @@ fun Feed(
     val feedScope by remember {
         derivedStateOf { DefaultFeedScope().apply(latestContent.value) }
     }
-    val feedItemScope by remember(state.layoutInfo.maxSpan) {
+    val feedItemScope by remember {
         derivedStateOf { DefaultFeedItemScope().apply { _maxLineSpan = state.layoutInfo.maxSpan } }
     }
 
@@ -305,7 +310,7 @@ inline fun <T> FeedScope.horizontalItems(
     noinline contentType: (item: T) -> Any? = { null },
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
-    crossinline itemContent: @Composable LazyItemScope.(T) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
 ) = row {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
@@ -315,8 +320,58 @@ inline fun <T> FeedScope.horizontalItems(
             items = items,
             key = key,
             contentType = contentType
-        ) {
-            itemContent(it)
+        ) { item ->
+            itemContent(item)
+        }
+    }
+}
+
+inline fun <T> FeedScope.horizontalSnappableItems(
+    items: List<T>,
+    noinline key: ((item: T) -> Any)? = null,
+    noinline contentType: (item: T) -> Any? = { null },
+    itemSpacing: Dp = 12.dp,
+    contentPadding: PaddingValues = PaddingValues(),
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
+) = row {
+    val state = rememberLazyListState()
+    val snappingLayout = remember(state) { SnapLayoutInfoProvider(state, SnapPosition.Start) }
+    val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
+
+    LazyRow(
+        state = state,
+        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+        contentPadding = contentPadding,
+        flingBehavior = flingBehavior,
+    ) {
+        items(
+            items = items,
+            key = key,
+            contentType = contentType
+        ) { item ->
+            itemContent(item)
+        }
+    }
+}
+
+inline fun <T> FeedScope.horizontalItemsIndexed(
+    items: List<T>,
+    noinline key: ((index: Int, item: T) -> Any)? = null,
+    noinline contentType: (index: Int, item: T) -> Any? = { _, _ -> null },
+    itemSpacing: Dp = 12.dp,
+    contentPadding: PaddingValues = PaddingValues(),
+    crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
+) = row {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+        contentPadding = contentPadding,
+    ) {
+        itemsIndexed(
+            items = items,
+            key = key,
+            contentType = contentType
+        ) { index, item ->
+            itemContent(index, item)
         }
     }
 }
@@ -326,14 +381,14 @@ inline fun <K, V> FeedScope.horizontalItems(
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
     crossinline stickyHeader: @Composable (K) -> Unit,
-    crossinline itemContent: @Composable LazyItemScope.(Int, V) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(V) -> Unit,
 ) = row {
     LazyRowWithStickyHeader(
         items = items,
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
         stickyHeader = { stickyHeader(it) },
-        itemContent = { index, it -> itemContent(index, it) },
+        itemContent = { itemContent(it) },
     )
 }
 
@@ -350,12 +405,6 @@ inline fun <T> FeedScope.horizontalPagerItems(
     snapPosition: SnapPosition = SnapPosition.Start,
     crossinline pagerContent: @Composable PagerScope.(index: Int, item: T) -> Unit,
 ) = row {
-    AutoScrollSideEffect(
-        autoScrollDurationMillis = 5000L,
-        pagerState = state,
-        doAutoScroll = shouldPerformAutoScroll(state.interactionSource)
-    )
-
     HorizontalPager(
         state = state,
         key = key,
