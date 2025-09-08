@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -26,7 +25,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -69,16 +67,20 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.LargeReleaseCard
+import com.xbot.designsystem.components.MediumReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
+import com.xbot.designsystem.components.horizontalItemsIndexed
 import com.xbot.designsystem.components.horizontalPagerItems
+import com.xbot.designsystem.components.horizontalSnappableItems
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
@@ -92,17 +94,17 @@ import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
-import com.xbot.localization.toLocalizedString
+import com.xbot.domain.models.Schedule
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
 import com.xbot.resources.badge_3
 import com.xbot.resources.button_watch
+import com.xbot.resources.label_best_releases
 import com.xbot.resources.label_genres
-import com.xbot.resources.label_schedule
+import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.absoluteValue
 
@@ -238,8 +240,9 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
                                 gridState = gridState,
                                 items = items,
                                 recommendedReleases = targetState.releasesFeed.recommendedReleases,
+                                bestReleases = targetState.releasesFeed.bestReleases,
                                 genres = targetState.releasesFeed.genres,
-                                scheduleList = targetState.releasesFeed.schedule,
+                                scheduleList = targetState.releasesFeed.scheduleNow,
                                 contentPadding = innerPadding,
                                 onScheduleClick = onScheduleClick,
                                 onReleaseClick = { onReleaseClick(it.id) },
@@ -267,8 +270,9 @@ private fun ReleaseFeed(
     gridState: LazyGridState,
     items: LazyPagingItems<Release>,
     recommendedReleases: List<Release>,
+    bestReleases: List<Release>,
     genres: List<Genre>,
-    scheduleList: Map<DayOfWeek, List<Release>>,
+    scheduleList: List<Schedule>,
     contentPadding: PaddingValues,
     onScheduleClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
@@ -297,110 +301,111 @@ private fun ReleaseFeed(
                 ) {
                     var checked by remember { mutableStateOf(false) }
 
-                    Box(
-                        modifier = Modifier.wrapContentSize()
-                    ) {
-                        MediumSplitButton(
-                            onLeadingClick = {
-                                onReleaseClick(release)
-                            },
-                            trailingChecked = checked,
-                            onTrailingCheckedChange = { checked = it },
-                            leadingContent = {
-                                Icon(
-                                    modifier = Modifier
-                                        .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                                    imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                    contentDescription = null
-                                )
-                                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                                Text(
-                                    text = stringResource(Res.string.button_watch),
-                                    maxLines = 1
-                                )
-                            },
-                            trailingContent = {
-                                val rotation by animateFloatAsState(if (checked) 180f else 0f)
-
-                                Icon(
-                                    modifier = Modifier
-                                        .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
-                                        .graphicsLayer {
-                                            rotationZ = rotation
-                                        },
-                                    imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-
-                        DropdownMenu(
-                            expanded = checked,
-                            onDismissRequest = { checked = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(text = "Item 1") },
-                                onClick = { /* Handle item 1 click */ }
+                    MediumSplitButton(
+                        onLeadingClick = {
+                            onReleaseClick(release)
+                        },
+                        trailingChecked = checked,
+                        onTrailingCheckedChange = { checked = it },
+                        leadingContent = {
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                contentDescription = null
                             )
-                            DropdownMenuItem(
-                                text = { Text(text = "Item 2") },
-                                onClick = { /* Handle item 3 click */ }
+                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                            Text(
+                                text = stringResource(Res.string.button_watch),
+                                maxLines = 1
                             )
-                            DropdownMenuItem(
-                                text = { Text(text = "Item 3") },
-                                onClick = { /* Handle item 3 click */ }
+                        },
+                        trailingContent = {
+                            val rotation by animateFloatAsState(if (checked) 180f else 0f)
+
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    },
+                                imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                                contentDescription = null
                             )
                         }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 1") },
+                            onClick = { /* Handle item 1 click */ }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 2") },
+                            onClick = { /* Handle item 3 click */ }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 3") },
+                            onClick = { /* Handle item 3 click */ }
+                        )
                     }
                 }
             }
 
             header(
-                title = { Text(text = stringResource(Res.string.label_schedule)) },
+                title = { Text(text = stringResource(Res.string.label_schedule_now)) },
                 onClick = onScheduleClick
             )
-            horizontalItems(
+            horizontalSnappableItems(
                 items = scheduleList,
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                stickyHeader = { dayOfWeek ->
-                    Column {
-                        Text(
-                            text = dayOfWeek.toLocalizedString(),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                },
-                itemContent = { index, release ->
-                    AnilibriaTheme(darkTheme = false) {
-                        SmallReleaseCard(
-                            modifier = Modifier
-                                .then(
-                                    when (index) {
-                                        0 -> Modifier.overlayDrawable(
-                                            resource = Res.drawable.badge_1,
-                                            offset = DpOffset(x = 70.dp, y = 11.dp)
-                                        )
+                itemSpacing = 16.dp,
+            ) { schedule ->
+                MediumReleaseCard(
+                    modifier = Modifier,
+                    release = schedule.release,
+                    onClick = onReleaseClick,
+                ) {
+                    EpisodeListItem(
+                        episode = schedule.publishedReleaseEpisode,
+                        onClick = {}
+                    )
+                }
+            }
 
-                                        1 -> Modifier.overlayDrawable(
-                                            resource = Res.drawable.badge_2,
-                                            offset = DpOffset(x = 70.dp, y = 11.dp)
-                                        )
-
-                                        2 -> Modifier.overlayDrawable(
-                                            resource = Res.drawable.badge_3,
-                                            offset = DpOffset(x = 70.dp, y = 11.dp)
-                                        )
-
-                                        else -> Modifier
-                                    }
-                                ),
-                            release = release,
-                            onClick = onReleaseClick,
-                        )
-                    }
-                },
+            header(
+                title = { Text(text = stringResource(Res.string.label_best_releases)) },
             )
+            horizontalItemsIndexed(
+                items = bestReleases,
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) { index, release ->
+                AnilibriaTheme(darkTheme = false) {
+                    SmallReleaseCard(
+                        modifier = Modifier
+                            .then(
+                                when (index) {
+                                    0 -> Modifier.overlayDrawable(
+                                        resource = Res.drawable.badge_1,
+                                        offset = DpOffset(x = 70.dp, y = 11.dp)
+                                    )
+
+                                    1 -> Modifier.overlayDrawable(
+                                        resource = Res.drawable.badge_2,
+                                        offset = DpOffset(x = 70.dp, y = 11.dp)
+                                    )
+
+                                    2 -> Modifier.overlayDrawable(
+                                        resource = Res.drawable.badge_3,
+                                        offset = DpOffset(x = 70.dp, y = 11.dp)
+                                    )
+
+                                    else -> Modifier
+                                }
+                            ),
+                        release = release,
+                        onClick = onReleaseClick,
+                    )
+                }
+            }
 
             header(
                 title = { Text(text = stringResource(Res.string.label_genres)) }
@@ -453,19 +458,20 @@ private fun LoadingScreen(
         ) {
             LargeReleaseCard(null)
             Header(
-                title = { Text(stringResource(Res.string.label_schedule)) },
+                title = { Text(stringResource(Res.string.label_schedule_now)) },
                 onClick = {},
             )
-            Spacer(Modifier.height(textHeight))
-            Spacer(Modifier.height(12.dp))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState(), enabled = false)
                     .padding(horizontal = 16.dp)
             ) {
                 repeat(10) {
-                    SmallReleaseCard(release = null) {}
+                    MediumReleaseCard(
+                        release = null,
+                        onClick = {}
+                    )
                 }
             }
         }
