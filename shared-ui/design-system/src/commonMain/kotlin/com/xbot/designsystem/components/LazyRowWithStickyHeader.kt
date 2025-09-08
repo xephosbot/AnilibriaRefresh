@@ -35,7 +35,7 @@ fun <K, V> LazyRowWithStickyHeader(
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     stickyHeader: @Composable (K) -> Unit,
-    itemContent: @Composable LazyItemScope.(Int, V) -> Unit,
+    itemContent: @Composable LazyItemScope.(V) -> Unit,
 ) {
     val itemsWithKeys = remember(items) {
         items.flatMap { entry -> entry.value.map { entry.key to it } }
@@ -67,7 +67,7 @@ fun <K, V> LazyRowWithStickyHeader(
             itemsIndexed(
                 items = itemsWithKeys,
             ) { index, (_, value) ->
-                itemContent(index, value)
+                itemContent(value)
             }
         }
     }
