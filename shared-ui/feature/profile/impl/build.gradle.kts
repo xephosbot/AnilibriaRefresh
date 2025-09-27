@@ -32,6 +32,11 @@ kotlin {
     }
 }
 
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    metricsDestination = layout.buildDirectory.dir("compose_compiler")
+}
+
 android {
     compileSdk = 36
     namespace = "com.xbot.sharedui.feature.profile.impl"
