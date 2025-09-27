@@ -2,6 +2,7 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.theme.AnilibriaTheme
@@ -32,6 +32,35 @@ fun Header(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+) {
+    Header(
+        title = title,
+        modifier = modifier,
+        content = if (onClick != null) {
+            {
+                FilledTonalIconButton(
+                    modifier = Modifier
+                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+                    onClick = onClick,
+                    shapes = IconButtonDefaults.shapes()
+                ) {
+                    Icon(
+                        modifier = Modifier.size(IconButtonDefaults.smallIconSize),
+                        imageVector = AnilibriaIcons.Outlined.ChevronRight,
+                        contentDescription = null
+                    )
+                }
+            }
+        } else null
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun Header(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (RowScope.() -> Unit)?,
 ) {
     Box(Modifier.padding(top = 8.dp)) {
         Row(
@@ -45,29 +74,16 @@ fun Header(
                 title()
             }
 
-            if (onClick != null) {
+            if (content != null) {
                 Spacer(Modifier.weight(1f))
-                CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Hairline) {
-                    FilledTonalIconButton(
-                        modifier = Modifier.size(
-                            IconButtonDefaults.smallContainerSize(
-                                IconButtonDefaults.IconButtonWidthOption.Narrow
-                            )
-                        ),
-                        onClick = onClick,
-                        shapes = IconButtonDefaults.shapes()
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(IconButtonDefaults.smallIconSize),
-                            imageVector = AnilibriaIcons.Outlined.ChevronRight,
-                            contentDescription = null
-                        )
-                    }
+                CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+                    content.invoke(this)
                 }
             }
         }
     }
 }
+
 
 @Preview(name = "Header", widthDp = 278)
 @Composable
