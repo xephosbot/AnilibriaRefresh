@@ -1,7 +1,6 @@
 package com.xbot.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -37,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TonalToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -63,10 +63,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.GenreItem
@@ -75,6 +78,7 @@ import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.MediumReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.ReleaseListItem
+import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
@@ -82,6 +86,7 @@ import com.xbot.designsystem.components.horizontalItemsIndexed
 import com.xbot.designsystem.components.horizontalPagerItems
 import com.xbot.designsystem.components.horizontalSnappableItems
 import com.xbot.designsystem.components.pagingItems
+import com.xbot.designsystem.components.row
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
 import com.xbot.designsystem.modifier.ProvideShimmer
@@ -92,20 +97,22 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.Schedule
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
 import com.xbot.resources.badge_3
 import com.xbot.resources.button_watch
-import com.xbot.resources.label_best_releases
+import com.xbot.resources.label_best
+import com.xbot.resources.label_best_all_time
+import com.xbot.resources.label_best_now
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.absoluteValue
 
 @OptIn(
@@ -114,19 +121,47 @@ import kotlin.math.absoluteValue
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-internal fun ThreePaneScaffoldPaneScope.FeedPane(
+context(scope: ThreePaneScaffoldPaneScope)
+internal fun FeedPane(
     modifier: Modifier = Modifier,
-    state: HomeScreenState,
-    items: LazyPagingItems<Release>,
+    viewModel: FeedViewModel = koinViewModel(),
     onSearchClick: () -> Unit,
     onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
-    onRefresh: () -> Unit,
-    onShowErrorMessage: (Throwable) -> Unit,
+) {
+    val items = viewModel.releases.collectAsLazyPagingItems()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    FeedPane(
+        modifier = modifier,
+        state = state,
+        items = items,
+        onAction = viewModel::onAction,
+        onSearchClick = onSearchClick,
+        onScheduleClick = onScheduleClick,
+        onReleaseClick = onReleaseClick,
+    )
+}
+
+@OptIn(
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
+@Composable
+context(scope: ThreePaneScaffoldPaneScope)
+private fun FeedPane(
+    modifier: Modifier = Modifier,
+    state: FeedScreenState,
+    items: LazyPagingItems<Release>,
+    onAction: (FeedScreenAction) -> Unit,
+    onSearchClick: () -> Unit,
+    onScheduleClick: () -> Unit,
+    onReleaseClick: (Int) -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val gridState = rememberLazyGridState()
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     var topAppbarHeight by remember { mutableStateOf(0) }
     val topAppBarAlpha by remember {
@@ -151,6 +186,10 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
         }
     }
 
+    val onShowErrorMessage: (Throwable) -> Unit = { error ->
+        onAction(FeedScreenAction.ShowErrorMessage(error) { items.retry() })
+    }
+
     LaunchedEffect(items) {
         snapshotFlow { items.loadState }.collect { loadState ->
             (loadState.refresh as? LoadState.Error)?.let { onShowErrorMessage(it.error) }
@@ -160,7 +199,7 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
     }
 
     val isRefreshing by remember(state, items) {
-        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is HomeScreenState.Loading }
+        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is FeedScreenState.Loading }
     }
 
     val showResetScrollButton by remember {
@@ -169,95 +208,94 @@ internal fun ThreePaneScaffoldPaneScope.FeedPane(
         }
     }
 
-    AnimatedPane(modifier = modifier) {
-        Scaffold(
-            modifier = Modifier.pullToRefresh(
-                isRefreshing = isRefreshing,
-                state = pullToRefreshState,
-                onRefresh = onRefresh
-            ),
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Image(
-                            imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                            contentDescription = null
+    with(scope) {
+        AnimatedPane(modifier = modifier) {
+            Scaffold(
+                modifier = Modifier.pullToRefresh(
+                    isRefreshing = isRefreshing,
+                    state = pullToRefreshState,
+                    onRefresh = {
+                        items.refresh()
+                        onAction(FeedScreenAction.Refresh)
+                    }
+                ),
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Image(
+                                imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                contentDescription = null
+                            )
+                        },
+                        actions = {
+                            IconButton(
+                                onClick = onSearchClick,
+                                shapes = IconButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Outlined.Search,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
                         )
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = onSearchClick,
+                    )
+                },
+                floatingActionButton = {
+                    AnimatedVisibility(
+                        visible = gridState.isScrollingUp().value && showResetScrollButton,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    gridState.animateScrollToItem(0)
+                                }
+                            },
                             shapes = IconButtonDefaults.shapes()
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.Search,
+                                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                                imageVector = AnilibriaIcons.Outlined.ArrowDropUp,
                                 contentDescription = null
                             )
                         }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
-                    )
-                )
-            },
-            floatingActionButton = {
-                AnimatedVisibility(
-                    visible = gridState.isScrollingUp().value && showResetScrollButton,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    FilledTonalIconButton(
-                        onClick = {
-                            scope.launch {
-                                gridState.animateScrollToItem(0)
-                            }
-                        },
-                        shapes = IconButtonDefaults.shapes()
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                            imageVector = AnilibriaIcons.Outlined.ArrowDropUp,
-                            contentDescription = null
-                        )
                     }
-                }
-            },
-            floatingActionButtonPosition = FabPosition.Center,
-        ) { innerPadding ->
-            topAppbarHeight =
-                with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+                },
+                floatingActionButtonPosition = FabPosition.Center,
+                containerColor = MaterialTheme.colorScheme.surface
+            ) { innerPadding ->
+                topAppbarHeight =
+                    with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
 
-            Box {
-                Crossfade(
-                    targetState = state,
-                    label = "Loading state transition in HomeScreenContent",
-                ) { targetState ->
-                    when (targetState) {
-                        is HomeScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                        is HomeScreenState.Success -> {
+                Box {
+                    when (state) {
+                        is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                        is FeedScreenState.Success -> {
                             ReleaseFeed(
                                 gridState = gridState,
                                 items = items,
-                                recommendedReleases = targetState.releasesFeed.recommendedReleases,
-                                bestReleases = targetState.releasesFeed.bestReleases,
-                                genres = targetState.releasesFeed.genres,
-                                scheduleList = targetState.releasesFeed.scheduleNow,
+                                state = state,
                                 contentPadding = innerPadding,
                                 onScheduleClick = onScheduleClick,
+                                onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
                                 onReleaseClick = { onReleaseClick(it.id) },
                             )
                         }
                     }
-                }
 
-                LoadingIndicator(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(innerPadding.only(WindowInsetsSides.Top)),
-                    isRefreshing = isRefreshing,
-                    state = pullToRefreshState
-                )
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(innerPadding.only(WindowInsetsSides.Top)),
+                        isRefreshing = isRefreshing,
+                        state = pullToRefreshState
+                    )
+                }
             }
         }
     }
@@ -269,16 +307,14 @@ private fun ReleaseFeed(
     modifier: Modifier = Modifier,
     gridState: LazyGridState,
     items: LazyPagingItems<Release>,
-    recommendedReleases: List<Release>,
-    bestReleases: List<Release>,
-    genres: List<Genre>,
-    scheduleList: List<Schedule>,
+    state: FeedScreenState.Success,
     contentPadding: PaddingValues,
     onScheduleClick: () -> Unit,
+    onBestTypeChange: (BestType) -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val pagerState = rememberPagerState(pageCount = { recommendedReleases.size })
+    val pagerState = rememberPagerState(pageCount = { state.recommendedReleases.size })
 
     ProvideShimmer(shimmer) {
         Feed(
@@ -288,7 +324,7 @@ private fun ReleaseFeed(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
             horizontalPagerItems(
-                items = recommendedReleases,
+                items = state.recommendedReleases,
                 state = pagerState
             ) { page, release ->
                 LargeReleaseCard(
@@ -355,7 +391,8 @@ private fun ReleaseFeed(
                 onClick = onScheduleClick
             )
             horizontalSnappableItems(
-                items = scheduleList,
+                items = state.scheduleNow,
+                key = { it.release.id },
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 itemSpacing = 16.dp,
             ) { schedule ->
@@ -371,11 +408,34 @@ private fun ReleaseFeed(
                 }
             }
 
-            header(
-                title = { Text(text = stringResource(Res.string.label_best_releases)) },
-            )
+            row {
+                Header(
+                    title = { Text(text = stringResource(Res.string.label_best)) },
+                    content = {
+                        val items = remember { BestType.entries }
+                        SingleChoiceConnectedButtonGroup(
+                            items = items,
+                            selectedItem = state.currentBestType
+                        ) { selected, item ->
+                            TonalToggleButton(
+                                modifier = Modifier.height(ButtonDefaults.ExtraSmallContainerHeight),
+                                checked = selected,
+                                onCheckedChange = { onBestTypeChange(item) },
+                                shapes = ConnectedButtonGroupDefaults.connectedButtonShapes(
+                                    index = items.indexOf(item),
+                                    count = items.size
+                                ),
+                                contentPadding = ButtonDefaults.ExtraSmallContentPadding,
+                            ) {
+                                Text(text = stringResource(item.stringRes))
+                            }
+                        }
+                    }
+                )
+            }
             horizontalItemsIndexed(
-                items = bestReleases,
+                items = state.bestReleases,
+                key = { index, item -> item.id },
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) { index, release ->
                 AnilibriaTheme(darkTheme = false) {
@@ -411,7 +471,8 @@ private fun ReleaseFeed(
                 title = { Text(text = stringResource(Res.string.label_genres)) }
             )
             horizontalItems(
-                items = genres,
+                items = state.genres,
+                key = { it.id },
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) { genre ->
                 GenreItem(
@@ -446,9 +507,6 @@ private fun LoadingScreen(
     contentPadding: PaddingValues
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
-    val textHeight = with(LocalDensity.current) {
-        MaterialTheme.typography.labelMedium.fontSize.toDp()
-    }
 
     ProvideShimmer(shimmer) {
         Column(
@@ -495,3 +553,9 @@ private fun LazyGridState.isScrollingUp(): State<Boolean> {
         }
     }
 }
+
+private val BestType.stringRes: StringResource
+    get() = when (this) {
+        BestType.Now -> Res.string.label_best_now
+        BestType.AllTime -> Res.string.label_best_all_time
+    }
