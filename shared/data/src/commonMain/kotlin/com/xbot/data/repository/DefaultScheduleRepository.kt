@@ -8,6 +8,7 @@ import com.xbot.domain.models.Error
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.repository.ScheduleRepository
+import com.xbot.network.api.ReleasesApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.api.ScheduleApi
 import com.xbot.network.models.dto.ScheduleDto
@@ -15,6 +16,7 @@ import kotlinx.datetime.DayOfWeek
 
 internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
+    private val releasesApi: ReleasesApi,
 ) : ScheduleRepository {
     override suspend fun getScheduleNow(): Either<Error, List<Schedule>> = scheduleApi
         .getScheduleNow()
@@ -43,27 +45,27 @@ internal class DefaultScheduleRepository(
         DayOfWeek.MONDAY // Replace with actual logic to get the current day
     }
 
-    override suspend fun getCurrentSeason(): Either<Error, Season> = scheduleApi
-        .getScheduleNow()
+    override suspend fun getCurrentSeason(): Either<Error, Season> = releasesApi
+        .getLatestReleases(10)
         .mapLeft(NetworkError::toDomain)
-        .map { schedule ->
-            schedule["today"]
-                ?.map { it.release.season?.toDomain() }
-                ?.groupingBy { it }
-                ?.eachCount()
-                ?.maxBy { it.value }
-                ?.key!!
+        .map { releases ->
+            releases
+                .map { it.season?.toDomain() }
+                .groupingBy { it }
+                .eachCount()
+                .maxBy { it.value }
+                .key!!
         }
 
-    override suspend fun getCurrentYear(): Either<Error, Int> = scheduleApi
-        .getScheduleNow()
+    override suspend fun getCurrentYear(): Either<Error, Int> = releasesApi
+        .getLatestReleases(10)
         .mapLeft(NetworkError::toDomain)
-        .map { schedule ->
-            schedule["today"]
-                ?.map { it.release.year }
-                ?.groupingBy { it }
-                ?.eachCount()
-                ?.maxBy { it.value }
-                ?.key!!
+        .map { releases ->
+            releases
+                .map { it.year }
+                .groupingBy { it }
+                .eachCount()
+                .maxBy { it.value }
+                .key
         }
 }
