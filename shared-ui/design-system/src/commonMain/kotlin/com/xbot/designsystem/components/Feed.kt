@@ -50,7 +50,7 @@ fun Feed(
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
-    content: FeedScope.() -> Unit
+    content: @ExtensionFunctionType FeedScope.() -> Unit
 ) {
     val latestContent = rememberUpdatedState(content)
     val feedScope by remember {
