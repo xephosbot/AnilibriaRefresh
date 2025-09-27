@@ -13,7 +13,7 @@ data class FranchiseDto(
     @SerialName("first_year") val firstYear: Int,
     @SerialName("total_releases") val totalReleases: Int,
     @SerialName("total_episodes") val totalEpisodes: Int,
-    @SerialName("total_duration") val totalDuration: String,
+    @SerialName("total_duration") val totalDuration: String? = null,
     @SerialName("total_duration_in_seconds") val totalDurationInSeconds: Long,
     @SerialName("image") val image: ImageDto,
     @SerialName("franchise_releases") val franchiseReleases: List<FranchiseWithReleaseDto>? = null,

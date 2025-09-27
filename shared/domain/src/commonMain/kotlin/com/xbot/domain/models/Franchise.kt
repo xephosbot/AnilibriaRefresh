@@ -9,7 +9,7 @@ data class Franchise(
     val firstYear: Int,
     val totalReleases: Int,
     val totalEpisodes: Int,
-    val totalDuration: String,
+    val totalDuration: String? = null,
     val totalDurationInSeconds: Long,
     val poster: Poster?,
     val franchiseReleases: List<Release>? = null,
