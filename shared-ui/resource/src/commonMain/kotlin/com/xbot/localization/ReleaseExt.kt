@@ -6,6 +6,6 @@ import com.xbot.domain.models.Release
 fun Release.localizedName(locale: Locale = Locale.current): String {
     return when (locale.language) {
         "ru" -> name
-        else -> englishName
+        else -> if (englishName != null) englishName!! else name
     }
 }
