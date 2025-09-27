@@ -7,7 +7,9 @@
     <!-- Подзаголовки -->
     <string name="label_schedule">Расписание</string>
     <string name="label_schedule_now">Ожидается сегодня</string>
-    <string name="label_best_releases">Лучшее в этом сезоне</string>
+    <string name="label_best">Лучшее</string>
+    <string name="label_best_now">сейчас</string>
+    <string name="label_best_all_time">все время</string>
     <string name="label_updates">Обновления</string>
     <string name="label_genres">Жанры</string>
     <string name="label_description">Описание</string>
