@@ -142,7 +142,7 @@ internal fun ScheduleDto.toDomain() = Schedule(
     fullSeasonIsReleased = fullSeasonIsReleased,
     publishedReleaseEpisode = publishedReleaseEpisode?.toDomain() ?: Episode(
         id = release.id.toString(),
-        ordinal = nextReleaseEpisodeNumber!!.toFloat(),
+        ordinal = nextReleaseEpisodeNumber?.toFloat() ?: -1f,
         //TODO: Update it
         updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     )
