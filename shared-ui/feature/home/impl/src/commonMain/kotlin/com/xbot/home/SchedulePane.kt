@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -26,9 +27,11 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.Feed
@@ -42,12 +45,13 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.models.Release
+import com.xbot.domain.models.Schedule
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.label_schedule
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -55,50 +59,79 @@ import org.jetbrains.compose.resources.stringResource
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-internal fun ThreePaneScaffoldPaneScope.SchedulePane(
+context(scope: ThreePaneScaffoldPaneScope)
+internal fun SchedulePane(
     modifier: Modifier = Modifier,
-    state: HomeScreenState,
+    viewModel: ScheduleViewModel = koinViewModel(),
+    showBackButton: Boolean,
+    onReleaseClick: (Int) -> Unit,
+    onBackClick: () -> Unit,
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    SchedulePane(
+        modifier = modifier,
+        state = state,
+        showBackButton = showBackButton,
+        onReleaseClick = onReleaseClick,
+        onBackClick = onBackClick,
+    )
+}
+
+@OptIn(
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
+@Composable
+context(scope: ThreePaneScaffoldPaneScope)
+private fun SchedulePane(
+    modifier: Modifier = Modifier,
+    state: ScheduleScreenState,
     showBackButton: Boolean,
     onReleaseClick: (Int) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    AnimatedPane(modifier = modifier) {
-        Scaffold(
-            modifier = modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = { Text(text = stringResource(Res.string.label_schedule)) },
-                    navigationIcon = {
-                        if (showBackButton) {
-                            IconButton(
-                                onClick = onBackClick,
-                                shapes = IconButtonDefaults.shapes(),
-                            ) {
-                                Icon(
-                                    imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                    contentDescription = null
-                                )
+    with(scope) {
+        AnimatedPane(modifier = modifier) {
+            Scaffold(
+                modifier = modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = { Text(text = stringResource(Res.string.label_schedule)) },
+                        navigationIcon = {
+                            if (showBackButton) {
+                                IconButton(
+                                    onClick = onBackClick,
+                                    shapes = IconButtonDefaults.shapes(),
+                                ) {
+                                    Icon(
+                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
                             }
+                        },
+                        scrollBehavior = scrollBehavior,
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.surface
+            ) { innerPadding ->
+                Crossfade(
+                    targetState = state
+                ) { targetState ->
+                    when (targetState) {
+                        is ScheduleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                        is ScheduleScreenState.Success -> {
+                            ScheduleContent(
+                                state = targetState,
+                                contentPadding = innerPadding,
+                                onReleaseClick = onReleaseClick
+                            )
                         }
-                    },
-                    scrollBehavior = scrollBehavior,
-                )
-            },
-        ) { innerPadding ->
-            Crossfade(
-                targetState = state
-            ) { targetState ->
-                when (targetState) {
-                    is HomeScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                    is HomeScreenState.Success -> {
-                        ScheduleContent(
-                            schedule = targetState.releasesFeed.schedule,
-                            contentPadding = innerPadding,
-                            onReleaseClick = onReleaseClick
-                        )
                     }
                 }
             }
@@ -109,7 +142,7 @@ internal fun ThreePaneScaffoldPaneScope.SchedulePane(
 @Composable
 private fun ScheduleContent(
     modifier: Modifier = Modifier,
-    schedule: Map<DayOfWeek, List<Release>>,
+    state: ScheduleScreenState.Success,
     contentPadding: PaddingValues,
     onReleaseClick: (Int) -> Unit,
 ) {
@@ -121,7 +154,7 @@ private fun ScheduleContent(
             contentPadding = contentPadding,
             columns = GridCells.Adaptive(350.dp)
         ) {
-            schedule.forEach { (dayOfWeek, releases) ->
+            state.schedule.forEach { (dayOfWeek, releases) ->
                 header(
                     title = { Text(text = dayOfWeek.toLocalizedString()) }
                 )
@@ -131,7 +164,7 @@ private fun ScheduleContent(
                 ) { release ->
                     AnilibriaTheme(darkTheme = false) {
                         SmallReleaseCard(
-                            release = release,
+                            release = release.release,
                             onClick = { onReleaseClick(it.id) }
                         )
                     }
