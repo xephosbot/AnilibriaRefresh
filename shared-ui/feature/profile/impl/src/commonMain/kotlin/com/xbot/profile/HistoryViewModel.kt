@@ -40,7 +40,7 @@ class HistoryViewModel(
                     _state.update { HistoryScreenState.Success(releasesFeed) }
                 },
                 ifLeft = {
-                    showErrorMessage(it.toString().orEmpty(), ::refresh)
+                    showErrorMessage(it.toString(), ::refresh)
                 }
             )
         }
