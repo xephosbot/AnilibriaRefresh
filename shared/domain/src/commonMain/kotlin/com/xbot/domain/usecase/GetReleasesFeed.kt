@@ -27,7 +27,7 @@ class GetReleasesFeed(
             val scheduleNow = async { scheduleRepository.getScheduleNow() }
             val currentSeason = async { scheduleRepository.getCurrentSeason() }
             val currentYear = async { scheduleRepository.getCurrentYear() }
-            val bestReleases = async {
+            val bestNow = async {
                 catalogRepository.getCatalogReleases(
                     search = null,
                     filters = CatalogFilters(
@@ -38,13 +38,21 @@ class GetReleasesFeed(
                     limit = 10
                 )
             }
+            val bestAllTime = async {
+                catalogRepository.getCatalogReleases(
+                    search = null,
+                    filters = CatalogFilters(sortingTypes = listOf(SortingType.RATING_DESC)),
+                    limit = 10
+                )
+            }
             val recommendedFranchises = async { franchisesRepository.getRandomFranchises(10) }
             val genres = async { genresRepository.getRandomGenres(10) }
 
             ReleasesFeed(
                 recommendedReleases = recommendedTitles.await().bind(),
                 scheduleNow = scheduleNow.await().bind(),
-                bestReleases = bestReleases.await().bind(),
+                bestNow = bestNow.await().bind(),
+                bestAllTime = bestAllTime.await().bind(),
                 recommendedFranchises = recommendedFranchises.await().bind(),
                 genres = genres.await().bind(),
             )
