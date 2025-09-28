@@ -32,46 +32,55 @@ import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Episode
 import com.xbot.designsystem.components.EpisodeListItem
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
-internal fun ThreePaneScaffoldPaneScope.TitleEpisodesPane(
+context(scope: ThreePaneScaffoldPaneScope)
+internal fun TitleEpisodesPane(
     modifier: Modifier = Modifier,
     state: TitleScreenState,
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
 ) {
-    AnimatedPane(modifier = modifier) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        if (showBackButton) {
-                            IconButton(
-                                onClick = onBackClick
-                            ) {
-                                Icon(
-                                    imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                    contentDescription = null
-                                )
+    with(scope) {
+        AnimatedPane(modifier = modifier) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {},
+                        navigationIcon = {
+                            if (showBackButton) {
+                                IconButton(
+                                    onClick = onBackClick
+                                ) {
+                                    Icon(
+                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
-                    }
-                )
-            }
-        ) { innerPadding ->
-            Crossfade(
-                targetState = state
-            ) { targetState ->
-                when (targetState) {
-                    is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                    is TitleScreenState.Success -> {
-                        EpisodesList(
-                            episodes = targetState.title.episodes.reversed(),
-                            contentPadding = innerPadding,
-                        ) { ordinal ->
-                            onPlayClick(targetState.title.release.id, targetState.title.episodes.size - ordinal)
+                    )
+                }
+            ) { innerPadding ->
+                Crossfade(
+                    targetState = state
+                ) { targetState ->
+                    when (targetState) {
+                        is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                        is TitleScreenState.Success -> {
+                            EpisodesList(
+                                episodes = targetState.title.episodes.reversed(),
+                                contentPadding = innerPadding,
+                            ) { ordinal ->
+                                onPlayClick(
+                                    targetState.title.release.id,
+                                    targetState.title.episodes.size - ordinal
+                                )
+                            }
                         }
                     }
                 }

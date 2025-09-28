@@ -58,6 +58,7 @@ import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.MemberItem
 import com.xbot.designsystem.components.SmallReleaseCard
+import com.xbot.designsystem.components.TypedCrossFade
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.row
@@ -92,7 +93,8 @@ import org.jetbrains.compose.resources.stringResource
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-internal fun ThreePaneScaffoldPaneScope.TitleDetailsPane(
+context(scope: ThreePaneScaffoldPaneScope)
+internal fun TitleDetailsPane(
     modifier: Modifier = Modifier,
     state: TitleScreenState,
     onBackClick: () -> Unit,
@@ -105,75 +107,83 @@ internal fun ThreePaneScaffoldPaneScope.TitleDetailsPane(
 
     var selected by remember { mutableStateOf(false) }
 
-    AnimatedPane(modifier = modifier) {
-        Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        FilledIconButton(
-                            onClick = onBackClick,
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                contentDescription = null
+    with(scope) {
+        AnimatedPane(modifier = modifier) {
+            Scaffold(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                topBar = {
+                    TopAppBar(
+                        title = {},
+                        navigationIcon = {
+                            FilledIconButton(
+                                onClick = onBackClick,
+                                shapes = IconButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        actions = {
+                            FilledIconToggleButton(
+                                checked = selected,
+                                onCheckedChange = { selected = it },
+                                shapes = IconButtonDefaults.toggleableShapes(),
+                                colors = IconButtonDefaults.filledIconToggleButtonColors(
+                                    checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                                    checkedContentColor = MaterialTheme.colorScheme.contentColorFor(
+                                        MaterialTheme.colorScheme.inverseSurface
+                                    ),
+                                ),
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Filled.Star,
+                                    contentDescription = null
+                                )
+                            }
+                            FilledIconButton(
+                                onClick = {},
+                                modifier = Modifier.size(
+                                    IconButtonDefaults.smallContainerSize(
+                                        IconButtonDefaults.IconButtonWidthOption.Narrow
+                                    )
+                                ),
+                                shapes = IconButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Outlined.MoreVert,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
+                        ),
+                        scrollBehavior = scrollBehavior
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
+            ) { innerPadding ->
+                TypedCrossFade(
+                    targetState = state,
+                ) { targetState ->
+                    when (targetState) {
+                        is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                        is TitleScreenState.Success -> {
+                            TitleDetails(
+                                gridState = gridState,
+                                details = targetState.title,
+                                contentPadding = innerPadding,
+                                onPlayClick = onPlayClick,
+                                onReleaseClick = onReleaseClick,
+                                onEpisodesListClick = onEpisodesListClick,
+                                onAddToFavoritesClick = {},
+                                onAlreadyWatchedClick = {},
+                                onShareClick = {},
+                                onTelegramClick = {}
                             )
                         }
-                    },
-                    actions = {
-                        FilledIconToggleButton(
-                            checked = selected,
-                            onCheckedChange = { selected = it },
-                            shapes = IconButtonDefaults.toggleableShapes(),
-                            colors = IconButtonDefaults.filledIconToggleButtonColors(
-                                checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.inverseSurface),
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.Filled.Star,
-                                contentDescription = null
-                            )
-                        }
-                        FilledIconButton(
-                            onClick = {},
-                            modifier = Modifier.size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.Outlined.MoreVert,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
-                    ),
-                    scrollBehavior = scrollBehavior
-                )
-            },
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ) { innerPadding ->
-            Crossfade(
-                targetState = state,
-            ) { targetState ->
-                when (targetState) {
-                    is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                    is TitleScreenState.Success -> {
-                        TitleDetails(
-                            gridState = gridState,
-                            details = targetState.title,
-                            contentPadding = innerPadding,
-                            onPlayClick = onPlayClick,
-                            onReleaseClick = onReleaseClick,
-                            onEpisodesListClick = onEpisodesListClick,
-                            onAddToFavoritesClick = {},
-                            onAlreadyWatchedClick = {},
-                            onShareClick = {},
-                            onTelegramClick = {}
-                        )
                     }
                 }
             }
