@@ -1,8 +1,8 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.cocoapods)
     alias(libs.plugins.compose.compiler)
@@ -10,8 +10,12 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    androidLibrary {
+        namespace = "com.xbot.sharedui"
+        compileSdk = 36
+        minSdk = 24
+
+        withJava()
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
         }
@@ -63,14 +67,5 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
         }
-    }
-}
-
-android {
-    compileSdk = 36
-    namespace = "com.xbot.sharedui"
-
-    defaultConfig {
-        minSdk = 24
     }
 }

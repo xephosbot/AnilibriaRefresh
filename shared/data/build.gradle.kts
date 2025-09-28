@@ -1,10 +1,22 @@
+import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
 }
 
 kotlin {
-    androidTarget()
+    androidLibrary {
+        namespace = "com.xbot.shared.data"
+        compileSdk = 36
+        minSdk = 24
+
+        withJava()
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -28,9 +40,4 @@ kotlin {
             implementation(libs.koin.android)
         }
     }
-}
-
-android {
-    compileSdk = 36
-    namespace = "com.xbot.shared.data"
 }
