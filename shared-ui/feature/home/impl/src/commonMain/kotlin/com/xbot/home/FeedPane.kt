@@ -80,6 +80,7 @@ import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.SmallReleaseCard
+import com.xbot.designsystem.components.TypedCrossFade
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.horizontalItemsIndexed
@@ -273,18 +274,22 @@ private fun FeedPane(
                     with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
 
                 Box {
-                    when (state) {
-                        is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                        is FeedScreenState.Success -> {
-                            ReleaseFeed(
-                                gridState = gridState,
-                                items = items,
-                                state = state,
-                                contentPadding = innerPadding,
-                                onScheduleClick = onScheduleClick,
-                                onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
-                                onReleaseClick = { onReleaseClick(it.id) },
-                            )
+                    TypedCrossFade(
+                        targetState = state
+                    ) { targetState ->
+                        when (targetState) {
+                            is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                            is FeedScreenState.Success -> {
+                                ReleaseFeed(
+                                    gridState = gridState,
+                                    items = items,
+                                    state = targetState,
+                                    contentPadding = innerPadding,
+                                    onScheduleClick = onScheduleClick,
+                                    onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
+                                    onReleaseClick = { onReleaseClick(it.id) },
+                                )
+                            }
                         }
                     }
 
