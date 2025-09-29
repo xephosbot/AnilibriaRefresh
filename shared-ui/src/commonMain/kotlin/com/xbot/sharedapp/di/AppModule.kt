@@ -1,6 +1,5 @@
 package com.xbot.sharedapp.di
 
-import com.xbot.data.di.authModule
 import com.xbot.data.di.dataStoreModule
 import com.xbot.data.di.repositoryModule
 import com.xbot.designsystem.utils.SnackbarManager
@@ -15,7 +14,7 @@ import com.xbot.title.di.titleFeatureModule
 import org.koin.dsl.module
 
 internal val appModule = module {
-    includes(networkModule, authModule, dataStoreModule, repositoryModule, useCaseModule)
+    includes(networkModule, dataStoreModule, repositoryModule, useCaseModule)
     includes(favoriteFeatureModule, homeFeatureModule, playerFeatureModule, profileFeatureModule, searchFeatureModule, titleFeatureModule)
 
     factory { SnackbarManager }

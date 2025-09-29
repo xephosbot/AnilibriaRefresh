@@ -4,13 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.xbot.network.client.TokenStorage
 import kotlinx.coroutines.flow.first
-
-interface TokenStorage {
-    suspend fun getToken(): String?
-    suspend fun saveToken(token: String)
-    suspend fun clearToken()
-}
 
 internal class DefaultTokenStorage(
     private val dataStore: DataStore<Preferences>
