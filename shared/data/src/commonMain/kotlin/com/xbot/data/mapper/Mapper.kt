@@ -1,23 +1,23 @@
 package com.xbot.data.mapper
 
-import com.xbot.network.Constants
-import com.xbot.network.models.dto.ProfileDto
-import com.xbot.network.models.dto.EpisodeDto
-import com.xbot.network.models.dto.GenreDto
-import com.xbot.network.models.dto.ReleaseMemberDto
-import com.xbot.network.models.dto.ReleaseDto
-import com.xbot.network.models.dto.FranchiseDto
-import com.xbot.network.models.dto.ScheduleDto
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Episode
-import com.xbot.domain.models.Error
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
-import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Poster
-import com.xbot.domain.models.User
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.User
+import com.xbot.network.Constants
 import com.xbot.network.client.NetworkError
+import com.xbot.network.models.dto.EpisodeDto
+import com.xbot.network.models.dto.FranchiseDto
+import com.xbot.network.models.dto.GenreDto
+import com.xbot.network.models.dto.ProfileDto
+import com.xbot.network.models.dto.ReleaseDto
+import com.xbot.network.models.dto.ReleaseMemberDto
+import com.xbot.network.models.dto.ScheduleDto
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
@@ -173,8 +173,9 @@ internal fun FranchiseDto.toDomain() = Franchise(
     franchiseReleases = franchiseReleases?.map { it.release.toDomain() },
 )
 
-internal fun NetworkError.toDomain(): Error = when (this) {
-    is NetworkError.HttpError -> Error.HttpError(this.code, this.message)
-    is NetworkError.NetworkException -> Error.NetworkException(this.cause)
-    is NetworkError.SerializationError -> Error.SerializationError(this.cause)
+internal fun NetworkError.toDomain(): DomainError = when (this) {
+    is NetworkError.HttpError -> DomainError.HttpError(this.code, this.message)
+    is NetworkError.ConnectionError -> DomainError.ConnectionError(this.cause)
+    is NetworkError.SerializationError -> DomainError.SerializationError(this.cause)
+    is NetworkError.UnknownError -> DomainError.UnknownError(this.cause)
 }

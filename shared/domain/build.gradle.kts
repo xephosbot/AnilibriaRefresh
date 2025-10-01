@@ -28,7 +28,12 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.arrow.core)
+            implementation(libs.arrow.coroutines)
             implementation(libs.koin.core)
         }
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }

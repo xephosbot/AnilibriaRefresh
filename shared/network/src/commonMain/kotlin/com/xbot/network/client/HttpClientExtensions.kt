@@ -1,34 +1,27 @@
 package com.xbot.network.client
 
 import arrow.core.Either
-import arrow.core.raise.either
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.util.network.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.statement.HttpResponse
+import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 
 internal suspend inline fun <reified T> HttpClient.request(
     block: HttpClient.() -> HttpResponse
-): Either<NetworkError, T> = either {
-    try {
-        val response = this@request.block()
-        when (response.status) {
-            HttpStatusCode.OK -> response.body<T>()
-            else -> {
-                raise(NetworkError.HttpError(response.status.value, response.status.description))
-            }
+): Either<NetworkError, T> = Either.catch {
+    this@request.block().body<T>()
+}.mapLeft { e ->
+    if (e is CancellationException) {
+        throw e
+    } else {
+        when (e) {
+            is ClientRequestException -> NetworkError.HttpError(e.response.status.value, e.message)
+            is UnresolvedAddressException -> NetworkError.ConnectionError(e)
+            is SerializationException -> NetworkError.SerializationError(e)
+            else -> NetworkError.UnknownError(e)
         }
-    } catch (e: SerializationException) {
-        raise(NetworkError.SerializationError(e))
-    } catch (e: UnresolvedAddressException) {
-        raise(NetworkError.NetworkException(e))
     }
-}
-
-sealed class NetworkError {
-    data class HttpError(val code: Int, val message: String?) : NetworkError()
-    data class SerializationError(val cause: Throwable) : NetworkError()
-    data class NetworkException(val cause: Throwable) : NetworkError()
 }

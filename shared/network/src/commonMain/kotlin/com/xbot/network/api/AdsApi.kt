@@ -4,8 +4,8 @@ import arrow.core.Either
 import com.xbot.network.client.NetworkError
 import com.xbot.network.client.request
 import com.xbot.network.models.dto.VastDto
-import io.ktor.client.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 
 interface AdsApi {
     suspend fun getVasts(): Either<NetworkError, List<VastDto>>

@@ -47,4 +47,8 @@ kotlin {
             implementation(libs.brotli.dec)
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }

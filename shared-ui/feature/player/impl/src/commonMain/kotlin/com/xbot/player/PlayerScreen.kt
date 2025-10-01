@@ -36,8 +36,8 @@ private fun PlayerScreenContent(
 
     LaunchedEffect(state) {
         if (!player.state.value.hasPlaylist) {
-            if (state is PlayerScreenState.Success) {
-                player.setUrls(state.episodes.map { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
+            if (state.currentEpisode != null) {
+                player.setUrl(state.currentEpisode.let { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
             }
         }
     }

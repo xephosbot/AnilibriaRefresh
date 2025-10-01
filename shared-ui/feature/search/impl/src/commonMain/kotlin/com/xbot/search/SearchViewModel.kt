@@ -117,7 +117,7 @@ class SearchViewModel(
                     }
                 },
                 ifLeft = {
-                    showErrorMessage(it.toString().orEmpty(), ::fetchCatalogFilters)
+                    showErrorMessage(it.toString(), ::fetchCatalogFilters)
                 }
             )
         }

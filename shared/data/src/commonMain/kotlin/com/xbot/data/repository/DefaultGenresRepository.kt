@@ -5,7 +5,7 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.Error
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.repository.GenresRepository
@@ -17,17 +17,17 @@ import com.xbot.network.api.GenresApi
 internal class DefaultGenresRepository(
     private val genresApi: GenresApi,
 ) : GenresRepository {
-    override suspend fun getGenres(): Either<Error, List<Genre>> = genresApi
+    override suspend fun getGenres(): Either<DomainError, List<Genre>> = genresApi
         .getGenres()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(GenreDto::toDomain) }
 
-    override suspend fun getGenre(genreId: Int): Either<Error, Genre> = genresApi
+    override suspend fun getGenre(genreId: Int): Either<DomainError, Genre> = genresApi
         .getGenre(genreId)
         .mapLeft(NetworkError::toDomain)
         .map(GenreDto::toDomain)
 
-    override suspend fun getRandomGenres(limit: Int): Either<Error, List<Genre>> = genresApi
+    override suspend fun getRandomGenres(limit: Int): Either<DomainError, List<Genre>> = genresApi
         .getRandomGenres(limit)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(GenreDto::toDomain) }

@@ -4,6 +4,6 @@ import com.xbot.data.datasource.createDataStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-actual val dataStoreModule = module {
+internal actual val platformModule = module {
     single { createDataStore(androidContext()) }
 }

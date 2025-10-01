@@ -3,6 +3,7 @@ package com.xbot.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
@@ -42,13 +43,10 @@ class ScheduleViewModel(
     private fun fetch() {
         viewModelScope.launch {
             _state.update { ScheduleScreenState.Loading }
-            scheduleRepository.getScheduleWeek()
-                .onRight { schedule ->
-                    _state.update { ScheduleScreenState.Success(schedule) }
-                }
-                .onLeft {
-                    showErrorMessage(it.toString(), ::fetch)
-                }
+            when (val result = scheduleRepository.getScheduleWeek()) {
+                is Either.Left -> showErrorMessage(result.value.toString(), ::fetch)
+                is Either.Right -> _state.update { ScheduleScreenState.Success(result.value) }
+            }
         }
     }
 

@@ -25,7 +25,7 @@ class ProfileViewModel(
                     },
                     ifLeft = {
                         logout()
-                        showErrorMessage(it.toString().orEmpty())
+                        showErrorMessage(it.toString())
                         return@map ProfileScreenState.LoggedOut
                     }
                 )

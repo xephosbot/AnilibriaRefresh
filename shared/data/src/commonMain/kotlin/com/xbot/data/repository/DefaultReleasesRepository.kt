@@ -11,7 +11,7 @@ import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.Error
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.ReleaseMember
@@ -27,12 +27,12 @@ internal class DefaultReleasesRepository(
     private val franchisesApi: FranchisesApi,
     private val searchApi: SearchApi,
 ) : ReleasesRepository {
-    override suspend fun getLatestReleases(limit: Int): Either<Error, List<Release>> = releasesApi
+    override suspend fun getLatestReleases(limit: Int): Either<DomainError, List<Release>> = releasesApi
         .getLatestReleases(limit)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseDto::toDomain) }
 
-    override suspend fun getRandomReleases(limit: Int): Either<Error, List<Release>> = releasesApi
+    override suspend fun getRandomReleases(limit: Int): Either<DomainError, List<Release>> = releasesApi
         .getRandomReleases(limit)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseDto::toDomain) }
@@ -59,7 +59,7 @@ internal class DefaultReleasesRepository(
         )
     }
 
-    override suspend fun getRelease(aliasOrId: String): Either<Error, ReleaseDetail> = either {
+    override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetail> = either {
         val release = releasesApi.getRelease(aliasOrId)
             .mapLeft(NetworkError::toDomain)
             .bind()
@@ -88,12 +88,12 @@ internal class DefaultReleasesRepository(
         )
     }
 
-    override suspend fun getReleaseMembers(aliasOrId: String): Either<Error, List<ReleaseMember>> = releasesApi
+    override suspend fun getReleaseMembers(aliasOrId: String): Either<DomainError, List<ReleaseMember>> = releasesApi
         .getReleaseMembers(aliasOrId)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseMemberDto::toDomain) }
 
-    override suspend fun searchReleases(query: String): Either<Error, List<Release>> = searchApi
+    override suspend fun searchReleases(query: String): Either<DomainError, List<Release>> = searchApi
         .searchReleases(query)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseDto::toDomain) }

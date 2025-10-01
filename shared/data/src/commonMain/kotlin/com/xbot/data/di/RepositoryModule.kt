@@ -20,7 +20,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val repositoryModule = module {
+internal val repositoryModule = module {
     singleOf(::DefaultAuthRepository) { bind<AuthRepository>() }
     singleOf(::DefaultReleasesRepository) { bind<ReleasesRepository>() }
     singleOf(::DefaultFranchisesRepository) { bind<FranchisesRepository>() }

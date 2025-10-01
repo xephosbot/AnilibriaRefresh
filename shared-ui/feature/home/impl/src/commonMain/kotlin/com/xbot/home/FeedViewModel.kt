@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
@@ -76,13 +77,10 @@ class FeedViewModel(
     private fun refresh() {
         viewModelScope.launch {
             releasesFeed.update { null }
-            getReleasesFeed()
-                .onRight { feed ->
-                    releasesFeed.update { feed }
-                }
-                .onLeft {
-                    showErrorMessage(it.toString(), ::refresh)
-                }
+            when (val result = getReleasesFeed()) {
+                is Either.Left -> showErrorMessage(result.value.toString(), ::refresh)
+                is Either.Right -> releasesFeed.update { result.value }
+            }
         }
     }
 

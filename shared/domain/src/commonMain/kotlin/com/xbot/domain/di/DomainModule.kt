@@ -6,7 +6,7 @@ import com.xbot.domain.usecase.GetCatalogReleasesPager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val useCaseModule = module {
+val domainModule = module {
     singleOf(::GetReleasesFeed)
     singleOf(::GetCatalogFilters)
     singleOf(::GetCatalogReleasesPager)

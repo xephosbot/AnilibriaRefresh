@@ -3,6 +3,7 @@ package com.xbot.profile
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
@@ -35,14 +36,10 @@ class HistoryViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.update { HistoryScreenState.Loading }
-            getReleasesFeed().fold(
-                ifRight = { releasesFeed ->
-                    _state.update { HistoryScreenState.Success(releasesFeed) }
-                },
-                ifLeft = {
-                    showErrorMessage(it.toString(), ::refresh)
-                }
-            )
+            when (val result = getReleasesFeed()) {
+                is Either.Left -> showErrorMessage(result.value.toString(), ::refresh)
+                is Either.Right -> _state.update { HistoryScreenState.Success(result.value) }
+            }
         }
     }
 

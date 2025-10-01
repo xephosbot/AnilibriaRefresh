@@ -40,4 +40,8 @@ kotlin {
             implementation(libs.koin.android)
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }

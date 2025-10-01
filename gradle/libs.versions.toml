@@ -101,6 +101,7 @@ brotli-dec = { module = "org.brotli:dec", version.ref = "brotli" }
 
 # Functional Programming
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
 
 # Image Loading
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }

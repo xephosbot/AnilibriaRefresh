@@ -3,14 +3,7 @@ package com.xbot.domain.usecase
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.enums.AgeRating
-import com.xbot.domain.models.enums.ProductionStatus
-import com.xbot.domain.models.enums.PublishStatus
-import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.domain.models.enums.Season
-import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 import kotlinx.coroutines.flow.Flow

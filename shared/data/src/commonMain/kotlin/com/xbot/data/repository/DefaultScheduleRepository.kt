@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.Error
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.repository.ScheduleRepository
@@ -18,12 +18,12 @@ internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
     private val releasesApi: ReleasesApi,
 ) : ScheduleRepository {
-    override suspend fun getScheduleNow(): Either<Error, List<Schedule>> = scheduleApi
+    override suspend fun getScheduleNow(): Either<DomainError, List<Schedule>> = scheduleApi
         .getScheduleNow()
         .mapLeft(NetworkError::toDomain)
         .map { schedule -> schedule["today"]?.map(ScheduleDto::toDomain) ?: emptyList() }
 
-    override suspend fun getScheduleWeek(): Either<Error, Map<DayOfWeek, List<Schedule>>> = scheduleApi
+    override suspend fun getScheduleWeek(): Either<DomainError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
         .getScheduleWeek()
         .mapLeft(NetworkError::toDomain)
         .map { schedule ->
@@ -41,11 +41,11 @@ internal class DefaultScheduleRepository(
                 }
         }
 
-    override suspend fun getCurrentDay(): Either<Error, DayOfWeek> = either {
+    override suspend fun getCurrentDay(): Either<DomainError, DayOfWeek> = either {
         DayOfWeek.MONDAY // Replace with actual logic to get the current day
     }
 
-    override suspend fun getCurrentSeason(): Either<Error, Season> = releasesApi
+    override suspend fun getCurrentSeason(): Either<DomainError, Season> = releasesApi
         .getLatestReleases(10)
         .mapLeft(NetworkError::toDomain)
         .map { releases ->
@@ -57,7 +57,7 @@ internal class DefaultScheduleRepository(
                 .key!!
         }
 
-    override suspend fun getCurrentYear(): Either<Error, Int> = releasesApi
+    override suspend fun getCurrentYear(): Either<DomainError, Int> = releasesApi
         .getLatestReleases(10)
         .mapLeft(NetworkError::toDomain)
         .map { releases ->

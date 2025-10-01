@@ -13,7 +13,7 @@ import com.xbot.network.models.enums.ReleaseTypeDto
 import com.xbot.network.models.enums.SeasonDto
 import com.xbot.network.models.enums.SortingTypeDto
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.Error
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -47,7 +47,7 @@ internal class DefaultCatalogRepository(
                     ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
                     publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
                     productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).getOrElse { error ->
+                ).getOrElse { DomainError ->
                     throw IllegalStateException()
                 }
                 CommonPagingSource.PaginatedResponse(
@@ -62,7 +62,7 @@ internal class DefaultCatalogRepository(
         search: String?,
         filters: CatalogFilters?,
         limit: Int
-    ): Either<Error, List<Release>> = catalogApi
+    ): Either<DomainError, List<Release>> = catalogApi
         .getCatalogReleases(
             page = 1,
             limit = limit,
@@ -80,44 +80,44 @@ internal class DefaultCatalogRepository(
         .mapLeft(NetworkError::toDomain)
         .map { it.data.map(ReleaseDto::toDomain) }
 
-    override suspend fun getCatalogAgeRatings(): Either<Error, List<AgeRating>> = catalogApi
+    override suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRating>> = catalogApi
         .getCatalogAgeRatings()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(AgeRatingDto::toDomain) }
 
-    override suspend fun getCatalogGenres(): Either<Error, List<Genre>> = catalogApi
+    override suspend fun getCatalogGenres(): Either<DomainError, List<Genre>> = catalogApi
         .getCatalogGenres()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(GenreDto::toDomain) }
 
-    override suspend fun getCatalogProductionStatuses(): Either<Error, List<ProductionStatus>> =
+    override suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatus>> =
         catalogApi
             .getCatalogProductionStatuses()
             .mapLeft(NetworkError::toDomain)
             .map { it.map(ProductionStatusDto::toDomain) }
 
-    override suspend fun getCatalogPublishStatuses(): Either<Error, List<PublishStatus>> =
+    override suspend fun getCatalogPublishStatuses(): Either<DomainError, List<PublishStatus>> =
         catalogApi
             .getCatalogPublishStatuses()
             .mapLeft(NetworkError::toDomain)
             .map { it.map(PublishStatusDto::toDomain) }
 
-    override suspend fun getCatalogSeasons(): Either<Error, List<Season>> = catalogApi
+    override suspend fun getCatalogSeasons(): Either<DomainError, List<Season>> = catalogApi
         .getCatalogSeasons()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(SeasonDto::toDomain) }
 
-    override suspend fun getCatalogSortingTypes(): Either<Error, List<SortingType>> = catalogApi
+    override suspend fun getCatalogSortingTypes(): Either<DomainError, List<SortingType>> = catalogApi
         .getCatalogSortingTypes()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(SortingTypeDto::toDomain) }
 
-    override suspend fun getCatalogReleaseTypes(): Either<Error, List<ReleaseType>> = catalogApi
+    override suspend fun getCatalogReleaseTypes(): Either<DomainError, List<ReleaseType>> = catalogApi
         .getCatalogReleaseTypes()
         .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseTypeDto::toDomain) }
 
-    override suspend fun getCatalogYears(): Either<Error, IntRange> = catalogApi
+    override suspend fun getCatalogYears(): Either<DomainError, IntRange> = catalogApi
         .getCatalogYears()
         .mapLeft(NetworkError::toDomain)
         .map { years -> years.first()..years.last() }
