@@ -3,6 +3,7 @@ package com.xbot.network.client
 import com.xbot.network.utils.brotli
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -14,6 +15,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
@@ -60,5 +62,17 @@ internal fun createHttpClient(
         url(baseUrl)
         contentType(ContentType.Application.Json)
         accept(ContentType.Application.Json)
+    }
+    install(HttpRequestRetry) {
+        maxRetries = 2
+        retryIf { _, response ->
+            response.status.value == 525 ||
+                    response.status.value == HttpStatusCode.BadGateway.value
+        }
+        modifyRequest { request ->
+            if (request.url.host == "aniliberty.top") {
+                request.url.host = "anilibria.wtf"
+            }
+        }
     }
 }
