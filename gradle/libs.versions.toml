@@ -5,8 +5,8 @@ android-desugar-jdk-libs = "2.1.5"
 
 # Kotlin & Compose
 kotlin = "2.2.20"
-compose-multiplatform = "1.10.0-alpha01"
-compose-hot-reload = "1.0.0-beta08"
+compose-multiplatform = "1.10.0-alpha02"
+compose-hot-reload = "1.0.0-rc01"
 ksp = "2.2.20-2.0.3"
 
 # AndroidX Core
@@ -21,7 +21,7 @@ media3 = "1.8.0"
 
 # Navigation & Lifecycle
 navigation = "2.9.0"
-lifecycle = "2.10.0-alpha01"
+lifecycle = "2.10.0-alpha02"
 
 # Networking
 ktor = "3.3.0"
@@ -42,7 +42,7 @@ coil = "3.3.0"
 sticky-headers = "0.1.0-alpha04"
 shimmer = "1.3.3"
 material-motion-compose = "2.0.1"
-compose-material3-adaptive = "1.2.0-alpha06"
+compose-material3-adaptive = "1.2.0-alpha07"
 
 # Desktop Video Player
 vlcj = "4.11.0"
