@@ -1,24 +1,12 @@
-import com.android.build.api.dsl.androidLibrary
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.multiplatform.library)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
 }
 
 kotlin {
-    androidLibrary {
-        namespace = "com.xbot.sharedui.designsystem"
-        compileSdk = 36
-        minSdk = 24
-
-        withJava()
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
+    androidTarget()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -31,6 +19,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(compose.ui)
             implementation(compose.foundation)
+            implementation(compose.preview)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
             api(compose.material3)
@@ -46,5 +35,18 @@ kotlin {
             api(libs.shimmer.compose)
             api(libs.material.motion.compose.core)
         }
+    }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
+}
+
+android {
+    namespace = "com.xbot.sharedui.designsystem"
+    compileSdk = 36
+
+    defaultConfig {
+        minSdk = 24
     }
 }
