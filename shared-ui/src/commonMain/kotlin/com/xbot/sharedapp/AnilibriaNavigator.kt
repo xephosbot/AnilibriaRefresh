@@ -2,82 +2,78 @@ package com.xbot.sharedapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.favorite.navigation.FavoriteRoute
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.profile.navigation.ProfileRoute
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 internal fun rememberAnilibriaNavigator(
-    navController: NavHostController = rememberNavController(),
-): Navigator<NavBackStackEntry> {
-    val scope = rememberCoroutineScope()
-    return remember(navController, scope) { AnilibriaNavigator(navController, scope) }
+    startNavKey: NavKey = HomeRoute,
+): AnilibriaNavigator {
+    return remember(startNavKey) { AnilibriaNavigator(startNavKey) }
 }
 
-internal class AnilibriaNavigator(
-    val navController: NavHostController,
-    scope: CoroutineScope
-) : Navigator<NavBackStackEntry> {
+internal class AnilibriaNavigator(startNavKey: NavKey) : Navigator<NavKey> {
 
-    init {
-        navController.currentBackStack
-            .onEach { entries ->
-                _backstack = entries
-            }.launchIn(scope)
+    private val topLevelStacks : LinkedHashMap<NavKey, SnapshotStateList<NavKey>> = linkedMapOf(
+        startNavKey to mutableStateListOf(startNavKey)
+    )
 
-        navController.currentBackStackEntryFlow
-            .onEach { entry ->
-                _currentDestination = entry
-            }.launchIn(scope)
-    }
+    private val _backstack = mutableStateListOf(startNavKey)
+    override val backstack: List<NavKey> get() = _backstack
 
-    private var _backstack: List<NavBackStackEntry> by mutableStateOf(emptyList())
-    override val backstack: List<NavBackStackEntry>
-        get() = _backstack
+    override val currentDestination: NavKey?
+        get() = _backstack.lastOrNull()
 
-    private var _currentDestination: NavBackStackEntry? by mutableStateOf(null)
-    override val currentDestination: NavBackStackEntry?
-        get() = _currentDestination
+    private var _currentTopLevelDestination: NavKey by mutableStateOf(startNavKey)
 
-    override val currentTopLevelDestination: NavBackStackEntry?
-        get() = backstack.findLast { entry ->
-            topLevelDestinations.map { it::class }.any { entry.destination.hasRoute(it) }
+    override val currentTopLevelDestination: NavKey?
+        get() = _currentTopLevelDestination
+
+    private fun updateBackStack() =
+        _backstack.apply {
+            clear()
+            addAll(topLevelStacks.flatMap { it.value })
         }
 
     override fun navigate(key: NavKey) {
         when (key) {
             is TopLevelNavKey -> {
-                val topLevelNavOptions = navOptions {
-                    popUpTo(navController.graph.findStartDestination().route.orEmpty()) {
-                        saveState = true
+                // If the top level doesn't exist, add it
+                if (topLevelStacks[key] == null){
+                    topLevelStacks.put(key, mutableStateListOf(key))
+                } else {
+                    // Otherwise just move it to the end of the stacks
+                    topLevelStacks.apply {
+                        remove(key)?.let {
+                            put(key, it)
+                        }
                     }
-                    launchSingleTop = true
-                    restoreState = true
                 }
-                navController.navigate(key, topLevelNavOptions)
+                _currentTopLevelDestination = key
+                updateBackStack()
             }
-            else -> navController.navigate(key)
+            else -> {
+                topLevelStacks[_currentTopLevelDestination]?.add(key)
+                updateBackStack()
+            }
         }
     }
 
     override fun navigateBack() {
-        navController.navigateUp()
+        val removedKey = topLevelStacks[_currentTopLevelDestination]?.removeLastOrNull()
+        // If the removed key was a top level key, remove the associated top level stack
+        topLevelStacks.remove(removedKey)
+        _currentTopLevelDestination = topLevelStacks.keys.last()
+        updateBackStack()
     }
 
     companion object {

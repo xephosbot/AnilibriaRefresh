@@ -31,6 +31,7 @@ kotlin {
             implementation(projects.sharedUi.common)
             implementation(projects.sharedUi.designSystem)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.navigation3.runtime)
         }
     }
 }

@@ -1,35 +1,48 @@
 package com.xbot.sharedapp.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.compose.NavHost
-import com.xbot.common.navigation.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
+import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.xbot.common.navigation.NavEntryBuilder
-import com.xbot.common.navigation.Navigator
-import com.xbot.home.navigation.HomeRoute
 import com.xbot.sharedapp.AnilibriaNavigator
 import com.xbot.sharedapp.di.koinInjectAll
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
-    navigator: Navigator<NavBackStackEntry>,
-    startNavKey: NavKey = HomeRoute,
+    navigator: AnilibriaNavigator,
     navEntryBuilders: List<NavEntryBuilder> = koinInjectAll()
 ) {
-    NavHost(
+    NavDisplay(
+        backStack = navigator.backstack,
         modifier = modifier.fillMaxSize(),
-        navController = (navigator as AnilibriaNavigator).navController,
-        startDestination = startNavKey,
-        enterTransition = { materialFadeThroughIn() },
-        exitTransition = { materialFadeThroughOut() },
-    ) {
-        navEntryBuilders.forEach { builder ->
-            builder(navigator)
+        onBack = { navigator.navigateBack() },
+        transitionSpec = {
+            materialFadeThroughIn() togetherWith materialFadeThroughOut()
+        },
+        popTransitionSpec = {
+            materialFadeThroughIn() togetherWith materialFadeThroughOut()
+        },
+        predictivePopTransitionSpec = {
+            materialFadeThroughIn() togetherWith materialFadeThroughOut()
+        },
+        entryDecorators = listOf(
+            rememberSceneSetupNavEntryDecorator(),
+            rememberSavedStateNavEntryDecorator(),
+        ),
+        entryProvider = entryProvider {
+            navEntryBuilders.forEach { builder ->
+                builder(navigator)
+            }
         }
-    }
+    )
 }

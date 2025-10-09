@@ -1,6 +1,5 @@
 package com.xbot.search.di
 
-import androidx.navigation.compose.composable
 import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.search.SearchScreen
 import com.xbot.search.SearchViewModel
@@ -13,7 +12,7 @@ import org.koin.dsl.module
 val searchFeatureModule = module {
     single<NavEntryBuilder>(named("feature/search")) {
         { navigator ->
-            composable<SearchRoute> {
+            entry<SearchRoute> {
                 SearchScreen(
                     onBackClick = {
                         navigator.navigateBack()

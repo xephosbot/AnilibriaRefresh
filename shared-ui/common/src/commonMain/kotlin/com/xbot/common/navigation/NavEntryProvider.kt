@@ -1,5 +1,5 @@
 package com.xbot.common.navigation
 
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation3.runtime.EntryProviderBuilder
 
-typealias NavEntryBuilder = NavGraphBuilder.(Navigator<*>) -> Unit
+typealias NavEntryBuilder = EntryProviderBuilder<NavKey>.(Navigator<NavKey>) -> Unit

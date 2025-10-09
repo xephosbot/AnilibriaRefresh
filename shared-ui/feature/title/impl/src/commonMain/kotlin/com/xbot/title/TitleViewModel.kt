@@ -1,10 +1,8 @@
 package com.xbot.title
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
@@ -24,9 +22,9 @@ import kotlinx.coroutines.launch
 class TitleViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
-    savedStateHandle: SavedStateHandle,
+    private val route: TitleRoute,
 ) : ViewModel() {
-    private val aliasOrId = savedStateHandle.toRoute<TitleRoute>().aliasOrId
+    private val aliasOrId = route.aliasOrId
 
     private val _state: MutableStateFlow<TitleScreenState> =
         MutableStateFlow(TitleScreenState.Loading)

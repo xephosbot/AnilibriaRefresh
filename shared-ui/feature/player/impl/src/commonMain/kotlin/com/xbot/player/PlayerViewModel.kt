@@ -1,10 +1,8 @@
 package com.xbot.player
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
@@ -14,16 +12,21 @@ import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.player.navigation.PlayerRoute
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
-    savedStateHandle: SavedStateHandle,
+    private val route: PlayerRoute,
 ) : ViewModel() {
-    private val releaseId = savedStateHandle.toRoute<PlayerRoute>().releaseId
-    private val episodeOrdinal = savedStateHandle.toRoute<PlayerRoute>().episodeOrdinal
+    private val releaseId = route.releaseId
+    private val episodeOrdinal = route.episodeOrdinal
 
     private val _state: MutableStateFlow<PlayerScreenState> = MutableStateFlow(PlayerScreenState())
     val state: StateFlow<PlayerScreenState> = _state

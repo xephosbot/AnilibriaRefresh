@@ -30,7 +30,7 @@ kotlin {
             implementation(projects.shared.domain)
             implementation(projects.sharedUi.designSystem)
             implementation(compose.foundation)
-            implementation(libs.navigation.compose)
+            implementation(libs.navigation3.runtime)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.lifecycle.runtime.compose)
             implementation(libs.kotlinx.datetime)

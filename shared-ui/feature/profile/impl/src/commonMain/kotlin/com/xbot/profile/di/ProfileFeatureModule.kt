@@ -1,6 +1,5 @@
 package com.xbot.profile.di
 
-import androidx.navigation.compose.composable
 import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.profile.HistoryViewModel
 import com.xbot.profile.ProfileScreen
@@ -13,7 +12,7 @@ import org.koin.dsl.module
 val profileFeatureModule = module {
     single<NavEntryBuilder>(named("feature/profile")) {
         { navigator ->
-            composable<ProfileRoute> {
+            entry<ProfileRoute> {
                 ProfileScreen(
                     onReleaseClick = {
 
