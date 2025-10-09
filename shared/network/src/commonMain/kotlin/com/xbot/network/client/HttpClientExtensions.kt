@@ -9,6 +9,8 @@ import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 
+expect class UnknownHostException : Exception
+
 internal suspend inline fun <reified T> HttpClient.request(
     block: HttpClient.() -> HttpResponse
 ): Either<NetworkError, T> = Either.catch {
@@ -19,7 +21,7 @@ internal suspend inline fun <reified T> HttpClient.request(
     } else {
         when (e) {
             is ClientRequestException -> NetworkError.HttpError(e.response.status.value, e.message)
-            is UnresolvedAddressException -> NetworkError.ConnectionError(e)
+            is UnknownHostException, is UnresolvedAddressException -> NetworkError.ConnectionError(e)
             is SerializationException -> NetworkError.SerializationError(e)
             else -> NetworkError.UnknownError(e)
         }
