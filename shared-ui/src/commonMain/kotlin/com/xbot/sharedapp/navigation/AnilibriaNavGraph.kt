@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.common.navigation.NavEntryBuilder
+import com.xbot.designsystem.navigation3.rememberViewModelStoreNavEntryDecorator
 import com.xbot.sharedapp.AnilibriaNavigator
 import com.xbot.sharedapp.di.koinInjectAll
 import soup.compose.material.motion.animation.materialFadeThroughIn
@@ -38,6 +39,7 @@ internal fun AnilibriaNavGraph(
         entryDecorators = listOf(
             rememberSceneSetupNavEntryDecorator(),
             rememberSavedStateNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
         ),
         entryProvider = entryProvider {
             navEntryBuilders.forEach { builder ->
