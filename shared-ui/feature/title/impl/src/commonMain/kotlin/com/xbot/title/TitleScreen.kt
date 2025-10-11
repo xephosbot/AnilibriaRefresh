@@ -4,6 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.AdaptStrategy
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldDefaults
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
@@ -17,9 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.NavigableSupportingPaneScaffold
-import com.xbot.designsystem.components.ThreePaneScaffoldPredictiveBackHandler
 import com.xbot.designsystem.components.isExpanded
-import com.xbot.designsystem.components.isHidden
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -54,8 +53,12 @@ private fun TitleScreenContent(
     onReleaseClick: (Int) -> Unit,
 ) {
     val scaffoldNavigator = rememberSupportingPaneScaffoldNavigator<Unit>(
-        scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
-            .copy(horizontalPartitionSpacerSize = 0.dp),
+        scaffoldDirective = calculatePaneScaffoldDirective(
+            currentWindowAdaptiveInfo()
+        ).copy(
+            horizontalPartitionSpacerSize = 0.dp,
+            verticalPartitionSpacerSize = 0.dp
+        ),
         adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Hide
         )
@@ -73,32 +76,36 @@ private fun TitleScreenContent(
         navigator = scaffoldNavigator,
         defaultBackBehavior = backBehavior,
         mainPane = {
-            TitleDetailsPane(
-                state = state,
-                onBackClick = onBackClick,
-                onPlayClick = onPlayClick,
-                onReleaseClick = onReleaseClick,
-                onEpisodesListClick = {
-                    scope.launch {
-                        scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
-                    }
-                }
-            )
-        },
-        supportingPane = {
-            TitleEpisodesPane(
-                state = state,
-                showBackButton = scaffoldNavigator.isHidden(SupportingPaneScaffoldRole.Main),
-                onBackClick = {
-                    scope.launch {
-                        if (scaffoldNavigator.canNavigateBack(backBehavior)) {
-                            scaffoldNavigator.navigateBack(backBehavior)
+            AnimatedPane {
+                TitleDetailsPane(
+                    state = state,
+                    onBackClick = onBackClick,
+                    onPlayClick = onPlayClick,
+                    onReleaseClick = onReleaseClick,
+                    onEpisodesListClick = {
+                        scope.launch {
+                            scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
                         }
                     }
-                },
-                onPlayClick = onPlayClick,
-            )
-        }
+                )
+            }
+        },
+        supportingPane = scaffoldNavigator.currentDestination?.let {
+            {
+                AnimatedPane {
+                    TitleEpisodesPane(
+                        state = state,
+                        showBackButton = true,
+                        onBackClick = {
+                            scope.launch {
+                                scaffoldNavigator.navigateBack(backBehavior)
+                            }
+                        },
+                        onPlayClick = onPlayClick,
+                    )
+                }
+            }
+        } ?: {}
     )
 }
 

@@ -3,10 +3,11 @@ package com.xbot.search
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,8 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +30,6 @@ import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.RangeSlider
 import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.icons.AnilibriaIcons
-import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -54,7 +52,6 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 internal fun SearchFilterPane(
     modifier: Modifier = Modifier,
     showBackButton: Boolean,
@@ -69,61 +66,58 @@ internal fun SearchFilterPane(
     onYearsRangeChange: (IntRange) -> Unit,
     onAgeRatingClick: (AgeRating) -> Unit,
 ) {
-    with(scope) {
-        AnimatedPane(modifier = modifier) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {},
-                        navigationIcon = {
-                            if (showBackButton) {
-                                IconButton(
-                                    onClick = onBackClick
-                                ) {
-                                    Icon(
-                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = onBackClick
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
+                            )
                         }
-                    )
-                }
-            ) {
-                Crossfade(
-                    targetState = state.loading
-                ) { targetState ->
-                    when (targetState) {
-                        true -> LoadingFiltersScreen(modifier)
-                        false -> FiltersScreenContent(
-                            modifier = modifier,
-                            sortingTypes = state.sortingTypes,
-                            selectedSortingType = state.selectedSortingType,
-                            onSortingTypeClick = onSortingTypeClick,
-                            genres = state.genres,
-                            selectedGenres = state.selectedGenres.toList(),
-                            onGenreClick = onGenreClick,
-                            releaseTypes = state.releaseTypes,
-                            selectedReleaseTypes = state.selectedReleaseTypes.toList(),
-                            onReleaseTypeClick = onReleaseTypeClick,
-                            publishStatuses = state.publishStatuses,
-                            selectedPublishStatuses = state.selectedPublishStatuses.toList(),
-                            onPublishStatusClick = onPublishStatusClick,
-                            productionStatuses = state.productionStatuses,
-                            selectedProductionStatuses = state.selectedProductionStatuses.toList(),
-                            onProductionStatusClick = onProductionStatusClick,
-                            seasons = state.seasons,
-                            selectedSeasons = state.selectedSeasons.toList(),
-                            onSeasonClick = onSeasonClick,
-                            years = state.years,
-                            selectedYears = state.selectedYears,
-                            onYearsRangeChange = onYearsRangeChange,
-                            ageRatings = state.ageRatings,
-                            selectedAgeRatings = state.selectedAgeRatings.toList(),
-                            onAgeRatingClick = onAgeRatingClick
-                        )
                     }
                 }
+            )
+        }
+    ) { innerPadding ->
+        Crossfade(
+            targetState = state.loading
+        ) { targetState ->
+            when (targetState) {
+                true -> LoadingFiltersScreen(modifier)
+                false -> FiltersScreenContent(
+                    modifier = modifier,
+                    contentPadding = innerPadding,
+                    sortingTypes = state.sortingTypes,
+                    selectedSortingType = state.selectedSortingType,
+                    onSortingTypeClick = onSortingTypeClick,
+                    genres = state.genres,
+                    selectedGenres = state.selectedGenres.toList(),
+                    onGenreClick = onGenreClick,
+                    releaseTypes = state.releaseTypes,
+                    selectedReleaseTypes = state.selectedReleaseTypes.toList(),
+                    onReleaseTypeClick = onReleaseTypeClick,
+                    publishStatuses = state.publishStatuses,
+                    selectedPublishStatuses = state.selectedPublishStatuses.toList(),
+                    onPublishStatusClick = onPublishStatusClick,
+                    productionStatuses = state.productionStatuses,
+                    selectedProductionStatuses = state.selectedProductionStatuses.toList(),
+                    onProductionStatusClick = onProductionStatusClick,
+                    seasons = state.seasons,
+                    selectedSeasons = state.selectedSeasons.toList(),
+                    onSeasonClick = onSeasonClick,
+                    years = state.years,
+                    selectedYears = state.selectedYears,
+                    onYearsRangeChange = onYearsRangeChange,
+                    ageRatings = state.ageRatings,
+                    selectedAgeRatings = state.selectedAgeRatings.toList(),
+                    onAgeRatingClick = onAgeRatingClick
+                )
             }
         }
     }
@@ -132,6 +126,7 @@ internal fun SearchFilterPane(
 @Composable
 private fun FiltersScreenContent(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
     sortingTypes: List<SortingType>,
     selectedSortingType: SortingType,
     onSortingTypeClick: (SortingType) -> Unit,
@@ -158,7 +153,9 @@ private fun FiltersScreenContent(
     onAgeRatingClick: (AgeRating) -> Unit,
 ) {
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(contentPadding)
     ) {
         Header(
             title = { Text(stringResource(Res.string.label_sorting_types)) }
@@ -168,7 +165,6 @@ private fun FiltersScreenContent(
             selectedItem = selectedSortingType
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onSortingTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -188,7 +184,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedGenres
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onGenreClick(item) },
                 label = { Text(item.name) },
@@ -208,7 +203,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedReleaseTypes
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onReleaseTypeClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -228,7 +222,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedPublishStatuses
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onPublishStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -248,7 +241,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedProductionStatuses
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onProductionStatusClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -268,7 +260,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedSeasons
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onSeasonClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -299,7 +290,6 @@ private fun FiltersScreenContent(
             selectedItems = selectedAgeRatings
         ) { selected, item ->
             FilterChip(
-                modifier = Modifier.animatePlacement(),
                 selected = selected,
                 onClick = { onAgeRatingClick(item) },
                 label = { Text(stringResource(item.stringRes)) },
@@ -317,9 +307,7 @@ private fun FiltersScreenContent(
 @Composable
 private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.5f),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()

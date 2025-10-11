@@ -54,7 +54,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 internal fun SearchResultPane(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<Release>,
@@ -79,68 +78,64 @@ internal fun SearchResultPane(
     val feedState = rememberLazyGridState()
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
-    with(scope) {
-        AnimatedPane(modifier = modifier) {
-            Scaffold(
-                modifier = modifier,
-                topBar = {
-                    Column(
-                        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
-                    ) {
-                        TopSearchInputField(
-                            modifier = Modifier.fillMaxWidth(),
-                            state = searchFieldState,
-                            onSearch = {},
-                            placeholder = { Text(stringResource(Res.string.search_bar_placeholder)) },
-                            leadingIcon = {
-                                IconButton(
-                                    onClick = { onBackClick() }
-                                ) {
-                                    Icon(
-                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            },
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { searchFieldState.clearText() }
-                                ) {
-                                    Icon(
-                                        imageVector = AnilibriaIcons.Outlined.Clear,
-                                        contentDescription = null
-                                    )
-                                }
-                            },
-                        )
-                        ChipGroup {
-                            AssistChip(
-                                onClick = { onShowFilters() },
-                                label = { Text(text = stringResource(Res.string.button_filters)) },
-                                trailingIcon = {
-                                    Icon(
-                                        modifier = Modifier.size(AssistChipDefaults.IconSize),
-                                        imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
-                                        contentDescription = null
-                                    )
-                                }
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            Column(
+                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                TopSearchInputField(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = searchFieldState,
+                    onSearch = {},
+                    placeholder = { Text(stringResource(Res.string.search_bar_placeholder)) },
+                    leadingIcon = {
+                        IconButton(
+                            onClick = { onBackClick() }
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
                             )
                         }
-                        Spacer(Modifier.height(8.dp))
-                        HorizontalDivider()
-                    }
-                }
-            ) { innerPadding ->
-                ProvideShimmer(shimmer) {
-                    SearchResultContent(
-                        modifier = modifier.shimmerUpdater(shimmer),
-                        items = items,
-                        state = feedState,
-                        contentPadding = innerPadding,
-                        onReleaseClick = onReleaseClick,
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { searchFieldState.clearText() }
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.Clear,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                )
+                ChipGroup {
+                    AssistChip(
+                        onClick = { onShowFilters() },
+                        label = { Text(text = stringResource(Res.string.button_filters)) },
+                        trailingIcon = {
+                            Icon(
+                                modifier = Modifier.size(AssistChipDefaults.IconSize),
+                                imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                                contentDescription = null
+                            )
+                        }
                     )
                 }
+                Spacer(Modifier.height(8.dp))
+                HorizontalDivider()
             }
+        }
+    ) { innerPadding ->
+        ProvideShimmer(shimmer) {
+            SearchResultContent(
+                modifier = modifier.shimmerUpdater(shimmer),
+                items = items,
+                state = feedState,
+                contentPadding = innerPadding,
+                onReleaseClick = onReleaseClick,
+            )
         }
     }
 }

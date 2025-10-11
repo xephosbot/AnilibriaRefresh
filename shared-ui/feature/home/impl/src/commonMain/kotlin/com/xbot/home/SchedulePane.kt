@@ -24,8 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -45,11 +43,9 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.models.Schedule
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.label_schedule
-import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -59,7 +55,6 @@ import org.koin.compose.viewmodel.koinViewModel
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 internal fun SchedulePane(
     modifier: Modifier = Modifier,
     viewModel: ScheduleViewModel = koinViewModel(),
@@ -84,7 +79,6 @@ internal fun SchedulePane(
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 private fun SchedulePane(
     modifier: Modifier = Modifier,
     state: ScheduleScreenState,
@@ -94,45 +88,41 @@ private fun SchedulePane(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    with(scope) {
-        AnimatedPane(modifier = modifier) {
-            Scaffold(
-                modifier = modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(text = stringResource(Res.string.label_schedule)) },
-                        navigationIcon = {
-                            if (showBackButton) {
-                                IconButton(
-                                    onClick = onBackClick,
-                                    shapes = IconButtonDefaults.shapes(),
-                                ) {
-                                    Icon(
-                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        },
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
-                containerColor = MaterialTheme.colorScheme.surface
-            ) { innerPadding ->
-                Crossfade(
-                    targetState = state
-                ) { targetState ->
-                    when (targetState) {
-                        is ScheduleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                        is ScheduleScreenState.Success -> {
-                            ScheduleContent(
-                                state = targetState,
-                                contentPadding = innerPadding,
-                                onReleaseClick = onReleaseClick
+    Scaffold(
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = stringResource(Res.string.label_schedule)) },
+                navigationIcon = {
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = onBackClick,
+                            shapes = IconButtonDefaults.shapes(),
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
                             )
                         }
                     }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.surface
+    ) { innerPadding ->
+        Crossfade(
+            targetState = state
+        ) { targetState ->
+            when (targetState) {
+                is ScheduleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is ScheduleScreenState.Success -> {
+                    ScheduleContent(
+                        state = targetState,
+                        contentPadding = innerPadding,
+                        onReleaseClick = onReleaseClick
+                    )
                 }
             }
         }

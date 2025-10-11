@@ -17,27 +17,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Episode
-import com.xbot.designsystem.components.EpisodeListItem
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 internal fun TitleEpisodesPane(
     modifier: Modifier = Modifier,
     state: TitleScreenState,
@@ -45,43 +42,40 @@ internal fun TitleEpisodesPane(
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
 ) {
-    with(scope) {
-        AnimatedPane(modifier = modifier) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {},
-                        navigationIcon = {
-                            if (showBackButton) {
-                                IconButton(
-                                    onClick = onBackClick
-                                ) {
-                                    Icon(
-                                        imageVector = AnilibriaIcons.Outlined.ArrowBack,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    if (showBackButton) {
+                        IconButton(
+                            onClick = onBackClick
+                        ) {
+                            Icon(
+                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                contentDescription = null
+                            )
                         }
-                    )
+                    }
                 }
-            ) { innerPadding ->
-                Crossfade(
-                    targetState = state
-                ) { targetState ->
-                    when (targetState) {
-                        is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                        is TitleScreenState.Success -> {
-                            EpisodesList(
-                                episodes = targetState.title.episodes.reversed(),
-                                contentPadding = innerPadding,
-                            ) { ordinal ->
-                                onPlayClick(
-                                    targetState.title.release.id,
-                                    targetState.title.episodes.size - ordinal
-                                )
-                            }
-                        }
+            )
+        }
+    ) { innerPadding ->
+        Crossfade(
+            targetState = state
+        ) { targetState ->
+            when (targetState) {
+                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is TitleScreenState.Success -> {
+                    EpisodesList(
+                        episodes = targetState.title.episodes.reversed(),
+                        contentPadding = innerPadding,
+                    ) { ordinal ->
+                        onPlayClick(
+                            targetState.title.release.id,
+                            targetState.title.episodes.size - ordinal
+                        )
                     }
                 }
             }

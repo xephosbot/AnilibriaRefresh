@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.AdaptStrategy
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldDefaults
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
@@ -58,8 +59,12 @@ private fun SearchScreenContent(
     onReleaseClick: (Int) -> Unit,
 ) {
     val scaffoldNavigator = rememberSupportingPaneScaffoldNavigator<Unit>(
-        scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
-            .copy(horizontalPartitionSpacerSize = 0.dp),
+        scaffoldDirective = calculatePaneScaffoldDirective(
+            currentWindowAdaptiveInfo()
+        ).copy(
+            horizontalPartitionSpacerSize = 0.dp,
+            verticalPartitionSpacerSize = 0.dp
+        ),
         adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Hide
         )
@@ -77,57 +82,61 @@ private fun SearchScreenContent(
         navigator = scaffoldNavigator,
         defaultBackBehavior = backBehavior,
         mainPane = {
-            SearchResultPane(
-                items = searchResult,
-                searchFieldState = searchFieldState,
-                onRetry = { error, action ->
-                    onAction(SearchScreenAction.ShowErrorMessage(error, action))
-                },
-                onBackClick = onBackClick,
-                onShowFilters = {
-                    scope.launch {
-                        scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
-                    }
-                },
-                onReleaseClick = onReleaseClick
-            )
-        },
-        supportingPane = {
-            SearchFilterPane(
-                showBackButton = scaffoldNavigator.isHidden(SupportingPaneScaffoldRole.Main),
-                onBackClick = {
-                    scope.launch {
-                        if (scaffoldNavigator.canNavigateBack(backBehavior)) {
-                            scaffoldNavigator.navigateBack(backBehavior)
+            AnimatedPane {
+                SearchResultPane(
+                    items = searchResult,
+                    searchFieldState = searchFieldState,
+                    onRetry = { error, action ->
+                        onAction(SearchScreenAction.ShowErrorMessage(error, action))
+                    },
+                    onBackClick = onBackClick,
+                    onShowFilters = {
+                        scope.launch {
+                            scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
                         }
-                    }
-                },
-                state = state,
-                onSortingTypeClick = { sortingType ->
-                    onAction(SearchScreenAction.UpdateSortingType(sortingType))
-                },
-                onGenreClick = { genre ->
-                    onAction(SearchScreenAction.ToggleGenre(genre))
-                },
-                onReleaseTypeClick = { releaseType ->
-                    onAction(SearchScreenAction.ToggleReleaseType(releaseType))
-                },
-                onPublishStatusClick = { publishStatus ->
-                    onAction(SearchScreenAction.TogglePublishStatus(publishStatus))
-                },
-                onProductionStatusClick = { productionStatus ->
-                    onAction(SearchScreenAction.ToggleProductionStatus(productionStatus))
-                },
-                onSeasonClick = { season ->
-                    onAction(SearchScreenAction.ToggleSeason(season))
-                },
-                onYearsRangeChange = { yearsRange ->
-                    onAction(SearchScreenAction.UpdateYearsRange(yearsRange))
-                },
-                onAgeRatingClick = { ageRating ->
-                    onAction(SearchScreenAction.ToggleAgeRating(ageRating))
+                    },
+                    onReleaseClick = onReleaseClick
+                )
+            }
+        },
+        supportingPane = scaffoldNavigator.currentDestination?.let {
+            {
+                AnimatedPane {
+                    SearchFilterPane(
+                        showBackButton = true,
+                        onBackClick = {
+                            scope.launch {
+                                scaffoldNavigator.navigateBack(backBehavior)
+                            }
+                        },
+                        state = state,
+                        onSortingTypeClick = { sortingType ->
+                            onAction(SearchScreenAction.UpdateSortingType(sortingType))
+                        },
+                        onGenreClick = { genre ->
+                            onAction(SearchScreenAction.ToggleGenre(genre))
+                        },
+                        onReleaseTypeClick = { releaseType ->
+                            onAction(SearchScreenAction.ToggleReleaseType(releaseType))
+                        },
+                        onPublishStatusClick = { publishStatus ->
+                            onAction(SearchScreenAction.TogglePublishStatus(publishStatus))
+                        },
+                        onProductionStatusClick = { productionStatus ->
+                            onAction(SearchScreenAction.ToggleProductionStatus(productionStatus))
+                        },
+                        onSeasonClick = { season ->
+                            onAction(SearchScreenAction.ToggleSeason(season))
+                        },
+                        onYearsRangeChange = { yearsRange ->
+                            onAction(SearchScreenAction.UpdateYearsRange(yearsRange))
+                        },
+                        onAgeRatingClick = { ageRating ->
+                            onAction(SearchScreenAction.ToggleAgeRating(ageRating))
+                        }
+                    )
                 }
-            )
-        }
+            }
+        } ?: {}
     )
 }

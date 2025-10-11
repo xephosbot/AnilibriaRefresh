@@ -35,7 +35,7 @@ fun <T> NavigableListDetailPaneScaffold(
     ListDetailPaneScaffold(
         modifier = modifier,
         directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        scaffoldState = navigator.scaffoldState,
         detailPane = detailPane,
         listPane = listPane,
         extraPane = extraPane,
@@ -66,7 +66,7 @@ fun <T> NavigableSupportingPaneScaffold(
     SupportingPaneScaffold(
         modifier = modifier,
         directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        scaffoldState = navigator.scaffoldState,
         mainPane = mainPane,
         supportingPane = supportingPane,
         extraPane = extraPane,

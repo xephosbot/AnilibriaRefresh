@@ -40,8 +40,6 @@ import androidx.compose.material3.TonalToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.LoadingIndicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -122,7 +120,6 @@ import kotlin.math.absoluteValue
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 internal fun FeedPane(
     modifier: Modifier = Modifier,
     viewModel: FeedViewModel = koinViewModel(),
@@ -150,7 +147,6 @@ internal fun FeedPane(
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-context(scope: ThreePaneScaffoldPaneScope)
 private fun FeedPane(
     modifier: Modifier = Modifier,
     state: FeedScreenState,
@@ -209,99 +205,95 @@ private fun FeedPane(
         }
     }
 
-    with(scope) {
-        AnimatedPane(modifier = modifier) {
-            Scaffold(
-                modifier = Modifier.pullToRefresh(
-                    isRefreshing = isRefreshing,
-                    state = pullToRefreshState,
-                    onRefresh = {
-                        items.refresh()
-                        onAction(FeedScreenAction.Refresh)
-                    }
-                ),
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Image(
-                                imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                                contentDescription = null
-                            )
-                        },
-                        actions = {
-                            IconButton(
-                                onClick = onSearchClick,
-                                shapes = IconButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    imageVector = AnilibriaIcons.Outlined.Search,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
-                        )
+    Scaffold(
+        modifier = modifier.pullToRefresh(
+            isRefreshing = isRefreshing,
+            state = pullToRefreshState,
+            onRefresh = {
+                items.refresh()
+                onAction(FeedScreenAction.Refresh)
+            }
+        ),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Image(
+                        imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        contentDescription = null
                     )
                 },
-                floatingActionButton = {
-                    AnimatedVisibility(
-                        visible = gridState.isScrollingUp().value && showResetScrollButton,
-                        enter = fadeIn(),
-                        exit = fadeOut()
+                actions = {
+                    IconButton(
+                        onClick = onSearchClick,
+                        shapes = IconButtonDefaults.shapes()
                     ) {
-                        FilledTonalIconButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    gridState.animateScrollToItem(0)
-                                }
-                            },
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                                imageVector = AnilibriaIcons.Outlined.ArrowDropUp,
-                                contentDescription = null
-                            )
-                        }
+                        Icon(
+                            imageVector = AnilibriaIcons.Outlined.Search,
+                            contentDescription = null
+                        )
                     }
                 },
-                floatingActionButtonPosition = FabPosition.Center,
-                containerColor = MaterialTheme.colorScheme.surface
-            ) { innerPadding ->
-                topAppbarHeight =
-                    with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
-
-                Box {
-                    TypedCrossFade(
-                        targetState = state
-                    ) { targetState ->
-                        when (targetState) {
-                            is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                            is FeedScreenState.Success -> {
-                                ReleaseFeed(
-                                    gridState = gridState,
-                                    items = items,
-                                    state = targetState,
-                                    contentPadding = innerPadding,
-                                    onScheduleClick = onScheduleClick,
-                                    onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
-                                    onReleaseClick = { onReleaseClick(it.id) },
-                                )
-                            }
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = topAppBarAlpha),
+                )
+            )
+        },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = gridState.isScrollingUp().value && showResetScrollButton,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                FilledTonalIconButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            gridState.animateScrollToItem(0)
                         }
-                    }
-
-                    LoadingIndicator(
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .padding(innerPadding.only(WindowInsetsSides.Top)),
-                        isRefreshing = isRefreshing,
-                        state = pullToRefreshState
+                    },
+                    shapes = IconButtonDefaults.shapes()
+                ) {
+                    Icon(
+                        modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                        imageVector = AnilibriaIcons.Outlined.ArrowDropUp,
+                        contentDescription = null
                     )
                 }
             }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        containerColor = MaterialTheme.colorScheme.surface
+    ) { innerPadding ->
+        topAppbarHeight =
+            with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }
+
+        Box {
+            TypedCrossFade(
+                targetState = state
+            ) { targetState ->
+                when (targetState) {
+                    is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                    is FeedScreenState.Success -> {
+                        ReleaseFeed(
+                            gridState = gridState,
+                            items = items,
+                            state = targetState,
+                            contentPadding = innerPadding,
+                            onScheduleClick = onScheduleClick,
+                            onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
+                            onReleaseClick = { onReleaseClick(it.id) },
+                        )
+                    }
+                }
+            }
+
+            LoadingIndicator(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(innerPadding.only(WindowInsetsSides.Top)),
+                isRefreshing = isRefreshing,
+                state = pullToRefreshState
+            )
         }
     }
 }
