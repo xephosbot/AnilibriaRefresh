@@ -13,7 +13,13 @@ import com.xbot.network.client.NetworkError
 import com.xbot.network.api.ScheduleApi
 import com.xbot.network.models.dto.ScheduleDto
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
     private val releasesApi: ReleasesApi,
@@ -41,8 +47,8 @@ internal class DefaultScheduleRepository(
                 }
         }
 
-    override suspend fun getCurrentDay(): Either<DomainError, DayOfWeek> = either {
-        DayOfWeek.MONDAY // Replace with actual logic to get the current day
+    override suspend fun getCurrentDay(): Either<DomainError, LocalDate> = either {
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
     override suspend fun getCurrentSeason(): Either<DomainError, Season> = releasesApi
