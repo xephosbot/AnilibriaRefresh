@@ -113,10 +113,7 @@ private fun MediumReleaseCardLayout(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(
-                            width = ReleaseCardWidth,
-                            height = ReleaseCardPosterHeight
-                        )
+                        .height(ReleaseCardPosterHeight)
                         .fadedEdge(edgeHeightRatio = 0.5f),
                 ) {
                     poster()
