@@ -8,7 +8,7 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Schedule
-import com.xbot.domain.repository.ScheduleRepository
+import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 
 class ScheduleViewModel(
-    private val scheduleRepository: ScheduleRepository,
+    private val getSortedScheduleWeekUseCase: GetSortedScheduleWeekUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val _state: MutableStateFlow<ScheduleScreenState> =
@@ -43,7 +43,7 @@ class ScheduleViewModel(
     private fun fetch() {
         viewModelScope.launch {
             _state.update { ScheduleScreenState.Loading }
-            when (val result = scheduleRepository.getScheduleWeek()) {
+            when (val result = getSortedScheduleWeekUseCase()) {
                 is Either.Left -> showErrorMessage(result.value.toString(), ::fetch)
                 is Either.Right -> _state.update { ScheduleScreenState.Success(result.value) }
             }
@@ -64,7 +64,7 @@ class ScheduleViewModel(
 @Stable
 sealed interface ScheduleScreenState {
     data object Loading : ScheduleScreenState
-    data class Success(val schedule: Map<DayOfWeek, List<Schedule>>) : ScheduleScreenState
+    data class Success(val schedule: Map<LocalDate, List<Schedule>>) : ScheduleScreenState
 }
 
 @Stable
