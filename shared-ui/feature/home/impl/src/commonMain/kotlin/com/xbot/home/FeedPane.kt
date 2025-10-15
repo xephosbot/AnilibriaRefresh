@@ -262,7 +262,7 @@ private fun FeedPane(
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         topAppbarHeight =
             with(LocalDensity.current) { innerPadding.calculateTopPadding().roundToPx() }

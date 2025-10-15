@@ -1,5 +1,5 @@
 package com.xbot.common.navigation
 
-import androidx.navigation3.runtime.EntryProviderBuilder
+import androidx.navigation3.runtime.EntryProviderScope
 
-typealias NavEntryBuilder = EntryProviderBuilder<NavKey>.(Navigator<NavKey>) -> Unit
+typealias NavEntryBuilder = EntryProviderScope<NavKey>.(Navigator<NavKey>) -> Unit

@@ -6,7 +6,7 @@ android-desugar-jdk-libs = "2.1.5"
 # Kotlin & Compose
 kotlin = "2.2.20"
 compose-multiplatform = "1.10.0-alpha02"
-compose-hot-reload = "1.0.0-rc01"
+compose-hot-reload = "1.0.0-rc02"
 ksp = "2.2.20-2.0.3"
 
 # AndroidX Core
@@ -20,9 +20,8 @@ androidx-interpolator = "1.0.0"
 media3 = "1.8.0"
 
 # Navigation & Lifecycle
-navigation = "2.9.0"
-navigation3 = "1.0.0-alpha10"
-lifecycle = "2.10.0-alpha02"
+navigation3 = "1.0.0-alpha11"
+lifecycle = "2.10.0+dev3084"
 
 # Networking
 ktor = "3.3.1"
@@ -72,10 +71,10 @@ androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", versi
 androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3" }
 
 # Navigation & Lifecycle
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version = "1.0.0-alpha02" }
+navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version = "1.0.0+dev3074" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 
 # Coroutines

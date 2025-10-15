@@ -7,7 +7,7 @@ import com.xbot.favorite.di.favoriteFeatureModule
 import com.xbot.home.di.homeFeatureModule
 import com.xbot.network.di.networkModule
 import com.xbot.player.di.playerFeatureModule
-import com.xbot.profile.di.profileFeatureModule
+import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
 import com.xbot.title.di.titleFeatureModule
 import org.koin.dsl.module
@@ -18,7 +18,7 @@ internal val appModule = module {
         favoriteFeatureModule,
         homeFeatureModule,
         playerFeatureModule,
-        profileFeatureModule,
+        preferenceFeatureModule,
         searchFeatureModule,
         titleFeatureModule
     )

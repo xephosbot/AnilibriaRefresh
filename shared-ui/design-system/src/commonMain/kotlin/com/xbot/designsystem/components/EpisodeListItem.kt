@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,9 +44,7 @@ fun EpisodeListItem(
     onClick: () -> Unit,
 ) {
     ListItemLayout(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick() },
+        modifier = modifier.clickable { onClick() },
         content = {
             Text(
                 text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
@@ -106,7 +102,7 @@ internal fun ListItemLayout(
 ) {
     Row(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .background(MaterialTheme.colorScheme.surfaceBright)
             .heightIn(
                 min = ListItemContainerHeight,
                 max = ListItemContainerHeight

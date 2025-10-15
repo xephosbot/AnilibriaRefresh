@@ -12,7 +12,7 @@ import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.favorite.navigation.FavoriteRoute
 import com.xbot.home.navigation.HomeRoute
-import com.xbot.profile.navigation.ProfileRoute
+import com.xbot.preference.navigation.PreferenceRoute
 
 @Composable
 internal fun rememberAnilibriaNavigator(
@@ -77,6 +77,6 @@ internal class AnilibriaNavigator(startNavKey: NavKey) : Navigator<NavKey> {
     }
 
     companion object {
-        val topLevelDestinations: List<TopLevelNavKey> = listOf(HomeRoute, FavoriteRoute, ProfileRoute)
+        val topLevelDestinations: List<TopLevelNavKey> = listOf(HomeRoute, FavoriteRoute, PreferenceRoute)
     }
 }

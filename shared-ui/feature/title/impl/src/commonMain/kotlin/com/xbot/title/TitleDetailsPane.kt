@@ -99,12 +99,10 @@ internal fun TitleDetailsPane(
     onEpisodesListClick: () -> Unit,
 ) {
     val gridState = rememberLazyGridState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     var selected by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {},
@@ -154,7 +152,6 @@ internal fun TitleDetailsPane(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
                 ),
-                scrollBehavior = scrollBehavior
             )
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer

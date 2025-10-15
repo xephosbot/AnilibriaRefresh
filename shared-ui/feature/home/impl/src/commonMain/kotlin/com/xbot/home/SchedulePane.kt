@@ -113,7 +113,7 @@ private fun SchedulePane(
                 scrollBehavior = scrollBehavior,
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         Crossfade(
             targetState = state

@@ -101,7 +101,7 @@ private fun MediumReleaseCardLayout(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainer
+        color = MaterialTheme.colorScheme.surfaceContainerHigh
     ) {
         Column(
             modifier = modifier
@@ -126,7 +126,9 @@ private fun MediumReleaseCardLayout(
                 }
             }
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(16.dp)),
             ) {
                 content()
             }

@@ -126,7 +126,8 @@ internal fun SearchResultPane(
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider()
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         ProvideShimmer(shimmer) {
             SearchResultContent(
