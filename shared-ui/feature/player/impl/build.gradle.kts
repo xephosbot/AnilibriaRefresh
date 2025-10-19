@@ -42,15 +42,12 @@ kotlin {
             implementation(libs.arrow.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.videoplayer.compose)
         }
         androidMain.dependencies {
             implementation(libs.androidx.media3.common.ktx)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.hls)
-        }
-        jvmMain.dependencies {
-            implementation(libs.vlcj)
-            implementation(libs.vlcj.natives)
         }
     }
 

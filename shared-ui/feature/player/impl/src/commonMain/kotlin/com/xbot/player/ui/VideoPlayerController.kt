@@ -29,18 +29,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import com.xbot.designsystem.icons.AnilibriaIcons
+import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoPlayerController(
-    player: VideoPlayer,
+    player: VideoPlayerState,
     buffering: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit,
 ) {
     var isControllerVisible by rememberSaveable { mutableStateOf(true) }
-    val playerState by player.state.collectAsState()
 
     Box(
         modifier = modifier
@@ -56,10 +56,10 @@ fun VideoPlayerController(
     ) {
         ControllerOverlay(
             isVisible = isControllerVisible,
-            playerState = playerState,
+            playerState = player,
             onClickBack = onClickBack,
             onPlayPause = {
-                if (playerState.isPlaying) {
+                if (player.isPlaying) {
                     player.pause()
                 } else {
                     player.play()
@@ -68,7 +68,7 @@ fun VideoPlayerController(
             onUserInteraction = { isControllerVisible = true }
         )
 
-        if (playerState.isBuffering) {
+        if (player.isLoading) {
             buffering()
         }
     }
@@ -125,7 +125,7 @@ private fun AutoHidingController(
             modifier = Modifier.align(Alignment.TopCenter)
         )
 
-        if (!playerState.isBuffering) {
+        if (!playerState.isLoading) {
             PlayPauseButton(
                 state = playerState,
                 onClick = {

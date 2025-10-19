@@ -2,12 +2,14 @@ package com.xbot.player
 
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
-import com.xbot.player.ui.rememberVideoPlayer
+import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -32,12 +34,12 @@ private fun PlayerScreenContent(
     state: PlayerScreenState,
     onBackClick: () -> Unit
 ) {
-    val player = rememberVideoPlayer()
+    val player = rememberVideoPlayerState()
 
     LaunchedEffect(state) {
-        if (!player.state.value.hasPlaylist) {
+        if (!player.hasMedia) {
             if (state.currentEpisode != null) {
-                player.setUrl(state.currentEpisode.let { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
+                player.openUri(state.currentEpisode.let { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
             }
         }
     }
@@ -53,5 +55,6 @@ private fun PlayerScreenContent(
                 onClickBack = onBackClick
             )
         },
+        modifier = modifier,
     )
 }

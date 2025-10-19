@@ -5,7 +5,6 @@ import com.xbot.player.PlayerScreen
 import com.xbot.player.PlayerViewModel
 import com.xbot.player.navigation.PlayerRoute
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -27,7 +26,5 @@ val playerFeatureModule = module {
             }
         }
     }
-    includes(playerModule)
     viewModelOf(::PlayerViewModel)
 }
-internal expect val playerModule: Module
