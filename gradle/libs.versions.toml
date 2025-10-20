@@ -21,7 +21,7 @@ media3 = "1.8.0"
 
 # Navigation & Lifecycle
 navigation3 = "1.0.0-alpha11"
-lifecycle = "2.10.0+dev3087"
+lifecycle = "2.10.0+"
 
 # Networking
 ktor = "3.3.1"
