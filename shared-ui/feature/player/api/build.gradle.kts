@@ -12,8 +12,8 @@ plugins {
 kotlin {
     androidLibrary {
         namespace = "com.xbot.sharedui.feature.player.api"
-        compileSdk = 36
-        minSdk = 24
+        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        minSdk = libs.versions.android.minsdk.get().toInt()
 
         withJava()
         compilerOptions {

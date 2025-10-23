@@ -13,13 +13,13 @@ val keystoreProperties = Properties()
 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdk = 36
+    compileSdk = libs.versions.android.compilesdk.get().toInt()
     namespace = "com.xbot.anilibriarefresh"
 
     defaultConfig {
         applicationId = "com.xbot.anilibriarefresh"
-        minSdk = 24
-        targetSdk = 36
+        minSdk = libs.versions.android.minsdk.get().toInt()
+        targetSdk = libs.versions.android.targetsdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }

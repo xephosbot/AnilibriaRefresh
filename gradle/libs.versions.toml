@@ -1,13 +1,16 @@
 [versions]
 # Android & Build Tools
+android-compilesdk = "36"
+android-targetsdk = "36"
+android-minsdk = "24"
 android-gradle-plugin = "8.13.0"
-android-desugar-jdk-libs = "2.1.5"
+android-desugar-jdk-libs = "2.1.5
 
 # Kotlin & Compose
 kotlin = "2.2.20"
+ksp = "2.2.20-2.0.3"
 compose-multiplatform = "1.10.0-alpha02"
 compose-hot-reload = "1.0.0-rc02"
-ksp = "2.2.20-2.0.3"
 
 # AndroidX Core
 androidx-activity = "1.11.0"
@@ -29,6 +32,7 @@ brotli = "0.1.2"
 
 # Dependency Injection
 koin = "4.1.1"
+koin-annotations = "2.3.0"
 
 # Utility Libraries
 kotlinx-coroutines = "1.10.2"
@@ -44,10 +48,6 @@ shimmer = "1.3.3"
 videoplayer = "0.8.5"
 material-motion-compose = "2.0.1"
 compose-material3-adaptive = "1.2.0-alpha07"
-
-# Desktop Video Player
-vlcj = "4.11.0"
-vlcj-natives = "4.8.3"
 
 [libraries]
 # Android Build Tools
@@ -126,6 +126,8 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 
 [plugins]
 # Android
@@ -136,13 +138,12 @@ android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library
 # Kotlin
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Compose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 compose-hotreload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-hot-reload" }
-
-# Build Tools
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

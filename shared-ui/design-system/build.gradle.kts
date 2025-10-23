@@ -47,9 +47,14 @@ dependencies {
 
 android {
     namespace = "com.xbot.sharedui.designsystem"
-    compileSdk = 36
+    compileSdk = libs.versions.android.compilesdk.get().toInt()
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.android.minsdk.get().toInt()
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
