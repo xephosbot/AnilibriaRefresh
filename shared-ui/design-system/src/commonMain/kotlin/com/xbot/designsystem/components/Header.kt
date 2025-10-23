@@ -21,10 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.theme.AnilibriaTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.xbot.designsystem.utils.PreviewContainer
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -88,13 +89,11 @@ fun Header(
 @Preview(name = "Header", widthDp = 278)
 @Composable
 private fun HeaderPreview() {
-    AnilibriaTheme {
-        Surface {
-            Header(
-                title = { Text("Title") },
-                onClick = {}
-            )
-        }
+    PreviewContainer {
+        Header(
+            title = { Text("Title") },
+            onClick = {}
+        )
     }
 }
 

@@ -39,10 +39,12 @@ kotlin {
         api(libs.shimmer.compose)
         api(libs.material.motion.compose.core)
     }
-}
 
-dependencies {
-    debugImplementation(compose.uiTooling)
+    sourceSets {
+        androidMain.dependencies {
+            implementation(compose.uiTooling)
+        }
+    }
 }
 
 android {

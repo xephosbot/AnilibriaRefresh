@@ -19,6 +19,7 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.theme.AnilibriaTheme
@@ -31,7 +32,6 @@ import com.xbot.resources.Res
 import com.xbot.resources.episode_abbreviation
 import com.xbot.resources.minutes_abbreviation
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ReleaseMetaText(

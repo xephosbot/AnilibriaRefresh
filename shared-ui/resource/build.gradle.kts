@@ -20,9 +20,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_21)
         }
 
-        androidResources {
-            enable = true
-        }
+        androidResources.enable = true
     }
     iosX64()
     iosArm64()
