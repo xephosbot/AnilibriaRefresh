@@ -1,5 +1,4 @@
 import com.android.build.api.dsl.androidLibrary
-import com.google.devtools.ksp.gradle.AndroidPluginIntegration.useLegacyVariantApi
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
