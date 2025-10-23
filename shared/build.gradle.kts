@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -22,11 +23,10 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
-    sourceSets {
-        commonMain.dependencies {
-            api(projects.shared.network)
-            api(projects.shared.data)
-            api(projects.shared.domain)
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        api(projects.shared.network)
+        api(projects.shared.data)
+        api(projects.shared.domain)
     }
 }

@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -25,13 +26,12 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
-    sourceSets {
-        commonMain.dependencies {
-            implementation(projects.shared.domain)
-            implementation(projects.sharedUi.common)
-            implementation(projects.sharedUi.designSystem)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.navigation3.runtime)
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(projects.shared.domain)
+        implementation(projects.sharedUi.common)
+        implementation(projects.sharedUi.designSystem)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.navigation3.runtime)
     }
 }

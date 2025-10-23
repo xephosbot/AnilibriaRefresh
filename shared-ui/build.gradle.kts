@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.androidLibrary
+import com.google.devtools.ksp.gradle.AndroidPluginIntegration.useLegacyVariantApi
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -39,35 +41,34 @@ kotlin {
         }
     }
 
-    sourceSets {
-        commonMain.dependencies {
-            implementation(projects.shared)
-            implementation(projects.sharedUi.designSystem)
-            implementation(projects.sharedUi.common)
-            implementation(projects.sharedUi.feature.favorite.api)
-            implementation(projects.sharedUi.feature.favorite.impl)
-            implementation(projects.sharedUi.feature.home.api)
-            implementation(projects.sharedUi.feature.home.impl)
-            implementation(projects.sharedUi.feature.player.api)
-            implementation(projects.sharedUi.feature.player.impl)
-            implementation(projects.sharedUi.feature.preference.api)
-            implementation(projects.sharedUi.feature.preference.impl)
-            implementation(projects.sharedUi.feature.search.api)
-            implementation(projects.sharedUi.feature.search.impl)
-            implementation(projects.sharedUi.feature.title.api)
-            implementation(projects.sharedUi.feature.title.impl)
-            implementation(compose.foundation)
-            implementation(libs.navigation3.runtime)
-            implementation(libs.navigation3.ui)
-            implementation(libs.lifecycle.viewmodel.compose)
-            implementation(libs.lifecycle.viewmodel.navigation3)
-            implementation(libs.lifecycle.runtime.compose)
-            implementation(libs.ktor.client.core)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(projects.shared)
+        implementation(projects.sharedUi.designSystem)
+        implementation(projects.sharedUi.common)
+        implementation(projects.sharedUi.feature.favorite.api)
+        implementation(projects.sharedUi.feature.favorite.impl)
+        implementation(projects.sharedUi.feature.home.api)
+        implementation(projects.sharedUi.feature.home.impl)
+        implementation(projects.sharedUi.feature.player.api)
+        implementation(projects.sharedUi.feature.player.impl)
+        implementation(projects.sharedUi.feature.preference.api)
+        implementation(projects.sharedUi.feature.preference.impl)
+        implementation(projects.sharedUi.feature.search.api)
+        implementation(projects.sharedUi.feature.search.impl)
+        implementation(projects.sharedUi.feature.title.api)
+        implementation(projects.sharedUi.feature.title.impl)
+        implementation(this@kotlin.compose.foundation)
+        implementation(libs.navigation3.runtime)
+        implementation(libs.navigation3.ui)
+        implementation(libs.lifecycle.viewmodel.compose)
+        implementation(libs.lifecycle.viewmodel.navigation3)
+        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.ktor.client.core)
+        implementation(libs.coil.compose)
+        implementation(libs.coil.network.ktor)
+        implementation(libs.koin.core)
+        implementation(libs.koin.compose)
+        implementation(libs.koin.compose.viewmodel)
     }
 }

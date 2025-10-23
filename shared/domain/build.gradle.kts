@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -22,15 +23,14 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
-    sourceSets {
-        commonMain.dependencies {
-            implementation(libs.androidx.paging.core)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.arrow.core)
-            implementation(libs.arrow.coroutines)
-            implementation(libs.koin.core)
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(libs.androidx.paging.core)
+        implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.datetime)
+        implementation(libs.arrow.core)
+        implementation(libs.arrow.coroutines)
+        implementation(libs.koin.core)
     }
 
     compilerOptions {

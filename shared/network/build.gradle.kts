@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -23,18 +24,20 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(libs.ktor.client.core)
+        implementation(libs.ktor.client.content.negotiation)
+        implementation(libs.ktor.client.encoding)
+        implementation(libs.ktor.client.logging)
+        implementation(libs.ktor.client.auth)
+        implementation(libs.ktor.serialization.kotlinx.json)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.arrow.core)
+        implementation(libs.koin.core)
+    }
+
     sourceSets {
-        commonMain.dependencies {
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.encoding)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.arrow.core)
-            implementation(libs.koin.core)
-        }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.brotli.dec)

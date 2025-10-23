@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.androidLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -25,25 +26,27 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(projects.shared.domain)
+        implementation(projects.sharedUi.designSystem)
+        implementation(projects.sharedUi.common)
+        implementation(projects.sharedUi.feature.player.api)
+        implementation(this@kotlin.compose.foundation)
+        implementation(libs.navigation3.runtime)
+        implementation(libs.navigation3.ui)
+        implementation(libs.lifecycle.viewmodel.compose)
+        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.kotlinx.datetime)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.kotlinx.atomicfu)
+        implementation(libs.arrow.core)
+        implementation(libs.koin.compose)
+        implementation(libs.koin.compose.viewmodel)
+        implementation(libs.videoplayer.compose)
+    }
+
     sourceSets {
-        commonMain.dependencies {
-            implementation(projects.shared.domain)
-            implementation(projects.sharedUi.designSystem)
-            implementation(projects.sharedUi.common)
-            implementation(projects.sharedUi.feature.player.api)
-            implementation(compose.foundation)
-            implementation(libs.navigation3.runtime)
-            implementation(libs.navigation3.ui)
-            implementation(libs.lifecycle.viewmodel.compose)
-            implementation(libs.lifecycle.runtime.compose)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.kotlinx.atomicfu)
-            implementation(libs.arrow.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.videoplayer.compose)
-        }
         androidMain.dependencies {
             implementation(libs.androidx.media3.common.ktx)
             implementation(libs.androidx.media3.exoplayer)

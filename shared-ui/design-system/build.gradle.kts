@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
@@ -12,32 +14,30 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
-    sourceSets {
-        commonMain.dependencies {
-            implementation(projects.shared.domain)
-            api(projects.sharedUi.resource)
-            implementation(libs.kotlinx.datetime)
-            implementation(compose.ui)
-            implementation(compose.foundation)
-            implementation(compose.preview)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.materialIconsExtended)
-            api(compose.material3)
-            api(compose.material3AdaptiveNavigationSuite)
-            api(libs.compose.ui.backhandler)
-            api(libs.compose.material3.adaptive)
-            api(libs.compose.material3.adaptive.layout)
-            api(libs.compose.material3.adaptive.navigation)
-            api(libs.navigation3.runtime)
-            api(libs.navigation3.ui)
-            api(libs.androidx.paging.core)
-            api(libs.androidx.paging.compose)
-            api(libs.lifecycle.viewmodel.compose)
-            api(libs.coil.compose)
-            api(libs.sticky.headers)
-            api(libs.shimmer.compose)
-            api(libs.material.motion.compose.core)
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        implementation(projects.shared.domain)
+        implementation(libs.kotlinx.datetime)
+        implementation(this@kotlin.compose.ui)
+        implementation(this@kotlin.compose.foundation)
+        implementation(this@kotlin.compose.preview)
+        implementation(this@kotlin.compose.materialIconsExtended)
+        api(projects.sharedUi.resource)
+        api(this@kotlin.compose.material3)
+        api(this@kotlin.compose.material3AdaptiveNavigationSuite)
+        api(libs.compose.ui.backhandler)
+        api(libs.compose.material3.adaptive)
+        api(libs.compose.material3.adaptive.layout)
+        api(libs.compose.material3.adaptive.navigation)
+        api(libs.navigation3.runtime)
+        api(libs.navigation3.ui)
+        api(libs.androidx.paging.core)
+        api(libs.androidx.paging.compose)
+        api(libs.lifecycle.viewmodel.compose)
+        api(libs.coil.compose)
+        api(libs.sticky.headers)
+        api(libs.shimmer.compose)
+        api(libs.material.motion.compose.core)
     }
 }
 
