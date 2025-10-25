@@ -41,8 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ChipGroup
@@ -83,6 +83,7 @@ import com.xbot.resources.label_related_releases
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -92,12 +93,14 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun TitleDetailsPane(
     modifier: Modifier = Modifier,
-    state: TitleScreenState,
+    viewModel: TitleDetailsViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
     onEpisodesListClick: () -> Unit,
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     val gridState = rememberLazyGridState()
     var selected by remember { mutableStateOf(false) }
 
@@ -160,8 +163,8 @@ internal fun TitleDetailsPane(
             targetState = state,
         ) { targetState ->
             when (targetState) {
-                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                is TitleScreenState.Success -> {
+                is TitleDetailsScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is TitleDetailsScreenState.Success -> {
                     TitleDetails(
                         gridState = gridState,
                         details = targetState.title,

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -24,17 +23,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.navigation.ResultEffect
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.ReleaseListItem
@@ -46,29 +47,39 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters
 import com.xbot.resources.label_search_results
 import com.xbot.resources.search_bar_placeholder
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun SearchResultPane(
     modifier: Modifier = Modifier,
-    items: LazyPagingItems<Release>,
-    searchFieldState: TextFieldState,
-    onRetry: (Throwable, () -> Unit) -> Unit,
+    viewModel: SearchResultViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onShowFilters: () -> Unit,
+    onShowFilters: (CatalogFilters?) -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
+    val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
+    val selectedFilters by viewModel.filters.collectAsStateWithLifecycle()
+
     val showErrorMessage: (Throwable) -> Unit = { error ->
-        onRetry(error) { items.retry() }
+        viewModel.onAction(SearchResultScreenAction.ShowErrorMessage(
+            error = error,
+            onConfirmAction = { searchResult.retry() }
+        ))
     }
 
-    LaunchedEffect(items) {
-        snapshotFlow { items.loadState }.collect { loadState ->
+    ResultEffect<CatalogFilters> { appliedFilters ->
+        viewModel.onAction(SearchResultScreenAction.ApplyFilters(appliedFilters))
+    }
+
+    LaunchedEffect(searchResult) {
+        snapshotFlow { searchResult.loadState }.collect { loadState ->
             (loadState.refresh as? LoadState.Error)?.let { showErrorMessage(it.error) }
             (loadState.append as? LoadState.Error)?.let { showErrorMessage(it.error) }
             (loadState.prepend as? LoadState.Error)?.let { showErrorMessage(it.error) }
@@ -86,7 +97,7 @@ internal fun SearchResultPane(
             ) {
                 TopSearchInputField(
                     modifier = Modifier.fillMaxWidth(),
-                    state = searchFieldState,
+                    state = viewModel.searchFieldState,
                     onSearch = {},
                     placeholder = { Text(stringResource(Res.string.search_bar_placeholder)) },
                     leadingIcon = {
@@ -101,7 +112,7 @@ internal fun SearchResultPane(
                     },
                     trailingIcon = {
                         IconButton(
-                            onClick = { searchFieldState.clearText() }
+                            onClick = { viewModel.searchFieldState.clearText() }
                         ) {
                             Icon(
                                 imageVector = AnilibriaIcons.Outlined.Clear,
@@ -112,7 +123,7 @@ internal fun SearchResultPane(
                 )
                 ChipGroup {
                     AssistChip(
-                        onClick = { onShowFilters() },
+                        onClick = { onShowFilters(selectedFilters) },
                         label = { Text(text = stringResource(Res.string.button_filters)) },
                         trailingIcon = {
                             Icon(
@@ -132,7 +143,7 @@ internal fun SearchResultPane(
         ProvideShimmer(shimmer) {
             SearchResultContent(
                 modifier = modifier.shimmerUpdater(shimmer),
-                items = items,
+                items = searchResult,
                 state = feedState,
                 contentPadding = innerPadding,
                 onReleaseClick = onReleaseClick,

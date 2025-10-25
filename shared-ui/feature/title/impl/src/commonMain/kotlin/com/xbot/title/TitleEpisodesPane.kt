@@ -17,9 +17,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
@@ -29,6 +31,7 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.domain.models.Episode
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -37,11 +40,12 @@ import com.xbot.domain.models.Episode
 @Composable
 internal fun TitleEpisodesPane(
     modifier: Modifier = Modifier,
-    state: TitleScreenState,
+    viewModel: TitleEpisodesViewModel = koinViewModel(),
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -71,15 +75,15 @@ internal fun TitleEpisodesPane(
             targetState = state
         ) { targetState ->
             when (targetState) {
-                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                is TitleScreenState.Success -> {
+                is TitleEpisodesScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is TitleEpisodesScreenState.Success -> {
                     EpisodesList(
-                        episodes = targetState.title.episodes.reversed(),
+                        episodes = targetState.episodes.reversed(),
                         contentPadding = innerPadding,
                     ) { ordinal ->
                         onPlayClick(
-                            targetState.title.release.id,
-                            targetState.title.episodes.size - ordinal
+                            targetState.releaseId,
+                            targetState.episodes.size - ordinal
                         )
                     }
                 }

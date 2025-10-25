@@ -12,7 +12,7 @@ data class CatalogFilters(
     val genres: List<Genre> = emptyList(),
     val types: List<ReleaseType> = emptyList(),
     val seasons: List<Season> = emptyList(),
-    val years: IntRange = -1..-1,
+    val years: IntRange = IntRange.EMPTY,
     val sortingTypes: List<SortingType> = emptyList(),
     val ageRatings: List<AgeRating> = emptyList(),
     val publishStatuses: List<PublishStatus> = emptyList(),

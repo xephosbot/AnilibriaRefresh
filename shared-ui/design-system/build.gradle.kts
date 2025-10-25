@@ -29,6 +29,7 @@ kotlin {
         api(libs.compose.material3.adaptive)
         api(libs.compose.material3.adaptive.layout)
         api(libs.compose.material3.adaptive.navigation)
+        api(libs.compose.material3.adaptive.navigation3)
         api(libs.navigation3.runtime)
         api(libs.navigation3.ui)
         api(libs.androidx.paging.core)

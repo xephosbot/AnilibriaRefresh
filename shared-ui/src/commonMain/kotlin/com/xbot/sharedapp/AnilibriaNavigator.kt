@@ -16,65 +16,75 @@ import com.xbot.preference.navigation.PreferenceRoute
 
 @Composable
 internal fun rememberAnilibriaNavigator(
-    startNavKey: NavKey = HomeRoute,
+    startNavKey: TopLevelNavKey = HomeRoute,
 ): AnilibriaNavigator {
     return remember(startNavKey) { AnilibriaNavigator(startNavKey) }
 }
 
-internal class AnilibriaNavigator(startNavKey: NavKey) : Navigator<NavKey> {
+internal class AnilibriaNavigator(
+    private val startNavKey: TopLevelNavKey
+) : Navigator<NavKey> {
 
-    private val topLevelStacks : LinkedHashMap<NavKey, SnapshotStateList<NavKey>> = linkedMapOf(
+    private val topLevelStacks = linkedMapOf<TopLevelNavKey, SnapshotStateList<NavKey>>(
         startNavKey to mutableStateListOf(startNavKey)
     )
 
-    private val _backstack = mutableStateListOf(startNavKey)
-    override val backstack: List<NavKey> get() = _backstack
+    private var _currentTopLevelDestination by mutableStateOf(startNavKey)
+    override val currentTopLevelDestination: NavKey get() = _currentTopLevelDestination
 
-    override val currentDestination: NavKey?
-        get() = _backstack.lastOrNull()
+    private val _backStack = mutableStateListOf<NavKey>(startNavKey)
+    override val backStack: List<NavKey> get() = _backStack
 
-    private var _currentTopLevelDestination: NavKey by mutableStateOf(startNavKey)
-
-    override val currentTopLevelDestination: NavKey?
-        get() = _currentTopLevelDestination
-
-    private fun updateBackStack() =
-        _backstack.apply {
-            clear()
-            addAll(topLevelStacks.flatMap { it.value })
-        }
+    override val currentDestination: NavKey? get() = _backStack.lastOrNull()
 
     override fun navigate(key: NavKey) {
         when (key) {
-            is TopLevelNavKey -> {
-                // If the top level doesn't exist, add it
-                if (topLevelStacks[key] == null){
-                    topLevelStacks.put(key, mutableStateListOf(key))
-                } else {
-                    // Otherwise just move it to the end of the stacks
-                    topLevelStacks.apply {
-                        remove(key)?.let {
-                            put(key, it)
-                        }
-                    }
-                }
-                _currentTopLevelDestination = key
-                updateBackStack()
-            }
-            else -> {
-                topLevelStacks[_currentTopLevelDestination]?.add(key)
-                updateBackStack()
-            }
+            is TopLevelNavKey -> addTopLevel(key)
+            else -> add(key)
         }
+        updateBackStack()
+    }
+
+    private fun addTopLevel(key: TopLevelNavKey) {
+        if (key == startNavKey) {
+            clearAllExceptStartStack()
+        } else {
+            // Get the existing stack or create a new one.
+            val topLevelStack: SnapshotStateList<NavKey> = topLevelStacks.remove(key) ?: mutableStateListOf(key)
+            clearAllExceptStartStack()
+
+            topLevelStacks.put(key, topLevelStack)
+        }
+        _currentTopLevelDestination = key
+    }
+
+    private fun add(key: NavKey) {
+        topLevelStacks[currentTopLevelDestination]?.add(key)
+    }
+
+    private fun clearAllExceptStartStack() {
+        // Remove all other top level stacks, except the start stack
+        val startStack: SnapshotStateList<NavKey> = topLevelStacks[startNavKey] ?: mutableStateListOf(startNavKey)
+        topLevelStacks.clear()
+        topLevelStacks.put(startNavKey, startStack)
     }
 
     override fun navigateBack() {
+        if (backStack.size <= 1) {
+            return
+        }
         val removedKey = topLevelStacks[_currentTopLevelDestination]?.removeLastOrNull()
         // If the removed key was a top level key, remove the associated top level stack
         topLevelStacks.remove(removedKey)
         _currentTopLevelDestination = topLevelStacks.keys.last()
         updateBackStack()
     }
+
+    private fun updateBackStack() =
+        _backStack.apply {
+            clear()
+            addAll(topLevelStacks.values.flatten())
+        }
 
     companion object {
         val topLevelDestinations: List<TopLevelNavKey> = listOf(HomeRoute, FavoriteRoute, PreferenceRoute)

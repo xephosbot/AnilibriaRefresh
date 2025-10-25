@@ -7,8 +7,8 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaul
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
@@ -17,13 +17,13 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
+import com.xbot.common.navigation.LocalResultEventBus
+import com.xbot.common.navigation.ResultEventBus
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import io.ktor.client.HttpClient
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -43,49 +43,41 @@ internal fun AnilibriaApp(
         val currentDestination = navigator.currentDestination
         val currentTopLevelDestination = navigator.currentTopLevelDestination
 
-        LaunchedEffect(currentDestination) {
-            snapshotFlow { currentDestination }
-                .onEach {
-                    if (it != currentTopLevelDestination) {
-                        navigationSuiteScaffoldState.hide()
-                    } else {
-                        navigationSuiteScaffoldState.show()
-                    }
-                }
-                .collect()
-        }
+        val resultBus = remember { ResultEventBus() }
 
-        NavigationSuiteScaffold(
-            navigationSuiteItems = {
-                AnilibriaNavigator.topLevelDestinations.forEach { destination ->
-                    val isSelected = currentTopLevelDestination == destination
-                    item(
-                        selected = isSelected,
-                        icon = {
-                            Icon(
-                                imageVector = when (isSelected) {
-                                    true -> destination.selectedIcon
-                                    else -> destination.unselectedIcon
-                                },
-                                contentDescription = stringResource(destination.textRes),
-                            )
-                        },
-                        onClick = {
-                            navigator.navigate(destination)
-                        },
-                    )
-                }
-            },
-            layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
-            navigationSuiteColors = NavigationSuiteDefaults.colors(
-                navigationBarContainerColor = MaterialTheme.colorScheme.surface,
-                navigationRailContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-            state = navigationSuiteScaffoldState
-        ) {
-            AnilibriaNavGraph(
-                navigator = navigator
-            )
+        CompositionLocalProvider(LocalResultEventBus.provides(resultBus)) {
+            NavigationSuiteScaffold(
+                navigationSuiteItems = {
+                    AnilibriaNavigator.topLevelDestinations.forEach { destination ->
+                        val isSelected = currentTopLevelDestination == destination
+                        item(
+                            selected = isSelected,
+                            icon = {
+                                Icon(
+                                    imageVector = when (isSelected) {
+                                        true -> destination.selectedIcon
+                                        else -> destination.unselectedIcon
+                                    },
+                                    contentDescription = stringResource(destination.textRes),
+                                )
+                            },
+                            onClick = {
+                                navigator.navigate(destination)
+                            },
+                        )
+                    }
+                },
+                layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()),
+                navigationSuiteColors = NavigationSuiteDefaults.colors(
+                    navigationBarContainerColor = MaterialTheme.colorScheme.surface,
+                    navigationRailContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+                state = navigationSuiteScaffoldState
+            ) {
+                AnilibriaNavGraph(
+                    navigator = navigator
+                )
+            }
         }
     }
 }

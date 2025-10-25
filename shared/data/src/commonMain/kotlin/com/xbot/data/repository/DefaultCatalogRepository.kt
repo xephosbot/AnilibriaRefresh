@@ -41,13 +41,13 @@ internal class DefaultCatalogRepository(
                     genres = filters?.genres?.map(Genre::id),
                     types = filters?.types?.map(ReleaseType::toDto),
                     seasons = filters?.seasons?.map(Season::toDto),
-                    fromYear = filters?.years?.start.takeIf { it != -1 },
-                    toYear = filters?.years?.endInclusive.takeIf { it != -1 },
+                    fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
+                    toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
                     sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
                     ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
                     publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
                     productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).getOrElse { DomainError ->
+                ).getOrElse { domainError ->
                     throw IllegalStateException()
                 }
                 CommonPagingSource.PaginatedResponse(
@@ -70,8 +70,8 @@ internal class DefaultCatalogRepository(
             genres = filters?.genres?.map(Genre::id),
             types = filters?.types?.map(ReleaseType::toDto),
             seasons = filters?.seasons?.map(Season::toDto),
-            fromYear = filters?.years?.start.takeIf { it != -1 },
-            toYear = filters?.years?.endInclusive.takeIf { it != -1 },
+            fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
+            toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
             sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
             ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
             publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),

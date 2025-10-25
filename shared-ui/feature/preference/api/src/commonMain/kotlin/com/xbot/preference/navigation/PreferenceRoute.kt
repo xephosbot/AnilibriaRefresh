@@ -1,6 +1,7 @@
 package com.xbot.preference.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.resources.Res
@@ -16,5 +17,14 @@ data object PreferenceRoute : TopLevelNavKey {
         get() = AnilibriaIcons.Filled.Person
     override val unselectedIcon: ImageVector
         get() = AnilibriaIcons.Outlined.Person
-
 }
+
+data object PreferenceProfileRoute : NavKey
+
+data object PreferenceHistoryRoute : NavKey
+
+data object PreferenceTeamRoute : NavKey
+
+data object PreferenceDonateRoute : NavKey
+
+data object PreferenceSettingsRoute : NavKey

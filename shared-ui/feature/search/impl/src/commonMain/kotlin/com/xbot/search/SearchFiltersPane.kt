@@ -6,26 +6,35 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.RangeSlider
@@ -38,6 +47,7 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.label_age_ratings
@@ -49,24 +59,21 @@ import com.xbot.resources.label_seasons
 import com.xbot.resources.label_sorting_types
 import com.xbot.resources.label_years
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun SearchFilterPane(
     modifier: Modifier = Modifier,
+    viewModel: SearchFiltersViewModel = koinViewModel(),
     showBackButton: Boolean,
+    onApplyFilters: (CatalogFilters) -> Unit,
     onBackClick: () -> Unit,
-    state: SearchScreenState,
-    onSortingTypeClick: (SortingType) -> Unit,
-    onGenreClick: (Genre) -> Unit,
-    onReleaseTypeClick: (ReleaseType) -> Unit,
-    onPublishStatusClick: (PublishStatus) -> Unit,
-    onProductionStatusClick: (ProductionStatus) -> Unit,
-    onSeasonClick: (Season) -> Unit,
-    onYearsRangeChange: (IntRange) -> Unit,
-    onAgeRatingClick: (AgeRating) -> Unit,
 ) {
+    val availableFilters by viewModel.availableFilters.collectAsStateWithLifecycle()
+    val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -85,40 +92,73 @@ internal fun SearchFilterPane(
                 }
             )
         },
+        bottomBar = {
+            Button(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .height(ButtonDefaults.MediumContainerHeight)
+                    .fillMaxWidth(),
+                onClick = {
+                    onApplyFilters(selectedFilters.toCatalogFilters())
+                }
+            ) {
+                Text(
+                    text = "Apply",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         Crossfade(
-            targetState = state.loading
+            targetState = availableFilters
         ) { targetState ->
             when (targetState) {
-                true -> LoadingFiltersScreen(modifier)
-                false -> FiltersScreenContent(
+                null -> LoadingFiltersScreen(modifier)
+                else -> FiltersScreenContent(
                     modifier = modifier,
                     contentPadding = innerPadding,
-                    sortingTypes = state.sortingTypes,
-                    selectedSortingType = state.selectedSortingType,
-                    onSortingTypeClick = onSortingTypeClick,
-                    genres = state.genres,
-                    selectedGenres = state.selectedGenres.toList(),
-                    onGenreClick = onGenreClick,
-                    releaseTypes = state.releaseTypes,
-                    selectedReleaseTypes = state.selectedReleaseTypes.toList(),
-                    onReleaseTypeClick = onReleaseTypeClick,
-                    publishStatuses = state.publishStatuses,
-                    selectedPublishStatuses = state.selectedPublishStatuses.toList(),
-                    onPublishStatusClick = onPublishStatusClick,
-                    productionStatuses = state.productionStatuses,
-                    selectedProductionStatuses = state.selectedProductionStatuses.toList(),
-                    onProductionStatusClick = onProductionStatusClick,
-                    seasons = state.seasons,
-                    selectedSeasons = state.selectedSeasons.toList(),
-                    onSeasonClick = onSeasonClick,
-                    years = state.years,
-                    selectedYears = state.selectedYears,
-                    onYearsRangeChange = onYearsRangeChange,
-                    ageRatings = state.ageRatings,
-                    selectedAgeRatings = state.selectedAgeRatings.toList(),
-                    onAgeRatingClick = onAgeRatingClick
+                    sortingTypes = targetState.sortingTypes,
+                    selectedSortingType = selectedFilters.selectedSortingType,
+                    onSortingTypeClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.UpdateSortingType(it))
+                    },
+                    genres = targetState.genres,
+                    selectedGenres = selectedFilters.selectedGenres.toList(),
+                    onGenreClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.ToggleGenre(it))
+                    },
+                    releaseTypes = targetState.types,
+                    selectedReleaseTypes = selectedFilters.selectedReleaseTypes.toList(),
+                    onReleaseTypeClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.ToggleReleaseType(it))
+                    },
+                    publishStatuses = targetState.publishStatuses,
+                    selectedPublishStatuses = selectedFilters.selectedPublishStatuses.toList(),
+                    onPublishStatusClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.TogglePublishStatus(it))
+                    },
+                    productionStatuses = targetState.productionStatuses,
+                    selectedProductionStatuses = selectedFilters.selectedProductionStatuses.toList(),
+                    onProductionStatusClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.ToggleProductionStatus(it))
+                    },
+                    seasons = targetState.seasons,
+                    selectedSeasons = selectedFilters.selectedSeasons.toList(),
+                    onSeasonClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.ToggleSeason(it))
+                    },
+                    years = targetState.years,
+                    selectedYears = selectedFilters.selectedYears,
+                    onYearsRangeChange = {
+                        viewModel.onAction(SearchFiltersScreenAction.UpdateYearsRange(it))
+                    },
+                    ageRatings = targetState.ageRatings,
+                    selectedAgeRatings = selectedFilters.selectedAgeRatings.toList(),
+                    onAgeRatingClick = {
+                        viewModel.onAction(SearchFiltersScreenAction.ToggleAgeRating(it))
+                    }
                 )
             }
         }

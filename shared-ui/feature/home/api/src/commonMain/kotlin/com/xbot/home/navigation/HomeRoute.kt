@@ -1,6 +1,7 @@
 package com.xbot.home.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.resources.Res
@@ -17,3 +18,5 @@ data object HomeRoute : TopLevelNavKey {
     override val unselectedIcon: ImageVector
         get() = AnilibriaIcons.Outlined.Home
 }
+
+data object ScheduleRoute : NavKey

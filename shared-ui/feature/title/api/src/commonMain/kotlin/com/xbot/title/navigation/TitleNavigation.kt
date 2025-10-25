@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TitleRoute(val aliasOrId: String) : NavKey
 
+@Serializable
+data class TitleEpisodesRoute(val aliasOrId: String) : NavKey
+
 fun Navigator<*>.navigateToTitle(id: Int) {
     navigate(TitleRoute(id.toString()))
 }
