@@ -19,8 +19,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
-import com.xbot.designsystem.components.AnilibriaNavigationBar
-import com.xbot.designsystem.components.AnilibriaNavigationRail
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 internal val mediumContrastLightColorScheme = lightColorScheme(
@@ -199,8 +197,6 @@ actual fun AnilibriaTheme(
     }
 
     CompositionLocalProvider(
-        LocalNavigationBarOverride provides AnilibriaNavigationBar,
-        LocalNavigationRailOverride provides AnilibriaNavigationRail,
         LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         MaterialExpressiveTheme(

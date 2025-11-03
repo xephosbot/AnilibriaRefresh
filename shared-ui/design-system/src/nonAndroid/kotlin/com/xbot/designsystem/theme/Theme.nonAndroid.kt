@@ -1,23 +1,17 @@
 package com.xbot.designsystem.theme
 
-import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LocalNavigationBarOverride
-import androidx.compose.material3.LocalNavigationRailOverride
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldOverride
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.xbot.designsystem.components.AnilibriaNavigationBar
-import com.xbot.designsystem.components.AnilibriaNavigationRail
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 @OptIn(
-    ExperimentalMaterial3ComponentOverrideApi::class,
-    ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalMaterial3AdaptiveComponentOverrideApi::class
+    ExperimentalMaterial3AdaptiveComponentOverrideApi::class,
+    ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
 actual fun AnilibriaTheme(
@@ -28,8 +22,6 @@ actual fun AnilibriaTheme(
     val colorScheme = if (darkTheme) darkScheme else lightScheme
 
     CompositionLocalProvider(
-        LocalNavigationBarOverride provides AnilibriaNavigationBar,
-        LocalNavigationRailOverride provides AnilibriaNavigationRail,
         LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         MaterialExpressiveTheme(

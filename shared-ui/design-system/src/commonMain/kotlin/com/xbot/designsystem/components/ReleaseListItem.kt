@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,7 +36,7 @@ fun ReleaseListItem(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceBright,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
+    shape: ExpressiveShape? = ExpressiveReleaseListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     onClick: (Release) -> Unit = {},
 ) {
@@ -45,7 +46,7 @@ fun ReleaseListItem(
 
     Surface(
         modifier = modifier,
-        shape = shape.shapeForInteraction(pressed, false),
+        shape = shape?.shapeForInteraction(pressed, false) ?: RectangleShape,
         color = color,
         contentColor = contentColor
     ) {

@@ -14,6 +14,8 @@ kotlin {
     iosSimulatorArm64()
     jvm()
 
+    applyDefaultHierarchyTemplate()
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared.domain)
@@ -45,6 +47,11 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.uiTooling)
         }
+        val nonAndroid by creating {
+            dependsOn(commonMain.get())
+        }
+        jvmMain.get().dependsOn(nonAndroid)
+        iosMain.get().dependsOn(nonAndroid)
     }
 }
 
