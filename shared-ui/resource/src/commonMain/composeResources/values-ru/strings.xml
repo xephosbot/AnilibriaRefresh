@@ -3,6 +3,7 @@
     <string name="tab_home">Главная</string>
     <string name="tab_favorite">Избранное</string>
     <string name="tab_profile">Профиль</string>
+    <string name="fab_search">Поиск</string>
 
     <!-- Подзаголовки -->
     <string name="label_schedule">Расписание</string>
