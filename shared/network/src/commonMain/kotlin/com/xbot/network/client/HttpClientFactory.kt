@@ -63,16 +63,4 @@ internal fun createHttpClient(
         contentType(ContentType.Application.Json)
         accept(ContentType.Application.Json)
     }
-    install(HttpRequestRetry) {
-        maxRetries = 2
-        retryIf { _, response ->
-            response.status.value == 525 ||
-                    response.status.value == HttpStatusCode.BadGateway.value
-        }
-        modifyRequest { request ->
-            if (request.url.host == "aniliberty.top") {
-                request.url.host = "anilibria.wtf"
-            }
-        }
-    }
 }
