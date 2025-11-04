@@ -24,7 +24,7 @@ media3 = "1.8.0"
 
 # Navigation & Lifecycle
 navigation3 = "1.0.0-beta01"
-lifecycle = "2.10.0-alpha03"
+lifecycle = "2.10.0-alpha04"
 
 # Networking
 ktor = "3.3.1"
