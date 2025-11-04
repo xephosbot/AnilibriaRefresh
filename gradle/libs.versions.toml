@@ -9,7 +9,7 @@ android-desugar-jdk-libs = "2.1.5"
 # Kotlin & Compose
 kotlin = "2.2.21"
 ksp = "2.3.0"
-compose-multiplatform = "1.10.0-alpha03"
+compose-multiplatform = "1.10.0-beta01"
 compose-hot-reload = "1.0.0-rc02"
 
 # AndroidX Core
