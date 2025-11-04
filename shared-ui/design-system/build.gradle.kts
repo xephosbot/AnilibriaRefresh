@@ -20,17 +20,13 @@ kotlin {
     dependencies {
         implementation(projects.shared.domain)
         implementation(libs.kotlinx.datetime)
-        implementation(this@kotlin.compose.ui)
-        implementation(this@kotlin.compose.foundation)
-        implementation(this@kotlin.compose.preview)
-        implementation(this@kotlin.compose.materialIconsExtended)
+        implementation(libs.compose.ui)
+        implementation(libs.compose.foundation)
+        implementation(libs.compose.preview)
+        implementation(libs.compose.material.icons.extended)
         api(projects.sharedUi.resource)
-        api(this@kotlin.compose.material3)
-        api(this@kotlin.compose.material3AdaptiveNavigationSuite)
-        api(libs.compose.ui.backhandler)
-        api(libs.compose.material3.adaptive)
-        api(libs.compose.material3.adaptive.layout)
-        api(libs.compose.material3.adaptive.navigation)
+        api(libs.compose.material3)
+        api(libs.compose.material3.adaptive.navigation.suite)
         api(libs.compose.material3.adaptive.navigation3)
         api(libs.navigation3.runtime)
         api(libs.navigation3.ui)
@@ -45,7 +41,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.uiTooling)
+            implementation(libs.compose.ui.tooling)
         }
         val nonAndroid by creating {
             dependsOn(commonMain.get())

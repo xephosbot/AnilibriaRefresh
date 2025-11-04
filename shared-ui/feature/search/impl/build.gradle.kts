@@ -33,7 +33,7 @@ kotlin {
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.feature.search.api)
         implementation(projects.sharedUi.feature.title.api)
-        implementation(this@kotlin.compose.foundation)
+        implementation(libs.compose.foundation)
         implementation(libs.navigation3.runtime)
         implementation(libs.navigation3.ui)
         implementation(libs.lifecycle.viewmodel.compose)

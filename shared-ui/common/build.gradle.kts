@@ -30,7 +30,7 @@ kotlin {
     dependencies {
         implementation(projects.shared.domain)
         implementation(projects.sharedUi.designSystem)
-        implementation(this@kotlin.compose.foundation)
+        implementation(libs.compose.foundation)
         implementation(libs.navigation3.runtime)
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)

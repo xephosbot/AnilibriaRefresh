@@ -31,8 +31,8 @@ kotlin {
     dependencies {
         implementation(projects.shared.domain)
         implementation(libs.kotlinx.datetime)
-        implementation(this@kotlin.compose.foundation)
-        api(this@kotlin.compose.components.resources)
+        implementation(libs.compose.foundation)
+        api(libs.compose.resources)
     }
 }
 
