@@ -1,9 +1,9 @@
 package com.xbot.common.navigation
 
-interface Navigator<T : NavKey> {
-    val backStack: List<T>
-    val currentDestination: T?
-    val currentTopLevelDestination: T?
+interface Navigator {
+    val backStack: List<NavKey>
+    val currentDestination: NavKey?
+    val currentTopLevelDestination: TopLevelNavKey?
     fun navigate(key: NavKey)
     fun navigateBack()
 }

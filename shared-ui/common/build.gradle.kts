@@ -32,6 +32,7 @@ kotlin {
         implementation(projects.sharedUi.designSystem)
         implementation(libs.compose.foundation)
         implementation(libs.navigation3.runtime)
+        implementation(libs.navigation3.ui)
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)
         implementation(libs.kotlinx.datetime)
