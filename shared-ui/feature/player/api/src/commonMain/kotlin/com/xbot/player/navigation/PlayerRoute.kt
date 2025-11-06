@@ -10,6 +10,6 @@ data class PlayerRoute(
     val episodeOrdinal: Int,
 ) : NavKey
 
-fun Navigator<*>.navigateToPlayer(releaseId: Int, episodeOrdinal: Int) {
+fun Navigator.navigateToPlayer(releaseId: Int, episodeOrdinal: Int) {
     navigate(PlayerRoute(releaseId, episodeOrdinal))
 }

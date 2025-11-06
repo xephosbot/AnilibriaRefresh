@@ -45,9 +45,8 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun AnilibriaApp(
-    navigator: AnilibriaNavigator = rememberAnilibriaNavigator()
-) {
+internal fun AnilibriaApp() {
+    val navigator: AnilibriaNavigator = koinInject()
     val httpClient: HttpClient = koinInject()
 
     setSingletonImageLoaderFactory { context ->

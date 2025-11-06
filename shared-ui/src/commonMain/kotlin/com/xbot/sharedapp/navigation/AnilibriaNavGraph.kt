@@ -14,22 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.xbot.common.navigation.NavEntryBuilder
 import com.xbot.common.navigation.NavKey
+import com.xbot.common.navigation.koinEntryProvider
 import com.xbot.sharedapp.AnilibriaNavigator
-import com.xbot.sharedapp.di.koinInjectAll
+import org.koin.core.annotation.KoinExperimentalAPI
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterial3AdaptiveApi::class,
+    KoinExperimentalAPI::class
+)
 @Composable
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navigator: AnilibriaNavigator,
-    navEntryBuilders: List<NavEntryBuilder> = koinInjectAll()
 ) {
     val supportingPaneSceneStrategy = rememberSupportingPaneSceneStrategy<NavKey>(
         directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
@@ -67,10 +69,6 @@ internal fun AnilibriaNavGraph(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy,
-        entryProvider = entryProvider {
-            navEntryBuilders.forEach { builder ->
-                builder(navigator)
-            }
-        }
+        entryProvider = koinEntryProvider()
     )
 }

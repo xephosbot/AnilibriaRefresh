@@ -9,7 +9,8 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.xbot.common.navigation.NavEntryBuilder
+import com.xbot.common.navigation.Navigator
+import com.xbot.common.navigation.navigation
 import com.xbot.preference.PreferenceDestination
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.ProfileScreenState
@@ -26,93 +27,89 @@ import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.profile.ProfileDetailScreen
 import com.xbot.preference.settings.SettingsDetailScreen
 import com.xbot.preference.team.TeamDetailScreen
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
 val preferenceFeatureModule = module {
-    single<NavEntryBuilder>(named("feature/preference")) {
-        { navigator ->
-            entry<PreferenceRoute>(
-                metadata = ListDetailSceneStrategy.listPane(
-                    sceneKey = PreferenceRoute,
-                    detailPlaceholder = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "Выберите элемент из списка")
-                        }
-                    }
-                )
-            ) {
-                PreferenceListPane(
-                    state = ProfileScreenState.Loading,
-                    isExpandedLayout = true,
-                    currentDestination = null,
-                    onNavigateToDetail = { destination ->
-                        when (destination) {
-                            PreferenceDestination.PROFILE -> navigator.navigate(PreferenceProfileRoute)
-                            PreferenceDestination.HISTORY -> navigator.navigate(PreferenceHistoryRoute)
-                            PreferenceDestination.TEAM -> navigator.navigate(PreferenceTeamRoute)
-                            PreferenceDestination.DONATE -> navigator.navigate(PreferenceDonateRoute)
-                            PreferenceDestination.SETTINGS -> navigator.navigate(PreferenceSettingsRoute)
-                        }
-                    },
-                    onOpenUrl = {
-                        println("Open URL: $it")
-                    }
-                )
+    navigation<PreferenceRoute>(
+        metadata = ListDetailSceneStrategy.listPane(
+            sceneKey = PreferenceRoute,
+            detailPlaceholder = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Выберите элемент из списка")
+                }
             }
-            entry<PreferenceProfileRoute>(
-                metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-            ) {
-                ProfileDetailScreen(
-                    onNavigateBack = {
-                        navigator.navigateBack()
-                    }
-                )
+        )
+    ) {
+        PreferenceListPane(
+            state = ProfileScreenState.Loading,
+            isExpandedLayout = true,
+            currentDestination = null,
+            onNavigateToDetail = { destination ->
+                when (destination) {
+                    PreferenceDestination.PROFILE -> get<Navigator>().navigate(PreferenceProfileRoute)
+                    PreferenceDestination.HISTORY -> get<Navigator>().navigate(PreferenceHistoryRoute)
+                    PreferenceDestination.TEAM -> get<Navigator>().navigate(PreferenceTeamRoute)
+                    PreferenceDestination.DONATE -> get<Navigator>().navigate(PreferenceDonateRoute)
+                    PreferenceDestination.SETTINGS -> get<Navigator>().navigate(PreferenceSettingsRoute)
+                }
+            },
+            onOpenUrl = {
+                println("Open URL: $it")
             }
-            entry<PreferenceHistoryRoute>(
-                metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-            ) {
-                ViewHistoryDetailScreen(
-                    onNavigateBack = {
-                        navigator.navigateBack()
-                    }
-                )
+        )
+    }
+    navigation<PreferenceProfileRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        ProfileDetailScreen(
+            onNavigateBack = {
+                get<Navigator>().navigateBack()
             }
-            entry<PreferenceTeamRoute>(
-                metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-            ) {
-                TeamDetailScreen(
-                    onNavigateBack = {
-                        navigator.navigateBack()
-                    }
-                )
+        )
+    }
+    navigation<PreferenceHistoryRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        ViewHistoryDetailScreen(
+            onBackClick = {
+                get<Navigator>().navigateBack()
             }
-            entry<PreferenceDonateRoute>(
-                metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-            ) {
-                SupportDetailScreen(
-                    onNavigateBack = {
-                        navigator.navigateBack()
-                    }
-                )
+        )
+    }
+    navigation<PreferenceTeamRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        TeamDetailScreen(
+            onNavigateBack = {
+                get<Navigator>().navigateBack()
             }
-            entry<PreferenceSettingsRoute>(
-                metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-            ) {
-                SettingsDetailScreen(
-                    onNavigateBack = {
-                        navigator.navigateBack()
-                    }
-                )
+        )
+    }
+    navigation<PreferenceDonateRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        SupportDetailScreen(
+            onNavigateBack = {
+                get<Navigator>().navigateBack()
             }
-        }
+        )
+    }
+    navigation<PreferenceSettingsRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        SettingsDetailScreen(
+            onNavigateBack = {
+                get<Navigator>().navigateBack()
+            }
+        )
     }
     viewModelOf(::ProfileViewModel)
     viewModelOf(::HistoryViewModel)

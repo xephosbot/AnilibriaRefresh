@@ -1,30 +1,28 @@
 package com.xbot.player.di
 
-import com.xbot.common.navigation.NavEntryBuilder
+import com.xbot.common.navigation.Navigator
+import com.xbot.common.navigation.navigation
 import com.xbot.player.PlayerScreen
 import com.xbot.player.PlayerViewModel
 import com.xbot.player.navigation.PlayerRoute
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+@OptIn(KoinExperimentalAPI::class)
 val playerFeatureModule = module {
-    single<NavEntryBuilder>(named("feature/player")) {
-        { navigator ->
-            entry<PlayerRoute> { key ->
-                val viewModel = koinViewModel<PlayerViewModel> {
-                    parametersOf(key)
-                }
-                PlayerScreen(
-                    viewModel = viewModel,
-                    onBackClick = {
-                        navigator.navigateBack()
-                    },
-                )
-            }
+    navigation<PlayerRoute> { key ->
+        val viewModel = koinViewModel<PlayerViewModel> {
+            parametersOf(key)
         }
+        PlayerScreen(
+            viewModel = viewModel,
+            onBackClick = {
+                get<Navigator>().navigateBack()
+            },
+        )
     }
     viewModelOf(::PlayerViewModel)
 }

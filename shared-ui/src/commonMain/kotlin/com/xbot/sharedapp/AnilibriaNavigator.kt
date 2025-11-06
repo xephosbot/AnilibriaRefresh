@@ -1,10 +1,8 @@
 package com.xbot.sharedapp
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.xbot.common.navigation.NavKey
@@ -14,23 +12,16 @@ import com.xbot.favorite.navigation.FavoriteRoute
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.preference.navigation.PreferenceRoute
 
-@Composable
-internal fun rememberAnilibriaNavigator(
-    startNavKey: TopLevelNavKey = HomeRoute,
-): AnilibriaNavigator {
-    return remember(startNavKey) { AnilibriaNavigator(startNavKey) }
-}
-
 internal class AnilibriaNavigator(
     private val startNavKey: TopLevelNavKey
-) : Navigator<NavKey> {
+) : Navigator {
 
     private val topLevelStacks = linkedMapOf<TopLevelNavKey, SnapshotStateList<NavKey>>(
         startNavKey to mutableStateListOf(startNavKey)
     )
 
     private var _currentTopLevelDestination by mutableStateOf(startNavKey)
-    override val currentTopLevelDestination: NavKey get() = _currentTopLevelDestination
+    override val currentTopLevelDestination: TopLevelNavKey get() = _currentTopLevelDestination
 
     private val _backStack = mutableStateListOf<NavKey>(startNavKey)
     override val backStack: List<NavKey> get() = _backStack

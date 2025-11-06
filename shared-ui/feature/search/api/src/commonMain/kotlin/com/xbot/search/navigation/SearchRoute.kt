@@ -15,6 +15,6 @@ data class SearchFiltersRoute(
     val initialFilters: CatalogFilters? = null
 ) : NavKey
 
-fun Navigator<*>.navigateToSearch() {
+fun Navigator.navigateToSearch() {
     navigate(SearchRoute)
 }
