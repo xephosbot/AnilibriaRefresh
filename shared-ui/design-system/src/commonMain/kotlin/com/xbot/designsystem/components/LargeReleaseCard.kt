@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
@@ -30,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.valentinilk.shimmer.shimmer
@@ -83,20 +87,34 @@ private fun LargeReleaseCardContent(
                 modifier = modifier.fillMaxSize()
             )
         },
-        content = {
-            Text(
+        content = { contentAlignment ->
+            BasicText(
+                modifier = Modifier.fillMaxWidth(),
                 text = release.localizedName(),
-                style = MaterialTheme.typography.displayMedium,
-                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.displayMedium
+                    .copy(
+                        color = LocalContentColor.current,
+                        textAlign = when (contentAlignment) {
+                            Alignment.Start -> TextAlign.Start
+                            else -> TextAlign.Center
+                        },
+                        lineHeight = MaterialTheme.typography.displaySmall.fontSize
+                    ),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                autoSize = TextAutoSize.StepBased(
+                    maxFontSize = MaterialTheme.typography.displayMedium.fontSize,
+                    minFontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                ),
             )
             ReleaseMetaText(release = release)
             release.description?.let { description ->
                 Text(
                     text = description.lines().joinToString(" "),
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
+                    textAlign = when (contentAlignment) {
+                        Alignment.Start -> TextAlign.Start
+                        else -> TextAlign.Center
+                    },
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -111,11 +129,13 @@ private fun LargeReleaseCardLayout(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     poster: @Composable () -> Unit,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit,
 ) {
     BoxWithConstraints {
         val height = calculateContainerHeight(maxWidth)
         val contentWidth = calculateContentWidth(maxWidth)
+        val contentAlignment = calculateContentAlignment(maxWidth)
+        val contentPadding = calculateContentPadding(maxWidth)
 
         Box(
             modifier = modifier
@@ -134,10 +154,10 @@ private fun LargeReleaseCardLayout(
             Column(
                 modifier = contentModifier
                     .width(contentWidth)
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = contentPadding),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                content = content
+                horizontalAlignment = contentAlignment,
+                content = { content(contentAlignment) }
             )
         }
     }
@@ -226,7 +246,27 @@ internal fun calculateContainerHeight(width: Dp): Dp {
 internal fun calculateContentWidth(width: Dp): Dp {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     return when {
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 500.dp
         windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> width * 0.6f
         else -> width
+    }
+}
+
+@Composable
+internal fun calculateContentAlignment(width: Dp): Alignment.Horizontal {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    return when {
+        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> Alignment.Start
+        else -> Alignment.CenterHorizontally
+    }
+}
+
+@Composable
+internal fun calculateContentPadding(width: Dp): Dp {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    return when {
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 48.dp
+        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> 32.dp
+        else -> 24.dp
     }
 }
