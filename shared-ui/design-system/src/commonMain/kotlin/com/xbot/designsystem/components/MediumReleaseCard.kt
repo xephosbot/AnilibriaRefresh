@@ -46,7 +46,7 @@ fun MediumReleaseCard(
 ) {
     Crossfade(
         modifier = Modifier
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(16.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current,
@@ -99,39 +99,35 @@ private fun MediumReleaseCardLayout(
     title: @Composable ColumnScope.() -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHigh
+    Column(
+        modifier = modifier.widthIn(max = ReleaseCardWidth),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        Column(
-            modifier = modifier
-                .widthIn(max = ReleaseCardWidth),
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceBright),
+            contentAlignment = Alignment.BottomStart
         ) {
             Box(
-                modifier = modifier,
-                contentAlignment = Alignment.BottomStart
+                modifier = Modifier
+                    .height(ReleaseCardPosterHeight)
+                    .fadedEdge(edgeHeightRatio = 0.5f),
             ) {
-                Box(
-                    modifier = Modifier
-                        .height(ReleaseCardPosterHeight)
-                        .fadedEdge(edgeHeightRatio = 0.5f),
-                ) {
-                    poster()
-                }
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    title()
-                }
+                poster()
             }
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                content()
+                title()
             }
-            Spacer(Modifier.height(16.dp))
+        }
+        Column(
+            modifier = Modifier.clip(RoundedCornerShape(4.dp)),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            content()
         }
     }
 }
@@ -179,5 +175,5 @@ private fun MediumReleaseCardPreview() {
     }
 }
 
-private val ReleaseCardWidth = 300.dp
+private val ReleaseCardWidth = 280.dp
 private val ReleaseCardPosterHeight = 284.dp
