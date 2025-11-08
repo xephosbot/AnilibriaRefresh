@@ -7,9 +7,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -17,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,7 +44,7 @@ fun ReleaseListItem(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceBright,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    shape: ExpressiveShape? = ExpressiveReleaseListItemDefaults.shape(),
+    shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     onClick: (Release) -> Unit = {},
 ) {
@@ -46,7 +54,7 @@ fun ReleaseListItem(
 
     Surface(
         modifier = modifier,
-        shape = shape?.shapeForInteraction(pressed, false) ?: RectangleShape,
+        shape = shape.shapeForInteraction(pressed, false),
         color = color,
         contentColor = contentColor
     ) {
@@ -267,9 +275,9 @@ object ExpressiveReleaseListItemDefaults {
     @Composable
     fun shape(): ExpressiveShape {
         return _shape ?: RoundedCornerExpressiveShape(
-            shape = RoundedCornerShape(24.dp),
-            pressedShape = RoundedCornerShape(8.dp),
-            selectedShape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(0.dp),
+            pressedShape = RoundedCornerShape(16.dp),
+            selectedShape = RoundedCornerShape(16.dp),
             animationSpec = spring()
         ).also { _shape = it }
     }
