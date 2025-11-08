@@ -63,11 +63,15 @@ fun Header(
     modifier: Modifier = Modifier,
     content: @Composable (RowScope.() -> Unit)?,
 ) {
-    Box(Modifier.padding(top = 8.dp)) {
+    Box(
+        Modifier.padding(
+            top = 24.dp,
+            bottom = 16.dp,
+        )
+    ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .height(52.dp)
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
