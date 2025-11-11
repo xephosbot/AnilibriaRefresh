@@ -9,13 +9,16 @@ import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
+import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.models.Schedule
-import com.xbot.domain.usecase.GetReleasesFeed
-import com.xbot.domain.usecase.GetCatalogReleasesPager
+import com.xbot.domain.models.User
+import com.xbot.domain.usecase.GetAuthStateUseCase
+import com.xbot.domain.usecase.GetReleasesFeedUseCase
+import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.Flow
@@ -29,8 +32,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
-    getCatalogReleasesPager: GetCatalogReleasesPager,
-    private val getReleasesFeed: GetReleasesFeed,
+    getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
+    getAuthState: GetAuthStateUseCase,
+    private val getReleasesFeed: GetReleasesFeedUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
@@ -41,9 +45,14 @@ class FeedViewModel(
         MutableStateFlow(BestType.Now)
 
     val state: StateFlow<FeedScreenState> =
-        combine(releasesFeed, currentBestType) { releasesFeed, bestType ->
+        combine(releasesFeed, getAuthState(), currentBestType) { releasesFeed, authState, bestType ->
             if (releasesFeed != null) {
+                val user = when (authState) {
+                    is AuthState.Authenticated -> authState.user
+                    is AuthState.Unauthenticated -> null
+                }
                 FeedScreenState.Success(
+                    currentUser = user,
                     recommendedReleases = releasesFeed.recommendedReleases,
                     scheduleNow = releasesFeed.scheduleNow,
                     bestReleases = if (bestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
@@ -107,6 +116,7 @@ sealed interface FeedScreenState {
     data object Loading : FeedScreenState
     @Stable
     data class Success(
+        val currentUser: User?,
         val recommendedReleases: List<Release>,
         val scheduleNow: List<Schedule>,
         val bestReleases: List<Release>,

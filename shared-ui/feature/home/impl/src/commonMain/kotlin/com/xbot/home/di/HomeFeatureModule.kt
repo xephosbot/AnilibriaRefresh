@@ -10,7 +10,7 @@ import com.xbot.home.SchedulePane
 import com.xbot.home.ScheduleViewModel
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
-import com.xbot.search.navigation.navigateToSearch
+import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
@@ -25,12 +25,12 @@ val homeFeatureModule = module {
             onScheduleClick = {
                 get<Navigator>().navigate(ScheduleRoute)
             },
-            onSearchClick = {
-                get<Navigator>().navigateToSearch()
-            },
             onReleaseClick = { releaseId ->
                 get<Navigator>().navigateToTitle(releaseId)
-            }
+            },
+            onEpisodeClick = { releaseId, episodeOrdinal ->
+                get<Navigator>().navigateToPlayer(releaseId, episodeOrdinal)
+            },
         )
     }
     navigation<ScheduleRoute>(
