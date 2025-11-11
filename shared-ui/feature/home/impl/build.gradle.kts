@@ -32,7 +32,7 @@ kotlin {
         implementation(projects.sharedUi.designSystem)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.feature.home.api)
-        implementation(projects.sharedUi.feature.search.api)
+        implementation(projects.sharedUi.feature.player.api)
         implementation(projects.sharedUi.feature.title.api)
         implementation(libs.compose.foundation)
         implementation(libs.navigation3.runtime)

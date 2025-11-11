@@ -12,7 +12,6 @@ ksp = "2.3.0"
 compose-multiplatform = "1.10.0-beta01"
 compose-material3 = "1.10.0-alpha04"
 compose-material3-adaptive = "1.2.0"
-compose-hot-reload = "1.0.0-rc02"
 
 # AndroidX Core
 androidx-activity = "1.11.0"
@@ -157,4 +156,3 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 # Compose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-compose-hotreload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-hot-reload" }
