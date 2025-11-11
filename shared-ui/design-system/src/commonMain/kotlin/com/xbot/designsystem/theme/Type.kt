@@ -89,10 +89,10 @@ private fun FontVariable(
     width: Float,
     style: FontStyle = FontStyle.Normal,
 ) = Font(
-    resource,
-    FontWeight(weight),
-    style,
-    FontVariation.Settings(
+    resource = resource,
+    weight = FontWeight(weight),
+    style = style,
+    variationSettings = FontVariation.Settings(
         FontVariation.weight(weight),
         FontVariation.width(width),
     )
