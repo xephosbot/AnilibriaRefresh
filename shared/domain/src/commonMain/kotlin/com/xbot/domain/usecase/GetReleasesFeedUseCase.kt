@@ -13,7 +13,7 @@ import com.xbot.domain.repository.GenresRepository
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.domain.repository.ScheduleRepository
 
-class GetReleasesFeed(
+class GetReleasesFeedUseCase(
     private val releasesRepository: ReleasesRepository,
     private val catalogRepository: CatalogRepository,
     private val scheduleRepository: ScheduleRepository,

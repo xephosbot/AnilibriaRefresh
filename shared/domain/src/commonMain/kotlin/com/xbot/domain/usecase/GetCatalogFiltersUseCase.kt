@@ -7,7 +7,7 @@ import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 
-class GetCatalogFilters(
+class GetCatalogFiltersUseCase(
     private val catalogRepository: CatalogRepository
 ) {
     suspend operator fun invoke(): Either<DomainError, CatalogFilters> = either {

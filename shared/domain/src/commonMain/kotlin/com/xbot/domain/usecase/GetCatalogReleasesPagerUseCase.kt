@@ -8,7 +8,7 @@ import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetCatalogReleasesPager(
+class GetCatalogReleasesPagerUseCase(
     private val catalogRepository: CatalogRepository
 ) {
     operator fun invoke(
@@ -32,7 +32,7 @@ class GetCatalogReleasesPager(
         ).flow
     }
 
-    companion object {
+    companion object Companion {
         const val PAGE_SIZE = 20
     }
 }
