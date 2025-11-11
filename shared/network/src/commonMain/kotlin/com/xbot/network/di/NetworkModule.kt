@@ -1,6 +1,5 @@
 package com.xbot.network.di
 
-import com.xbot.network.Constants
 import com.xbot.network.api.AdsApi
 import com.xbot.network.api.AuthApi
 import com.xbot.network.api.CatalogApi
@@ -39,13 +38,15 @@ import com.xbot.network.api.VideosApi
 import com.xbot.network.api.ViewsApi
 import com.xbot.network.client.createHttpClient
 import io.ktor.client.HttpClient
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+@OptIn(KoinInternalApi::class)
 val networkModule = module {
     single<HttpClient> {
-        createHttpClient(Constants.BASE_URL_API, get())
+        createHttpClient(get(), getKoin().logger)
     }
     singleOf(::DefaultAdsApi) { bind<AdsApi>() }
     singleOf(::DefaultAuthApi) { bind<AuthApi>() }
