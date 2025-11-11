@@ -1,6 +1,9 @@
 package com.xbot.data.repository
 
 import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.either
 import com.xbot.data.mapper.toDomain
 import com.xbot.data.mapper.toDto
@@ -10,57 +13,67 @@ import com.xbot.domain.repository.AuthRepository
 import com.xbot.network.api.AuthApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.client.TokenStorage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultAuthRepository(
     private val authApi: AuthApi,
     private val tokenStorage: TokenStorage
-): AuthRepository {
-    private val authState = MutableStateFlow(false)
-    private val scope = CoroutineScope(Dispatchers.Default)
+) : AuthRepository {
+    private val authMutex = Mutex()
 
-    init {
-        scope.launch {
-            authState.value = tokenStorage.getToken() != null
-        }
+    private val _authState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    override val authState: Flow<Boolean> = _authState
+        .onStart { init() }
+
+    private suspend fun init() {
+        val token = tokenStorage.getToken()
+        _authState.update { token != null }
     }
 
-    override suspend fun login(login: String, password: String): Either<DomainError, Unit> = either {
-        val token = authApi.login(login, password)
+    private suspend fun saveTokenAndUpdateState(token: String?): Either<DomainError, Unit> =
+        either {
+            ensureNotNull(token) { DomainError.UnknownError(IllegalArgumentException("Token is null")) }
+            ensure(token.isNotBlank()) { DomainError.UnknownError(IllegalArgumentException("Token is blank")) }
+
+            authMutex.withLock {
+                tokenStorage.saveToken(token)
+                init()
+            }
+        }
+
+    override suspend fun login(login: String, password: String): Either<DomainError, Unit> =
+        authApi.login(login, password)
             .mapLeft(NetworkError::toDomain)
-            .bind().token
+            .flatMap {
+                print("AUTHTOKEN: ${it.token}")
+                saveTokenAndUpdateState(it.token)
+            }
 
-        token?.let { token ->
-            tokenStorage.saveToken(token)
-            authState.value = true
-        }
-    }
-
-    override suspend fun logout(): Either<DomainError, Unit> = either {
+    override suspend fun logout(): Either<DomainError, Unit> =
         authApi.logout()
             .mapLeft(NetworkError::toDomain)
-            .bind()
-
-        tokenStorage.clearToken()
-        authState.value = false
-    }
+            .map {
+                authMutex.withLock {
+                    tokenStorage.clearToken()
+                    _authState.update { false }
+                }
+            }
 
     override suspend fun socialLogin(provider: SocialType): Either<DomainError, Unit> = either {
-        val response = authApi.socialLogin(provider.toDto())
+        val state = authApi.socialLogin(provider.toDto())
             .mapLeft(NetworkError::toDomain)
-            .bind()
-        val token = authApi.socialAuthenticate(response.state)
+            .bind().state
+
+        val token = authApi.socialAuthenticate(state)
             .mapLeft(NetworkError::toDomain)
             .bind().token
 
-        token?.let { token ->
-            tokenStorage.saveToken(token)
-            authState.value = true
-        }
+        saveTokenAndUpdateState(token).bind()
     }
 
     override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = authApi
@@ -71,9 +84,7 @@ internal class DefaultAuthRepository(
         token: String,
         password: String,
         passwordConfirmation: String
-    ): Either<DomainError, Unit> =  authApi
+    ): Either<DomainError, Unit> = authApi
         .resetPassword(token, password, passwordConfirmation)
         .mapLeft(NetworkError::toDomain)
-
-    override fun observeAuthState(): Flow<Boolean> = authState
 }
