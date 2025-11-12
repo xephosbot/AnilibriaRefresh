@@ -1,5 +1,6 @@
 package com.xbot.home
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -81,7 +82,6 @@ import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.SmallReleaseCard
-import com.xbot.designsystem.components.TypedCrossFade
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.horizontalItemsIndexed
@@ -176,7 +176,7 @@ private fun FeedPane(
     }
 
     val isRefreshing by remember(state, items) {
-        derivedStateOf { items.loadState.refresh == LoadState.Loading || state is FeedScreenState.Loading }
+        derivedStateOf { items.loadState.refresh == LoadState.Loading || state.isLoading }
     }
 
     val showResetScrollButton by remember {
@@ -225,10 +225,7 @@ private fun FeedPane(
                             PosterImage(
                                 modifier = Modifier
                                     .size(IconButtonDefaults.smallContainerSize()),
-                                poster = when (state) {
-                                    FeedScreenState.Loading -> null
-                                    is FeedScreenState.Success -> state.currentUser?.avatar
-                                }
+                                poster = state.currentUser?.avatar
                             )
                         }
                     },
@@ -259,23 +256,22 @@ private fun FeedPane(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ) { innerPadding ->
             Box {
-                TypedCrossFade(
-                    targetState = state
-                ) { targetState ->
-                    when (targetState) {
-                        is FeedScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                        is FeedScreenState.Success -> {
-                            ReleaseFeed(
-                                gridState = gridState,
-                                items = items,
-                                state = targetState,
-                                contentPadding = innerPadding,
-                                onScheduleClick = onScheduleClick,
-                                onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
-                                onReleaseClick = { onReleaseClick(it.id) },
-                                onEpisodeClick = onEpisodeClick,
-                            )
-                        }
+                Crossfade(
+                    targetState = state.isLoading
+                ) { isLoading ->
+                    if (isLoading) {
+                        LoadingScreen(contentPadding = innerPadding)
+                    } else {
+                        ReleaseFeed(
+                            gridState = gridState,
+                            items = items,
+                            state = state,
+                            contentPadding = innerPadding,
+                            onScheduleClick = onScheduleClick,
+                            onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
+                            onReleaseClick = { onReleaseClick(it.id) },
+                            onEpisodeClick = onEpisodeClick,
+                        )
                     }
                 }
 
@@ -297,14 +293,13 @@ private fun ReleaseFeed(
     modifier: Modifier = Modifier,
     gridState: LazyGridState,
     items: LazyPagingItems<Release>,
-    state: FeedScreenState.Success,
+    state: FeedScreenState,
     contentPadding: PaddingValues,
     onScheduleClick: () -> Unit,
     onBestTypeChange: (BestType) -> Unit,
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-
     val pagerState = rememberPagerState(pageCount = { state.recommendedReleases.size })
 
     Feed(

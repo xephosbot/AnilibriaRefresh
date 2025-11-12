@@ -13,12 +13,11 @@ import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.User
 import com.xbot.domain.usecase.GetAuthStateUseCase
-import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
+import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.Flow
@@ -40,35 +39,20 @@ class FeedViewModel(
     val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
         .cachedIn(viewModelScope)
 
-    private val releasesFeed: MutableStateFlow<ReleasesFeed?> = MutableStateFlow(null)
-    private val currentBestType: MutableStateFlow<BestType> =
-        MutableStateFlow(BestType.Now)
-
+    private val _state: MutableStateFlow<FeedScreenState> = MutableStateFlow(FeedScreenState())
     val state: StateFlow<FeedScreenState> =
-        combine(releasesFeed, getAuthState(), currentBestType) { releasesFeed, authState, bestType ->
-            if (releasesFeed != null) {
-                val user = when (authState) {
-                    is AuthState.Authenticated -> authState.user
-                    is AuthState.Unauthenticated -> null
-                }
-                FeedScreenState.Success(
-                    currentUser = user,
-                    recommendedReleases = releasesFeed.recommendedReleases,
-                    scheduleNow = releasesFeed.scheduleNow,
-                    bestReleases = if (bestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
-                    recommendedFranchises = releasesFeed.recommendedFranchises,
-                    genres = releasesFeed.genres,
-                    currentBestType = bestType,
-                )
-            } else {
-                FeedScreenState.Loading
+        combine(_state, getAuthState()) { state, authState ->
+            val user = when (authState) {
+                is AuthState.Authenticated -> authState.user
+                is AuthState.Unauthenticated -> null
             }
+            state.copy(currentUser = user)
         }
             .onStart { refresh() }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Lazily,
-                initialValue = FeedScreenState.Loading
+                initialValue = _state.value
             )
 
     fun onAction(action: FeedScreenAction) {
@@ -85,17 +69,29 @@ class FeedViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            releasesFeed.update { null }
+            _state.update { it.copy(isLoading = true) }
             when (val result = getReleasesFeed()) {
                 is Either.Left -> showErrorMessage(result.value.toString(), ::refresh)
-                is Either.Right -> releasesFeed.update { result.value }
+                is Either.Right -> _state.update {
+                    it.copy(
+                        isLoading = false,
+                        recommendedReleases = result.value.recommendedReleases,
+                        scheduleNow = result.value.scheduleNow,
+                        bestNow = result.value.bestNow,
+                        bestAllTime = result.value.bestAllTime,
+                        recommendedFranchises = result.value.recommendedFranchises,
+                        genres = result.value.genres,
+                    )
+                }
             }
         }
     }
 
     private fun updateBestType(bestType: BestType) {
         viewModelScope.launch {
-            currentBestType.update { bestType }
+            _state.update {
+                it.copy(currentBestType = bestType)
+            }
         }
     }
 
@@ -111,19 +107,19 @@ class FeedViewModel(
 }
 
 @Stable
-sealed interface FeedScreenState {
-    @Stable
-    data object Loading : FeedScreenState
-    @Stable
-    data class Success(
-        val currentUser: User?,
-        val recommendedReleases: List<Release>,
-        val scheduleNow: List<Schedule>,
-        val bestReleases: List<Release>,
-        val recommendedFranchises: List<Franchise>,
-        val genres: List<Genre>,
-        val currentBestType: BestType,
-    ) : FeedScreenState
+data class FeedScreenState(
+    val isLoading: Boolean = true,
+    val currentUser: User? = null,
+    val recommendedReleases: List<Release> = emptyList(),
+    val scheduleNow: List<Schedule> = emptyList(),
+    val bestNow: List<Release> = emptyList(),
+    val bestAllTime: List<Release> = emptyList(),
+    val recommendedFranchises: List<Franchise> = emptyList(),
+    val genres: List<Genre> = emptyList(),
+    val currentBestType: BestType = BestType.Now,
+) {
+    val bestReleases: List<Release>
+        get() = if (currentBestType == BestType.Now) bestNow else bestAllTime
 }
 
 @Stable
