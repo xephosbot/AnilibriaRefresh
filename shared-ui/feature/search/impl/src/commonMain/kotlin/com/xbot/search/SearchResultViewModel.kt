@@ -11,7 +11,7 @@ import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.filters.CatalogFilters
-import com.xbot.domain.usecase.GetCatalogReleasesPager
+import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchResultViewModel(
-    getCatalogReleasesPager: GetCatalogReleasesPager,
+    getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 

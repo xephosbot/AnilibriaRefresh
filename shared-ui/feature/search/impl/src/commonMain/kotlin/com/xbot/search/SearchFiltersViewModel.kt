@@ -14,7 +14,7 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
-import com.xbot.domain.usecase.GetCatalogFilters
+import com.xbot.domain.usecase.GetCatalogFiltersUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.search.navigation.SearchFiltersRoute
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchFiltersViewModel(
-    private val getCatalogFilters: GetCatalogFilters,
+    private val getCatalogFilters: GetCatalogFiltersUseCase,
     private val snackbarManager: SnackbarManager,
     private val route: SearchFiltersRoute,
 ) : ViewModel() {

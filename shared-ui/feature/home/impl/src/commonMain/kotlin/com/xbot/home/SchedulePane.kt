@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -89,19 +89,21 @@ private fun SchedulePane(
     onReleaseClick: (Int) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CenterAlignedTopAppBar(
+            LargeFlexibleTopAppBar(
                 title = { Text(text = stringResource(Res.string.label_schedule)) },
                 navigationIcon = {
                     if (showBackButton) {
-                        IconButton(
+                        FilledTonalIconButton(
+                            modifier = Modifier.padding(start = 6.dp),
                             onClick = onBackClick,
                             shapes = IconButtonDefaults.shapes(),
+                            colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                         ) {
                             Icon(
                                 imageVector = AnilibriaIcons.Outlined.ArrowBack,
@@ -111,22 +113,22 @@ private fun SchedulePane(
                     }
                 },
                 scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
             )
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         Crossfade(
-            targetState = state
-        ) { targetState ->
-            when (targetState) {
-                is ScheduleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                is ScheduleScreenState.Success -> {
-                    ScheduleContent(
-                        state = targetState,
-                        contentPadding = innerPadding,
-                        onReleaseClick = onReleaseClick
-                    )
-                }
+            targetState = state.isLoading
+        ) { isLoading ->
+            if (isLoading) {
+                LoadingScreen(contentPadding = innerPadding)
+            } else {
+                ScheduleContent(
+                    state = state,
+                    contentPadding = innerPadding,
+                    onReleaseClick = onReleaseClick
+                )
             }
         }
     }
@@ -135,7 +137,7 @@ private fun SchedulePane(
 @Composable
 private fun ScheduleContent(
     modifier: Modifier = Modifier,
-    state: ScheduleScreenState.Success,
+    state: ScheduleScreenState,
     contentPadding: PaddingValues,
     onReleaseClick: (Int) -> Unit,
 ) {

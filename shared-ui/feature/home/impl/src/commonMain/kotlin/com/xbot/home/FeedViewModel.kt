@@ -20,16 +20,18 @@ import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FeedViewModel(
     getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     getAuthState: GetAuthStateUseCase,
@@ -39,21 +41,45 @@ class FeedViewModel(
     val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
         .cachedIn(viewModelScope)
 
-    private val _state: MutableStateFlow<FeedScreenState> = MutableStateFlow(FeedScreenState())
+    private val refreshTrigger = MutableStateFlow(0)
+    private val bestType = MutableStateFlow(BestType.Now)
+
+    private val feedData = refreshTrigger
+        .flatMapLatest {
+            flow {
+                when (val result = getReleasesFeed()) {
+                    is Either.Left -> {
+                        showErrorMessage(result.value.toString()) { refresh() }
+                        emit(null)
+                    }
+                    is Either.Right -> emit(result.value)
+                }
+            }
+        }
+
     val state: StateFlow<FeedScreenState> =
-        combine(_state, getAuthState()) { state, authState ->
+        combine(getAuthState(), feedData, bestType) { authState, feed, currentBestType ->
             val user = when (authState) {
                 is AuthState.Authenticated -> authState.user
                 is AuthState.Unauthenticated -> null
             }
-            state.copy(currentUser = user)
-        }
-            .onStart { refresh() }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Lazily,
-                initialValue = _state.value
+
+            FeedScreenState(
+                isLoading = feed == null,
+                currentUser = user,
+                recommendedReleases = feed?.recommendedReleases.orEmpty(),
+                scheduleNow = feed?.scheduleNow.orEmpty(),
+                bestNow = feed?.bestNow.orEmpty(),
+                bestAllTime = feed?.bestAllTime.orEmpty(),
+                recommendedFranchises = feed?.recommendedFranchises.orEmpty(),
+                genres = feed?.genres.orEmpty(),
+                currentBestType = currentBestType,
             )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeedScreenState()
+        )
 
     fun onAction(action: FeedScreenAction) {
         when (action) {
@@ -68,31 +94,11 @@ class FeedViewModel(
     }
 
     private fun refresh() {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            when (val result = getReleasesFeed()) {
-                is Either.Left -> showErrorMessage(result.value.toString(), ::refresh)
-                is Either.Right -> _state.update {
-                    it.copy(
-                        isLoading = false,
-                        recommendedReleases = result.value.recommendedReleases,
-                        scheduleNow = result.value.scheduleNow,
-                        bestNow = result.value.bestNow,
-                        bestAllTime = result.value.bestAllTime,
-                        recommendedFranchises = result.value.recommendedFranchises,
-                        genres = result.value.genres,
-                    )
-                }
-            }
-        }
+        refreshTrigger.update { it + 1 }
     }
 
     private fun updateBestType(bestType: BestType) {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(currentBestType = bestType)
-            }
-        }
+        this.bestType.update { bestType }
     }
 
     private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
@@ -129,8 +135,10 @@ sealed interface FeedScreenAction {
         val error: Throwable,
         val onConfirmAction: () -> Unit,
     ) : FeedScreenAction
+
     @Stable
     data object Refresh : FeedScreenAction
+
     @Stable
     data class UpdateBestType(val bestType: BestType) : FeedScreenAction
 }

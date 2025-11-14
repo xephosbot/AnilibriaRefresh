@@ -204,7 +204,7 @@ private fun TitleDetails(
         Feed(
             modifier = modifier.shimmerUpdater(shimmer),
             state = gridState,
-            columns = GridCells.Adaptive(350.dp),
+            columns = GridCells.Adaptive(400.dp),
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         ) {
             row {
