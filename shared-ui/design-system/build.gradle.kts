@@ -23,7 +23,6 @@ kotlin {
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
         implementation(libs.compose.preview)
-        implementation(libs.compose.material.icons.extended)
         api(projects.sharedUi.resource)
         api(libs.compose.material3)
         api(libs.compose.material3.adaptive.navigation.suite)

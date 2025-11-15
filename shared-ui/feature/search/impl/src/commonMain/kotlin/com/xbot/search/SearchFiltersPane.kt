@@ -40,6 +40,8 @@ import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.RangeSlider
 import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.Check
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -84,7 +86,7 @@ internal fun SearchFilterPane(
                             onClick = onBackClick
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                imageVector = AnilibriaIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
@@ -212,7 +214,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -231,7 +233,7 @@ private fun FiltersScreenContent(
                 label = { Text(item.name) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -250,7 +252,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -269,7 +271,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -288,7 +290,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -307,7 +309,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )
@@ -337,7 +339,7 @@ private fun FiltersScreenContent(
                 label = { Text(stringResource(item.stringRes)) },
                 leadingIcon = if (selected) {
                     {
-                        Icon(AnilibriaIcons.Outlined.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                     }
                 } else null
             )

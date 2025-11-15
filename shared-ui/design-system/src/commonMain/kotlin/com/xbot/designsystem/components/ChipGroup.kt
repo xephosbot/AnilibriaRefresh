@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.theme.AnilibriaTheme
 
@@ -136,7 +137,7 @@ private fun MultiChoiceChipGroupPreview() {
                     leadingIcon = if (selected) {
                         {
                             Icon(
-                                AnilibriaIcons.Outlined.Check,
+                                AnilibriaIcons.Check,
                                 null,
                                 Modifier.size(FilterChipDefaults.IconSize)
                             )
@@ -170,7 +171,7 @@ private fun SingleChoiceChipGroupPreview() {
                     leadingIcon = if (selected) {
                         {
                             Icon(
-                                AnilibriaIcons.Outlined.Check,
+                                AnilibriaIcons.Check,
                                 null,
                                 Modifier.size(FilterChipDefaults.IconSize)
                             )

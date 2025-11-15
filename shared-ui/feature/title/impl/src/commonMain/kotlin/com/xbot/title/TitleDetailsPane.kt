@@ -60,6 +60,13 @@ import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.Checklist
+import com.xbot.designsystem.icons.MoreVert
+import com.xbot.designsystem.icons.PlayArrow
+import com.xbot.designsystem.icons.PlaylistPlay
+import com.xbot.designsystem.icons.Share
+import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
@@ -115,7 +122,7 @@ internal fun TitleDetailsPane(
                         shapes = IconButtonDefaults.shapes()
                     ) {
                         Icon(
-                            imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                            imageVector = AnilibriaIcons.ArrowBack,
                             contentDescription = null
                         )
                     }
@@ -147,7 +154,7 @@ internal fun TitleDetailsPane(
                         shapes = IconButtonDefaults.shapes()
                     ) {
                         Icon(
-                            imageVector = AnilibriaIcons.Outlined.MoreVert,
+                            imageVector = AnilibriaIcons.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -247,7 +254,7 @@ private fun TitleDetails(
                             trailingContent = {
                                 Icon(
                                     modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                                    imageVector = AnilibriaIcons.Outlined.PlayList,
+                                    imageVector = AnilibriaIcons.PlaylistPlay,
                                     contentDescription = null
                                 )
                             }
@@ -377,7 +384,7 @@ private fun SuggestionRow(
                 .animateWidth(interactionSources[1]),
             onClick = onAlreadyWatchedClick,
             text = stringResource(Res.string.button_watched_it),
-            icon = AnilibriaIcons.Outlined.CheckList,
+            icon = AnilibriaIcons.Checklist,
             interactionSource = interactionSources[1]
         )
         LabeledIconButton(
@@ -386,7 +393,7 @@ private fun SuggestionRow(
                 .animateWidth(interactionSources[2]),
             onClick = onShareClick,
             text = stringResource(Res.string.button_share),
-            icon = AnilibriaIcons.Filled.Share,
+            icon = AnilibriaIcons.Share,
             interactionSource = interactionSources[2]
         )
         LabeledIconButton(
@@ -395,7 +402,7 @@ private fun SuggestionRow(
                 .animateWidth(interactionSources[3]),
             onClick = onTelegramClick,
             text = stringResource(Res.string.button_telegram),
-            icon = AnilibriaIcons.Filled.TelegramLogo,
+            icon = AnilibriaIcons.TelegramLogo,
             interactionSource = interactionSources[3]
         )
     }

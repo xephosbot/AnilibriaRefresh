@@ -28,6 +28,7 @@ import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.itemsIndexed
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.domain.models.Episode
@@ -60,7 +61,7 @@ internal fun TitleEpisodesPane(
                             onClick = onBackClick
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                imageVector = AnilibriaIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }

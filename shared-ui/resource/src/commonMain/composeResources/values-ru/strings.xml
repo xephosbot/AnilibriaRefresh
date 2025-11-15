@@ -2,7 +2,7 @@
     <!-- Главные вкладки -->
     <string name="tab_home">Главная</string>
     <string name="tab_favorite">Избранное</string>
-    <string name="tab_profile">Профиль</string>
+    <string name="tab_preference">Настройки</string>
     <string name="fab_search">Поиск</string>
 
     <!-- Подзаголовки -->

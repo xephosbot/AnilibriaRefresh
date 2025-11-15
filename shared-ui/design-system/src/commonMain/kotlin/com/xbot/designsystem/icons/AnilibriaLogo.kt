@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.AnilibriaLogo: ImageVector
+val AnilibriaIcons.AnilibriaLogo: ImageVector
     get() {
         if (_anilibriaLogo != null) {
             return _anilibriaLogo!!

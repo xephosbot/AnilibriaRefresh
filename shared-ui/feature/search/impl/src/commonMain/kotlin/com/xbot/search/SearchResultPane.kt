@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -38,11 +39,15 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.navigation.ResultEffect
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.Feed
+import com.xbot.designsystem.components.FeedSectionDefaults
 import com.xbot.designsystem.components.ReleaseListItem
 import com.xbot.designsystem.components.TopSearchInputField
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.ArrowDropDown
+import com.xbot.designsystem.icons.Close
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.union
@@ -68,7 +73,8 @@ internal fun SearchResultPane(
     val selectedFilters by viewModel.filters.collectAsStateWithLifecycle()
 
     val showErrorMessage: (Throwable) -> Unit = { error ->
-        viewModel.onAction(SearchResultScreenAction.ShowErrorMessage(
+        viewModel.onAction(
+            SearchResultScreenAction.ShowErrorMessage(
             error = error,
             onConfirmAction = { searchResult.retry() }
         ))
@@ -87,7 +93,6 @@ internal fun SearchResultPane(
     }
 
     val feedState = rememberLazyGridState()
-    val shimmer = rememberShimmer(ShimmerBounds.Custom)
 
     Scaffold(
         modifier = modifier,
@@ -105,7 +110,7 @@ internal fun SearchResultPane(
                             onClick = { onBackClick() }
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                imageVector = AnilibriaIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
@@ -115,7 +120,7 @@ internal fun SearchResultPane(
                             onClick = { viewModel.searchFieldState.clearText() }
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.Clear,
+                                imageVector = AnilibriaIcons.Close,
                                 contentDescription = null
                             )
                         }
@@ -128,7 +133,7 @@ internal fun SearchResultPane(
                         trailingIcon = {
                             Icon(
                                 modifier = Modifier.size(AssistChipDefaults.IconSize),
-                                imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                                imageVector = AnilibriaIcons.ArrowDropDown,
                                 contentDescription = null
                             )
                         }
@@ -140,15 +145,13 @@ internal fun SearchResultPane(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
-        ProvideShimmer(shimmer) {
-            SearchResultContent(
-                modifier = modifier.shimmerUpdater(shimmer),
-                items = searchResult,
-                state = feedState,
-                contentPadding = innerPadding,
-                onReleaseClick = onReleaseClick,
-            )
-        }
+        SearchResultContent(
+            modifier = modifier,
+            items = searchResult,
+            state = feedState,
+            contentPadding = innerPadding,
+            onReleaseClick = { onReleaseClick(it.id) },
+        )
     }
 }
 
@@ -158,25 +161,33 @@ private fun SearchResultContent(
     items: LazyPagingItems<Release>,
     state: LazyGridState,
     contentPadding: PaddingValues,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
-    Feed(
-        modifier = modifier,
-        columns = GridCells.Adaptive(350.dp),
-        contentPadding = contentPadding.union(WindowInsets.ime.asPaddingValues()),
-        state = state,
-    ) {
-        header(
-            title = { Text(text = stringResource(Res.string.label_search_results)) },
-        )
-        pagingItems(items) { index, release ->
-            Column {
-                ReleaseListItem(
-                    modifier = Modifier.feedItemSpacing(index),
-                    release = release,
-                    onClick = { onReleaseClick(it.id) },
-                )
-                Spacer(Modifier.height(16.dp))
+    val shimmer = rememberShimmer(ShimmerBounds.Custom)
+
+    ProvideShimmer(shimmer) {
+        Feed(
+            modifier = modifier.shimmerUpdater(shimmer),
+            columns = GridCells.Adaptive(400.dp),
+            contentPadding = contentPadding.union(WindowInsets.ime.asPaddingValues()),
+            state = state,
+        ) {
+            header(
+                title = { Text(text = stringResource(Res.string.label_search_results)) },
+            )
+            pagingItems(items) { index, release ->
+                Column {
+                    ReleaseListItem(
+                        modifier = Modifier
+                            .feedItemSpacing(index)
+                            .clip(FeedSectionDefaults.gridItemShapes(index, items.itemCount, maxLineSpan)),
+                        release = release,
+                        onClick = onReleaseClick,
+                    )
+                    if (index < items.itemCount - 1) {
+                        Spacer(Modifier.height(2.dp))
+                    }
+                }
             }
         }
     }

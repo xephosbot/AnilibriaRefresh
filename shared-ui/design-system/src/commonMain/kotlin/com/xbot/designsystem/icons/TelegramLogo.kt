@@ -11,16 +11,27 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.TelegramLogo: ImageVector
+val AnilibriaIcons.TelegramLogo: ImageVector
     get() {
         if (_telegramLogo != null) {
             return _telegramLogo!!
         }
-        _telegramLogo = Builder(name = "Telegram Logo", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = EvenOdd) {
+        _telegramLogo = Builder(
+            name = "Telegram Logo",
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = EvenOdd
+            ) {
                 moveTo(3.369f, 11.361f)
                 curveTo(8.737f, 9.03f, 12.31f, 7.481f, 14.105f, 6.73f)
                 curveTo(19.212f, 4.598f, 20.285f, 4.23f, 20.975f, 4.215f)

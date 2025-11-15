@@ -29,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.Pause
+import com.xbot.designsystem.icons.PlayArrow
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.delay
 
@@ -150,7 +153,7 @@ private fun VideoPlayerTopBar(
         navigationIcon = {
             IconButton(onClick = onClickBack) {
                 Icon(
-                    imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                    imageVector = AnilibriaIcons.ArrowBack,
                     contentDescription = null,
                 )
             }

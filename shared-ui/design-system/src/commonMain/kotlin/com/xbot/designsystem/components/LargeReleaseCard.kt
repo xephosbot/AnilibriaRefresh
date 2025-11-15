@@ -38,6 +38,8 @@ import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LO
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.MoreVert
+import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.utils.PreviewContainer
@@ -214,7 +216,7 @@ private fun LargeReleaseCardPreview() {
                 trailingContent = {
                     Icon(
                         modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                        imageVector = AnilibriaIcons.Outlined.MoreVert,
+                        imageVector = AnilibriaIcons.MoreVert,
                         contentDescription = null
                     )
                 }

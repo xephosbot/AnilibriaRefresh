@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.Home
 import com.xbot.resources.Res
 import com.xbot.resources.tab_home
 import kotlinx.serialization.Serializable

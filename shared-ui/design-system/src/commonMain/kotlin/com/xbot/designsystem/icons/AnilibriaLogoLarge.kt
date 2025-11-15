@@ -11,18 +11,25 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
+val AnilibriaIcons.AnilibriaLogoLarge: ImageVector
     get() {
         if (_anilibriaLogoLarge != null) {
             return _anilibriaLogoLarge!!
         }
         _anilibriaLogoLarge = Builder(
-            name = "AnilibriaLogoLarge", defaultWidth = 98.0.dp, defaultHeight = 18.0.dp,
-            viewportWidth = 98.0f, viewportHeight = 18.0f
+            name = "AnilibriaLogoLarge",
+            defaultWidth = 98.0.dp,
+            defaultHeight = 18.0.dp,
+            viewportWidth = 98.0f,
+            viewportHeight = 18.0f
         ).apply {
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(9.814f, 17.996f)
@@ -42,8 +49,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(13.611f, 4.96f)
@@ -60,8 +71,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(21.996f, 0.0f)
@@ -72,8 +87,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(26.85f, 0.0f)
@@ -86,8 +105,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(35.48f, 0.0f)
@@ -98,8 +121,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(48.709f, 4.139f)
@@ -131,8 +158,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(56.533f, 17.996f)
@@ -162,8 +193,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(60.918f, 0.0f)
@@ -174,8 +209,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(74.83f, 17.996f)
@@ -195,8 +234,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(78.837f, 15.266f)
@@ -207,8 +250,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(78.53f, 0.0f)
@@ -223,8 +270,12 @@ val AnilibriaIcons.Filled.AnilibriaLogoLarge: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFffffff)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(92.65f, 14.68f)

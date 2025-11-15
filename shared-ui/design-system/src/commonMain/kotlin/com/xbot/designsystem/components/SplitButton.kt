@@ -69,6 +69,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowDropDown
+import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.utils.PreviewContainer
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
@@ -291,7 +293,7 @@ private fun SplitButtonPreview() {
                 Icon(
                     modifier = Modifier
                         .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                    imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                    imageVector = AnilibriaIcons.ArrowDropDown,
                     contentDescription = null
                 )
             }

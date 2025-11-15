@@ -91,6 +91,9 @@ import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
+import com.xbot.designsystem.icons.ArrowDropDown
+import com.xbot.designsystem.icons.ArrowDropUp
+import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.fadeWithParallax
 import com.xbot.designsystem.modifier.horizontalParallax
@@ -212,7 +215,7 @@ private fun FeedPane(
                         ),
                     title = {
                         Image(
-                            imageVector = AnilibriaIcons.Filled.AnilibriaLogoLarge,
+                            imageVector = AnilibriaIcons.AnilibriaLogoLarge,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             contentDescription = null
                         )
@@ -247,7 +250,7 @@ private fun FeedPane(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                        imageVector = AnilibriaIcons.Outlined.ArrowDropUp,
+                        imageVector = AnilibriaIcons.ArrowDropUp,
                         contentDescription = null
                     )
                 }
@@ -350,7 +353,7 @@ private fun ReleaseFeed(
                                 .graphicsLayer {
                                     rotationZ = rotation
                                 },
-                            imageVector = AnilibriaIcons.Outlined.ArrowDropDown,
+                            imageVector = AnilibriaIcons.ArrowDropDown,
                             contentDescription = null
                         )
                     }

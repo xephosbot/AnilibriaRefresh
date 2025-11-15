@@ -3,6 +3,7 @@ package com.xbot.favorite.navigation
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.Favorite
 import com.xbot.resources.Res
 import com.xbot.resources.tab_favorite
 import kotlinx.serialization.Serializable
@@ -13,7 +14,7 @@ data object FavoriteRoute : TopLevelNavKey {
     override val textRes: StringResource
         get() = Res.string.tab_favorite
     override val selectedIcon: ImageVector
-        get() = AnilibriaIcons.Filled.Heart
+        get() = AnilibriaIcons.Filled.Favorite
     override val unselectedIcon: ImageVector
-        get() = AnilibriaIcons.Outlined.Heart
+        get() = AnilibriaIcons.Outlined.Favorite
 }

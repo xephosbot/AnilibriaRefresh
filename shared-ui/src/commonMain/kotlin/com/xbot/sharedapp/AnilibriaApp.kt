@@ -33,6 +33,7 @@ import com.xbot.common.navigation.LocalResultEventBus
 import com.xbot.common.navigation.ResultEventBus
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.Search
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
 import com.xbot.resources.Res
@@ -86,7 +87,7 @@ internal fun AnilibriaApp() {
                     expanded = navSuiteType == NavigationSuiteType.WideNavigationRailExpanded,
                     icon = {
                         Icon(
-                            imageVector = AnilibriaIcons.Outlined.Search,
+                            imageVector = AnilibriaIcons.Search,
                             contentDescription = null
                         )
                     },

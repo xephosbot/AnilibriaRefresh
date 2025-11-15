@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.PreviewContainer
 
@@ -47,7 +48,7 @@ fun Header(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconButtonDefaults.smallIconSize),
-                        imageVector = AnilibriaIcons.Outlined.ChevronRight,
+                        imageVector = AnilibriaIcons.ChevronRight,
                         contentDescription = null
                     )
                 }

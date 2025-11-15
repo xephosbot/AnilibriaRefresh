@@ -37,6 +37,7 @@ import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.LazyColumnWithStickyHeader
 import com.xbot.designsystem.components.MediumReleaseCard
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.plus
@@ -106,7 +107,7 @@ private fun SchedulePane(
                             colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                                imageVector = AnilibriaIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
