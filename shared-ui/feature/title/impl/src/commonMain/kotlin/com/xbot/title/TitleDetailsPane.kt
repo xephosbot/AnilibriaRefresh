@@ -1,5 +1,6 @@
 package com.xbot.title
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
@@ -115,6 +118,15 @@ internal fun TitleDetailsPane(
         modifier = modifier,
         topBar = {
             TopAppBar(
+                modifier = Modifier
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.surfaceContainer,
+                                MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                            )
+                        )
+                    ),
                 title = {},
                 navigationIcon = {
                     FilledIconButton(
@@ -159,9 +171,7 @@ internal fun TitleDetailsPane(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
-                ),
+                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
             )
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer
