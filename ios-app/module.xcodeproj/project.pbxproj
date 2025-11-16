@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */; };
+		CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF3566122EC8883F00EE2F35 /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +17,7 @@
 		279A48D438C7058F3D04C50C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = Info.plist; path = src/Info.plist; sourceTree = "<group>"; };
 		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF3566122EC8883F00EE2F35 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -67,6 +69,7 @@
 				279A4173E53941889080E058 /* src */,
 				791897AF17EE8F87746B839E /* Pods */,
 				A10CF9F4FF4C10049E2416D9 /* Frameworks */,
+				CF3566122EC8883F00EE2F35 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -144,6 +147,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +214,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
 				ENABLE_USER_SELECTED_FILES = "$(inherited)";

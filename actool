@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+ICON_PATH="${1:?Error: Icon path required}"
+OUTPUT_PATH="${2:?Error: Output path required}"
+APP_ICON_NAME="${3:-Icon}"
+PLIST_PATH="$OUTPUT_PATH/assetcatalog_generated_info.plist"
+DEVELOPMENT_REGION="en" # Change if necessary
+
+echo "Generating Assets.car..."
+echo "  Icon: $ICON_PATH"
+echo "  Output: $OUTPUT_PATH"
+echo "  App Icon Name: $APP_ICON_NAME"
+
+# Adapted from https://github.com/electron/packager/pull/1806/files
+actool $ICON_PATH --compile $OUTPUT_PATH \
+  --output-format human-readable-text --notices --warnings --errors \
+  --output-partial-info-plist $PLIST_PATH \
+  --app-icon "$APP_ICON_NAME" \
+  --include-all-app-icons \
+  --enable-on-demand-resources NO \
+  --development-region $DEVELOPMENT_REGION \
+  --target-device mac \
+  --minimum-deployment-target 26.0 \
+  --platform macosx
+
+rm $PLIST_PATH
+
+echo "Assets.car generated at $OUTPUT_PATH/Assets.car"
