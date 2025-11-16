@@ -44,7 +44,7 @@ class ScheduleViewModel(
     val state: StateFlow<ScheduleScreenState> = scheduleData
         .map { schedule ->
             ScheduleScreenState(
-                isLoading = schedule != null,
+                isLoading = schedule == null,
                 schedule = schedule.orEmpty()
             )
         }
