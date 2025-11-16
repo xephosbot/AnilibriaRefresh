@@ -19,7 +19,6 @@ fun FrameWindowScope.enableEdgeToEdge() {
 }
 
 private fun enableEdgeToEdgeMacOS(window: ComposeWindow) {
-    window.rootPane.putClientProperty("apple.awt.application.appearance", "system")
     window.rootPane.putClientProperty("apple.awt.fullscreenable", true)
     window.rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
     window.rootPane.putClientProperty("apple.awt.fullWindowContent", true)
