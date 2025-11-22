@@ -1,14 +1,24 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
 }
 
 kotlin {
-    androidTarget()
+    androidLibrary {
+        namespace = "com.xbot.sharedui.designsystem"
+        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        minSdk = libs.versions.android.minsdk.get().toInt()
+
+        withJava()
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -47,19 +57,5 @@ kotlin {
         }
         jvmMain.get().dependsOn(nonAndroid)
         iosMain.get().dependsOn(nonAndroid)
-    }
-}
-
-android {
-    namespace = "com.xbot.sharedui.designsystem"
-    compileSdk = libs.versions.android.compilesdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minsdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 }

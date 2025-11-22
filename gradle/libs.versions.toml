@@ -3,7 +3,7 @@
 android-compilesdk = "36"
 android-targetsdk = "36"
 android-minsdk = "24"
-android-gradle-plugin = "8.13.1"
+android-gradle-plugin = "9.0.0-beta02"
 android-desugar-jdk-libs = "2.1.5"
 
 # Kotlin & Compose
@@ -145,7 +145,6 @@ android-library = { id = "com.android.library", version.ref = "android-gradle-pl
 android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 
 # Kotlin
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
