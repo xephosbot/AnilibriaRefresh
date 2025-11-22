@@ -39,5 +39,6 @@ kotlin {
         implementation(libs.arrow.core)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
+        implementation(libs.koin.compose.navigation3)
     }
 }

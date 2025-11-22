@@ -10,7 +10,7 @@ import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.navigation
+import org.koin.dsl.navigation3.navigation.navigation
 import com.xbot.preference.PreferenceDestination
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.ProfileScreenState

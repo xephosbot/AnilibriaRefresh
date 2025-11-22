@@ -33,7 +33,7 @@ ktor = "3.3.2"
 brotli = "0.1.2"
 
 # Dependency Injection
-koin = "4.1.1"
+koin = "4.2.0-alpha2"
 
 # Utility Libraries
 kotlinx-coroutines = "1.10.2"

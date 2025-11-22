@@ -3,7 +3,7 @@ package com.xbot.title.di
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
 import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.navigation
+import org.koin.dsl.navigation3.navigation.navigation
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.TitleDetailsPane
 import com.xbot.title.TitleDetailsViewModel

@@ -1,9 +1,25 @@
-package com.xbot.common.navigation
+/*
+ * Copyright 2017-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.koin.compose.navigation3
 
 import androidx.compose.runtime.Composable
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
-import org.koin.compose.LocalKoinScope
+import org.koin.compose.LocalKoinScopeContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.scope.Scope
@@ -22,9 +38,9 @@ typealias EntryProvider<T> = (T) -> NavEntry<T>
 
 @KoinExperimentalAPI
 internal fun <T : Any> Scope.getEntryProvider() : EntryProvider<T> {
-    val entries = getAll<EntryProviderInstaller<T>>()
+    val entries = getAll<EntryProviderInstaller>()
     val entryProvider: EntryProvider<T> = entryProvider {
-        entries.forEach { builder -> this.builder() }
+        entries.forEach { builder -> builder(this as EntryProviderScope<Any>) }
     }
     return entryProvider
 }
@@ -56,6 +72,6 @@ internal fun <T : Any> Scope.getEntryProvider() : EntryProvider<T> {
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
-fun <T : Any> koinEntryProvider(scope : Scope = LocalKoinScope.current.getValue()) : EntryProvider<T> {
+fun <T : Any> koinEntryProvider(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider<T> {
     return scope.getEntryProvider()
 }

@@ -1,7 +1,7 @@
 package com.xbot.player.di
 
 import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.navigation
+import org.koin.dsl.navigation3.navigation.navigation
 import com.xbot.player.PlayerScreen
 import com.xbot.player.PlayerViewModel
 import com.xbot.player.navigation.PlayerRoute

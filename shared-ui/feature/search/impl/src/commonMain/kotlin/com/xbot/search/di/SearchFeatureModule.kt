@@ -4,7 +4,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
 import com.xbot.common.navigation.LocalResultEventBus
 import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.navigation
+import org.koin.dsl.navigation3.navigation.navigation
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.search.SearchFilterPane
 import com.xbot.search.SearchFiltersViewModel
