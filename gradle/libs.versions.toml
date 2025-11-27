@@ -29,7 +29,7 @@ navigation3-ui = "1.0.0-alpha05"
 lifecycle = "2.10.0-alpha05"
 
 # Networking
-ktor = "3.3.2"
+ktor = "3.3.3"
 brotli = "0.1.2"
 
 # Dependency Injection
