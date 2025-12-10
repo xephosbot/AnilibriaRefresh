@@ -26,7 +26,7 @@ val AnilibriaIcons.Close: ImageVector
                 )
                 .apply {
                     path(
-                        fill = SolidColor(Color(0xFF000000)),
+                        fill = SolidColor(Color(0xFFE3E3E3)),
                         stroke = null,
                         strokeLineWidth = 0.0f,
                         strokeLineCap = Butt,
