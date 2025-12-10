@@ -34,6 +34,7 @@ kotlin {
         implementation(libs.navigation3.ui)
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.lifecycle.viewmodel.navigation3)
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
