@@ -112,7 +112,10 @@ private fun MediumReleaseCardLayout(
             Box(
                 modifier = Modifier
                     .height(ReleaseCardPosterHeight)
-                    .fadedEdge(edgeHeightRatio = 0.5f),
+                    .fadedEdge(
+                        startFraction = 0.25f,
+                        endFraction = 0.75f,
+                    )
             ) {
                 poster()
             }
@@ -147,7 +150,10 @@ private fun MediumReleaseCardPlaceholder(
                     .fillMaxSize()
                     .shimmer(shimmer)
                     .background(Color.LightGray)
-                    .fadedEdge(edgeHeight = 350.dp)
+                    .fadedEdge(
+                        startFraction = 0f,
+                        endFraction = 1f,
+                    )
             )
         },
         title = {},

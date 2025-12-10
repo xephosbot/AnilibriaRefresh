@@ -1,7 +1,6 @@
 package com.xbot.designsystem.modifier
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -9,62 +8,71 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 fun Modifier.fadedEdge(
-    edgeHeight: Dp = DefaultFadingEdgeHeight,
+    startHeight: Dp,
+    endHeight: Dp,
     opacity: Float = 1.0f,
     bottomEdge: Boolean = true,
 ): Modifier = fadedEdgeInternal(
     opacity = opacity,
     bottomEdge = bottomEdge
-) { size -> edgeHeight.toPx() }
+) { size ->
+    val startPx = startHeight.toPx()
+    val endPx = endHeight.toPx()
+
+    val start = (startPx / size.height).coerceIn(0f, 1f)
+    val end = (endPx / size.height).coerceIn(0f, 1f)
+
+    start to end
+}
 
 fun Modifier.fadedEdge(
-    edgeHeightRatio: Float = 0.5f,
+    startFraction: Float = 0f,
+    endFraction: Float = 1f,
     opacity: Float = 1.0f,
     bottomEdge: Boolean = true
 ): Modifier = fadedEdgeInternal(
     opacity = opacity,
     bottomEdge = bottomEdge
-) { size -> size.height * edgeHeightRatio }
-
+) { size ->
+    startFraction.coerceIn(0f, 1f) to endFraction.coerceIn(0f, 1f)
+}
 
 private fun Modifier.fadedEdgeInternal(
     opacity: Float,
     bottomEdge: Boolean,
-    edgeHeightPx: CacheDrawScope.(Size) -> Float
-): Modifier = this.then(
-    graphicsLayer {
+    edgeRangeProvider: Density.(Size) -> Pair<Float, Float>
+): Modifier = graphicsLayer {
         compositingStrategy = CompositingStrategy.Offscreen
     }.drawWithCache {
-        val edgeHeight = edgeHeightPx(size).coerceAtLeast(0f)
-
+        val (start, end) = edgeRangeProvider(size)
         val brush = Brush.verticalGradient(
-            colors = listOf(
-                Color.Transparent.copy(alpha = 1f - opacity),
-                Color.Black
-            ),
-            startY = if (bottomEdge) size.height else 0f,
-            endY = if (bottomEdge) size.height - edgeHeight else edgeHeight
+            colorStops = arrayOf(
+                0f to Color.Black,
+                start to Color.Black,
+                end to Color.Transparent.copy(alpha = 1f - opacity),
+                1f to Color.Transparent.copy(alpha = 1f - opacity)
+            )
         )
 
         onDrawWithContent {
             drawContent()
-            drawRect(
-                topLeft = Offset(
-                    x = 0f,
-                    y = if (bottomEdge) size.height - edgeHeight else 0f
-                ),
-                size = Size(width = size.width, height = edgeHeight),
-                brush = brush,
-                blendMode = BlendMode.DstIn
-            )
+            scale(scaleX = 1f, scaleY = if (bottomEdge) 1f else -1f) {
+                drawRect(
+                    topLeft = Offset.Zero,
+                    size = size,
+                    brush = brush,
+                    blendMode = BlendMode.DstIn
+                )
+            }
         }
     }
-)
 
 
 private val DefaultFadingEdgeHeight = 96.dp

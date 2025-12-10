@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
@@ -28,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -90,23 +90,24 @@ private fun LargeReleaseCardContent(
             )
         },
         content = { contentAlignment ->
-            BasicText(
+            TextAutoSize(
                 modifier = Modifier.fillMaxWidth(),
                 text = release.localizedName(),
-                style = MaterialTheme.typography.displayMedium
-                    .copy(
-                        color = LocalContentColor.current,
-                        textAlign = when (contentAlignment) {
-                            Alignment.Start -> TextAlign.Start
-                            else -> TextAlign.Center
-                        },
-                        lineHeight = MaterialTheme.typography.displaySmall.fontSize
-                    ),
-                maxLines = 2,
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.displayMedium.fontSize,
                     minFontSize = MaterialTheme.typography.headlineLarge.fontSize,
                 ),
+                style = MaterialTheme.typography.displayMedium
+                    .copy(
+                        lineBreak = LineBreak.Paragraph,
+                        hyphens = Hyphens.Auto
+                    ),
+                textAlign = when (contentAlignment) {
+                    Alignment.Start -> TextAlign.Start
+                    else -> TextAlign.Center
+                },
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             ReleaseMetaText(release = release)
             release.description?.let { description ->
@@ -148,7 +149,10 @@ private fun LargeReleaseCardLayout(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .fadedEdge(edgeHeight = 350.dp)
+                    .fadedEdge(
+                        startFraction = 0.25f,
+                        endFraction = 0.75f,
+                    )
             ) {
                 poster()
             }
@@ -179,7 +183,10 @@ private fun LargeReleaseCardPlaceholder(
                     .fillMaxSize()
                     .shimmer(shimmer)
                     .background(Color.LightGray)
-                    .fadedEdge(edgeHeight = 350.dp)
+                    .fadedEdge(
+                        startFraction = 0.25f,
+                        endFraction = 0.75f,
+                    )
             )
         },
         content = {}
@@ -192,7 +199,7 @@ private fun LargeReleaseCardPlaceholder(
 private fun LargeReleaseCardPreview() {
     PreviewContainer {
         LargeReleaseCard(
-            release = dummyReleaseList[2],
+            release = dummyReleaseList[3],
         ) {
             MediumSplitButton(
                 onLeadingClick = {
