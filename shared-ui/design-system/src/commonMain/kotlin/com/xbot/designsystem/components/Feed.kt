@@ -7,11 +7,11 @@ import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -50,14 +49,11 @@ fun Feed(
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
-    content: @ExtensionFunctionType FeedScope.() -> Unit
+    content: FeedScope.() -> Unit
 ) {
     val latestContent = rememberUpdatedState(content)
     val feedScope by remember {
         derivedStateOf { DefaultFeedScope().apply(latestContent.value) }
-    }
-    val feedItemScope by remember {
-        derivedStateOf { DefaultFeedItemScope().apply { _maxLineSpan = state.layoutInfo.maxSpan } }
     }
 
     LazyVerticalGrid(
@@ -82,7 +78,7 @@ fun Feed(
                     }
                 } else null,
                 itemContent = { index ->
-                    feedItem.itemContent(feedItemScope, index)
+                    feedItem.itemContent(this, index)
                 }
             )
         }
@@ -94,7 +90,7 @@ interface FeedScope {
         key: Any? = null,
         span: (LazyGridItemSpanScope.() -> GridItemSpan)? = null,
         contentType: Any? = null,
-        content: @Composable FeedItemScope.() -> Unit
+        content: @Composable LazyGridItemScope.() -> Unit
     )
 
     fun items(
@@ -102,34 +98,8 @@ interface FeedScope {
         key: ((index: Int) -> Any)? = null,
         span: (LazyGridItemSpanScope.(index: Int) -> GridItemSpan)? = null,
         contentType: (index: Int) -> Any? = { null },
-        itemContent: @Composable FeedItemScope.(index: Int) -> Unit
+        itemContent: @Composable LazyGridItemScope.(index: Int) -> Unit
     )
-}
-
-interface FeedItemScope {
-    val maxLineSpan: Int
-
-    fun Modifier.feedItemSpacing(
-        index: Int,
-        horizontalSpacing: Dp = 16.dp
-    ): Modifier {
-        val halfSpacing = horizontalSpacing / 2
-
-        try {
-            val isFirstColumn = index % maxLineSpan == 0
-            val isLastColumn = (index + 1) % maxLineSpan == 0
-
-            return padding(
-                start = if (isFirstColumn) horizontalSpacing else halfSpacing,
-                end = if (isLastColumn) horizontalSpacing else halfSpacing
-            )
-        } catch (e: Exception) {
-            return padding(
-                start = horizontalSpacing,
-                end = horizontalSpacing
-            )
-        }
-    }
 }
 
 internal class DefaultFeedScope : FeedScope {
@@ -139,7 +109,7 @@ internal class DefaultFeedScope : FeedScope {
         key: Any?,
         span: (LazyGridItemSpanScope.() -> GridItemSpan)?,
         contentType: Any?,
-        content: @Composable FeedItemScope.() -> Unit
+        content: @Composable LazyGridItemScope.() -> Unit
     ) {
         items.add(
             FeedItem(
@@ -165,7 +135,7 @@ internal class DefaultFeedScope : FeedScope {
         key: ((index: Int) -> Any)?,
         span: (LazyGridItemSpanScope.(index: Int) -> GridItemSpan)?,
         contentType: (index: Int) -> Any?,
-        itemContent: @Composable FeedItemScope.(index: Int) -> Unit
+        itemContent: @Composable LazyGridItemScope.(index: Int) -> Unit
     ) {
         items.add(
             FeedItem(
@@ -183,15 +153,8 @@ internal class DefaultFeedScope : FeedScope {
         val key: ((index: Int) -> Any)?,
         val span: (LazyGridItemSpanScope.(index: Int) -> GridItemSpan)?,
         val contentType: (index: Int) -> Any?,
-        val itemContent: @Composable FeedItemScope.(index: Int) -> Unit
+        val itemContent: @Composable LazyGridItemScope.(index: Int) -> Unit
     )
-}
-
-internal class DefaultFeedItemScope : FeedItemScope {
-    internal var _maxLineSpan: Int = 0
-
-    override val maxLineSpan: Int
-        get() = _maxLineSpan
 }
 
 inline fun <T> FeedScope.items(
@@ -199,7 +162,7 @@ inline fun <T> FeedScope.items(
     noinline key: ((item: T) -> Any)? = null,
     noinline span: (LazyGridItemSpanScope.(item: T) -> GridItemSpan)? = null,
     noinline contentType: (item: T) -> Any? = { null },
-    crossinline itemContent: @Composable FeedItemScope.(item: T) -> Unit
+    crossinline itemContent: @Composable LazyGridItemScope.(item: T) -> Unit
 ) = items(
     count = items.size,
     key = if (key != null) {
@@ -222,7 +185,7 @@ inline fun <T> FeedScope.itemsIndexed(
     noinline key: ((index: Int, item: T) -> Any)? = null,
     noinline span: (LazyGridItemSpanScope.(index: Int, item: T) -> GridItemSpan)? = null,
     noinline contentType: (index: Int, item: T) -> Any? = { _, _ -> null },
-    crossinline itemContent: @Composable FeedItemScope.(index: Int, item: T) -> Unit
+    crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T) -> Unit
 ) = items(
     count = items.size,
     key = if (key != null) {
@@ -245,7 +208,7 @@ inline fun <T> FeedScope.items(
     noinline key: ((item: T) -> Any)? = null,
     noinline span: (LazyGridItemSpanScope.(item: T) -> GridItemSpan)? = null,
     noinline contentType: (item: T) -> Any? = { null },
-    crossinline itemContent: @Composable FeedItemScope.(item: T) -> Unit
+    crossinline itemContent: @Composable LazyGridItemScope.(item: T) -> Unit
 ) = items(
     count = items.size,
     key = if (key != null) {
@@ -268,7 +231,7 @@ inline fun <T> FeedScope.itemsIndexed(
     noinline key: ((index: Int, item: T) -> Any)? = null,
     noinline span: (LazyGridItemSpanScope.(index: Int, item: T) -> GridItemSpan)? = null,
     noinline contentType: (index: Int, item: T) -> Any? = { _, _ -> null },
-    crossinline itemContent: @Composable FeedItemScope.(index: Int, item: T) -> Unit
+    crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T) -> Unit
 ) = items(
     count = items.size,
     key = if (key != null) {
@@ -289,7 +252,7 @@ inline fun <T> FeedScope.itemsIndexed(
 inline fun FeedScope.row(
     key: Any? = null,
     contentType: Any? = null,
-    crossinline content: @Composable FeedItemScope.() -> Unit
+    crossinline content: @Composable LazyGridItemScope.() -> Unit
 ) = item(
     key = key,
     span = { GridItemSpan(maxLineSpan) },
@@ -301,7 +264,7 @@ inline fun FeedScope.row(
 inline fun FeedScope.title(
     key: Any? = null,
     contentType: Any? = null,
-    crossinline content: @Composable FeedItemScope.() -> Unit
+    crossinline content: @Composable LazyGridItemScope.() -> Unit
 ) = row(key = key, contentType = contentType) { content() }
 
 inline fun <T> FeedScope.horizontalItems(
@@ -433,7 +396,7 @@ inline fun FeedScope.header(
 inline fun <T : Any> FeedScope.pagingItems(
     items: LazyPagingItems<T>,
     noinline key: ((index: Int) -> Any)? = items.itemKey(),
-    crossinline itemContent: @Composable FeedItemScope.(index: Int, item: T?) -> Unit,
+    crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit,
 ) {
     items(
         count = items.itemCount,
