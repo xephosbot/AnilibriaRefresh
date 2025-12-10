@@ -36,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +52,6 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.ExpandableText
 import com.xbot.designsystem.components.Feed
-import com.xbot.designsystem.components.FeedItemScope
 import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.LargeReleaseCard
@@ -103,7 +103,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun TitleDetailsPane(
     modifier: Modifier = Modifier,
-    viewModel: TitleDetailsViewModel = koinViewModel(),
+    viewModel: TitleViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
@@ -180,8 +180,8 @@ internal fun TitleDetailsPane(
             targetState = state,
         ) { targetState ->
             when (targetState) {
-                is TitleDetailsScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                is TitleDetailsScreenState.Success -> {
+                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is TitleScreenState.Success -> {
                     TitleDetails(
                         gridState = gridState,
                         details = targetState.title,
@@ -438,13 +438,14 @@ private fun LoadingScreen(
 
 private fun FeedScope.swapItems(
     span: (LazyGridItemSpanScope.() -> GridItemSpan)? = { GridItemSpan(1) },
-    content1: @Composable FeedItemScope.() -> Unit,
-    content2: @Composable FeedItemScope.() -> Unit,
+    content1: @Composable () -> Unit,
+    content2: @Composable () -> Unit,
 ) {
+    val maxLineSpan = 1
+
     item(span = span) {
         Box(
             modifier = Modifier
-                .feedItemSpacing(0)
                 .padding(bottom = if (maxLineSpan == 1) 16.dp else 0.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -457,8 +458,7 @@ private fun FeedScope.swapItems(
     }
     item(span = span) {
         Box(
-            modifier = Modifier
-                .feedItemSpacing(1),
+            modifier = Modifier,
             contentAlignment = Alignment.Center
         ) {
             if (maxLineSpan == 1) {

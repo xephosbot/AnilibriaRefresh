@@ -72,7 +72,6 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
-import com.xbot.designsystem.components.FeedSectionDefaults
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.LargeReleaseCard
@@ -89,6 +88,7 @@ import com.xbot.designsystem.components.horizontalPagerItems
 import com.xbot.designsystem.components.horizontalSnappableItems
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.components.row
+import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogoLarge
 import com.xbot.designsystem.icons.ArrowDropDown
@@ -103,6 +103,7 @@ import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleasesFeed
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -128,7 +129,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun FeedPane(
     modifier: Modifier = Modifier,
-    viewModel: FeedViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
@@ -155,9 +156,9 @@ internal fun FeedPane(
 @Composable
 private fun FeedPane(
     modifier: Modifier = Modifier,
-    state: FeedScreenState,
+    state: HomeScreenState,
     items: LazyPagingItems<Release>,
-    onAction: (FeedScreenAction) -> Unit,
+    onAction: (HomeScreenAction) -> Unit,
     onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
@@ -167,7 +168,7 @@ private fun FeedPane(
     val coroutineScope = rememberCoroutineScope()
 
     val onShowErrorMessage: (Throwable) -> Unit = { error ->
-        onAction(FeedScreenAction.ShowErrorMessage(error) { items.retry() })
+        onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
     }
 
     LaunchedEffect(items) {
@@ -179,7 +180,7 @@ private fun FeedPane(
     }
 
     val isRefreshing by remember(state, items) {
-        derivedStateOf { items.loadState.refresh == LoadState.Loading || state.isLoading }
+        derivedStateOf { items.loadState.refresh == LoadState.Loading || state.isFeedLoading }
     }
 
     val showResetScrollButton by remember {
@@ -198,7 +199,7 @@ private fun FeedPane(
                     state = pullToRefreshState,
                     onRefresh = {
                         items.refresh()
-                        onAction(FeedScreenAction.Refresh)
+                        onAction(HomeScreenAction.Refresh)
                     }
                 )
                 .shimmerUpdater(shimmer),
@@ -260,7 +261,7 @@ private fun FeedPane(
         ) { innerPadding ->
             Box {
                 Crossfade(
-                    targetState = state.isLoading
+                    targetState = state.isFeedLoading
                 ) { isLoading ->
                     if (isLoading) {
                         LoadingScreen(contentPadding = innerPadding)
@@ -268,10 +269,11 @@ private fun FeedPane(
                         ReleaseFeed(
                             gridState = gridState,
                             items = items,
-                            state = state,
+                            releasesFeed = state.releasesFeed!!,
+                            currentBestType = state.currentBestType,
                             contentPadding = innerPadding,
                             onScheduleClick = onScheduleClick,
-                            onBestTypeChange = { onAction(FeedScreenAction.UpdateBestType(it)) },
+                            onBestTypeChange = { onAction(HomeScreenAction.UpdateBestType(it)) },
                             onReleaseClick = { onReleaseClick(it.id) },
                             onEpisodeClick = onEpisodeClick,
                         )
@@ -296,14 +298,18 @@ private fun ReleaseFeed(
     modifier: Modifier = Modifier,
     gridState: LazyGridState,
     items: LazyPagingItems<Release>,
-    state: FeedScreenState,
+    releasesFeed: ReleasesFeed,
+    currentBestType: BestType,
     contentPadding: PaddingValues,
     onScheduleClick: () -> Unit,
     onBestTypeChange: (BestType) -> Unit,
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState(pageCount = { state.recommendedReleases.size })
+    val pagerState = rememberPagerState(pageCount = { releasesFeed.recommendedReleases.size })
+    val columnsCount = remember {
+        derivedStateOf { gridState.layoutInfo.maxSpan }
+    }
 
     Feed(
         modifier = modifier,
@@ -312,7 +318,7 @@ private fun ReleaseFeed(
         contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
     ) {
         horizontalPagerItems(
-            items = state.recommendedReleases,
+            items = releasesFeed.recommendedReleases,
             state = pagerState
         ) { page, release ->
             LargeReleaseCard(
@@ -379,7 +385,7 @@ private fun ReleaseFeed(
             onClick = onScheduleClick
         )
         horizontalSnappableItems(
-            items = state.scheduleNow,
+            items = releasesFeed.scheduleNow,
             key = { it.release.id },
             contentPadding = PaddingValues(horizontal = 16.dp),
             itemSpacing = 16.dp,
@@ -405,7 +411,7 @@ private fun ReleaseFeed(
                     val items = remember { BestType.entries }
                     SingleChoiceConnectedButtonGroup(
                         items = items,
-                        selectedItem = state.currentBestType
+                        selectedItem = currentBestType
                     ) { selected, item ->
                         TonalToggleButton(
                             modifier = Modifier.height(ButtonDefaults.ExtraSmallContainerHeight),
@@ -424,7 +430,7 @@ private fun ReleaseFeed(
             )
         }
         horizontalItemsIndexed(
-            items = state.bestReleases,
+            items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
             key = { _, item -> item.id },
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { index, release ->
@@ -451,7 +457,7 @@ private fun ReleaseFeed(
             title = { Text(text = stringResource(Res.string.label_genres)) }
         )
         horizontalItems(
-            items = state.genres,
+            items = releasesFeed.genres,
             key = { it.id },
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { genre ->
@@ -465,18 +471,12 @@ private fun ReleaseFeed(
             title = { Text(text = stringResource(Res.string.label_updates)) },
         )
         pagingItems(items) { index, release ->
-            Column {
-                ReleaseListItem(
-                    modifier = Modifier
-                        .feedItemSpacing(index)
-                        .clip(FeedSectionDefaults.gridItemShapes(index, items.itemCount, maxLineSpan)),
-                    release = release,
-                    onClick = onReleaseClick,
-                )
-                if (index < items.itemCount - 1) {
-                    Spacer(Modifier.height(2.dp))
-                }
-            }
+            ReleaseListItem(
+                modifier = Modifier
+                    .section(index, items.itemCount, columnsCount.value),
+                release = release,
+                onClick = onReleaseClick,
+            )
         }
     }
 }

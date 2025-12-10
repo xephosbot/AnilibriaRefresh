@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
+import com.xbot.designsystem.icons.ArrowBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +55,7 @@ internal fun ProfileDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = AnilibriaIcons.Outlined.ArrowBack,
+                            imageVector = AnilibriaIcons.ArrowBack,
                             contentDescription = null,
                         )
                     }
@@ -106,7 +107,7 @@ private fun ProfileLogin(
     ) {
         Icon(
             modifier = Modifier.size(30.dp),
-            imageVector = AnilibriaIcons.Filled.AnilibriaLogo,
+            imageVector = AnilibriaIcons.AnilibriaLogo,
             contentDescription = null
         )
         Spacer(modifier = Modifier.height(8.dp))

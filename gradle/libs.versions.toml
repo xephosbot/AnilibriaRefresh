@@ -3,7 +3,7 @@
 android-compilesdk = "36"
 android-targetsdk = "36"
 android-minsdk = "24"
-android-gradle-plugin = "9.0.0-beta02"
+android-gradle-plugin = "9.0.0-beta03"
 android-desugar-jdk-libs = "2.1.5"
 
 # Kotlin & Compose

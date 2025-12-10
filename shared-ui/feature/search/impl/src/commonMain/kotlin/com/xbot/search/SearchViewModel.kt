@@ -1,12 +1,17 @@
 package com.xbot.search
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.Genre
+import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
@@ -15,23 +20,33 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.usecase.GetCatalogFiltersUseCase
+import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
-import com.xbot.search.navigation.SearchFiltersRoute
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SearchFiltersViewModel(
+@OptIn(ExperimentalCoroutinesApi::class)
+class SearchViewModel(
+    private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogFilters: GetCatalogFiltersUseCase,
     private val snackbarManager: SnackbarManager,
-    private val route: SearchFiltersRoute,
 ) : ViewModel() {
+
+    val searchFieldState: TextFieldState = TextFieldState()
+    private val searchQuery: Flow<String> = snapshotFlow { searchFieldState.text.toString() }
 
     private val _availableFilters = MutableStateFlow<CatalogFilters?>(null)
     val availableFilters: StateFlow<CatalogFilters?> = _availableFilters
@@ -42,19 +57,37 @@ class SearchFiltersViewModel(
             initialValue = _availableFilters.value
         )
 
-    private val _selectedFilters = MutableStateFlow(route.initialFilters?.toState() ?: SearchFiltersScreenState())
-    val selectedFilters: StateFlow<SearchFiltersScreenState> = _selectedFilters.asStateFlow()
+    private val _selectedFilters = MutableStateFlow(SearchFiltersState())
+    val selectedFilters: StateFlow<SearchFiltersState> = _selectedFilters.asStateFlow()
 
-    fun onAction(action: SearchFiltersScreenAction) {
+    @OptIn(FlowPreview::class)
+    val searchResult: Flow<PagingData<Release>> = combine(
+        searchQuery.debounce(500L), selectedFilters
+    ) { searchQuery, filters ->
+        searchQuery to filters
+    }
+        .flatMapLatest { (searchQuery, filters) ->
+            val catalogFilters = filters.toCatalogFilters()
+            getCatalogReleasesPager(
+                search = searchQuery,
+                filters = if (catalogFilters.isEmpty()) null else catalogFilters,
+            )
+        }
+        .cachedIn(viewModelScope)
+
+    fun onAction(action: SearchScreenAction) {
         when (action) {
-            is SearchFiltersScreenAction.ToggleGenre -> toggleGenre(action.genre)
-            is SearchFiltersScreenAction.ToggleProductionStatus -> toggleProductionStatus(action.productionStatus)
-            is SearchFiltersScreenAction.TogglePublishStatus -> togglePublishStatus(action.publishStatus)
-            is SearchFiltersScreenAction.ToggleReleaseType -> toggleReleaseType(action.releaseType)
-            is SearchFiltersScreenAction.ToggleSeason -> toggleSeason(action.season)
-            is SearchFiltersScreenAction.UpdateSortingType -> updateSortingType(action.sortingType)
-            is SearchFiltersScreenAction.UpdateYearsRange -> updateYearsRange(action.years)
-            is SearchFiltersScreenAction.ToggleAgeRating -> toggleAgeRating(action.ageRating)
+            is SearchScreenAction.ToggleGenre -> toggleGenre(action.genre)
+            is SearchScreenAction.ToggleProductionStatus -> toggleProductionStatus(action.productionStatus)
+            is SearchScreenAction.TogglePublishStatus -> togglePublishStatus(action.publishStatus)
+            is SearchScreenAction.ToggleReleaseType -> toggleReleaseType(action.releaseType)
+            is SearchScreenAction.ToggleSeason -> toggleSeason(action.season)
+            is SearchScreenAction.UpdateSortingType -> updateSortingType(action.sortingType)
+            is SearchScreenAction.UpdateYearsRange -> updateYearsRange(action.years)
+            is SearchScreenAction.ToggleAgeRating -> toggleAgeRating(action.ageRating)
+            is SearchScreenAction.ShowErrorMessage -> {
+                showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
+            }
         }
     }
 
@@ -120,24 +153,13 @@ class SearchFiltersViewModel(
         return if (item in this) this - item else this + item
     }
 
-    private fun updateState(block: (SearchFiltersScreenState) -> SearchFiltersScreenState) {
+    private fun updateState(block: (SearchFiltersState) -> SearchFiltersState) {
         _selectedFilters.update { block(_selectedFilters.value) }
     }
-
-    private fun CatalogFilters.toState() = SearchFiltersScreenState(
-        selectedGenres = genres.toSet(),
-        selectedReleaseTypes = types.toSet(),
-        selectedPublishStatuses = publishStatuses.toSet(),
-        selectedProductionStatuses = productionStatuses.toSet(),
-        selectedSortingType = sortingTypes.first(),
-        selectedSeasons = seasons.toSet(),
-        selectedAgeRatings = ageRatings.toSet(),
-        selectedYears = years,
-    )
 }
 
 @Stable
-data class SearchFiltersScreenState(
+data class SearchFiltersState(
     val loading: Boolean = true,
     val selectedGenres: Set<Genre> = emptySet(),
     val selectedReleaseTypes: Set<ReleaseType> = emptySet(),
@@ -160,13 +182,23 @@ data class SearchFiltersScreenState(
     )
 }
 
-sealed interface SearchFiltersScreenAction {
-    data class ToggleGenre(val genre: Genre) : SearchFiltersScreenAction
-    data class TogglePublishStatus(val publishStatus: PublishStatus) : SearchFiltersScreenAction
-    data class ToggleProductionStatus(val productionStatus: ProductionStatus) : SearchFiltersScreenAction
-    data class ToggleReleaseType(val releaseType: ReleaseType) : SearchFiltersScreenAction
-    data class ToggleSeason(val season: Season) : SearchFiltersScreenAction
-    data class UpdateSortingType(val sortingType: SortingType) : SearchFiltersScreenAction
-    data class UpdateYearsRange(val years: IntRange) : SearchFiltersScreenAction
-    data class ToggleAgeRating(val ageRating: AgeRating) : SearchFiltersScreenAction
+private fun CatalogFilters.isEmpty(): Boolean {
+    return this.genres.isEmpty() && this.types.isEmpty() && this.seasons.isEmpty()
+            && this.years == IntRange.EMPTY && this.sortingTypes.isEmpty()
+            && this.ageRatings.isEmpty() && this.publishStatuses.isEmpty() && this.productionStatuses.isEmpty()
+}
+
+sealed interface SearchScreenAction {
+    data class ToggleGenre(val genre: Genre) : SearchScreenAction
+    data class TogglePublishStatus(val publishStatus: PublishStatus) : SearchScreenAction
+    data class ToggleProductionStatus(val productionStatus: ProductionStatus) : SearchScreenAction
+    data class ToggleReleaseType(val releaseType: ReleaseType) : SearchScreenAction
+    data class ToggleSeason(val season: Season) : SearchScreenAction
+    data class UpdateSortingType(val sortingType: SortingType) : SearchScreenAction
+    data class UpdateYearsRange(val years: IntRange) : SearchScreenAction
+    data class ToggleAgeRating(val ageRating: AgeRating) : SearchScreenAction
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onConfirmAction: () -> Unit,
+    ) : SearchScreenAction
 }

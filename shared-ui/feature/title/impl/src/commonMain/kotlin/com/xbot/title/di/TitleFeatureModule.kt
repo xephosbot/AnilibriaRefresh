@@ -3,29 +3,30 @@ package com.xbot.title.di
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
 import com.xbot.common.navigation.Navigator
-import org.koin.dsl.navigation3.navigation.navigation
+import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.TitleDetailsPane
-import com.xbot.title.TitleDetailsViewModel
 import com.xbot.title.TitleEpisodesPane
-import com.xbot.title.TitleEpisodesViewModel
+import com.xbot.title.TitleViewModel
 import com.xbot.title.navigation.TitleEpisodesRoute
 import com.xbot.title.navigation.TitleRoute
 import com.xbot.title.navigation.navigateToTitle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
 val titleFeatureModule = module {
     navigation<TitleRoute>(
         metadata = SupportingPaneSceneStrategy.mainPane(TitleRoute)
     ) { key ->
-        val viewModel = koinViewModel<TitleDetailsViewModel> {
-            parametersOf(key)
+        val viewModel = koinViewModel<TitleViewModel> {
+            parametersOf(key.aliasOrId)
         }
+
         TitleDetailsPane(
             viewModel = viewModel,
             onBackClick = {
@@ -44,10 +45,12 @@ val titleFeatureModule = module {
     }
     navigation<TitleEpisodesRoute>(
         metadata = SupportingPaneSceneStrategy.supportingPane(TitleRoute)
+            //+ SharedViewModelStoreNavEntryDecorator.viewModelParent(TitleRoute.toString())
     ) { key ->
-        val viewModel = koinViewModel<TitleEpisodesViewModel> {
-            parametersOf(key)
+        val viewModel = koinViewModel<TitleViewModel> {
+            parametersOf(key.aliasOrId)
         }
+
         TitleEpisodesPane(
             viewModel = viewModel,
             showBackButton = true,
@@ -59,6 +62,7 @@ val titleFeatureModule = module {
             },
         )
     }
-    viewModelOf(::TitleDetailsViewModel)
-    viewModelOf(::TitleEpisodesViewModel)
+    viewModel { (aliasOrId: String) ->
+        TitleViewModel(get(), get(), aliasOrId)
+    }
 }

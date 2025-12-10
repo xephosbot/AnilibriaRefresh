@@ -11,5 +11,9 @@ data class TitleRoute(val aliasOrId: String) : NavKey
 data class TitleEpisodesRoute(val aliasOrId: String) : NavKey
 
 fun Navigator.navigateToTitle(id: Int) {
+    if (backStack.lastOrNull() is TitleEpisodesRoute) {
+        navigateBack()
+    }
+    navigateBack()
     navigate(TitleRoute(id.toString()))
 }

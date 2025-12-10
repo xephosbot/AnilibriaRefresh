@@ -10,7 +10,6 @@ import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.xbot.common.navigation.Navigator
-import org.koin.dsl.navigation3.navigation.navigation
 import com.xbot.preference.PreferenceDestination
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.ProfileScreenState
@@ -30,6 +29,7 @@ import com.xbot.preference.team.TeamDetailScreen
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
 val preferenceFeatureModule = module {

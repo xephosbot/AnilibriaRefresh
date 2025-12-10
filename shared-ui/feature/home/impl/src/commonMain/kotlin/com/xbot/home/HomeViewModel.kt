@@ -10,14 +10,14 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.AuthState
-import com.xbot.domain.models.Franchise
-import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.User
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
+import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,12 +30,14 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class FeedViewModel(
+class HomeViewModel(
     getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     getAuthState: GetAuthStateUseCase,
     private val getReleasesFeed: GetReleasesFeedUseCase,
+    private val getSortedScheduleWeekUseCase: GetSortedScheduleWeekUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
@@ -57,39 +59,49 @@ class FeedViewModel(
             }
         }
 
-    val state: StateFlow<FeedScreenState> =
-        combine(getAuthState(), feedData, bestType) { authState, feed, currentBestType ->
+    private val scheduleData = refreshTrigger
+        .flatMapLatest {
+            flow {
+                when (val result = getSortedScheduleWeekUseCase()) {
+                    is Either.Left -> {
+                        showErrorMessage(result.value.toString()) { refresh() }
+                        emit(null)
+                    }
+                    is Either.Right -> emit(result.value)
+                }
+            }
+        }
+
+    val state: StateFlow<HomeScreenState> =
+        combine(getAuthState(), feedData, scheduleData, bestType) { authState, feed, schedule, currentBestType ->
             val user = when (authState) {
                 is AuthState.Authenticated -> authState.user
                 is AuthState.Unauthenticated -> null
             }
 
-            FeedScreenState(
-                isLoading = feed == null,
+            HomeScreenState(
+                isFeedLoading = feed == null,
+                isScheduleLoading = schedule == null,
                 currentUser = user,
-                recommendedReleases = feed?.recommendedReleases.orEmpty(),
-                scheduleNow = feed?.scheduleNow.orEmpty(),
-                bestNow = feed?.bestNow.orEmpty(),
-                bestAllTime = feed?.bestAllTime.orEmpty(),
-                recommendedFranchises = feed?.recommendedFranchises.orEmpty(),
-                genres = feed?.genres.orEmpty(),
+                releasesFeed = feed,
+                scheduleWeek = schedule.orEmpty(),
                 currentBestType = currentBestType,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = FeedScreenState()
+            initialValue = HomeScreenState()
         )
 
-    fun onAction(action: FeedScreenAction) {
+    fun onAction(action: HomeScreenAction) {
         when (action) {
-            is FeedScreenAction.ShowErrorMessage -> {
+            is HomeScreenAction.ShowErrorMessage -> {
                 showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
             }
 
-            is FeedScreenAction.Refresh -> refresh()
+            is HomeScreenAction.Refresh -> refresh()
 
-            is FeedScreenAction.UpdateBestType -> updateBestType(action.bestType)
+            is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
         }
     }
 
@@ -113,34 +125,28 @@ class FeedViewModel(
 }
 
 @Stable
-data class FeedScreenState(
-    val isLoading: Boolean = true,
+data class HomeScreenState(
+    val isFeedLoading: Boolean = true,
+    val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
-    val recommendedReleases: List<Release> = emptyList(),
-    val scheduleNow: List<Schedule> = emptyList(),
-    val bestNow: List<Release> = emptyList(),
-    val bestAllTime: List<Release> = emptyList(),
-    val recommendedFranchises: List<Franchise> = emptyList(),
-    val genres: List<Genre> = emptyList(),
+    val releasesFeed: ReleasesFeed? = null,
+    val scheduleWeek: Map<LocalDate, List<Schedule>> = emptyMap(),
     val currentBestType: BestType = BestType.Now,
-) {
-    val bestReleases: List<Release>
-        get() = if (currentBestType == BestType.Now) bestNow else bestAllTime
-}
+)
 
 @Stable
-sealed interface FeedScreenAction {
+sealed interface HomeScreenAction {
     @Stable
     data class ShowErrorMessage(
         val error: Throwable,
         val onConfirmAction: () -> Unit,
-    ) : FeedScreenAction
+    ) : HomeScreenAction
 
     @Stable
-    data object Refresh : FeedScreenAction
+    data object Refresh : HomeScreenAction
 
     @Stable
-    data class UpdateBestType(val bestType: BestType) : FeedScreenAction
+    data class UpdateBestType(val bestType: BestType) : HomeScreenAction
 }
 
 @Stable

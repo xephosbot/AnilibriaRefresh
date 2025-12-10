@@ -61,7 +61,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 internal fun SchedulePane(
     modifier: Modifier = Modifier,
-    viewModel: ScheduleViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     showBackButton: Boolean,
     onReleaseClick: (Int) -> Unit,
     onBackClick: () -> Unit,
@@ -85,7 +85,7 @@ internal fun SchedulePane(
 @Composable
 private fun SchedulePane(
     modifier: Modifier = Modifier,
-    state: ScheduleScreenState,
+    state: HomeScreenState,
     showBackButton: Boolean,
     onReleaseClick: (Int) -> Unit,
     onBackClick: () -> Unit,
@@ -120,7 +120,7 @@ private fun SchedulePane(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         Crossfade(
-            targetState = state.isLoading
+            targetState = state.isScheduleLoading
         ) { isLoading ->
             if (isLoading) {
                 LoadingScreen(contentPadding = innerPadding)
@@ -138,7 +138,7 @@ private fun SchedulePane(
 @Composable
 private fun ScheduleContent(
     modifier: Modifier = Modifier,
-    state: ScheduleScreenState,
+    state: HomeScreenState,
     contentPadding: PaddingValues,
     onReleaseClick: (Int) -> Unit,
 ) {
@@ -146,7 +146,7 @@ private fun ScheduleContent(
 
     ProvideShimmer(shimmer) {
         LazyColumnWithStickyHeader(
-            items = state.schedule,
+            items = state.scheduleWeek,
             modifier = modifier.shimmerUpdater(shimmer),
             contentPadding = contentPadding.plus(PaddingValues(16.dp)),
             verticalArrangement = Arrangement.spacedBy(16.dp),
