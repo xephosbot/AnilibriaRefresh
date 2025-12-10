@@ -72,6 +72,6 @@ internal fun <T : Any> Scope.getEntryProvider() : EntryProvider<T> {
 @OptIn(KoinInternalApi::class)
 @KoinExperimentalAPI
 @Composable
-fun <T : Any> koinEntryProvider(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider<T> {
+fun <T : Any> koinEntryProviderFixed(scope : Scope = LocalKoinScopeContext.current.getValue()) : EntryProvider<T> {
     return scope.getEntryProvider()
 }
