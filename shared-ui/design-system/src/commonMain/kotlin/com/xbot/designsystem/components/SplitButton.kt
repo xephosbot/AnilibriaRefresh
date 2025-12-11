@@ -92,7 +92,7 @@ fun MediumSplitButton(
     SplitButtonLayout(
         leadingButton = {
             SplitButtonDefaults.LeadingButton(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(SplitButtonDefaults.MediumContainerHeight),
                 shapes = SplitButtonDefaults
@@ -153,7 +153,7 @@ fun MediumSplitButton(
     SplitButtonLayout(
         leadingButton = {
             SplitButtonDefaults.LeadingButton(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(SplitButtonDefaults.MediumContainerHeight),
                 shapes = SplitButtonDefaults

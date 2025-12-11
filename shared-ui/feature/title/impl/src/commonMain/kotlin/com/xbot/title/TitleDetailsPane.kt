@@ -2,7 +2,6 @@ package com.xbot.title
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
@@ -36,12 +33,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -50,9 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ChipGroup
-import com.xbot.designsystem.components.ExpandableText
+import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
-import com.xbot.designsystem.components.FeedScope
 import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
@@ -61,7 +56,9 @@ import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.TypedCrossFade
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
+import com.xbot.designsystem.components.itemsIndexed
 import com.xbot.designsystem.components.row
+import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Checklist
@@ -86,7 +83,6 @@ import com.xbot.resources.button_share
 import com.xbot.resources.button_telegram
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.button_watched_it
-import com.xbot.resources.label_description
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
@@ -107,7 +103,6 @@ internal fun TitleDetailsPane(
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
-    onEpisodesListClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -174,6 +169,47 @@ internal fun TitleDetailsPane(
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
             )
         },
+        bottomBar = {
+            MediumSplitButton(
+                modifier = Modifier
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                MaterialTheme.colorScheme.surfaceContainer,
+                            )
+                        )
+                    )
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                onLeadingClick = {
+                    (state as? TitleScreenState.Success)?.title?.release?.let { release ->
+                        onPlayClick(release.id, 0)
+                    }
+                },
+                onTrailingClick = {
+                    //onEpisodesListClick()
+                },
+                leadingContent = {
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                        imageVector = AnilibriaIcons.Filled.PlayArrow,
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                    Text(
+                        text = stringResource(Res.string.button_watch_continue),
+                        maxLines = 1
+                    )
+                },
+                trailingContent = {
+                    Icon(
+                        modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
+                        imageVector = AnilibriaIcons.PlaylistPlay,
+                        contentDescription = null
+                    )
+                }
+            )
+        },
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         TypedCrossFade(
@@ -188,11 +224,6 @@ internal fun TitleDetailsPane(
                         contentPadding = innerPadding,
                         onPlayClick = onPlayClick,
                         onReleaseClick = onReleaseClick,
-                        onEpisodesListClick = onEpisodesListClick,
-                        onAddToFavoritesClick = {},
-                        onAlreadyWatchedClick = {},
-                        onShareClick = {},
-                        onTelegramClick = {}
                     )
                 }
             }
@@ -209,13 +240,11 @@ private fun TitleDetails(
     contentPadding: PaddingValues,
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Int) -> Unit,
-    onEpisodesListClick: () -> Unit,
-    onAddToFavoritesClick: () -> Unit,
-    onAlreadyWatchedClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onTelegramClick: () -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
+    val columnsCount = remember {
+        derivedStateOf { gridState.layoutInfo.maxSpan }
+    }
 
     ProvideShimmer(shimmer) {
         Feed(
@@ -231,47 +260,7 @@ private fun TitleDetails(
                 )
             }
 
-            if (details.availabilityStatus == AvailabilityStatus.Available) {
-                swapItems(
-                    content1 = {
-                        SuggestionRow(
-                            onAddToFavoritesClick = onAddToFavoritesClick,
-                            onAlreadyWatchedClick = onAlreadyWatchedClick,
-                            onShareClick = onShareClick,
-                            onTelegramClick = onTelegramClick
-                        )
-                    },
-                    content2 = {
-                        MediumSplitButton(
-                            onLeadingClick = {
-                                onPlayClick(details.release.id, 0)
-                            },
-                            onTrailingClick = {
-                                onEpisodesListClick()
-                            },
-                            leadingContent = {
-                                Icon(
-                                    modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                    imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                    contentDescription = null
-                                )
-                                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                                Text(
-                                    text = stringResource(Res.string.button_watch_continue),
-                                    maxLines = 1
-                                )
-                            },
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                                    imageVector = AnilibriaIcons.PlaylistPlay,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    }
-                )
-            } else {
+            if (details.availabilityStatus != AvailabilityStatus.Available) {
                 row { Spacer(Modifier.height(16.dp)) }
 
                 row {
@@ -298,19 +287,6 @@ private fun TitleDetails(
                     ) {
                         Text(text = details.notification!!)
                     }
-                }
-            }
-
-            if (details.release.description != null) {
-                header(
-                    title = { Text(text = stringResource(Res.string.label_description)) }
-                )
-                row {
-                    ExpandableText(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = details.release.description!!,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 }
             }
 
@@ -360,7 +336,22 @@ private fun TitleDetails(
                 }
             }
 
-            row { Spacer(Modifier.height(16.dp)) }
+            if (details.episodes.isNotEmpty()) {
+                header(
+                    title = { Text(text = "Episodes") }
+                )
+                itemsIndexed(details.episodes) { index, episode ->
+                    EpisodeListItem(
+                        modifier = Modifier.section(
+                            index,
+                            details.episodes.size,
+                            columnsCount.value
+                        ),
+                        episode = episode,
+                        onClick = { onPlayClick(details.release.id, index) }
+                    )
+                }
+            }
         }
     }
 }
@@ -432,40 +423,6 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
             LargeReleaseCard(null)
-        }
-    }
-}
-
-private fun FeedScope.swapItems(
-    span: (LazyGridItemSpanScope.() -> GridItemSpan)? = { GridItemSpan(1) },
-    content1: @Composable () -> Unit,
-    content2: @Composable () -> Unit,
-) {
-    val maxLineSpan = 1
-
-    item(span = span) {
-        Box(
-            modifier = Modifier
-                .padding(bottom = if (maxLineSpan == 1) 16.dp else 0.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (maxLineSpan == 1) {
-                content1()
-            } else {
-                content2()
-            }
-        }
-    }
-    item(span = span) {
-        Box(
-            modifier = Modifier,
-            contentAlignment = Alignment.Center
-        ) {
-            if (maxLineSpan == 1) {
-                content2()
-            } else {
-                content1()
-            }
         }
     }
 }
