@@ -6,10 +6,10 @@ import com.xbot.common.navigation.ExternalLinkNavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.replace
 import com.xbot.preference.PreferenceListPane
-import com.xbot.preference.ProfileViewModel
-import com.xbot.preference.donate.SupportDetailScreen
+import com.xbot.preference.donate.DonateDetailScreen
+import com.xbot.preference.donate.DonateViewModel
+import com.xbot.preference.history.HistoryDetailScreen
 import com.xbot.preference.history.HistoryViewModel
-import com.xbot.preference.history.ViewHistoryDetailScreen
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
@@ -17,7 +17,9 @@ import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceSettingsRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.settings.SettingsDetailScreen
+import com.xbot.preference.settings.SettingsViewModel
 import com.xbot.preference.team.TeamDetailScreen
+import com.xbot.preference.team.TeamViewModel
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
@@ -50,8 +52,8 @@ val preferenceFeatureModule = module {
     navigation<PreferenceHistoryRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
-        ViewHistoryDetailScreen(
-            onBackClick = {
+        HistoryDetailScreen(
+            onNavigateBack = {
                 get<Navigator>().navigateBack()
             }
         )
@@ -68,7 +70,7 @@ val preferenceFeatureModule = module {
     navigation<PreferenceDonateRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
-        SupportDetailScreen(
+        DonateDetailScreen(
             onNavigateBack = {
                 get<Navigator>().navigateBack()
             }
@@ -83,6 +85,8 @@ val preferenceFeatureModule = module {
             }
         )
     }
-    viewModelOf(::ProfileViewModel)
     viewModelOf(::HistoryViewModel)
+    viewModelOf(::TeamViewModel)
+    viewModelOf(::DonateViewModel)
+    viewModelOf(::SettingsViewModel)
 }

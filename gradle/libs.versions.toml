@@ -3,12 +3,12 @@
 android-compilesdk = "36"
 android-targetsdk = "36"
 android-minsdk = "24"
-android-gradle-plugin = "9.0.0-beta03"
+android-gradle-plugin = "9.0.0-beta05"
 android-desugar-jdk-libs = "2.1.5"
 
 # Kotlin & Compose
 kotlin = "2.2.21"
-ksp = "2.3.0"
+ksp = "2.3.2"
 compose-multiplatform = "1.10.0-rc02"
 compose-material3 = "1.10.0-alpha05"
 compose-material3-adaptive = "1.2.0"
