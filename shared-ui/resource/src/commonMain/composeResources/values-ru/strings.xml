@@ -96,4 +96,25 @@
     <string name="member_role_editing">Редактура</string>
     <string name="member_role_decorating">Оформление</string>
     <string name="member_role_translating">Перевод и адаптация</string>
+
+    <!-- Preference Options -->
+    <string name="preference_history_title">История</string>
+    <string name="preference_history_description">История просмотров</string>
+    <string name="preference_team_title">Команда</string>
+    <string name="preference_team_description">Информация о команде</string>
+    <string name="preference_donate_title">Поддержать проект</string>
+    <string name="preference_donate_description">Пожертвования</string>
+    <string name="preference_settings_title">Настройки</string>
+    <string name="preference_settings_description">Настройки приложения</string>
+    <string name="preference_github_title">GitHub</string>
+    <string name="preference_github_description">Репозиторий проекта</string>
+    <string name="preference_youtube_title">YouTube</string>
+    <string name="preference_youtube_description">Наш канал</string>
+    <string name="preference_discord_title">Discord</string>
+    <string name="preference_discord_description">Наш сервер</string>
+
+    <string name="preference_screen_title">Настройки</string>
+    <string name="preference_section_main">Основное</string>
+    <string name="preference_section_links">Полезные ссылки</string>
+    <string name="preference_select_item_placeholder">Выберите элемент из списка</string>
 </resources>

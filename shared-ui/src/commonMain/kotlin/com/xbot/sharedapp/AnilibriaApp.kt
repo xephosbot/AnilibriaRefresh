@@ -16,10 +16,12 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -52,6 +54,13 @@ internal fun AnilibriaApp() {
 
     setSingletonImageLoaderFactory { context ->
         getImageLoader(context, httpClient)
+    }
+
+    val uriHandler = LocalUriHandler.current
+    LaunchedEffect(navigator, uriHandler) {
+        navigator.externalLinkHandler = { url ->
+            uriHandler.openUri(url)
+        }
     }
 
     val resultBus = remember { ResultEventBus() }

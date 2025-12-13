@@ -1,31 +1,24 @@
 package com.xbot.preference.di
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import com.xbot.common.navigation.ExternalLinkNavKey
 import com.xbot.common.navigation.Navigator
-import com.xbot.preference.PreferenceDestination
+import com.xbot.common.navigation.replace
 import com.xbot.preference.PreferenceListPane
-import com.xbot.preference.ProfileScreenState
 import com.xbot.preference.ProfileViewModel
 import com.xbot.preference.donate.SupportDetailScreen
 import com.xbot.preference.history.HistoryViewModel
 import com.xbot.preference.history.ViewHistoryDetailScreen
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
-import com.xbot.preference.navigation.PreferenceProfileRoute
+import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceSettingsRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
-import com.xbot.preference.profile.ProfileDetailScreen
 import com.xbot.preference.settings.SettingsDetailScreen
 import com.xbot.preference.team.TeamDetailScreen
+import com.xbot.preference.ui.PreferenceDetailPlaceholder
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -37,41 +30,20 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.listPane(
             sceneKey = PreferenceRoute,
             detailPlaceholder = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Выберите элемент из списка")
-                }
+                PreferenceDetailPlaceholder()
             }
         )
     ) {
+        val navigator = get<Navigator>()
         PreferenceListPane(
-            state = ProfileScreenState.Loading,
-            isExpandedLayout = true,
-            currentDestination = null,
+            currentDestination = navigator.currentDestination as? PreferenceOptionRoute,
             onNavigateToDetail = { destination ->
-                when (destination) {
-                    PreferenceDestination.PROFILE -> get<Navigator>().navigate(PreferenceProfileRoute)
-                    PreferenceDestination.HISTORY -> get<Navigator>().navigate(PreferenceHistoryRoute)
-                    PreferenceDestination.TEAM -> get<Navigator>().navigate(PreferenceTeamRoute)
-                    PreferenceDestination.DONATE -> get<Navigator>().navigate(PreferenceDonateRoute)
-                    PreferenceDestination.SETTINGS -> get<Navigator>().navigate(PreferenceSettingsRoute)
+                if (destination is ExternalLinkNavKey) {
+                    navigator.navigate(destination)
+                    return@PreferenceListPane
                 }
-            },
-            onOpenUrl = {
-                println("Open URL: $it")
-            }
-        )
-    }
-    navigation<PreferenceProfileRoute>(
-        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
-    ) {
-        ProfileDetailScreen(
-            onNavigateBack = {
-                get<Navigator>().navigateBack()
+
+                navigator.replace<PreferenceOptionRoute>(destination)
             }
         )
     }

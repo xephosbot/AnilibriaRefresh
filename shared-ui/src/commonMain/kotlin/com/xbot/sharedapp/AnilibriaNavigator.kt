@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.xbot.common.navigation.ExternalLinkNavKey
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
@@ -15,6 +16,8 @@ import com.xbot.preference.navigation.PreferenceRoute
 internal class AnilibriaNavigator(
     private val startNavKey: TopLevelNavKey
 ) : Navigator {
+
+    var externalLinkHandler: ((String) -> Unit)? = null
 
     private val topLevelStacks = linkedMapOf<TopLevelNavKey, SnapshotStateList<NavKey>>(
         startNavKey to mutableStateListOf(startNavKey)
@@ -29,6 +32,11 @@ internal class AnilibriaNavigator(
     override val currentDestination: NavKey? get() = _backStack.lastOrNull()
 
     override fun navigate(key: NavKey) {
+        if (key is ExternalLinkNavKey) {
+            externalLinkHandler?.invoke(key.url)
+            return
+        }
+
         when (key) {
             is TopLevelNavKey -> addTopLevel(key)
             else -> add(key)

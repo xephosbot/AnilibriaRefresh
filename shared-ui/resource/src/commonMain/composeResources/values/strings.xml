@@ -96,4 +96,25 @@
     <string name="member_role_editing">Editing</string>
     <string name="member_role_decorating">Decorating</string>
     <string name="member_role_translating">Translating and adapting</string>
+
+    <!-- Preference Options -->
+    <string name="preference_history_title">History</string>
+    <string name="preference_history_description">Watch history</string>
+    <string name="preference_team_title">Team</string>
+    <string name="preference_team_description">Team information</string>
+    <string name="preference_donate_title">Support project</string>
+    <string name="preference_donate_description">Donations</string>
+    <string name="preference_settings_title">Settings</string>
+    <string name="preference_settings_description">App settings</string>
+    <string name="preference_github_title">GitHub</string>
+    <string name="preference_github_description">Project repository</string>
+    <string name="preference_youtube_title">YouTube</string>
+    <string name="preference_youtube_description">Our channel</string>
+    <string name="preference_discord_title">Discord</string>
+    <string name="preference_discord_description">Our server</string>
+
+    <string name="preference_screen_title">Settings</string>
+    <string name="preference_section_main">Main</string>
+    <string name="preference_section_links">Useful links</string>
+    <string name="preference_select_item_placeholder">Select an item from the list</string>
 </resources>

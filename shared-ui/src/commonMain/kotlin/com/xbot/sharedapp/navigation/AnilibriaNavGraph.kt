@@ -13,6 +13,7 @@ import androidx.compose.material3.adaptive.layout.rememberDragToResizeState
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberSupportingPaneSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.rememberSharedViewModelStoreNavEntryDecorator
+import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.sharedapp.AnilibriaNavigator
 import org.koin.compose.navigation3.koinEntryProviderFixed
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -55,24 +57,28 @@ internal fun AnilibriaNavGraph(
         directive = scaffoldDirective,
     )
 
-    NavDisplay(
-        backStack = navigator.backStack,
-        modifier = modifier.fillMaxSize(),
-        onBack = { navigator.navigateBack() },
-        transitionSpec = {
-            materialFadeThroughIn() togetherWith materialFadeThroughOut()
-        },
-        popTransitionSpec = {
-            materialFadeThroughIn() togetherWith materialFadeThroughOut()
-        },
-        predictivePopTransitionSpec = {
-            materialFadeThroughIn() togetherWith materialFadeThroughOut()
-        },
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberSharedViewModelStoreNavEntryDecorator(),
-        ),
-        sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy,
-        entryProvider = koinEntryProviderFixed()
-    )
+    CompositionLocalProvider(
+        LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1)
+    ) {
+        NavDisplay(
+            backStack = navigator.backStack,
+            modifier = modifier.fillMaxSize(),
+            onBack = { navigator.navigateBack() },
+            transitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            popTransitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            predictivePopTransitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberSharedViewModelStoreNavEntryDecorator(),
+            ),
+            sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy,
+            entryProvider = koinEntryProviderFixed()
+        )
+    }
 }

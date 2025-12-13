@@ -6,252 +6,184 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.designsystem.components.items
+import com.xbot.common.navigation.ExternalLinkNavKey
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.preference.ui.ProfileItem
+import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.preference.navigation.DiscordRoute
+import com.xbot.preference.navigation.GitHubRoute
+import com.xbot.preference.navigation.PreferenceDonateRoute
+import com.xbot.preference.navigation.PreferenceHistoryRoute
+import com.xbot.preference.navigation.PreferenceOptionRoute
+import com.xbot.preference.navigation.PreferenceSettingsRoute
+import com.xbot.preference.navigation.PreferenceTeamRoute
+import com.xbot.preference.navigation.YouTubeRoute
+import com.xbot.resources.Res
+import com.xbot.resources.preference_screen_title
+import com.xbot.resources.preference_section_links
+import com.xbot.resources.preference_section_main
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 internal fun PreferenceListPane(
     modifier: Modifier = Modifier,
-    state: ProfileScreenState,
-    isExpandedLayout: Boolean,
-    currentDestination: PreferenceDestination?,
-    onNavigateToDetail: (PreferenceDestination) -> Unit,
-    onOpenUrl: (String) -> Unit,
+    currentDestination: PreferenceOptionRoute?,
+    onNavigateToDetail: (PreferenceOptionRoute) -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            LargeFlexibleTopAppBar(
+                title = {
+                    Text(text = stringResource(Res.string.preference_screen_title))
+                },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                )
+            )
+        },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
         PreferencesList(
-            isExpandedLayout = isExpandedLayout,
-            state = state,
-            preferences = PreferenceListDefaults.allSections,
+            preferences = PreferenceListDefaults.sections,
             currentDestination = currentDestination,
             contentPadding = innerPadding,
             onNavigateToDetail = onNavigateToDetail,
-            onOpenUrl = onOpenUrl,
         )
     }
 }
 
 @Composable
 private fun PreferencesList(
-    state: ProfileScreenState,
-    isExpandedLayout: Boolean,
-    preferences: List<PreferenceSection>,
-    currentDestination: PreferenceDestination?,
+    preferences: Map<StringResource, List<PreferenceOptionRoute>>,
+    currentDestination: PreferenceOptionRoute?,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onNavigateToDetail: (PreferenceDestination) -> Unit,
-    onOpenUrl: (String) -> Unit,
+    onNavigateToDetail: (PreferenceOptionRoute) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
+    val isSinglePane = LocalIsSinglePane.current
 
     ProvideShimmer(shimmer) {
         LazyColumn(
             modifier = modifier.shimmerUpdater(shimmer),
             contentPadding = contentPadding,
         ) {
-            preferences.forEach { section ->
-                section(
-                    header = section.title?.let { title ->
-                        {
-                            Text(
-                                modifier = Modifier.padding(
-                                    horizontal = 24.dp,
-                                    vertical = 8.dp,
-                                ),
-                                text = title,
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        }
-                    } ?: {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    },
-                    footer = {
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                ) {
-                    items(section.items) { item ->
-                        when (item) {
-                            is PreferenceItem.ExternalLink -> {
-                                ListItem(
-                                    modifier = Modifier
-                                        .clickable { onOpenUrl(item.url) },
-                                    headlineContent = { Text(text = item.title) },
-                                    supportingContent = { Text(text = item.description) },
-                                    leadingContent = {
-                                        Icon(
-                                            modifier = Modifier.padding(start = 12.dp),
-                                            imageVector = item.icon,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    colors = ListItemDefaults.colors(MaterialTheme.colorScheme.surfaceBright)
-                                )
-                            }
-
-                            is PreferenceItem.Navigation -> {
-                                val color = when {
-                                    item.destination == currentDestination && isExpandedLayout -> MaterialTheme.colorScheme.primaryContainer
-                                    else -> MaterialTheme.colorScheme.surfaceBright
-                                }
-                                ListItem(
-                                    modifier = Modifier
-                                        .clickable { onNavigateToDetail(item.destination) },
-                                    headlineContent = { Text(text = item.title) },
-                                    supportingContent = { Text(text = item.description) },
-                                    leadingContent = {
-                                        Icon(
-                                            modifier = Modifier.padding(start = 12.dp),
-                                            imageVector = item.icon,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    trailingContent = {
-                                        Icon(
-                                            imageVector = AnilibriaIcons.Outlined.ChevronRight,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    colors = ListItemDefaults.colors(color)
-                                )
-                            }
-
-                            is PreferenceItem.Profile -> {
-                                ProfileItem(
-                                    state = state,
-                                    selected = PreferenceDestination.PROFILE == currentDestination && isExpandedLayout,
-                                    onClick = {
-                                        onNavigateToDetail(PreferenceDestination.PROFILE)
-                                    }
-                                )
-                            }
-                        }
-                    }
+            preferences.forEach { (title, items) ->
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            horizontal = 24.dp,
+                            vertical = 8.dp,
+                        ),
+                        text = stringResource(title),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                itemsIndexed(items) { index, item ->
+                    val isSelected = item == currentDestination && !isSinglePane
+                    
+                    PreferenceItem(
+                        modifier = Modifier.section(index, items.size),
+                        title = stringResource(item.title),
+                        description = stringResource(item.description),
+                        icon = item.icon,
+                        onClick = { onNavigateToDetail(item) },
+                        isSelected = isSelected,
+                        showChevron = item !is ExternalLinkNavKey
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
     }
 }
 
+@Composable
+private fun PreferenceItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    isSelected: Boolean = false,
+    showChevron: Boolean = true
+) {
+    val color = if (isSelected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceBright
+    }
 
-
-internal sealed class PreferenceItem {
-    data class Profile(
-        val name: String,
-        val email: String,
-        val avatarUrl: String? = null,
-    ) : PreferenceItem()
-
-    data class Navigation(
-        val title: String,
-        val description: String,
-        val icon: ImageVector,
-        val destination: PreferenceDestination,
-    ) : PreferenceItem()
-
-    data class ExternalLink(
-        val title: String,
-        val description: String,
-        val icon: ImageVector,
-        val url: String,
-    ) : PreferenceItem()
-}
-
-internal data class PreferenceSection(
-    val title: String? = null,
-    val items: List<PreferenceItem>
-)
-
-internal enum class PreferenceDestination {
-    PROFILE,
-    HISTORY,
-    TEAM,
-    DONATE,
-    SETTINGS;
+    ListItem(
+        modifier = modifier
+            .clickable(onClick = onClick),
+        headlineContent = { Text(text = title) },
+        supportingContent = { Text(text = description) },
+        leadingContent = {
+            Icon(
+                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
+                imageVector = icon,
+                contentDescription = null
+            )
+        },
+        trailingContent = {
+            if (showChevron) {
+                Icon(
+                    imageVector = AnilibriaIcons.ChevronRight,
+                    contentDescription = null
+                )
+            }
+        },
+        colors = ListItemDefaults.colors(color)
+    )
 }
 
 object PreferenceListDefaults {
-    private val profileSection = PreferenceSection(
-        title = null,
-        items = listOf(
-            PreferenceItem.Profile(
-                name = "User name",
-                email = "example@mail.com"
-            )
+    val sections: Map<StringResource, List<PreferenceOptionRoute>> = mapOf(
+        Res.string.preference_section_main to listOf(
+            PreferenceHistoryRoute,
+            PreferenceTeamRoute,
+            PreferenceDonateRoute,
+            PreferenceSettingsRoute
+        ),
+        Res.string.preference_section_links to listOf(
+            GitHubRoute,
+            YouTubeRoute,
+            DiscordRoute
         )
     )
-
-    private val mainNavigationSection = PreferenceSection(
-        title = "Основное",
-        items = listOf(
-            PreferenceItem.Navigation(
-                title = "История",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                destination = PreferenceDestination.HISTORY
-            ),
-            PreferenceItem.Navigation(
-                title = "Команда",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                destination = PreferenceDestination.TEAM
-            ),
-            PreferenceItem.Navigation(
-                title = "Поддержать проект",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                destination = PreferenceDestination.DONATE
-            ),
-            PreferenceItem.Navigation(
-                title = "Настройки",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                destination = PreferenceDestination.SETTINGS
-            )
-        )
-    )
-
-    private val externalLinksSection = PreferenceSection(
-        title = "Полезные ссылки",
-        items = listOf(
-            PreferenceItem.ExternalLink(
-                title = "GitHub",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                url = "https://example.com"
-            ),
-            PreferenceItem.ExternalLink(
-                title = "YouTube",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                url = "https://example.com"
-            ),
-            PreferenceItem.ExternalLink(
-                title = "Discord",
-                description = "Длинное описание",
-                icon = AnilibriaIcons.Filled.Star,
-                url = "https://example.com"
-            )
-        )
-    )
-
-    internal val allSections = listOf(profileSection, mainNavigationSection, externalLinksSection)
 }
