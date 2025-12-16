@@ -90,6 +90,7 @@ private fun LargeReleaseCardContent(
             )
         },
         content = { contentAlignment ->
+            ReleaseMetaText(release = release)
             TextAutoSize(
                 modifier = Modifier.fillMaxWidth(),
                 text = release.localizedName(),
@@ -109,7 +110,6 @@ private fun LargeReleaseCardContent(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            ReleaseMetaText(release = release)
             release.description?.let { description ->
                 Text(
                     text = description.lines().joinToString(" "),
