@@ -33,6 +33,7 @@ kotlin {
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
         implementation(libs.compose.preview)
+        implementation(libs.materialKolor)
         api(projects.sharedUi.resource)
         api(libs.compose.material3)
         api(libs.compose.material3.adaptive.navigation.suite)
@@ -45,6 +46,7 @@ kotlin {
         api(libs.coil.compose)
         api(libs.sticky.headers)
         api(libs.shimmer.compose)
+        api(libs.kmpalette.core)
         api(libs.material.motion.compose.core)
     }
 
