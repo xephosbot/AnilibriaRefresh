@@ -56,7 +56,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -102,8 +101,10 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
+import com.xbot.domain.models.ScheduleType
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -120,6 +121,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.ExperimentalTime
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -133,6 +135,7 @@ internal fun FeedPane(
     onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -144,7 +147,8 @@ internal fun FeedPane(
         onAction = viewModel::onAction,
         onScheduleClick = onScheduleClick,
         onReleaseClick = onReleaseClick,
-        onEpisodeClick = onEpisodeClick
+        onEpisodeClick = onEpisodeClick,
+        onProfileClick = onProfileClick
     )
 }
 
@@ -162,6 +166,7 @@ private fun FeedPane(
     onScheduleClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val gridState = rememberLazyGridState()
@@ -223,7 +228,7 @@ private fun FeedPane(
                     },
                     actions = {
                         IconButton(
-                            onClick = {},
+                            onClick = onProfileClick,
                             shapes = IconButtonDefaults.shapes()
                         ) {
                             PosterImage(
@@ -292,7 +297,7 @@ private fun FeedPane(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalTime::class)
 @Composable
 private fun ReleaseFeed(
     modifier: Modifier = Modifier,
@@ -395,10 +400,20 @@ private fun ReleaseFeed(
                 release = schedule.release,
                 onClick = onReleaseClick,
             ) {
+                val episode = when (val type = schedule.type) {
+                    is ScheduleType.Released -> type.episode
+                    is ScheduleType.Upcoming -> Episode(
+                        id = schedule.release.id.toString(),
+                        ordinal = type.episodeOrdinal,
+                        name = "Ожидается сегодня",
+                        updatedAt = null
+                    )
+                }
+
                 EpisodeListItem(
-                    episode = schedule.publishedReleaseEpisode,
+                    episode = episode,
                     onClick = {
-                        onEpisodeClick(schedule.release.id, schedule.publishedReleaseEpisode.ordinal.toInt())
+                        onEpisodeClick(schedule.release.id, episode.ordinal.toInt())
                     }
                 )
             }
