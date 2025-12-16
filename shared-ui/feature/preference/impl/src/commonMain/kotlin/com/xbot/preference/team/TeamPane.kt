@@ -1,4 +1,4 @@
-package com.xbot.preference.donate
+package com.xbot.preference.team
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,13 +22,15 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.resources.Res
-import com.xbot.resources.preference_donate_title
+import com.xbot.resources.preference_team_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun DonateDetailScreen(
+fun TeamPane(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -39,7 +41,7 @@ internal fun DonateDetailScreen(
         topBar = {
             LargeFlexibleTopAppBar(
                 title = {
-                    Text(stringResource(Res.string.preference_donate_title))
+                    Text(stringResource(Res.string.preference_team_title))
                 },
                 navigationIcon = {
                     FilledTonalIconButton(
@@ -59,14 +61,15 @@ internal fun DonateDetailScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Донат")
+            Text(text = stringResource(Res.string.preference_team_title))
         }
     }
 }

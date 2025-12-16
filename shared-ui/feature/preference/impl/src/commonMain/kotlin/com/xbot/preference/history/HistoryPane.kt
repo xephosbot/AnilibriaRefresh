@@ -1,4 +1,4 @@
-package com.xbot.preference.team
+package com.xbot.preference.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,13 +22,15 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.resources.Res
-import com.xbot.resources.preference_team_title
+import com.xbot.resources.preference_history_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun TeamDetailScreen(
+fun HistoryPane(
     modifier: Modifier = Modifier,
+    viewModel: HistoryViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -39,7 +41,7 @@ internal fun TeamDetailScreen(
         topBar = {
             LargeFlexibleTopAppBar(
                 title = {
-                    Text(stringResource(Res.string.preference_team_title))
+                    Text(stringResource(Res.string.preference_history_title))
                 },
                 navigationIcon = {
                     FilledTonalIconButton(
@@ -59,14 +61,15 @@ internal fun TeamDetailScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Команда")
+            Text(text = stringResource(Res.string.preference_history_title))
         }
     }
 }
