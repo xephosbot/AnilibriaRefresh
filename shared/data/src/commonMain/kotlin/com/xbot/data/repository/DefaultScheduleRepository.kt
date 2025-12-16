@@ -27,7 +27,7 @@ internal class DefaultScheduleRepository(
     override suspend fun getScheduleNow(): Either<DomainError, List<Schedule>> = scheduleApi
         .getScheduleNow()
         .mapLeft(NetworkError::toDomain)
-        .map { schedule -> schedule["today"]?.map(ScheduleDto::toDomain) ?: emptyList() }
+        .map { schedule -> schedule["today"]?.mapNotNull(ScheduleDto::toDomain) ?: emptyList() }
 
     override suspend fun getScheduleWeek(): Either<DomainError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
         .getScheduleWeek()
@@ -40,6 +40,7 @@ internal class DefaultScheduleRepository(
                     },
                     valueTransform = ScheduleDto::toDomain,
                 )
+                .mapValues { it.value.filterNotNull() }
                 .let { map ->
                     map.entries
                         .sortedBy { it.key }

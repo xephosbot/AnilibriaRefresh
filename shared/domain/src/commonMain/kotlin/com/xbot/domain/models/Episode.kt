@@ -13,5 +13,5 @@ data class Episode(
     val hls720: String? = null,
     val hls1080: String? = null,
     val duration: Duration? = null,
-    val updatedAt: LocalDateTime,
+    val updatedAt: LocalDateTime? = null,
 )

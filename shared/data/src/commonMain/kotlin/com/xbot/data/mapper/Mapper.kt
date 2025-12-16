@@ -8,6 +8,7 @@ import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.ScheduleType
 import com.xbot.domain.models.User
 import com.xbot.network.Constants
 import com.xbot.network.client.NetworkError
@@ -22,7 +23,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -137,16 +137,21 @@ internal fun ProfileDto.toDomain() = User(
 )
 
 @OptIn(ExperimentalTime::class)
-internal fun ScheduleDto.toDomain() = Schedule(
-    release = release.toDomain(),
-    fullSeasonIsReleased = fullSeasonIsReleased,
-    publishedReleaseEpisode = publishedReleaseEpisode?.toDomain() ?: Episode(
-        id = release.id.toString(),
-        ordinal = nextReleaseEpisodeNumber?.toFloat() ?: -1f,
-        //TODO: Update it
-        updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+internal fun ScheduleDto.toDomain(): Schedule? {
+    val published = publishedReleaseEpisode
+    val next = nextReleaseEpisodeNumber
+
+    val status = when {
+        published != null -> ScheduleType.Released(published.toDomain())
+        next != null -> ScheduleType.Upcoming(next.toFloat())
+        else -> return null
+    }
+
+    return Schedule(
+        release = release.toDomain(),
+        type = status
     )
-)
+}
 
 internal fun FranchiseDto.toDomain() = Franchise(
     id = id,

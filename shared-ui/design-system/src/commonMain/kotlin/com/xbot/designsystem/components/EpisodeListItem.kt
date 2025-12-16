@@ -61,13 +61,15 @@ fun EpisodeListItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = episode.updatedAt.toLocalizedString(),
-                style = MaterialTheme.typography.bodySmall,
-                color = LocalContentColor.current.copy(alpha = 0.6f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            episode.updatedAt?.let { date ->
+                Text(
+                    text = date.toLocalizedString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = LocalContentColor.current.copy(alpha = 0.6f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         },
         leadingContent = {
             Box {

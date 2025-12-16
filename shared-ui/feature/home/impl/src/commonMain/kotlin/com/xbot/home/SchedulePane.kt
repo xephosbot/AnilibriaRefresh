@@ -41,6 +41,8 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.plus
+import com.xbot.domain.models.Episode
+import com.xbot.domain.models.ScheduleType
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
@@ -135,6 +137,7 @@ private fun SchedulePane(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 private fun ScheduleContent(
     modifier: Modifier = Modifier,
@@ -162,8 +165,18 @@ private fun ScheduleContent(
                     release = schedule.release,
                     onClick = { onReleaseClick(schedule.release.id) },
                 ) {
+                    val episode = when (val type = schedule.type) {
+                        is ScheduleType.Released -> type.episode
+                        is ScheduleType.Upcoming -> Episode(
+                            id = schedule.release.id.toString(),
+                            ordinal = type.episodeOrdinal,
+                            name = "Ожидается сегодня",
+                            updatedAt = null
+                        )
+                    }
+
                     EpisodeListItem(
-                        episode = schedule.publishedReleaseEpisode,
+                        episode = episode,
                         onClick = {}
                     )
                 }
