@@ -9,8 +9,8 @@ android-desugar-jdk-libs = "2.1.5"
 # Kotlin & Compose
 kotlin = "2.2.21"
 ksp = "2.3.2"
-compose-multiplatform = "1.10.0-rc02"
-compose-material3 = "1.10.0-alpha05"
+compose-multiplatform = "1.11.0-alpha01"
+compose-material3 = "1.11.0-alpha01"
 compose-material3-adaptive = "1.2.0"
 
 # AndroidX Core
@@ -25,8 +25,8 @@ media3 = "1.8.0"
 
 # Navigation & Lifecycle
 navigation3-runtime = "1.0.0"
-navigation3-ui = "1.0.0-alpha06"
-lifecycle = "2.10.0-alpha06"
+navigation3-ui = "1.1.0-alpha01"
+lifecycle = "2.10.0-alpha07"
 
 # Networking
 ktor = "3.3.3"
