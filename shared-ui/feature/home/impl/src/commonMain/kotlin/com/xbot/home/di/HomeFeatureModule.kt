@@ -9,6 +9,7 @@ import com.xbot.home.HomeViewModel
 import com.xbot.home.SchedulePane
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
+import com.xbot.login.navigation.navigateToLogin
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -31,6 +32,9 @@ val homeFeatureModule = module {
             onEpisodeClick = { releaseId, episodeOrdinal ->
                 get<Navigator>().navigateToPlayer(releaseId, episodeOrdinal)
             },
+            onProfileClick = {
+                get<Navigator>().navigateToLogin()
+            }
         )
     }
     navigation<ScheduleRoute>(

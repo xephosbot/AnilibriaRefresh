@@ -11,7 +11,7 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "com.xbot.sharedui.feature.home.impl"
+        namespace = "com.xbot.sharedui.feature.login.impl"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
 
@@ -30,11 +30,9 @@ kotlin {
         implementation(projects.shared.domain)
         implementation(projects.sharedUi.designSystem)
         implementation(projects.sharedUi.common)
-        implementation(projects.sharedUi.feature.home.api)
-        implementation(projects.sharedUi.feature.player.api)
-        implementation(projects.sharedUi.feature.title.api)
         implementation(projects.sharedUi.feature.login.api)
         implementation(libs.compose.foundation)
+        implementation(libs.compose.preview)
         implementation(libs.navigation3.runtime)
         implementation(libs.navigation3.ui)
         implementation(libs.lifecycle.viewmodel.compose)
@@ -45,6 +43,12 @@ kotlin {
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
+    }
+
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling)
+        }
     }
 
     compilerOptions {

@@ -7,6 +7,7 @@ import com.xbot.domain.di.domainModule
 import com.xbot.favorite.di.favoriteFeatureModule
 import com.xbot.home.di.homeFeatureModule
 import com.xbot.home.navigation.HomeRoute
+import com.xbot.login.di.loginFeatureModule
 import com.xbot.network.di.networkModule
 import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
@@ -24,7 +25,8 @@ internal val appModule = module {
         playerFeatureModule,
         preferenceFeatureModule,
         searchFeatureModule,
-        titleFeatureModule
+        titleFeatureModule,
+        loginFeatureModule
     )
 
     single { AnilibriaNavigator(HomeRoute) } bind Navigator::class
