@@ -25,7 +25,7 @@ media3 = "1.8.0"
 
 # Navigation & Lifecycle
 navigation3-runtime = "1.0.0"
-navigation3-ui = "1.0.0-alpha06"
+navigation3-ui = "1.1.0-alpha01"
 lifecycle = "2.10.0-alpha07"
 
 # Networking
