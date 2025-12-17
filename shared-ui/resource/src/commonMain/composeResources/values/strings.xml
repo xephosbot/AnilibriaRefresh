@@ -13,6 +13,7 @@
     <string name="label_best_all_time">all time</string>
     <string name="label_updates">Updates</string>
     <string name="label_genres">Genres</string>
+    <string name="label_franchises">Franchises</string>
     <string name="label_description">Description</string>
     <string name="label_members">Working on the release</string>
     <string name="label_related_releases">Related releases</string>
@@ -45,6 +46,8 @@
     <string name="minutes_abbreviation">%1$s min.</string>
     <string name="episode_abbreviation">%1$s ep.</string>
     <string name="releases_count">%1$d releases</string>
+    <string name="franchise_seasons_count">%1$d seasons</string>
+    <string name="franchise_episodes_count">%1$d episodes</string>
 
     <!-- Сообщения ошибок -->
     <string name="error_unknown">Unknown error</string>

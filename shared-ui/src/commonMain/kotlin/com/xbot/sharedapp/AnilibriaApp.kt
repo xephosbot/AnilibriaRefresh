@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
 import coil3.map.Mapper
 import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
@@ -160,6 +161,12 @@ private fun getImageLoader(
     .memoryCache {
         MemoryCache.Builder()
             .maxSizePercent(context)
+            .build()
+    }
+    .diskCache {
+        DiskCache.Builder()
+            .directory(getCacheDir(context).resolve("image_cache"))
+            .maxSizeBytes(512L * 1024 * 1024)
             .build()
     }
     .diskCachePolicy(CachePolicy.ENABLED)

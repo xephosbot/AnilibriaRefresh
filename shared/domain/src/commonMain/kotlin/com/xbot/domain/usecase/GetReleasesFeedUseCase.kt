@@ -1,7 +1,9 @@
 package com.xbot.domain.usecase
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.raise.either
+import arrow.fx.coroutines.parMap
 import arrow.fx.coroutines.parZip
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.ReleasesFeed
@@ -45,7 +47,14 @@ class GetReleasesFeedUseCase(
                     limit = 10
                 )
             },
-            { franchisesRepository.getRandomFranchises(10) },
+            {
+                either {
+                    val franchises = franchisesRepository.getRandomFranchises(10).bind()
+                    franchises.parMap { franchise ->
+                        franchisesRepository.getFranchise(franchise.id).getOrElse { franchise }
+                    }
+                }
+            },
             { genresRepository.getRandomGenres(10) }
         ) { recommendedTitles, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
             ReleasesFeed(

@@ -1,5 +1,6 @@
 package com.xbot.designsystem.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
@@ -19,7 +20,7 @@ actual fun AnilibriaTheme(
     dynamicColor: Boolean,
     content: @Composable (() -> Unit)
 ) {
-    val colorScheme = if (darkTheme) darkScheme else lightScheme
+    val colorScheme = rememberColorScheme(darkTheme, dynamicColor)
 
     CompositionLocalProvider(
         LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
@@ -31,4 +32,12 @@ actual fun AnilibriaTheme(
             content = content,
         )
     }
+}
+
+@Composable
+actual fun rememberColorScheme(
+    darkTheme: Boolean,
+    dynamicColor: Boolean
+): ColorScheme {
+    return if (darkTheme) darkScheme else lightScheme
 }

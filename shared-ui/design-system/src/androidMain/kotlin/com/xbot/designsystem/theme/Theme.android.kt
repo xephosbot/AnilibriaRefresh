@@ -6,8 +6,6 @@ import android.os.Build
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LocalNavigationBarOverride
-import androidx.compose.material3.LocalNavigationRailOverride
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
@@ -184,17 +182,7 @@ actual fun AnilibriaTheme(
     dynamicColor: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            when {
-                isSamsungSDK34 -> if (darkTheme) dynamicDarkColorSchemeSamsung34(context) else dynamicLightColorSchemeSamsung34(context)
-                else -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
-
-        }
-        else -> selectSchemeForContrast(darkTheme)
-    }
+    val colorScheme = rememberColorScheme(darkTheme, dynamicColor)
 
     CompositionLocalProvider(
         LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
@@ -205,6 +193,23 @@ actual fun AnilibriaTheme(
             typography = AnilibriaTypography(),
             content = content,
         )
+    }
+}
+
+@Composable
+actual fun rememberColorScheme(
+    darkTheme: Boolean,
+    dynamicColor: Boolean
+): ColorScheme {
+    return when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            when {
+                isSamsungSDK34 -> if (darkTheme) dynamicDarkColorSchemeSamsung34(context) else dynamicLightColorSchemeSamsung34(context)
+                else -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+        }
+        else -> selectSchemeForContrast(darkTheme)
     }
 }
 

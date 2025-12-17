@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +33,7 @@ fun PosterImage(
     placeholder: Painter? = null,
 ) {
     val shimmer = LocalShimmer.current
-    var isLoading by rememberSaveable(poster) { mutableStateOf(true) }
+    var isLoading by remember(poster) { mutableStateOf(poster != null) }
 
     Box(
         modifier = modifier,

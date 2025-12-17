@@ -71,6 +71,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
+import com.xbot.designsystem.components.FranchiseCard
 import com.xbot.designsystem.components.GenreItem
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.LargeReleaseCard
@@ -100,11 +101,10 @@ import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.theme.rememberColorScheme
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
-import com.xbot.domain.models.ScheduleType
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -113,6 +113,7 @@ import com.xbot.resources.button_watch
 import com.xbot.resources.label_best
 import com.xbot.resources.label_best_all_time
 import com.xbot.resources.label_best_now
+import com.xbot.resources.label_franchises
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
@@ -400,15 +401,7 @@ private fun ReleaseFeed(
                 release = schedule.release,
                 onClick = onReleaseClick,
             ) {
-                val episode = when (val type = schedule.type) {
-                    is ScheduleType.Released -> type.episode
-                    is ScheduleType.Upcoming -> Episode(
-                        id = schedule.release.id.toString(),
-                        ordinal = type.episodeOrdinal,
-                        name = "Ожидается сегодня",
-                        updatedAt = null
-                    )
-                }
+                val episode = schedule.toEpisode()
 
                 EpisodeListItem(
                     episode = episode,
@@ -449,23 +442,37 @@ private fun ReleaseFeed(
             key = { _, item -> item.id },
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { index, release ->
-            AnilibriaTheme(darkTheme = false) {
-                SmallReleaseCard(
-                    modifier = Modifier
-                        .then(
-                            if (index < 3) {
-                                Modifier.overlayDrawable(
-                                    resource = index.badgeDrawableRes,
-                                    offset = DpOffset(x = 70.dp, y = 11.dp)
-                                )
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    release = release,
-                    onClick = onReleaseClick,
+            val lightColorScheme = rememberColorScheme(darkTheme = false)
+            val badgeBrush = remember(lightColorScheme) {
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White,
+                        lightColorScheme.primaryContainer
+                    ),
+                    startY = 0.0f,
+                    endY = 250.0f
                 )
             }
+
+            SmallReleaseCard(
+                modifier = Modifier.badgeOverlay(index, badgeBrush),
+                release = release,
+                onClick = onReleaseClick,
+            )
+        }
+
+        header(
+            title = { Text(text = stringResource(Res.string.label_franchises)) },
+        )
+        horizontalItems(
+            items = releasesFeed.recommendedFranchises,
+            key = { it.id },
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) { franchise ->
+            FranchiseCard(
+                franchise = franchise,
+                onClick = { /*TODO*/ }
+            )
         }
 
         header(
@@ -559,3 +566,16 @@ private val Int.badgeDrawableRes: DrawableResource
         2 -> Res.drawable.badge_3
         else -> throw IllegalStateException("Invalid badge index: $this")
     }
+
+@Composable
+private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
+    return if (index < 3) {
+        this.overlayDrawable(
+            resource = index.badgeDrawableRes,
+            brush = brush,
+            offset = DpOffset(x = 70.dp, y = 11.dp)
+        )
+    } else {
+        this
+    }
+}

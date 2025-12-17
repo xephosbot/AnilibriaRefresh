@@ -1,12 +1,20 @@
 package com.xbot.designsystem.components
 
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -15,16 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.ExpressiveTextStyle
 import com.xbot.designsystem.theme.MorphingExpressiveShape
-import com.xbot.designsystem.theme.MorphingExpressiveTextStyle
 import com.xbot.domain.models.Genre
-import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Poster
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.placeholder_profile
@@ -104,7 +109,7 @@ fun CircleContentItem(
     val pressed by interactionSource.collectIsPressedAsState()
 
     Column(
-        modifier = modifier.width(IntrinsicSize.Min),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -118,7 +123,7 @@ fun CircleContentItem(
                 )
         ) {
             PosterImage(
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier.fillMaxSize(),
                 poster = poster,
                 placeholder = placeholder,
             )
@@ -138,7 +143,6 @@ fun CircleContentItem(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object CircleContentItemDefaults {
     private var _shape: ExpressiveShape? = null
-    private var _textStyle: ExpressiveTextStyle? = null
 
     @Composable
     fun shape(): ExpressiveShape {
@@ -147,15 +151,6 @@ object CircleContentItemDefaults {
             pressedShape = MaterialShapes.Cookie12Sided,
             animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
-    }
-
-    @Composable
-    fun textStyle(): ExpressiveTextStyle {
-        return _textStyle ?: MorphingExpressiveTextStyle(
-            from = MaterialTheme.typography.labelMedium,
-            to = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraBold),
-            animationSpec = spring()
-        ).also { _textStyle = it }
     }
 }
 

@@ -13,6 +13,7 @@
     <string name="label_best_all_time">все время</string>
     <string name="label_updates">Обновления</string>
     <string name="label_genres">Жанры</string>
+    <string name="label_franchises">Франшизы</string>
     <string name="label_description">Описание</string>
     <string name="label_members">Работа над релизом</string>
     <string name="label_related_releases">Связанное</string>
@@ -45,6 +46,8 @@
     <string name="minutes_abbreviation">%1$s мин.</string>
     <string name="episode_abbreviation">%1$s эп.</string>
     <string name="releases_count">%1$d релизов</string>
+    <string name="franchise_seasons_count">%1$d сезонов</string>
+    <string name="franchise_episodes_count">%1$d эпизодов</string>
 
     <!-- Сообщения ошибок -->
     <string name="error_unknown">Неизвестная ошибка</string>

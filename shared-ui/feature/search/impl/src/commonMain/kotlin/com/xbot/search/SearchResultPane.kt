@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -61,7 +60,6 @@ import com.xbot.resources.search_bar_placeholder
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun SearchResultPane(
     modifier: Modifier = Modifier,

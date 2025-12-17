@@ -14,14 +14,12 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,8 +39,6 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.plus
-import com.xbot.domain.models.Episode
-import com.xbot.domain.models.ScheduleType
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
@@ -165,18 +161,8 @@ private fun ScheduleContent(
                     release = schedule.release,
                     onClick = { onReleaseClick(schedule.release.id) },
                 ) {
-                    val episode = when (val type = schedule.type) {
-                        is ScheduleType.Released -> type.episode
-                        is ScheduleType.Upcoming -> Episode(
-                            id = schedule.release.id.toString(),
-                            ordinal = type.episodeOrdinal,
-                            name = "Ожидается сегодня",
-                            updatedAt = null
-                        )
-                    }
-
                     EpisodeListItem(
-                        episode = episode,
+                        episode = schedule.toEpisode(),
                         onClick = {}
                     )
                 }
@@ -190,7 +176,6 @@ private fun DateItem(
     date: LocalDate,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
 ) {
     Column(
         modifier = modifier
@@ -200,18 +185,16 @@ private fun DateItem(
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CompositionLocalProvider(LocalContentColor provides contentColor) {
-            Text(
-                text = date.dayOfWeek.toLocalizedString(style = DayOfWeekStyle.SHORT),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = date.day.toString(),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        Text(
+            text = date.dayOfWeek.toLocalizedString(style = DayOfWeekStyle.SHORT),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = date.day.toString(),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -25,7 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -36,7 +34,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -59,9 +56,7 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
-import com.xbot.designsystem.components.LabeledIconButton
 import com.xbot.designsystem.components.LargeReleaseCard
-import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.MemberItem
 import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.TypedCrossFade
@@ -72,18 +67,13 @@ import com.xbot.designsystem.components.row
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.icons.Checklist
 import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
-import com.xbot.designsystem.icons.PlaylistPlay
-import com.xbot.designsystem.icons.Share
 import com.xbot.designsystem.icons.Star
-import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaDynamicTheme
-import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.only
 import com.xbot.designsystem.utils.rememberPosterPalette
@@ -92,11 +82,7 @@ import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
-import com.xbot.resources.button_add_to_favorites
-import com.xbot.resources.button_share
-import com.xbot.resources.button_telegram
 import com.xbot.resources.button_watch_continue
-import com.xbot.resources.button_watched_it
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
 import com.xbot.title.ui.AlertCard
@@ -305,33 +291,37 @@ private fun TitleDetails(
                         }
                     }
                     if (!isSinglePane) {
-                        MediumSplitButton(
-                            onLeadingClick = {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = ButtonDefaults.MediumContainerHeight),
+                            onClick = {
                                 onPlayClick(details.release.id, 0)
                             },
-                            onTrailingClick = {
-                                //onEpisodesListClick()
-                            },
-                            leadingContent = {
-                                Icon(
-                                    modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                    imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                    contentDescription = null
+                            contentPadding = ButtonDefaults.MediumContentPadding,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.inverseSurface,
+                                contentColor = MaterialTheme.colorScheme.inverseOnSurface
+                            )
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                            ProvideTextStyle(
+                                LocalTextStyle.current.copy(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
-                                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                            ) {
                                 Text(
                                     text = stringResource(Res.string.button_watch_continue),
                                     maxLines = 1
                                 )
-                            },
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                                    imageVector = AnilibriaIcons.PlaylistPlay,
-                                    contentDescription = null
-                                )
                             }
-                        )
+                        }
                     }
                 }
             }
@@ -389,12 +379,10 @@ private fun TitleDetails(
                     items = details.relatedReleases,
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) { release ->
-                    AnilibriaTheme(darkTheme = false) {
-                        SmallReleaseCard(
-                            release = release,
-                            onClick = { onReleaseClick(it.id) }
-                        )
-                    }
+                    SmallReleaseCard(
+                        release = release,
+                        onClick = { onReleaseClick(it.id) }
+                    )
                 }
             }
 
@@ -415,59 +403,6 @@ private fun TitleDetails(
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun SuggestionRow(
-    modifier: Modifier = Modifier,
-    onAddToFavoritesClick: () -> Unit,
-    onAlreadyWatchedClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onTelegramClick: () -> Unit,
-) {
-    val interactionSources = remember { List(4) { MutableInteractionSource() } }
-
-    ButtonGroup(
-        modifier = modifier,
-    ) {
-        LabeledIconButton(
-            modifier = Modifier
-                .weight(1f)
-                .animateWidth(interactionSources[0]),
-            onClick = onAddToFavoritesClick,
-            text = stringResource(Res.string.button_add_to_favorites),
-            icon = AnilibriaIcons.Filled.Star,
-            interactionSource = interactionSources[0]
-        )
-        LabeledIconButton(
-            modifier = Modifier
-                .weight(1f)
-                .animateWidth(interactionSources[1]),
-            onClick = onAlreadyWatchedClick,
-            text = stringResource(Res.string.button_watched_it),
-            icon = AnilibriaIcons.Checklist,
-            interactionSource = interactionSources[1]
-        )
-        LabeledIconButton(
-            modifier = Modifier
-                .weight(1f)
-                .animateWidth(interactionSources[2]),
-            onClick = onShareClick,
-            text = stringResource(Res.string.button_share),
-            icon = AnilibriaIcons.Share,
-            interactionSource = interactionSources[2]
-        )
-        LabeledIconButton(
-            modifier = Modifier
-                .weight(1f)
-                .animateWidth(interactionSources[3]),
-            onClick = onTelegramClick,
-            text = stringResource(Res.string.button_telegram),
-            icon = AnilibriaIcons.TelegramLogo,
-            interactionSource = interactionSources[3]
-        )
     }
 }
 

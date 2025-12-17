@@ -89,7 +89,7 @@ private fun SmallReleaseCardContent(
                 .fillMaxWidth()
                 .padding(12.dp),
             text = release.localizedName(),
-            color = MaterialTheme.colorScheme.inverseOnSurface,
+            color = Color.White,
             style = MaterialTheme.typography.labelLarge,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
