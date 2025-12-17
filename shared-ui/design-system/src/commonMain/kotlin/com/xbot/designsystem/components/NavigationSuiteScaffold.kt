@@ -140,7 +140,7 @@ internal fun NavigationSuiteScaffoldLayout(
         val navigationPlaceable = navigationSuiteMeasurable.first().measure(looseConstraints)
         val primaryActionContentPlaceable = primaryActionContentMeasurable.first().measure(looseConstraints)
 
-        val isNavigationBar = layoutType == NavigationSuiteType.NavigationBar
+        val isNavigationBar = layoutType.isNavigationBar
 
         val layoutHeight = constraints.maxHeight
         val layoutWidth = constraints.maxWidth
@@ -373,3 +373,8 @@ object NavigationSuiteScaffoldDefaults {
 }
 
 private val PrimaryActionContentPadding = 16.dp
+private val NavigationSuiteType.isNavigationBar
+    get() =
+        this == NavigationSuiteType.ShortNavigationBarCompact ||
+                this == NavigationSuiteType.ShortNavigationBarMedium ||
+                this == NavigationSuiteType.NavigationBar
