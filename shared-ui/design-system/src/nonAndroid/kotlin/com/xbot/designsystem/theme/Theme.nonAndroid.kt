@@ -5,7 +5,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
-import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldOverride
+import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldWithPrimaryActionOverride
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
@@ -23,7 +23,7 @@ actual fun AnilibriaTheme(
     val colorScheme = rememberColorScheme(darkTheme, dynamicColor)
 
     CompositionLocalProvider(
-        LocalNavigationSuiteScaffoldOverride provides AnilibriaNavigationSuiteScaffold
+        LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,

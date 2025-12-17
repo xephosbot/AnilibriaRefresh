@@ -25,10 +25,10 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteColors
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverride
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldOverrideScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldState
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldValue
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldWithPrimaryActionOverride
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldWithPrimaryActionOverrideScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
@@ -37,9 +37,11 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
@@ -119,6 +121,9 @@ internal fun NavigationSuiteScaffoldLayout(
     state: NavigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState(),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     snackbar: @Composable () -> Unit = {},
+    primaryActionContent: @Composable (() -> Unit) = {},
+    primaryActionContentHorizontalAlignment: Alignment.Horizontal =
+        NavigationSuiteScaffoldDefaults.primaryActionContentAlignment,
     content: @Composable () -> Unit = {}
 ) {
     val animationProgress by animateFloatAsState(
@@ -127,12 +132,13 @@ internal fun NavigationSuiteScaffoldLayout(
     )
 
     Layout(
-        contents = listOf(navigationSuite, snackbar, content)
-    ) { (navigationSuiteMeasurable, snackbarMeasurable, contentMeasurable), constraints ->
+        contents = listOf(navigationSuite, snackbar, primaryActionContent, content)
+    ) { (navigationSuiteMeasurable, snackbarMeasurable, primaryActionContentMeasurable, contentMeasurable), constraints ->
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
         // Find the navigation suite composable
         val navigationPlaceable = navigationSuiteMeasurable.first().measure(looseConstraints)
+        val primaryActionContentPlaceable = primaryActionContentMeasurable.first().measure(looseConstraints)
 
         val isNavigationBar = layoutType == NavigationSuiteType.NavigationBar
 
@@ -180,6 +186,27 @@ internal fun NavigationSuiteScaffoldLayout(
                     layoutHeight - (navigationPlaceable.height * animationProgress).toInt()
                 )
 
+                // Place the primary action content above the navigation component.
+                val positionX =
+                    if (primaryActionContentHorizontalAlignment == Alignment.Start) {
+                        PrimaryActionContentPadding.roundToPx()
+                    } else if (
+                        primaryActionContentHorizontalAlignment == Alignment.CenterHorizontally
+                    ) {
+                        (layoutWidth - primaryActionContentPlaceable.width) / 2
+                    } else {
+                        layoutWidth -
+                                primaryActionContentPlaceable.width -
+                                PrimaryActionContentPadding.roundToPx()
+                    }
+                primaryActionContentPlaceable.placeRelative(
+                    positionX,
+                    layoutHeight -
+                            primaryActionContentPlaceable.height -
+                            PrimaryActionContentPadding.roundToPx() -
+                            (navigationPlaceable.height * animationProgress).toInt(),
+                )
+
                 snackbarPlaceable.placeRelative(
                     (layoutWidth - snackbarWidth) / 2 +
                             contentWindowInsets.getLeft(this@Layout, layoutDirection),
@@ -214,7 +241,7 @@ internal fun NavigationSuiteScaffoldLayout(
  * Remember and creates an instance of [ScaffoldState]
  */
 @Composable
-internal fun rememberScaffoldState(
+fun rememberScaffoldState(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     snackbarManager: SnackbarManager = SnackbarManager,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -223,14 +250,16 @@ internal fun rememberScaffoldState(
 }
 
 @Stable
-internal class ScaffoldState(
+class ScaffoldState(
     val snackbarHostState: SnackbarHostState,
     private val snackbarManager: SnackbarManager,
     coroutineScope: CoroutineScope,
 ) {
     init {
         coroutineScope.launch {
+            println("StartScope")
             snackbarManager.messages.collect { currentMessages ->
+                println(currentMessages.toString())
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
                     val text = stringResource(message.title)
@@ -262,22 +291,26 @@ private val AnimationSpec: SpringSpec<Float> =
     spring(dampingRatio = SpringDefaultSpatialDamping, stiffness = SpringDefaultSpatialStiffness)
 
 @OptIn(ExperimentalMaterial3AdaptiveComponentOverrideApi::class)
-object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
+object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldWithPrimaryActionOverride {
     @Composable
-    override fun NavigationSuiteScaffoldOverrideScope.NavigationSuiteScaffold() {
+    override fun NavigationSuiteScaffoldWithPrimaryActionOverrideScope.NavigationSuiteScaffoldWithPrimaryAction() {
         Surface(modifier = modifier, color = containerColor, contentColor = contentColor) {
             val scaffoldState = rememberScaffoldState()
 
             NavigationSuiteScaffoldLayout(
                 navigationSuite = {
                     NavigationSuite(
-                        layoutType = layoutType,
+                        navigationSuiteType = navigationSuiteType,
                         colors = navigationSuiteColors,
-                        content = navigationSuiteItems
+                        primaryActionContent = primaryActionContent,
+                        verticalArrangement = navigationItemVerticalArrangement,
+                        content = navigationItems,
                     )
                 },
+                layoutType = navigationSuiteType,
                 state = state,
-                layoutType = layoutType,
+                primaryActionContent = primaryActionContent,
+                primaryActionContentHorizontalAlignment = primaryActionContentHorizontalAlignment,
                 snackbar = {
                     SnackbarHost(hostState = scaffoldState.snackbarHostState) { data ->
                         Snackbar(
@@ -295,7 +328,7 @@ object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
                             ) {
                                 NoWindowInsets
                             } else {
-                                when (layoutType) {
+                                when (navigationSuiteType) {
                                     NavigationSuiteType.NavigationBar ->
                                         NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
 
@@ -312,7 +345,7 @@ object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldOverride {
                     ) {
                         content()
                     }
-                }
+                },
             )
         }
     }
@@ -338,3 +371,5 @@ object NavigationSuiteScaffoldDefaults {
         }
     }
 }
+
+private val PrimaryActionContentPadding = 16.dp
