@@ -3,24 +3,30 @@ package com.xbot.preference.di
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import com.xbot.common.navigation.ExternalLinkNavKey
-import com.xbot.common.navigation.Navigator
+import com.xbot.common.navigation.LocalNavigator
+import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.replace
+import com.xbot.common.serialization.polymorphic
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.donate.DonatePane
 import com.xbot.preference.donate.DonateViewModel
 import com.xbot.preference.history.HistoryPane
 import com.xbot.preference.history.HistoryViewModel
+import com.xbot.preference.navigation.DiscordRoute
+import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceSettingsRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
+import com.xbot.preference.navigation.YouTubeRoute
 import com.xbot.preference.settings.SettingsPane
 import com.xbot.preference.settings.SettingsViewModel
 import com.xbot.preference.team.TeamPane
 import com.xbot.preference.team.TeamViewModel
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
+import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -28,6 +34,16 @@ import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
 val preferenceFeatureModule = module {
+    polymorphic<NavKey> {
+        subclass(PreferenceRoute::class)
+        subclass(PreferenceHistoryRoute::class)
+        subclass(PreferenceTeamRoute::class)
+        subclass(PreferenceDonateRoute::class)
+        subclass(PreferenceSettingsRoute::class)
+        subclass(GitHubRoute::class)
+        subclass(YouTubeRoute::class)
+        subclass(DiscordRoute::class)
+    }
     navigation<PreferenceRoute>(
         metadata = ListDetailSceneStrategy.listPane(
             sceneKey = PreferenceRoute,
@@ -36,7 +52,7 @@ val preferenceFeatureModule = module {
             }
         )
     ) {
-        val navigator = get<Navigator>()
+        val navigator = LocalNavigator.current
         PreferenceListPane(
             currentDestination = navigator.currentDestination as? PreferenceOptionRoute,
             onNavigateToDetail = { destination ->
@@ -52,36 +68,40 @@ val preferenceFeatureModule = module {
     navigation<PreferenceHistoryRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
+        val navigator = LocalNavigator.current
         HistoryPane(
             onNavigateBack = {
-                get<Navigator>().navigateBack()
+                navigator.navigateBack()
             }
         )
     }
     navigation<PreferenceTeamRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
+        val navigator = LocalNavigator.current
         TeamPane(
             onNavigateBack = {
-                get<Navigator>().navigateBack()
+                navigator.navigateBack()
             }
         )
     }
     navigation<PreferenceDonateRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
+        val navigator = LocalNavigator.current
         DonatePane(
             onNavigateBack = {
-                get<Navigator>().navigateBack()
+                navigator.navigateBack()
             }
         )
     }
     navigation<PreferenceSettingsRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
+        val navigator = LocalNavigator.current
         SettingsPane(
             onNavigateBack = {
-                get<Navigator>().navigateBack()
+                navigator.navigateBack()
             }
         )
     }

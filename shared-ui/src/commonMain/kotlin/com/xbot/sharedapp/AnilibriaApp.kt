@@ -16,12 +16,10 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -32,17 +30,20 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
-import com.xbot.common.navigation.LocalResultEventBus
-import com.xbot.common.navigation.ResultEventBus
+import com.xbot.common.navigation.LocalNavigator
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Search
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.Poster
+import com.xbot.favorite.navigation.FavoriteRoute
+import com.xbot.home.navigation.HomeRoute
+import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
+import com.xbot.sharedapp.navigation.rememberNavigator
 import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -50,23 +51,19 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun AnilibriaApp() {
-    val navigator: AnilibriaNavigator = koinInject()
     val httpClient: HttpClient = koinInject()
 
     setSingletonImageLoaderFactory { context ->
         getImageLoader(context, httpClient)
     }
 
-    val uriHandler = LocalUriHandler.current
-    LaunchedEffect(navigator, uriHandler) {
-        navigator.externalLinkHandler = { url ->
-            uriHandler.openUri(url)
-        }
-    }
+    val navigator = rememberNavigator(
+        startRoute = HomeRoute,
+        topLevelRoutes = TopLevelRoutes,
+        serializersModule = koinInject()
+    )
 
-    val resultBus = remember { ResultEventBus() }
-
-    CompositionLocalProvider(LocalResultEventBus.provides(resultBus)) {
+    CompositionLocalProvider(LocalNavigator provides navigator) {
         AnilibriaTheme {
             val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
             val navSuiteType =
@@ -108,7 +105,7 @@ internal fun AnilibriaApp() {
 
             NavigationSuiteScaffold(
                 navigationItems = {
-                    AnilibriaNavigator.topLevelDestinations.forEach { destination ->
+                    TopLevelRoutes.forEach { destination ->
                         val isSelected = currentTopLevelDestination == destination
 
                         NavigationSuiteItem(
@@ -171,3 +168,5 @@ private fun getImageLoader(
     }
     .diskCachePolicy(CachePolicy.ENABLED)
     .build()
+
+private val TopLevelRoutes = setOf(HomeRoute, FavoriteRoute, PreferenceRoute)

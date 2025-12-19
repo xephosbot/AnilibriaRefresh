@@ -44,6 +44,8 @@ sealed interface PreferenceOptionRoute : NavKey {
 
 @Serializable
 data object PreferenceHistoryRoute : PreferenceOptionRoute {
+    override val requiresLogin: Boolean
+        get() = true
     override val title: StringResource
         get() = Res.string.preference_history_title
     override val description: StringResource

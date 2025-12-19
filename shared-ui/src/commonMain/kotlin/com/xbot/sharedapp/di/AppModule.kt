@@ -1,20 +1,20 @@
 package com.xbot.sharedapp.di
 
-import com.xbot.common.navigation.Navigator
+import com.xbot.common.navigation.NavKey
+import com.xbot.common.serialization.PolymorphicSerializerConfig
 import com.xbot.data.di.dataModule
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.di.domainModule
 import com.xbot.favorite.di.favoriteFeatureModule
 import com.xbot.home.di.homeFeatureModule
-import com.xbot.home.navigation.HomeRoute
 import com.xbot.login.di.loginFeatureModule
 import com.xbot.network.di.networkModule
 import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
-import com.xbot.sharedapp.AnilibriaNavigator
 import com.xbot.title.di.titleFeatureModule
-import org.koin.dsl.bind
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.koin.dsl.module
 
 internal val appModule = module {
@@ -29,6 +29,13 @@ internal val appModule = module {
         loginFeatureModule
     )
 
-    single { AnilibriaNavigator(HomeRoute) } bind Navigator::class
+    single {
+        SerializersModule {
+            polymorphic(NavKey::class) {
+                getAll<PolymorphicSerializerConfig<NavKey>>().forEach { it.configure(this) }
+            }
+        }
+    }
+
     factory { SnackbarManager }
 }

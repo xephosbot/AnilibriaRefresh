@@ -22,9 +22,9 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.common.navigation.NavKey
+import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.rememberSharedViewModelStoreNavEntryDecorator
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import com.xbot.sharedapp.AnilibriaNavigator
 import org.koin.compose.navigation3.koinEntryProviderFixed
 import org.koin.core.annotation.KoinExperimentalAPI
 import soup.compose.material.motion.animation.materialFadeThroughIn
@@ -38,7 +38,7 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 @Composable
 internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
-    navigator: AnilibriaNavigator,
+    navigator: Navigator,
 ) {
     val dragToResizeState = rememberDragToResizeState(dockedEdge = DockedEdge.Bottom)
     val scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())

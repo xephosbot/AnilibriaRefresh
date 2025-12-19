@@ -20,4 +20,5 @@ data object HomeRoute : TopLevelNavKey {
         get() = AnilibriaIcons.Outlined.Home
 }
 
+@Serializable
 data object ScheduleRoute : NavKey

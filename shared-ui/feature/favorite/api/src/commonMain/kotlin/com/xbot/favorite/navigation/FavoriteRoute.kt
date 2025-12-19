@@ -11,6 +11,8 @@ import org.jetbrains.compose.resources.StringResource
 
 @Serializable
 data object FavoriteRoute : TopLevelNavKey {
+    override val requiresLogin: Boolean
+        get() = true
     override val textRes: StringResource
         get() = Res.string.tab_favorite
     override val selectedIcon: ImageVector
