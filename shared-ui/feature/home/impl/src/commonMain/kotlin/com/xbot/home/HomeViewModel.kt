@@ -47,12 +47,14 @@ class HomeViewModel(
     private val bestType = MutableStateFlow(BestType.Now)
 
     private val feedData = refreshTrigger
-        .flatMapLatest {
+        .flatMapLatest { attempt ->
             flow {
                 when (val result = getReleasesFeed()) {
                     is Either.Left -> {
                         showErrorMessage(result.value.toString()) { refresh() }
-                        emit(null)
+                        if (attempt == 0) {
+                            emit(null)
+                        }
                     }
                     is Either.Right -> emit(result.value)
                 }
