@@ -23,6 +23,10 @@ android {
         versionName = "1.0"
     }
 
+    androidResources {
+        localeFilters.addAll(arrayOf("en", "ru"))
+    }
+
     signingConfigs {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
