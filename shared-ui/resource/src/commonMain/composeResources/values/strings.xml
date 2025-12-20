@@ -120,4 +120,14 @@
     <string name="preference_section_main">Main</string>
     <string name="preference_section_links">Useful links</string>
     <string name="preference_select_item_placeholder">Select an item from the list</string>
+
+    <!-- Авторизация -->
+    <string name="login_title">Sign in</string>
+    <string name="login_description">Enter your username and password to sign in to your account</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_password_label">Password</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_create_account">Create account</string>
+    <string name="login_sign_in">Sign in</string>
+    <string name="login_success_message">Login successful</string>
 </resources>

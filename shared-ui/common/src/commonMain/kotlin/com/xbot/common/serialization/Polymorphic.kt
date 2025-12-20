@@ -2,6 +2,7 @@ package com.xbot.common.serialization
 
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.KoinDslMarker
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -16,8 +17,8 @@ fun interface PolymorphicSerializerConfig<T : Any> {
 @KoinDslMarker
 inline fun <reified T : Any> Module.polymorphic(
     crossinline builder: PolymorphicModuleBuilder<T>.() -> Unit
-) {
-    single<PolymorphicSerializerConfig<T>>(named(Uuid.random().toString())) {
+): KoinDefinition<PolymorphicSerializerConfig<T>> {
+    return single(named(Uuid.random().toString())) {
         PolymorphicSerializerConfig { it.builder() }
     }
 }
