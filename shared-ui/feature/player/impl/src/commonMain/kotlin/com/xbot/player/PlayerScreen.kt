@@ -3,15 +3,16 @@ package com.xbot.player
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
+import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -31,9 +32,9 @@ fun PlayerScreen(
 
 @Composable
 fun rememberVideoPlayerState(): VideoPlayerState {
-    val playerState = retain { VideoPlayerState() }
-    DisposableEffect(Unit) {
-        onDispose {
+    val playerState = retain { createVideoPlayerState() }
+    RetainedEffect(Unit) {
+        onRetire {
             playerState.stop()
             playerState.dispose()
         }
