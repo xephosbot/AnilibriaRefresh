@@ -13,11 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationRailDefaults
 import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.ShortNavigationBarDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
+import androidx.compose.material3.WideNavigationRailDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -322,22 +324,22 @@ object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldWithPrimaryActi
                 content = {
                     Box(
                         Modifier.consumeWindowInsets(
-                            if (
-                                state.currentValue == NavigationSuiteScaffoldValue.Hidden &&
-                                !state.isAnimating
-                            ) {
+                            if (state.currentValue == NavigationSuiteScaffoldValue.Hidden && !state.isAnimating) {
                                 NoWindowInsets
                             } else {
                                 when (navigationSuiteType) {
+                                    NavigationSuiteType.ShortNavigationBarCompact,
+                                    NavigationSuiteType.ShortNavigationBarMedium ->
+                                        ShortNavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
+                                    NavigationSuiteType.WideNavigationRailCollapsed,
+                                    NavigationSuiteType.WideNavigationRailExpanded ->
+                                        WideNavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
                                     NavigationSuiteType.NavigationBar ->
                                         NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
-
                                     NavigationSuiteType.NavigationRail ->
                                         NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
-
                                     NavigationSuiteType.NavigationDrawer ->
                                         DrawerDefaults.windowInsets.only(WindowInsetsSides.Start)
-
                                     else -> NoWindowInsets
                                 }
                             }
