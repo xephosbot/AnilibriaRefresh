@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.keepScreenOn
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
@@ -22,6 +23,8 @@ fun PlayerScreen(
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    SystemBarsEffect()
 
     PlayerScreenContent(
         modifier = modifier,
@@ -50,6 +53,7 @@ private fun PlayerScreenContent(
     onBackClick: () -> Unit
 ) {
     val player = rememberVideoPlayerState()
+    val pipController = rememberPictureInPictureController(player)
 
     LaunchedEffect(state) {
         if (!player.hasMedia) {
@@ -60,16 +64,19 @@ private fun PlayerScreenContent(
     }
 
     VideoPlayerLayout(
+        modifier = modifier.keepScreenOn().then(pipController.modifier),
         player = player,
         controls = {
-            VideoPlayerController(
-                player = player,
-                buffering = {
-                    ContainedLoadingIndicator()
-                },
-                onClickBack = onBackClick
-            )
+            if (!pipController.isInPictureInPictureMode) {
+                VideoPlayerController(
+                    player = player,
+                    title = state.currentEpisode?.name.orEmpty(),
+                    buffering = {
+                        ContainedLoadingIndicator()
+                    },
+                    onClickBack = onBackClick
+                )
+            }
         },
-        modifier = modifier,
     )
 }

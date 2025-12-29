@@ -1,5 +1,7 @@
 package com.xbot.player.di
 
+import androidx.compose.ui.window.DialogProperties
+import androidx.navigation3.scene.DialogSceneStrategy
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
@@ -19,7 +21,11 @@ val playerFeatureModule = module {
     polymorphic<NavKey> {
         subclass(PlayerRoute::class)
     }
-    navigation<PlayerRoute> { key ->
+    navigation<PlayerRoute>(
+        metadata = DialogSceneStrategy.dialog(
+            dialogProperties = createFullscreenDialogProperties()
+        )
+    ) { key ->
         val viewModel = koinViewModel<PlayerViewModel> {
             parametersOf(key)
         }
@@ -33,3 +39,5 @@ val playerFeatureModule = module {
     }
     viewModelOf(::PlayerViewModel)
 }
+
+internal expect fun createFullscreenDialogProperties(): DialogProperties

@@ -1,6 +1,7 @@
 package com.xbot.player.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +19,9 @@ fun VideoPlayerLayout(
 ) {
     VideoPlayerSurface(
         playerState = player,
-        modifier = modifier.background(coverSurfaceColor),
+        modifier = modifier
+            .background(coverSurfaceColor)
+            .fillMaxSize(),
         contentScale = surfaceScale,
         overlay = controls
     )
