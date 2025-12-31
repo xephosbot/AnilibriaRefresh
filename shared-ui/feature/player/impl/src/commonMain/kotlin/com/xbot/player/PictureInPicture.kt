@@ -5,8 +5,9 @@ import androidx.compose.ui.Modifier
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 
 interface PictureInPictureController {
-    val isInPictureInPictureMode: Boolean
     val modifier: Modifier
+    val isInPictureInPictureMode: Boolean
+    fun enterPictureInPictureMode()
 }
 
 @Composable

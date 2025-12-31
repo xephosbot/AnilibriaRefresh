@@ -1,5 +1,6 @@
 package com.xbot.player
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
@@ -56,6 +57,6 @@ private fun findWindow(context: Context, view: View): Window? {
     }
     
     // Fallback to Activity window
-    return context.findActivity().window
+    return context.findActivity<Activity>().window
 }
 
