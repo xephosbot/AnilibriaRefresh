@@ -35,6 +35,8 @@ import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toRect
 import androidx.core.util.Consumer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -125,6 +127,10 @@ actual fun rememberPictureInPictureController(player: VideoPlayerState): Picture
             onDispose {
                 context.unregisterReceiver(broadcastReceiver)
             }
+        }
+
+        LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+            player.pause()
         }
     }
 
