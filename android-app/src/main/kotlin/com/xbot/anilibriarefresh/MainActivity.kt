@@ -3,6 +3,7 @@ package com.xbot.anilibriarefresh
 import MainView
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.PictureInPictureUiState
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
@@ -11,9 +12,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
+import androidx.core.util.Consumer
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import com.xbot.player.OnPictureInPictureUiStateChangedProvider
+import java.util.concurrent.CopyOnWriteArrayList
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), OnPictureInPictureUiStateChangedProvider {
+
+    private val onPictureInPictureUiStateChangedListeners =
+        CopyOnWriteArrayList<Consumer<PictureInPictureUiState>>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -26,6 +34,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainView()
         }
+    }
+
+    override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
+        super.onPictureInPictureUiStateChanged(pipState)
+        for (listener in onPictureInPictureUiStateChangedListeners) {
+            listener.accept(pipState)
+        }
+    }
+
+    override fun addOnPictureInPictureUiStateChangedListener(
+        listener: Consumer<PictureInPictureUiState>
+    ) {
+        onPictureInPictureUiStateChangedListeners.add(listener)
+    }
+
+    override fun removeOnPictureInPictureUiStateChangedListener(
+        listener: Consumer<PictureInPictureUiState>
+    ) {
+        onPictureInPictureUiStateChangedListeners.remove(listener)
     }
 
     private fun onSplashScreenExit(splashScreenViewProvider: SplashScreenViewProvider) {
