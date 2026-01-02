@@ -7,6 +7,7 @@ import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 interface PictureInPictureController {
     val modifier: Modifier
     val isInPictureInPictureMode: Boolean
+    val isTransitioningToPip: Boolean
     fun enterPictureInPictureMode()
 }
 

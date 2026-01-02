@@ -67,7 +67,7 @@ private fun PlayerScreenContent(
         modifier = modifier.keepScreenOn().then(pipController.modifier),
         player = player,
         controls = {
-            if (!pipController.isInPictureInPictureMode) {
+            if (!pipController.isInPictureInPictureMode && !pipController.isTransitioningToPip) {
                 VideoPlayerController(
                     player = player,
                     title = state.currentEpisode?.name.orEmpty(),

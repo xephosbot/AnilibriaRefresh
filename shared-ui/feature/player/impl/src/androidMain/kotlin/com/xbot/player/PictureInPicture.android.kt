@@ -2,6 +2,7 @@ package com.xbot.player
 
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
+import android.app.PictureInPictureUiState
 import android.app.RemoteAction
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,10 +17,14 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.retain.RetainedEffect
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toAndroidRectF
@@ -32,24 +37,106 @@ import androidx.core.graphics.toRect
 import androidx.core.util.Consumer
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
 
 @Composable
-actual fun rememberPictureInPictureController(
-    player: VideoPlayerState
-): PictureInPictureController {
-    val context = LocalContext.current
-    val activity = remember(context) { context.findActivity<ComponentActivity>() }
-    val scope = rememberCoroutineScope()
+fun rememberIsInPipMode(): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val activity = LocalContext.current.findActivity<ComponentActivity>()
+        var pipMode by remember { mutableStateOf(activity.isInPictureInPictureMode) }
+        DisposableEffect(activity) {
+            val observer = Consumer<PictureInPictureModeChangedInfo> { info ->
+                pipMode = info.isInPictureInPictureMode
+            }
+            activity.addOnPictureInPictureModeChangedListener(observer)
+            onDispose {
+                activity.removeOnPictureInPictureModeChangedListener(observer)
+            }
+        }
+        return pipMode
+    } else {
+        return false
+    }
+}
 
-    val controller = remember(activity, player, scope) {
+@Composable
+fun rememberIsTransitioningToPip(): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        val activity = LocalContext.current.findActivity<ComponentActivity>()
+        var uiState by remember { mutableStateOf<PictureInPictureUiState?>(null) }
+        DisposableEffect(activity) {
+            val observer = Consumer<PictureInPictureUiState> { state ->
+                uiState = state
+            }
+            (activity as? OnPictureInPictureUiStateChangedProvider)?.addOnPictureInPictureUiStateChangedListener(observer)
+            onDispose {
+                (activity as? OnPictureInPictureUiStateChangedProvider)?.removeOnPictureInPictureUiStateChangedListener(observer)
+            }
+        }
+        return uiState?.isTransitioningToPip ?: false
+    } else {
+        return false
+    }
+}
+
+@Composable
+actual fun rememberPictureInPictureController(player: VideoPlayerState): PictureInPictureController {
+    val context = LocalContext.current
+    val activity = context.findActivity<ComponentActivity>()
+
+    val isInPipMode = rememberIsInPipMode()
+    val currentIsInPipMode = rememberUpdatedState(isInPipMode)
+
+    val isTransitioningToPip = rememberIsTransitioningToPip()
+    val currentIsTransitioningToPip = rememberUpdatedState(isTransitioningToPip)
+
+    val controller = remember(activity, player) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PictureInPictureControllerImpl(activity, player, scope)
+            PictureInPictureControllerImpl(activity, player, currentIsInPipMode, currentIsTransitioningToPip)
         } else {
             PictureInPictureControllerStub()
+        }
+    }
+
+    if (isInPipMode) {
+        DisposableEffect(player) {
+            val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    if ((intent == null) || (intent.action != ACTION_BROADCAST_CONTROL)) {
+                        return
+                    }
+
+                    when (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
+                        EXTRA_CONTROL_PAUSE -> player.pause()
+                        EXTRA_CONTROL_PLAY -> player.play()
+                    }
+                }
+            }
+            ContextCompat.registerReceiver(
+                context,
+                broadcastReceiver,
+                IntentFilter(ACTION_BROADCAST_CONTROL),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            onDispose {
+                context.unregisterReceiver(broadcastReceiver)
+            }
+        }
+    }
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        DisposableEffect(activity, controller) {
+            val onUserLeaveHint = Runnable {
+                controller.enterPictureInPictureMode()
+            }
+            activity.addOnUserLeaveHintListener(onUserLeaveHint)
+            onDispose {
+                activity.removeOnUserLeaveHintListener(onUserLeaveHint)
+            }
         }
     }
 
@@ -66,172 +153,83 @@ actual fun rememberPictureInPictureController(
 internal class PictureInPictureControllerImpl(
     private val activity: ComponentActivity,
     private val playerState: VideoPlayerState,
-    private val scope: CoroutineScope,
+    private val pipModeState: State<Boolean>,
+    private val pipModeTransition: State<Boolean>,
 ) : PictureInPictureController, AutoCloseable {
 
-    private val _isInPipMode = mutableStateOf(false)
     override val isInPictureInPictureMode: Boolean
-        get() = _isInPipMode.value
+        get() = pipModeState.value
 
-    private var broadcastReceiver: BroadcastReceiver? = null
-    private var lastBounds: Rect? = null
-    private var observingJob: Job? = null
-    private var pipListener: Consumer<PictureInPictureModeChangedInfo>? = null
+    override val isTransitioningToPip: Boolean
+        get() = pipModeTransition.value
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var lastBounds: Rect? by mutableStateOf(null)
 
     init {
         startObserving()
-        setupPipListener()
-        setupBroadcastReceiver()
     }
 
     private fun startObserving() {
-        observingJob = scope.launch {
-            combine(
-                snapshotFlow { playerState.isPlaying },
-                snapshotFlow { playerState.aspectRatio }
-            ) { isPlaying, aspectRatio ->
-                Log.d(LOG_TAG, "Params changed - isPlaying: ${isPlaying}, aspectRatio: ${aspectRatio}")
-                updatePipParams(isPlaying, aspectRatio)
-            }.launchIn(this)
-        }
+        combine(
+            snapshotFlow { playerState.isPlaying },
+            snapshotFlow { playerState.aspectRatio },
+        ) { isPlaying, aspectRatio ->
+            updatePipParams(isPlaying, aspectRatio, lastBounds)
+        }.launchIn(scope)
     }
 
-    private fun updatePipParams(isPlaying: Boolean, aspectRatio: Float) {
-        val builder = PictureInPictureParams.Builder()
-
-        if (!isInPictureInPictureMode && lastBounds != null) {
-            builder.setSourceRectHint(calculateVideoRect(lastBounds!!, aspectRatio))
-        } else {
-            builder.setSourceRectHint(null)
-        }
-
-        // Aspect ratio
-        val rational = if (aspectRatio > 0) {
-            Rational((aspectRatio * 100).toInt(), 100)
-        } else {
-            Rational(16, 9)
-        }
-        builder.setAspectRatio(rational)
-        builder.setActions(buildRemoteActions(isPlaying, activity))
-
-        // Android 12+ features
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            builder.setAutoEnterEnabled(isPlaying)
-            builder.setSeamlessResizeEnabled(true)
-        }
-
+    private fun updatePipParams(isPlaying: Boolean, aspectRatio: Float, bounds: Rect?) {
+        Log.d(LOG_TAG, "Params changed - isPlaying: ${isPlaying}, aspectRatio: ${aspectRatio}, lastBounds: ${bounds?.toShortString()}")
         try {
-            activity.setPictureInPictureParams(builder.build())
+            activity.setPictureInPictureParams(buildPipParams(isPlaying, aspectRatio, bounds))
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to update params", e)
         }
     }
 
-    private fun setupPipListener() {
-        pipListener = Consumer { info ->
-            _isInPipMode.value = info.isInPictureInPictureMode
-
-            Log.d(LOG_TAG, "isInPictureInPictureMode: ${info.isInPictureInPictureMode}")
-
-            if (info.isInPictureInPictureMode) {
-                registerBroadcastReceiver()
+    private fun buildPipParams(
+        isPlaying: Boolean,
+        aspectRatio: Float,
+        bounds: Rect?
+    ): PictureInPictureParams = PictureInPictureParams.Builder()
+        .setSourceRectHint(bounds?.calculateVideoRect(aspectRatio))
+        .apply {
+            val rational = if (aspectRatio > 0) {
+                Rational((aspectRatio * 100).toInt(), 100)
             } else {
-                unregisterBroadcastReceiver()
+                Rational(16, 9)
+            }
+            setAspectRatio(rational)
+        }
+        .setActions(buildRemoteActions(isPlaying, activity))
+        .apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                setAutoEnterEnabled(isPlaying)
+                setSeamlessResizeEnabled(true)
             }
         }
-
-        pipListener?.let { activity.addOnPictureInPictureModeChangedListener(it) }
-    }
-
-    private fun setupBroadcastReceiver() {
-        broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent?.action != ACTION_BROADCAST_CONTROL) return
-
-                when (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
-                    EXTRA_CONTROL_PAUSE -> playerState.pause()
-                    EXTRA_CONTROL_PLAY -> playerState.play()
-                }
-            }
-        }
-    }
-
-    private fun registerBroadcastReceiver() {
-        broadcastReceiver?.let { receiver ->
-            ContextCompat.registerReceiver(
-                activity,
-                receiver,
-                IntentFilter(ACTION_BROADCAST_CONTROL),
-                ContextCompat.RECEIVER_NOT_EXPORTED
-            )
-        }
-    }
-
-    private fun unregisterBroadcastReceiver() {
-        try {
-            broadcastReceiver?.let { activity.unregisterReceiver(it) }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "Failed to unregister broadcast receiver", e)
-        }
-    }
+        .build()
 
     override val modifier: Modifier = Modifier.onGloballyPositioned { coordinates ->
-        val bounds = coordinates.boundsInWindow().toAndroidRectF().toRect()
-        lastBounds = bounds
-
-        updatePipParams(playerState.isPlaying, playerState.aspectRatio)
+        lastBounds = coordinates.boundsInWindow().toAndroidRectF().toRect()
+        updatePipParams(playerState.isPlaying, playerState.aspectRatio, lastBounds)
     }
 
     override fun enterPictureInPictureMode() {
         try {
-            val params = PictureInPictureParams.Builder()
-                .setAspectRatio(
-                    if (playerState.aspectRatio > 0) {
-                        Rational((playerState.aspectRatio * 100).toInt(), 100)
-                    } else {
-                        Rational(16, 9)
-                    }
-                )
-                .setActions(buildRemoteActions(playerState.isPlaying, activity))
-                .apply {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        setSeamlessResizeEnabled(true)
-                    }
-                }
-                .build()
-
+            val params = buildPipParams(playerState.isPlaying, playerState.aspectRatio, lastBounds)
             activity.enterPictureInPictureMode(params)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(LOG_TAG, "Failed to enter picture in picture mode", e)
         }
     }
 
     override fun close() {
-        Log.d(LOG_TAG, "Cleanup started")
-
-        observingJob?.cancel()
-        observingJob = null
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            try {
-                val builder = PictureInPictureParams.Builder()
-                    .setAutoEnterEnabled(false)
-                    .setSeamlessResizeEnabled(false)
-
-                activity.setPictureInPictureParams(builder.build())
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "Failed to disable AutoEnter", e)
-            }
-        }
-
-        pipListener?.let { activity.removeOnPictureInPictureModeChangedListener(it) }
-        pipListener = null
-
-        unregisterBroadcastReceiver()
-        broadcastReceiver = null
+        scope.cancel()
+        updatePipParams(false, 0f, null)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun buildRemoteActions(
         isPlaying: Boolean,
         context: Context
@@ -257,32 +255,9 @@ internal class PictureInPictureControllerImpl(
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun buildRemoteAction(
-        @DrawableRes iconResId: Int,
-        title: String,
-        requestCode: Int,
-        controlType: Int,
-        context: Context
-    ): RemoteAction {
-        return RemoteAction(
-            Icon.createWithResource(context, iconResId),
-            title,
-            title,
-            PendingIntent.getBroadcast(
-                context,
-                requestCode,
-                Intent(ACTION_BROADCAST_CONTROL)
-                    .setPackage(context.packageName)
-                    .putExtra(EXTRA_CONTROL_TYPE, controlType),
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        )
-    }
-
-    private fun calculateVideoRect(containerBounds: Rect, videoAspectRatio: Float): Rect {
-        val containerWidth = containerBounds.width()
-        val containerHeight = containerBounds.height()
+    private fun Rect.calculateVideoRect(videoAspectRatio: Float): Rect {
+        val containerWidth = this.width()
+        val containerHeight = this.height()
         val containerAspectRatio = containerWidth / containerHeight
 
         var videoWidth = containerWidth.toFloat()
@@ -294,8 +269,8 @@ internal class PictureInPictureControllerImpl(
             videoHeight = containerWidth / videoAspectRatio
         }
 
-        val left = containerBounds.left + (containerWidth - videoWidth) / 2
-        val top = containerBounds.top + (containerHeight - videoHeight) / 2
+        val left = this.left + (containerWidth - videoWidth) / 2
+        val top = this.top + (containerHeight - videoHeight) / 2
 
         return Rect(
             left.toInt(),
@@ -306,14 +281,6 @@ internal class PictureInPictureControllerImpl(
     }
 
     companion object {
-        // Broadcast action constants
-        private const val ACTION_BROADCAST_CONTROL = "broadcast_control"
-        private const val EXTRA_CONTROL_TYPE = "control_type"
-        private const val EXTRA_CONTROL_PLAY = 1
-        private const val EXTRA_CONTROL_PAUSE = 2
-        private const val REQUEST_PLAY = 3
-        private const val REQUEST_PAUSE = 4
-
         private const val LOG_TAG = "PictureInPicture"
     }
 }
@@ -324,5 +291,36 @@ internal class PictureInPictureControllerImpl(
 private class PictureInPictureControllerStub : PictureInPictureController {
     override val modifier: Modifier = Modifier
     override val isInPictureInPictureMode: Boolean = false
+    override val isTransitioningToPip: Boolean = false
     override fun enterPictureInPictureMode() {}
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun buildRemoteAction(
+    @DrawableRes iconResId: Int,
+    title: String,
+    requestCode: Int,
+    controlType: Int,
+    context: Context
+): RemoteAction {
+    return RemoteAction(
+        Icon.createWithResource(context, iconResId),
+        title,
+        title,
+        PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            Intent(ACTION_BROADCAST_CONTROL)
+                .setPackage(context.packageName)
+                .putExtra(EXTRA_CONTROL_TYPE, controlType),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+    )
+}
+
+private const val ACTION_BROADCAST_CONTROL = "broadcast_control"
+private const val EXTRA_CONTROL_TYPE = "control_type"
+private const val EXTRA_CONTROL_PLAY = 1
+private const val EXTRA_CONTROL_PAUSE = 2
+private const val REQUEST_PLAY = 3
+private const val REQUEST_PAUSE = 4
