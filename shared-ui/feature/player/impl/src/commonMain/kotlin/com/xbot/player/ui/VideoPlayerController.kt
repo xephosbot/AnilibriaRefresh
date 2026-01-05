@@ -7,17 +7,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconToggleButton
@@ -25,30 +34,45 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.EpisodeListItem
+import com.xbot.designsystem.components.Header
+import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Pause
 import com.xbot.designsystem.icons.PlayArrow
+import com.xbot.designsystem.icons.PlaylistPlay
+import com.xbot.designsystem.modifier.ProvideShimmer
+import com.xbot.domain.models.Episode
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,41 +80,135 @@ import kotlin.math.max
 fun VideoPlayerController(
     player: VideoPlayerState,
     title: String,
+    episodes: List<Episode>,
+    selectedEpisode: Episode?,
+    onEpisodeClick: (Episode) -> Unit,
     buffering: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit,
 ) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
     var isControllerVisible by rememberSaveable { mutableStateOf(true) }
+    val shimmer = rememberShimmer(ShimmerBounds.Window)
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        isControllerVisible = !isControllerVisible
+    ProvideShimmer(shimmer) {
+        PlaylistDrawer(
+            drawerState = drawerState,
+            modifier = modifier,
+            drawerContent = {
+                PlaylistContent(
+                    episodes = episodes,
+                    selectedEpisode = selectedEpisode,
+                    onEpisodeClick = { episode ->
+                        onEpisodeClick(episode)
+                        scope.launch { drawerState.close() }
                     }
                 )
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        ControllerOverlay(
-            isVisible = isControllerVisible,
-            playerState = player,
-            title = title,
-            onClickBack = onClickBack,
-            onPlayPause = {
-                if (player.isPlaying) {
-                    player.pause()
-                } else {
-                    player.play()
-                }
-            },
-            onTimeout = { isControllerVisible = false }
-        )
+            }
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                isControllerVisible = !isControllerVisible
+                            }
+                        )
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                ControllerOverlay(
+                    isVisible = isControllerVisible,
+                    playerState = player,
+                    title = title,
+                    onClickBack = onClickBack,
+                    onPlayPause = {
+                        if (player.isPlaying) {
+                            player.pause()
+                        } else {
+                            player.play()
+                        }
+                    },
+                    onTimeout = { isControllerVisible = false },
+                    onOpenPlaylist = {
+                        scope.launch { drawerState.open() }
+                    }
+                )
 
-        if (player.isLoading) {
-            buffering()
+                if (player.isLoading) {
+                    buffering()
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlaylistDrawer(
+    drawerState: DrawerState,
+    modifier: Modifier = Modifier,
+    drawerContent: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        ModalNavigationDrawer(
+            modifier = modifier,
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                ModalDrawerSheet(
+                    drawerState = drawerState,
+                    modifier = Modifier
+                        .windowInsetsPadding(DrawerDefaults.windowInsets.only(WindowInsetsSides.Vertical)),
+                    windowInsets = DrawerDefaults.windowInsets.only(WindowInsetsSides.Horizontal)
+                ) {
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        drawerContent()
+                    }
+                }
+            }
+        ) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlaylistContent(
+    episodes: List<Episode>,
+    selectedEpisode: Episode?,
+    onEpisodeClick: (Episode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        item {
+            Header(
+                title = { Text(text = "Episodes") }
+            )
+        }
+        itemsIndexed(episodes) { index, episode ->
+            val isSelected = episode == selectedEpisode
+            val containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceBright
+            }
+            EpisodeListItem(
+                modifier = Modifier.section(index, episodes.size),
+                episode = episode,
+                containerColor = containerColor,
+                onClick = { onEpisodeClick(episode) }
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -102,6 +220,7 @@ private fun ControllerOverlay(
     title: String,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
+    onOpenPlaylist: () -> Unit,
     onTimeout: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -116,7 +235,8 @@ private fun ControllerOverlay(
                 title = title,
                 onClickBack = onClickBack,
                 onPlayPause = onPlayPause,
-                onTimeout = onTimeout
+                onOpenPlaylist = onOpenPlaylist,
+                onTimeout = onTimeout,
             )
         }
     }
@@ -128,6 +248,7 @@ private fun AutoHidingController(
     title: String,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
+    onOpenPlaylist: () -> Unit,
     onTimeout: () -> Unit,
 ) {
     var hideControllerKey by rememberSaveable { mutableIntStateOf(0) }
@@ -149,6 +270,7 @@ private fun AutoHidingController(
         VideoPlayerTopBar(
             title = title,
             onClickBack = onClickBack,
+            onOpenPlaylist = onOpenPlaylist,
             modifier = Modifier.align(Alignment.TopCenter)
         )
 
@@ -218,6 +340,7 @@ private fun TimelineControls(
 private fun VideoPlayerTopBar(
     title: String,
     onClickBack: () -> Unit,
+    onOpenPlaylist: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CenterAlignedTopAppBar(
@@ -227,6 +350,14 @@ private fun VideoPlayerTopBar(
             IconButton(onClick = onClickBack) {
                 Icon(
                     imageVector = AnilibriaIcons.ArrowBack,
+                    contentDescription = null,
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onOpenPlaylist) {
+                Icon(
+                    imageVector = AnilibriaIcons.PlaylistPlay,
                     contentDescription = null,
                 )
             }

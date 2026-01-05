@@ -5,16 +5,26 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.xbot.designsystem.utils.PreviewContainer
+import com.xbot.domain.models.Episode
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
+import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
+import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Clock
 
 @Composable
 fun PlayerScreen(
@@ -29,12 +39,17 @@ fun PlayerScreen(
     PlayerScreenContent(
         modifier = modifier,
         state = state,
+        onAction = viewModel::onAction,
         onBackClick = onBackClick
     )
 }
 
 @Composable
 fun rememberVideoPlayerState(): VideoPlayerState {
+    if (LocalInspectionMode.current) {
+        return remember { PreviewableVideoPlayerState() }
+    }
+
     val playerState = retain { createVideoPlayerState() }
     RetainedEffect(Unit) {
         onRetire {
@@ -50,15 +65,17 @@ fun rememberVideoPlayerState(): VideoPlayerState {
 private fun PlayerScreenContent(
     modifier: Modifier,
     state: PlayerScreenState,
+    onAction: (PlayerScreenAction) -> Unit,
     onBackClick: () -> Unit
 ) {
     val player = rememberVideoPlayerState()
     val pipController = rememberPictureInPictureController(player)
 
-    LaunchedEffect(state) {
-        if (!player.hasMedia) {
-            if (state.currentEpisode != null) {
-                player.openUri(state.currentEpisode.let { it.hls1080 ?: it.hls720 ?: it.hls480 ?: ""})
+    LaunchedEffect(state.currentEpisode) {
+        state.currentEpisode?.let { episode ->
+            val uri = episode.hls1080 ?: episode.hls720 ?: episode.hls480 ?: ""
+            if (uri.isNotEmpty()) {
+                player.openUri(uri, InitialPlayerState.PLAY)
             }
         }
     }
@@ -71,6 +88,11 @@ private fun PlayerScreenContent(
                 VideoPlayerController(
                     player = player,
                     title = state.currentEpisode?.name.orEmpty(),
+                    episodes = state.episodes,
+                    selectedEpisode = state.currentEpisode,
+                    onEpisodeClick = {
+                        onAction(PlayerScreenAction.OnEpisodeChange(it))
+                    },
                     buffering = {
                         ContainedLoadingIndicator()
                     },
@@ -79,4 +101,37 @@ private fun PlayerScreenContent(
             }
         },
     )
+}
+
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Composable
+private fun PlayerScreenContentPreview() {
+    val episodes = listOf(
+        Episode(
+            id = "1",
+            name = "Episode 1",
+            ordinal = 1.0f,
+            updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        ),
+        Episode(
+            id = "2",
+            name = "Episode 2",
+            ordinal = 2.0f,
+            updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        )
+    )
+    val state = PlayerScreenState(
+        isLoading = false,
+        episodes = episodes,
+        currentEpisode = episodes.first()
+    )
+
+    PreviewContainer {
+        PlayerScreenContent(
+            modifier = Modifier,
+            state = state,
+            onAction = {},
+            onBackClick = {}
+        )
+    }
 }

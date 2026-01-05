@@ -37,6 +37,16 @@ class PlayerViewModel(
             initialValue = _state.value
         )
 
+    fun onAction(action: PlayerScreenAction) {
+        when (action) {
+            is PlayerScreenAction.OnEpisodeChange -> onEpisodeChange(action.episode)
+        }
+    }
+
+    private fun onEpisodeChange(episode: Episode) {
+        _state.update { it.copy(currentEpisode = episode) }
+    }
+
     private fun fetchTitleDetails() {
         viewModelScope.launch {
             when (val result = repository.getRelease(releaseId.toString())) {
@@ -73,3 +83,7 @@ data class PlayerScreenState(
     val episodes: List<Episode> = emptyList(),
     val currentEpisode: Episode? = null,
 )
+
+sealed interface PlayerScreenAction {
+    data class OnEpisodeChange(val episode: Episode) : PlayerScreenAction
+}

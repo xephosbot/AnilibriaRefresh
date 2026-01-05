@@ -41,10 +41,12 @@ import kotlin.time.ExperimentalTime
 fun EpisodeListItem(
     episode: Episode,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
     onClick: () -> Unit,
 ) {
     ListItemLayout(
         modifier = modifier.clickable { onClick() },
+        containerColor = containerColor,
         content = {
             Text(
                 text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
@@ -98,13 +100,14 @@ fun EpisodeListItem(
 @Composable
 internal fun ListItemLayout(
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Row(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceBright)
+            .background(containerColor)
             .heightIn(
                 min = ListItemContainerHeight,
                 max = ListItemContainerHeight

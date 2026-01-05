@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.toAndroidRectF
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toRect
@@ -87,6 +88,10 @@ fun rememberIsTransitioningToPip(): Boolean {
 
 @Composable
 actual fun rememberPictureInPictureController(player: VideoPlayerState): PictureInPictureController {
+    if (LocalInspectionMode.current) {
+        return PictureInPictureControllerStub()
+    }
+
     val context = LocalContext.current
     val activity = context.findActivity<ComponentActivity>()
 

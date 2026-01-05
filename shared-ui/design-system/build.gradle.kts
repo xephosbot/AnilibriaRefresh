@@ -32,9 +32,9 @@ kotlin {
         implementation(libs.kotlinx.datetime)
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
-        implementation(libs.compose.preview)
         implementation(libs.materialKolor)
         api(projects.sharedUi.resource)
+        api(libs.compose.preview)
         api(libs.compose.material3)
         api(libs.compose.material3.adaptive.navigation.suite)
         api(libs.compose.material3.adaptive.navigation3)
@@ -52,7 +52,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling)
+            api(libs.compose.ui.tooling)
         }
         val nonAndroid by creating {
             dependsOn(commonMain.get())

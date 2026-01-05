@@ -10,7 +10,7 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.theme.AnilibriaTheme
 
 @Composable
-internal fun PreviewContainer(
+fun PreviewContainer(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)

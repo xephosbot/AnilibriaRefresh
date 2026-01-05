@@ -8,6 +8,8 @@ import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 actual fun rememberPictureInPictureController(player: VideoPlayerState): PictureInPictureController {
     return object : PictureInPictureController {
         override val isInPictureInPictureMode: Boolean = false
+        override val isTransitioningToPip: Boolean = false
+        override fun enterPictureInPictureMode() = Unit
         override val modifier: Modifier = Modifier
     }
 }

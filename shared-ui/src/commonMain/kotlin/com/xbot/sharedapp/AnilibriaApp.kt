@@ -31,6 +31,7 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import com.xbot.common.navigation.LocalNavigator
+import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Search
@@ -169,4 +170,4 @@ private fun getImageLoader(
     .diskCachePolicy(CachePolicy.ENABLED)
     .build()
 
-private val TopLevelRoutes = setOf(HomeRoute, FavoriteRoute, PreferenceRoute)
+private val TopLevelRoutes: Set<TopLevelNavKey> = setOf(HomeRoute, FavoriteRoute, PreferenceRoute)
