@@ -162,9 +162,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -224,6 +228,7 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = src/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Anilibria Refresh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -333,6 +338,7 @@
 					"$(TARGET_BUILD_DIR)/$(FRAMEWORKS_FOLDER_PATH)",
 				);
 				INFOPLIST_FILE = src/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Anilibria Refresh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
