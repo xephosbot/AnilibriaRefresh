@@ -76,7 +76,7 @@ import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.AnilibriaDynamicTheme
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.only
-import com.xbot.designsystem.utils.rememberPosterPalette
+import com.xbot.designsystem.utils.rememberExpressiveSeedColor
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.resources.Res
@@ -110,9 +110,9 @@ internal fun TitleDetailsPane(
     var selected by remember { mutableStateOf(false) }
     
     val poster = (state as? TitleScreenState.Success)?.title?.release?.poster
-    val palette = rememberPosterPalette(poster)
+    val seedColor by rememberExpressiveSeedColor(poster)
 
-    AnilibriaDynamicTheme(palette = palette) {
+    AnilibriaDynamicTheme(seedColor = seedColor) {
         Scaffold(
             modifier = modifier,
             topBar = {

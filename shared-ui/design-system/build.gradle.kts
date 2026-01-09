@@ -46,7 +46,6 @@ kotlin {
         api(libs.coil.compose)
         api(libs.sticky.headers)
         api(libs.shimmer.compose)
-        api(libs.kmpalette.core)
         api(libs.material.motion.compose.core)
     }
 
