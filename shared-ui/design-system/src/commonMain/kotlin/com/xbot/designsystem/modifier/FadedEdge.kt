@@ -48,31 +48,28 @@ private fun Modifier.fadedEdgeInternal(
     opacity: Float,
     bottomEdge: Boolean,
     edgeRangeProvider: Density.(Size) -> Pair<Float, Float>
-): Modifier = graphicsLayer {
-        compositingStrategy = CompositingStrategy.Offscreen
-    }.drawWithCache {
-        val (start, end) = edgeRangeProvider(size)
-        val brush = Brush.verticalGradient(
-            colorStops = arrayOf(
-                0f to Color.Black,
-                start to Color.Black,
-                end to Color.Transparent.copy(alpha = 1f - opacity),
-                1f to Color.Transparent.copy(alpha = 1f - opacity)
-            )
+): Modifier = this.graphicsLayer {
+    compositingStrategy = CompositingStrategy.Offscreen
+}.drawWithCache {
+    val (start, end) = edgeRangeProvider(size)
+    val brush = Brush.verticalGradient(
+        colorStops = arrayOf(
+            0f to Color.Black,
+            start to Color.Black,
+            end to Color.Transparent.copy(alpha = 1f - opacity),
+            1f to Color.Transparent.copy(alpha = 1f - opacity)
         )
+    )
 
-        onDrawWithContent {
-            drawContent()
-            scale(scaleX = 1f, scaleY = if (bottomEdge) 1f else -1f) {
-                drawRect(
-                    topLeft = Offset.Zero,
-                    size = size,
-                    brush = brush,
-                    blendMode = BlendMode.DstIn
-                )
-            }
+    onDrawWithContent {
+        drawContent()
+        scale(scaleX = 1f, scaleY = if (bottomEdge) 1f else -1f) {
+            drawRect(
+                topLeft = Offset.Zero,
+                size = size,
+                brush = brush,
+                blendMode = BlendMode.DstIn
+            )
         }
     }
-
-
-private val DefaultFadingEdgeHeight = 96.dp
+}

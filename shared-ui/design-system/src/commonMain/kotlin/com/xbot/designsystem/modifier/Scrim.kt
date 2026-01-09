@@ -25,31 +25,29 @@ private fun Modifier.scrimInternal(
     opacity: Float,
     bottomEdge: Boolean,
     edgeHeightPx: CacheDrawScope.(Size) -> Float
-): Modifier = this.then(
-    drawWithCache {
-        val edgeHeight = edgeHeightPx(size).coerceAtLeast(0f)
+): Modifier = this.drawWithCache {
+    val edgeHeight = edgeHeightPx(size).coerceAtLeast(0f)
 
-        val brush = Brush.verticalGradient(
-            colors = listOf(
-                Color.Black.copy(alpha = opacity),
-                Color.Transparent
-            ),
-            startY = if (bottomEdge) size.height else 0f,
-            endY = if (bottomEdge) size.height - edgeHeight else edgeHeight
+    val brush = Brush.verticalGradient(
+        colors = listOf(
+            Color.Black.copy(alpha = opacity),
+            Color.Transparent
+        ),
+        startY = if (bottomEdge) size.height else 0f,
+        endY = if (bottomEdge) size.height - edgeHeight else edgeHeight
+    )
+
+    val topLeft = Offset(
+        x = 0f,
+        y = if (bottomEdge) size.height - edgeHeight else 0f
+    )
+
+    onDrawWithContent {
+        drawContent()
+        drawRect(
+            topLeft = topLeft,
+            size = Size(width = size.width, height = edgeHeight),
+            brush = brush
         )
-
-        val topLeft = Offset(
-            x = 0f,
-            y = if (bottomEdge) size.height - edgeHeight else 0f
-        )
-
-        onDrawWithContent {
-            drawContent()
-            drawRect(
-                topLeft = topLeft,
-                size = Size(width = size.width, height = edgeHeight),
-                brush = brush
-            )
-        }
     }
-)
+}

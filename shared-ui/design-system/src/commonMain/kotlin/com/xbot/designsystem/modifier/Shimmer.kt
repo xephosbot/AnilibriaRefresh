@@ -8,7 +8,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.unclippedBoundsInWindow
 
-fun Modifier.shimmerUpdater(shimmer: Shimmer) = onGloballyPositioned {
+fun Modifier.shimmerUpdater(shimmer: Shimmer) = this.onGloballyPositioned {
     val position = it.unclippedBoundsInWindow()
     shimmer.updateBounds(position)
 }
