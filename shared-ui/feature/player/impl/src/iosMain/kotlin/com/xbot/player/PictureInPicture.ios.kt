@@ -60,7 +60,6 @@ internal class PictureInPictureControllerImpl : PictureInPictureController {
         // Enable auto PiP if supported (iOS 14.2+)
         if (isAutoPiPSupported()) {
             controller.canStartPictureInPictureAutomaticallyFromInline = true
-            println("[PictureInPictureControllerImpl] Auto PiP enabled")
         }
         
         pipController = controller
