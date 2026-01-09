@@ -52,6 +52,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -100,7 +101,6 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.designsystem.theme.rememberColorScheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
@@ -316,6 +316,8 @@ private fun ReleaseFeed(
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
+    
+    var activeMenuReleaseId by remember { mutableStateOf<Int?>(null) }
 
     Feed(
         modifier = modifier,
@@ -325,7 +327,8 @@ private fun ReleaseFeed(
     ) {
         horizontalPagerItems(
             items = releasesFeed.recommendedReleases,
-            state = pagerState
+            state = pagerState,
+            isAutoScrollActive = activeMenuReleaseId == null,
         ) { page, release ->
             LargeReleaseCard(
                 modifier = Modifier
@@ -335,14 +338,16 @@ private fun ReleaseFeed(
                     .fadeWithParallax(pagerState, page),
                 release = release
             ) {
-                var checked by remember { mutableStateOf(false) }
+                val isChecked by rememberUpdatedState(activeMenuReleaseId == release.id)
 
                 MediumSplitButton(
                     onLeadingClick = {
                         onReleaseClick(release)
                     },
-                    trailingChecked = checked,
-                    onTrailingCheckedChange = { checked = it },
+                    trailingChecked = isChecked,
+                    onTrailingCheckedChange = { checked ->
+                        activeMenuReleaseId = if (checked) release.id else null
+                    },
                     leadingContent = {
                         Icon(
                             modifier = Modifier
@@ -357,7 +362,7 @@ private fun ReleaseFeed(
                         )
                     },
                     trailingContent = {
-                        val rotation by animateFloatAsState(if (checked) 180f else 0f)
+                        val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
 
                         Icon(
                             modifier = Modifier

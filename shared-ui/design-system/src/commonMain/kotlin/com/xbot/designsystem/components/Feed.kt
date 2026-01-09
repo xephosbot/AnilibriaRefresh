@@ -365,9 +365,18 @@ inline fun <T> FeedScope.horizontalPagerItems(
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     userScrollEnabled: Boolean = true,
     reverseLayout: Boolean = false,
+    isAutoScrollActive: Boolean = true,
     snapPosition: SnapPosition = SnapPosition.Start,
     crossinline pagerContent: @Composable PagerScope.(index: Int, item: T) -> Unit,
 ) = row {
+    val performAutoScroll = shouldPerformAutoScroll(state.interactionSource)
+
+    AutoScrollSideEffect(
+        autoScrollDurationMillis = 5000L,
+        pagerState = state,
+        doAutoScroll = performAutoScroll && isAutoScrollActive
+    )
+
     HorizontalPager(
         state = state,
         key = key,
