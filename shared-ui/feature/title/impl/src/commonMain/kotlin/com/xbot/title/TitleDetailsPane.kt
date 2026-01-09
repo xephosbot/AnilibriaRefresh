@@ -186,43 +186,17 @@ internal fun TitleDetailsPane(
                                 )
                             )
                             .padding(horizontal = 24.dp, vertical = 16.dp),
-                        visible = state is TitleScreenState.Success,
+                        visible = state is TitleScreenState.Success && (state as TitleScreenState.Success).title.episodes.isNotEmpty(),
                         enter = slideInVertically { it },
                         exit = slideOutVertically { it }
                     ) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = ButtonDefaults.MediumContainerHeight),
+                        WatchButton(
                             onClick = {
                                 (state as? TitleScreenState.Success)?.title?.release?.let { release ->
                                     onPlayClick(release.id, 0)
                                 }
-                            },
-                            contentPadding = ButtonDefaults.MediumContentPadding,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.inverseSurface,
-                                contentColor = MaterialTheme.colorScheme.inverseOnSurface
-                            )
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                            ProvideTextStyle(
-                                LocalTextStyle.current.copy(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) {
-                                Text(
-                                    text = stringResource(Res.string.button_watch_continue),
-                                    maxLines = 1
-                                )
                             }
-                        }
+                        )
                     }
                 }
             },
@@ -290,38 +264,12 @@ private fun TitleDetails(
                             }
                         }
                     }
-                    if (!isSinglePane) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = ButtonDefaults.MediumContainerHeight),
+                    if (!isSinglePane && details.episodes.isNotEmpty()) {
+                        WatchButton(
                             onClick = {
                                 onPlayClick(details.release.id, 0)
-                            },
-                            contentPadding = ButtonDefaults.MediumContentPadding,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.inverseSurface,
-                                contentColor = MaterialTheme.colorScheme.inverseOnSurface
-                            )
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                            ProvideTextStyle(
-                                LocalTextStyle.current.copy(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) {
-                                Text(
-                                    text = stringResource(Res.string.button_watch_continue),
-                                    maxLines = 1
-                                )
                             }
-                        }
+                        )
                     }
                 }
             }
@@ -402,6 +350,43 @@ private fun TitleDetails(
                     )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun WatchButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = ButtonDefaults.MediumContainerHeight),
+        onClick = onClick,
+        contentPadding = ButtonDefaults.MediumContentPadding,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.inverseSurface,
+            contentColor = MaterialTheme.colorScheme.inverseOnSurface
+        )
+    ) {
+        Icon(
+            modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+            imageVector = AnilibriaIcons.Filled.PlayArrow,
+            contentDescription = null
+        )
+        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+        ProvideTextStyle(
+            LocalTextStyle.current.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        ) {
+            Text(
+                text = stringResource(Res.string.button_watch_continue),
+                maxLines = 1
+            )
         }
     }
 }
