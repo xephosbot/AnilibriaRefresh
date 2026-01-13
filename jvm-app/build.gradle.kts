@@ -23,7 +23,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Anilibria Refresh"
             packageVersion = "1.0.0"
-            modules("java.instrument", "java.management", "jdk.unsupported")
+            modules("jdk.security.auth", "java.instrument", "java.management", "jdk.unsupported")
 
             macOS {
                 bundleID = "com.xbot.anilibriarefresh"
