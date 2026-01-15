@@ -43,6 +43,9 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.core)
+            implementation(libs.androidx.core.pip)
             implementation(libs.androidx.media3.common.ktx)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.hls)

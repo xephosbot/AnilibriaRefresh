@@ -67,7 +67,6 @@ android {
 
 dependencies {
     implementation(projects.sharedUi)
-    implementation(projects.sharedUi.feature.player.impl)
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
