@@ -1,3 +1,5 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.xbot.designsystem.theme
 
 import android.app.UiModeManager
@@ -11,12 +13,14 @@ import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldWithPrimaryActionOverride
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.dynamicTonalPalette
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.materialkolor.PaletteStyle
+import com.materialkolor.dynamicColorScheme
+import com.materialkolor.dynamiccolor.ColorSpec
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 internal val mediumContrastLightColorScheme = lightColorScheme(
@@ -204,10 +208,13 @@ actual fun rememberColorScheme(
     return when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            when {
-                isSamsungSDK34 -> if (darkTheme) dynamicDarkColorSchemeSamsung34(context) else dynamicLightColorSchemeSamsung34(context)
-                else -> if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
+            val tonalPalette = dynamicTonalPalette(context)
+            dynamicColorScheme(
+                seedColor = tonalPalette.primary80,
+                isDark = darkTheme,
+                style = PaletteStyle.Expressive,
+                specVersion = ColorSpec.SpecVersion.SPEC_2025,
+            )
         }
         else -> selectSchemeForContrast(darkTheme)
     }

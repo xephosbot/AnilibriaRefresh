@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -168,7 +169,13 @@ private fun PreferenceItem(
                 )
             }
         },
-        colors = ListItemDefaults.colors(color)
+        colors = ListItemDefaults.colors(
+            containerColor = color,
+            headlineColor = MaterialTheme.colorScheme.contentColorFor(color),
+            leadingIconColor = MaterialTheme.colorScheme.contentColorFor(color),
+            overlineColor = MaterialTheme.colorScheme.contentColorFor(color),
+            supportingColor = MaterialTheme.colorScheme.contentColorFor(color),
+        )
     )
 }
 

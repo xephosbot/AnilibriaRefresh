@@ -101,7 +101,6 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.rememberColorScheme
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
@@ -312,7 +311,7 @@ private fun ReleaseFeed(
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState(pageCount = { releasesFeed.recommendedReleases.size })
+    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.size }
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
@@ -447,20 +446,18 @@ private fun ReleaseFeed(
             key = { _, item -> item.id },
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { index, release ->
-            val lightColorScheme = rememberColorScheme(darkTheme = false)
-            val badgeBrush = remember(lightColorScheme) {
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White,
-                        lightColorScheme.primaryContainer
-                    ),
-                    startY = 0.0f,
-                    endY = 250.0f
-                )
-            }
-
             SmallReleaseCard(
-                modifier = Modifier.badgeOverlay(index, badgeBrush),
+                modifier = Modifier.badgeOverlay(
+                    index = index,
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White,
+                            MaterialTheme.colorScheme.primaryFixedDim
+                        ),
+                        startY = 0.0f,
+                        endY = 250.0f
+                    )
+                ),
                 release = release,
                 onClick = onReleaseClick,
             )

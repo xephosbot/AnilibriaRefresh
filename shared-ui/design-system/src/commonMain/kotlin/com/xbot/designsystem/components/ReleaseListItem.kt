@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,12 +30,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.utils.PreviewContainer
+import com.xbot.designsystem.utils.dummyReleaseList
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
 
@@ -42,8 +46,8 @@ import com.xbot.localization.localizedName
 fun ReleaseListItem(
     release: Release?,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surfaceBright,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
+    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
     shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     onClick: (Release) -> Unit = {},
@@ -55,7 +59,7 @@ fun ReleaseListItem(
     Surface(
         modifier = modifier,
         shape = shape.shapeForInteraction(pressed, false),
-        color = color,
+        color = containerColor,
         contentColor = contentColor
     ) {
         Crossfade(
@@ -290,3 +294,23 @@ private val ReleaseItemContentSpacingVertical = 4.dp
 private val ReleaseItemTagsSpacing = 8.dp
 private const val SubtitleAlpha = 0.6f
 private const val DescriptionAlpha = 0.8f
+
+@Preview
+@Composable
+private fun ReleaseListItemPreview() {
+    PreviewContainer {
+        ReleaseListItem(
+            release = dummyReleaseList.first()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ReleaseListItemLoadingPreview() {
+    PreviewContainer {
+        ReleaseListItem(
+            release = null
+        )
+    }
+}

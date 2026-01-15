@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,11 +44,13 @@ fun EpisodeListItem(
     episode: Episode,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
+    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
     onClick: () -> Unit,
 ) {
     ListItemLayout(
         modifier = modifier.clickable { onClick() },
         containerColor = containerColor,
+        contentColor = contentColor,
         content = {
             Text(
                 text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
@@ -100,7 +104,8 @@ fun EpisodeListItem(
 @Composable
 internal fun ListItemLayout(
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
+    containerColor: Color,
+    contentColor: Color,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -114,16 +119,18 @@ internal fun ListItemLayout(
             ),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        leadingContent?.invoke()
-        Column(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .weight(1f)
-        ) {
-            content()
+        CompositionLocalProvider(LocalContentColor provides contentColor) {
+            leadingContent?.invoke()
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .weight(1f)
+            ) {
+                content()
+            }
+            trailingContent?.invoke()
+            Spacer(Modifier.width(4.dp))
         }
-        trailingContent?.invoke()
-        Spacer(Modifier.width(4.dp))
     }
 }
 

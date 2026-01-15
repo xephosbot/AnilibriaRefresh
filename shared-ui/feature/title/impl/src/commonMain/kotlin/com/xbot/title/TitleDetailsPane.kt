@@ -73,10 +73,8 @@ import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.AnilibriaDynamicTheme
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.only
-import com.xbot.designsystem.utils.rememberExpressiveSeedColor
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.resources.Res
@@ -108,115 +106,110 @@ internal fun TitleDetailsPane(
 
     val gridState = rememberLazyGridState()
     var selected by remember { mutableStateOf(false) }
-    
-    val poster = (state as? TitleScreenState.Success)?.title?.release?.poster
-    val seedColor by rememberExpressiveSeedColor(poster)
 
-    AnilibriaDynamicTheme(seedColor = seedColor) {
-        Scaffold(
-            modifier = modifier,
-            topBar = {
-                TopAppBar(
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                modifier = Modifier
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.surfaceContainer,
+                                MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                            )
+                        )
+                    ),
+                title = {},
+                navigationIcon = {
+                    FilledIconButton(
+                        onClick = onBackClick,
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            imageVector = AnilibriaIcons.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+                    FilledIconToggleButton(
+                        checked = selected,
+                        onCheckedChange = { selected = it },
+                        shapes = IconButtonDefaults.toggleableShapes(),
+                        colors = IconButtonDefaults.filledIconToggleButtonColors(
+                            checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                            checkedContentColor = MaterialTheme.colorScheme.contentColorFor(
+                                MaterialTheme.colorScheme.inverseSurface
+                            ),
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = AnilibriaIcons.Filled.Star,
+                            contentDescription = null
+                        )
+                    }
+                    FilledIconButton(
+                        onClick = {},
+                        modifier = Modifier.size(
+                            IconButtonDefaults.smallContainerSize(
+                                IconButtonDefaults.IconButtonWidthOption.Narrow
+                            )
+                        ),
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            imageVector = AnilibriaIcons.MoreVert,
+                            contentDescription = null
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
+            )
+        },
+        bottomBar = {
+            if (isSinglePane) {
+                AnimatedVisibility(
                     modifier = Modifier
                         .background(
                             Brush.verticalGradient(
                                 listOf(
-                                    MaterialTheme.colorScheme.surfaceContainer,
                                     MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                    MaterialTheme.colorScheme.surfaceContainer,
                                 )
                             )
-                        ),
-                    title = {},
-                    navigationIcon = {
-                        FilledIconButton(
-                            onClick = onBackClick,
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.ArrowBack,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    actions = {
-                        FilledIconToggleButton(
-                            checked = selected,
-                            onCheckedChange = { selected = it },
-                            shapes = IconButtonDefaults.toggleableShapes(),
-                            colors = IconButtonDefaults.filledIconToggleButtonColors(
-                                checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(
-                                    MaterialTheme.colorScheme.inverseSurface
-                                ),
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.Filled.Star,
-                                contentDescription = null
-                            )
-                        }
-                        FilledIconButton(
-                            onClick = {},
-                            modifier = Modifier.size(
-                                IconButtonDefaults.smallContainerSize(
-                                    IconButtonDefaults.IconButtonWidthOption.Narrow
-                                )
-                            ),
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.MoreVert,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
-                )
-            },
-            bottomBar = {
-                if (isSinglePane) {
-                    AnimatedVisibility(
-                        modifier = Modifier
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(
-                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
-                                        MaterialTheme.colorScheme.surfaceContainer,
-                                    )
-                                )
-                            )
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
-                        visible = state is TitleScreenState.Success && (state as TitleScreenState.Success).title.episodes.isNotEmpty(),
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it }
-                    ) {
-                        WatchButton(
-                            onClick = {
-                                (state as? TitleScreenState.Success)?.title?.release?.let { release ->
-                                    onPlayClick(release.id, 0)
-                                }
+                        )
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    visible = state is TitleScreenState.Success && (state as TitleScreenState.Success).title.episodes.isNotEmpty(),
+                    enter = slideInVertically { it },
+                    exit = slideOutVertically { it }
+                ) {
+                    WatchButton(
+                        onClick = {
+                            (state as? TitleScreenState.Success)?.title?.release?.let { release ->
+                                onPlayClick(release.id, 0)
                             }
-                        )
-                    }
+                        }
+                    )
                 }
-            },
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ) { innerPadding ->
-            TypedCrossFade(
-                targetState = state,
-            ) { targetState ->
-                when (targetState) {
-                    is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
-                    is TitleScreenState.Success -> {
-                        TitleDetails(
-                            gridState = gridState,
-                            isSinglePane = isSinglePane,
-                            details = targetState.title,
-                            contentPadding = innerPadding,
-                            onPlayClick = onPlayClick,
-                            onReleaseClick = onReleaseClick,
-                        )
-                    }
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) { innerPadding ->
+        TypedCrossFade(
+            targetState = state,
+        ) { targetState ->
+            when (targetState) {
+                is TitleScreenState.Loading -> LoadingScreen(contentPadding = innerPadding)
+                is TitleScreenState.Success -> {
+                    TitleDetails(
+                        gridState = gridState,
+                        isSinglePane = isSinglePane,
+                        details = targetState.title,
+                        contentPadding = innerPadding,
+                        onPlayClick = onPlayClick,
+                        onReleaseClick = onReleaseClick,
+                    )
                 }
             }
         }

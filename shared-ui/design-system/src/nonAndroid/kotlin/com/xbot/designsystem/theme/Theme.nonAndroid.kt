@@ -8,6 +8,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponen
 import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldWithPrimaryActionOverride
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 @OptIn(
@@ -39,5 +40,7 @@ actual fun rememberColorScheme(
     darkTheme: Boolean,
     dynamicColor: Boolean
 ): ColorScheme {
-    return if (darkTheme) darkScheme else lightScheme
+    return remember(darkTheme) {
+        if (darkTheme) darkScheme else lightScheme
+    }
 }
