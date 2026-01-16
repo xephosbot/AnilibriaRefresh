@@ -155,7 +155,7 @@ private fun FranchiseCardContent(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = stringResource(Res.string.franchise_episodes_count, franchise.totalEpisodes),
+                            text = stringResource(Res.string.franchise_episodes_count, franchise.totalEpisodes ?: 0),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
