@@ -227,38 +227,32 @@ actual fun rememberColorScheme(
 ): ColorScheme {
     val context = LocalContext.current
     return remember(darkTheme, dynamicColor) {
-        when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val tonalPalette = dynamicTonalPalette(context)
-                dynamicColorScheme(
-                    seedColor = tonalPalette.primary80,
-                    isDark = darkTheme,
-                    style = PaletteStyle.Expressive,
-                    specVersion = ColorSpec.SpecVersion.SPEC_2025,
-                )
-            }
-            else -> selectSchemeForContrast(context, darkTheme)
+        if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val tonalPalette = dynamicTonalPalette(context)
+            dynamicColorScheme(
+                seedColor = tonalPalette.primary80,
+                isDark = darkTheme,
+                style = PaletteStyle.TonalSpot,
+                contrastLevel = context.contrastLevel.toDouble(),
+                specVersion = ColorSpec.SpecVersion.SPEC_2025,
+            )
+        } else {
+            selectSchemeForContrast(context, darkTheme)
         }
     }
 }
 
 internal fun selectSchemeForContrast(context: Context, darkTheme: Boolean): ColorScheme {
-    var colorScheme = if (darkTheme) darkScheme else lightScheme
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        val contrastLevel = uiModeManager.contrast
-
-        colorScheme = when (contrastLevel) {
-            in 0.0f..0.33f -> if (darkTheme) darkScheme else lightScheme
-
-            in 0.34f..0.66f -> if (darkTheme)
-                mediumContrastDarkColorScheme else mediumContrastLightColorScheme
-
-            in 0.67f..1.0f -> if (darkTheme)
-                highContrastDarkColorScheme else highContrastLightColorScheme
-
-            else -> if (darkTheme) darkScheme else lightScheme
-        }
-        return colorScheme
-    } else return colorScheme
+    return when (context.contrastLevel) {
+        in 0.34f..0.66f -> if (darkTheme) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+        in 0.67f..1.0f -> if (darkTheme) highContrastDarkColorScheme else highContrastLightColorScheme
+        else -> if (darkTheme) darkScheme else lightScheme
+    }
 }
+
+private val Context.contrastLevel: Float
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        (getSystemService(Context.UI_MODE_SERVICE) as UiModeManager).contrast
+    } else {
+        0.0f
+    }
