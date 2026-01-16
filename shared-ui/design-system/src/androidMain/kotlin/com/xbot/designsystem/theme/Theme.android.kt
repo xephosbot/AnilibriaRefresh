@@ -232,7 +232,7 @@ actual fun rememberColorScheme(
             dynamicColorScheme(
                 seedColor = tonalPalette.primary80,
                 isDark = darkTheme,
-                style = PaletteStyle.TonalSpot,
+                style = PaletteStyle.Expressive,
                 contrastLevel = context.contrastLevel.toDouble(),
                 specVersion = ColorSpec.SpecVersion.SPEC_2025,
             )
