@@ -10,6 +10,7 @@ import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
+import com.xbot.title.navigation.TitleRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 class TitleViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
-    private val aliasOrId: String,
+    private val titleRoute: TitleRoute,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<TitleScreenState> =
@@ -40,7 +41,7 @@ class TitleViewModel(
 
     private fun fetchTitleDetails() {
         viewModelScope.launch {
-            repository.getRelease(aliasOrId).fold(
+            repository.getRelease(titleRoute.aliasOrId).fold(
                 ifRight = { title ->
                     _state.update { TitleScreenState.Success(title = title) }
                 },
