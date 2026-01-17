@@ -25,7 +25,7 @@ import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.rememberSharedViewModelStoreNavEntryDecorator
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import org.koin.compose.navigation3.koinEntryProviderFixed
+import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 import soup.compose.material.motion.animation.materialFadeThroughIn
 import soup.compose.material.motion.animation.materialFadeThroughOut
@@ -81,7 +81,7 @@ internal fun AnilibriaNavGraph(
                 rememberSharedViewModelStoreNavEntryDecorator(),
             ),
             sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy then dialogStrategy,
-            entryProvider = koinEntryProviderFixed()
+            entryProvider = koinEntryProvider()
         )
     }
 }
