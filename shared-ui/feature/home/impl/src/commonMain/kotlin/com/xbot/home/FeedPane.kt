@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -101,9 +102,13 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -120,7 +125,10 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 import kotlin.time.ExperimentalTime
 
 @OptIn(
@@ -140,7 +148,7 @@ internal fun FeedPane(
     val items = viewModel.releases.collectAsLazyPagingItems()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    FeedPane(
+    FeedPaneContent(
         modifier = modifier,
         state = state,
         items = items,
@@ -158,7 +166,7 @@ internal fun FeedPane(
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-private fun FeedPane(
+private fun FeedPaneContent(
     modifier: Modifier = Modifier,
     state: HomeScreenState,
     items: LazyPagingItems<Release>,
@@ -579,5 +587,31 @@ private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
         )
     } else {
         this
+    }
+}
+
+@Preview
+@Composable
+private fun FeedPanePreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        viewModelOf(::HomeViewModel)
+                    }
+                )
+            }
+        ) {
+            FeedPane(
+                onScheduleClick = {},
+                onReleaseClick = {},
+                onEpisodeClick = { _, _ -> },
+                onProfileClick = {}
+            )
+        }
     }
 }

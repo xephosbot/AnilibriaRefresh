@@ -97,12 +97,8 @@ class HomeViewModel(
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
-            is HomeScreenAction.ShowErrorMessage -> {
-                showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
-            }
-
+            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
             is HomeScreenAction.Refresh -> refresh()
-
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
         }
     }
@@ -132,7 +128,7 @@ data class HomeScreenState(
     val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
     val releasesFeed: ReleasesFeed? = null,
-    val scheduleWeek: Map<LocalDate, List<Schedule>> = emptyMap(),
+    val scheduleWeek: Map<LocalDate, List<Schedule>>? = null,
     val currentBestType: BestType = BestType.Now,
 )
 

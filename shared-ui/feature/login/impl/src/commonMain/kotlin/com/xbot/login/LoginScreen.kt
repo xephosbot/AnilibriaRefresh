@@ -56,8 +56,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
+import com.xbot.domain.di.domainModule
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -67,7 +70,10 @@ import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
 import com.xbot.resources.login_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 
 @Composable
 fun LoginScreen(
@@ -237,27 +243,23 @@ internal fun LoginScreenContent(
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    AnilibriaTheme {
-        LoginScreenContent(
-            state = LoginScreenState(),
-            usernameState = rememberTextFieldState(),
-            passwordState = rememberTextFieldState(),
-            onAction = {},
-            onNavigateToRegistration = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun LoginScreenPreviewDark() {
-    AnilibriaTheme(darkTheme = true) {
-        LoginScreenContent(
-            state = LoginScreenState(),
-            usernameState = rememberTextFieldState(),
-            passwordState = rememberTextFieldState(),
-            onAction = {},
-            onNavigateToRegistration = {}
-        )
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        viewModelOf(::LoginViewModel)
+                    }
+                )
+            }
+        ) {
+            LoginScreen(
+                onNavigateBack = {},
+                onNavigateToRegistration = {}
+            )
+        }
     }
 }

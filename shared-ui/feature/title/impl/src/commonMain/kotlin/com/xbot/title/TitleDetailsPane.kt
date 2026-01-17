@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,20 +74,28 @@ import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
+import com.xbot.title.navigation.TitleRoute
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -398,6 +407,32 @@ private fun LoadingScreen(
                 .verticalScroll(rememberScrollState(), enabled = false)
         ) {
             LargeReleaseCard(null)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TitleDetailsPanePreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        single { TitleRoute("1") }
+                        viewModelOf(::TitleViewModel)
+                    }
+                )
+            }
+        ) {
+            TitleDetailsPane(
+                onBackClick = {},
+                onPlayClick = { _, _ -> },
+                onReleaseClick = {}
+            )
         }
     }
 }

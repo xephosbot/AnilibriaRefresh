@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.Header
@@ -34,6 +35,9 @@ import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -41,6 +45,7 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.label_age_ratings
@@ -52,7 +57,10 @@ import com.xbot.resources.label_seasons
 import com.xbot.resources.label_sorting_types
 import com.xbot.resources.label_years
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -337,4 +345,28 @@ private fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> {
 
 private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
     return start.roundToInt()..endInclusive.roundToInt()
+}
+
+@Preview
+@Composable
+private fun SearchFilterPanePreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        viewModelOf(::SearchViewModel)
+                    }
+                )
+            }
+        ) {
+            SearchFilterPane(
+                showBackButton = true,
+                onBackClick = {},
+            )
+        }
+    }
 }

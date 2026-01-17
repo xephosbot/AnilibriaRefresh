@@ -13,18 +13,21 @@ import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.domain.models.Episode
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.domain.di.domainModule
+import com.xbot.fixtures.di.fixturesModule
+import com.xbot.player.navigation.PlayerRoute
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.Clock
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 
 @Composable
 fun PlayerScreen(
@@ -105,33 +108,24 @@ private fun PlayerScreenContent(
 
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
-private fun PlayerScreenContentPreview() {
-    val episodes = listOf(
-        Episode(
-            id = "1",
-            name = "Episode 1",
-            ordinal = 1.0f,
-            updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        ),
-        Episode(
-            id = "2",
-            name = "Episode 2",
-            ordinal = 2.0f,
-            updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        )
-    )
-    val state = PlayerScreenState(
-        isLoading = false,
-        episodes = episodes,
-        currentEpisode = episodes.first()
-    )
-
-    PreviewContainer {
-        PlayerScreenContent(
-            modifier = Modifier,
-            state = state,
-            onAction = {},
-            onBackClick = {}
-        )
+private fun PlayerScreenPreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        single { PlayerRoute(releaseId = 1, episodeOrdinal = 0) }
+                        viewModelOf(::PlayerViewModel)
+                    }
+                )
+            }
+        ) {
+            PlayerScreen(
+                onBackClick = {}
+            )
+        }
     }
 }

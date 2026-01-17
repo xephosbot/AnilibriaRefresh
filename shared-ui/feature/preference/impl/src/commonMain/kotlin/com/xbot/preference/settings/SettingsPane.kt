@@ -18,13 +18,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.domain.di.domainModule
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.preference_settings_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -70,6 +78,29 @@ fun SettingsPane(
             contentAlignment = Alignment.Center
         ) {
             Text(text = stringResource(Res.string.preference_settings_title))
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SettingsPanePreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        viewModelOf(::SettingsViewModel)
+                    }
+                )
+            }
+        ) {
+            SettingsPane(
+                onNavigateBack = {}
+            )
         }
     }
 }

@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -50,15 +51,22 @@ import com.xbot.designsystem.icons.Close
 import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
+import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.di.fixturesModule
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters
 import com.xbot.resources.label_search_results
 import com.xbot.resources.search_bar_placeholder
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
 
 @Composable
 internal fun SearchResultPane(
@@ -266,6 +274,31 @@ private fun SearchResultContent(
                     onClick = onReleaseClick,
                 )
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SearchResultPanePreview() {
+    AnilibriaPreview {
+        KoinApplicationPreview(
+            application = {
+                modules(
+                    domainModule,
+                    fixturesModule,
+                    module {
+                        single { SnackbarManager }
+                        viewModelOf(::SearchViewModel)
+                    }
+                )
+            }
+        ) {
+            SearchResultPane(
+                onBackClick = {},
+                onShowFilters = {},
+                onReleaseClick = {}
+            )
         }
     }
 }
