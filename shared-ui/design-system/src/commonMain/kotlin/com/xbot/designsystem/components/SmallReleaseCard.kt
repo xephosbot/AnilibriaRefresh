@@ -31,9 +31,9 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.designsystem.utils.dummyReleaseList
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 
 @Composable
@@ -116,9 +116,9 @@ private fun SmallReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun SmallReleaseCardPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         SmallReleaseCard(
-            release = dummyReleaseList[1],
+            release = releaseMocks[1],
             onClick = {
                 // Handle the click event here
             }

@@ -42,9 +42,9 @@ import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.designsystem.utils.dummyReleaseList
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
@@ -197,9 +197,9 @@ private fun LargeReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun LargeReleaseCardPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         LargeReleaseCard(
-            release = dummyReleaseList[3],
+            release = releaseMocks[3],
         ) {
             MediumSplitButton(
                 onLeadingClick = {

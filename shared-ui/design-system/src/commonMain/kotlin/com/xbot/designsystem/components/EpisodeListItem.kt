@@ -27,16 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.utils.PreviewContainer
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Episode
+import com.xbot.fixtures.data.episodeMocks
 import com.xbot.localization.localizedName
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.episode_title
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
@@ -138,14 +136,9 @@ internal fun ListItemLayout(
 @Preview
 @Composable
 private fun EpisodeListItemPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         EpisodeListItem(
-            episode = Episode(
-                id = "1",
-                name = "Episode 1",
-                ordinal = 1.0f,
-                updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            ),
+            episode = episodeMocks.first(),
             onClick = {
 
             }

@@ -23,10 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.theme.AnilibriaTheme
-import com.xbot.designsystem.utils.dummyReleaseList
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ReleaseType
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.episode_abbreviation
@@ -115,7 +115,7 @@ private fun ReleaseAgeRatingPill(
 private fun ReleaseMetaTextPreview() {
     AnilibriaTheme {
         Surface {
-            ReleaseMetaText(release = dummyReleaseList[1])
+            ReleaseMetaText(release = releaseMocks[1])
         }
     }
 }
@@ -125,7 +125,7 @@ private fun ReleaseMetaTextPreview() {
 private fun ReleaseMetaTextPreviewDark() {
     AnilibriaTheme(darkTheme = true) {
         Surface {
-            ReleaseMetaText(release = dummyReleaseList[1])
+            ReleaseMetaText(release = releaseMocks[1])
         }
     }
 }

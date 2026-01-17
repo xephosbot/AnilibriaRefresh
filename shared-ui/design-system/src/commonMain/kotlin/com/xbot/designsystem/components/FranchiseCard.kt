@@ -39,10 +39,10 @@ import androidx.compose.ui.zIndex
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.designsystem.utils.dummyReleaseList
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.franchiseMocks
 import com.xbot.resources.Res
 import com.xbot.resources.franchise_episodes_count
 import com.xbot.resources.franchise_seasons_count
@@ -252,26 +252,9 @@ private fun FranchiseCardPlaceholder(
 @Preview
 @Composable
 private fun FranchiseCardPreview() {
-    val franchise = remember {
-        Franchise(
-            id = "1",
-            name = "Franchise Name ",
-            englishName = "Franchise English Name",
-            rating = 9.0,
-            lastYear = 2023,
-            firstYear = 2020,
-            totalReleases = dummyReleaseList.size,
-            totalEpisodes = 24,
-            totalDuration = "12h",
-            totalDurationInSeconds = 43200,
-            poster = dummyReleaseList.first().poster,
-            franchiseReleases = dummyReleaseList
-        )
-    }
-
-    PreviewContainer {
+    AnilibriaPreview {
         FranchiseCard(
-            franchise = franchise,
+            franchise = franchiseMocks.first(),
             onClick = {}
         )
     }

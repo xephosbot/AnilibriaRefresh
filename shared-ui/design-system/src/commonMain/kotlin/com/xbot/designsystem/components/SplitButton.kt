@@ -71,7 +71,7 @@ import androidx.compose.ui.util.fastFirst
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowDropDown
 import com.xbot.designsystem.icons.PlayArrow
-import com.xbot.designsystem.utils.PreviewContainer
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
 import org.jetbrains.compose.resources.stringResource
@@ -268,7 +268,7 @@ private fun SplitButtonLayout(
 @Preview
 @Composable
 private fun SplitButtonPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         MediumSplitButton(
             onLeadingClick = {
                 // Handle leading button click

@@ -37,9 +37,9 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.designsystem.utils.dummyReleaseList
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 
 @Composable
@@ -298,9 +298,9 @@ private const val DescriptionAlpha = 0.8f
 @Preview
 @Composable
 private fun ReleaseListItemPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         ReleaseListItem(
-            release = dummyReleaseList.first()
+            release = releaseMocks.first()
         )
     }
 }
@@ -308,7 +308,7 @@ private fun ReleaseListItemPreview() {
 @Preview
 @Composable
 private fun ReleaseListItemLoadingPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         ReleaseListItem(
             release = null
         )

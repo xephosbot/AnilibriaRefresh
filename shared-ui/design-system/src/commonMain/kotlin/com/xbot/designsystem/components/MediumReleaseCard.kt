@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.utils.PreviewContainer
-import com.xbot.designsystem.utils.dummyReleaseList
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 
 @Composable
@@ -176,9 +176,9 @@ private fun MediumReleaseCardPlaceholder(
 @Preview
 @Composable
 private fun MediumReleaseCardPreview() {
-    PreviewContainer {
+    AnilibriaPreview {
         MediumReleaseCard(
-            release = dummyReleaseList[0],
+            release = releaseMocks[0],
             onClick = {},
         ) {
             Button(
