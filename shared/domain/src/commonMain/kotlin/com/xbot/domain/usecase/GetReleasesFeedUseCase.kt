@@ -14,6 +14,7 @@ import com.xbot.domain.repository.FranchisesRepository
 import com.xbot.domain.repository.GenresRepository
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.domain.repository.ScheduleRepository
+import com.xbot.domain.utils.DispatcherProvider
 
 class GetReleasesFeedUseCase(
     private val releasesRepository: ReleasesRepository,
@@ -21,12 +22,14 @@ class GetReleasesFeedUseCase(
     private val scheduleRepository: ScheduleRepository,
     private val franchisesRepository: FranchisesRepository,
     private val genresRepository: GenresRepository,
+    private val dispatcherProvider: DispatcherProvider,
 ) {
     suspend operator fun invoke(): Either<DomainError, ReleasesFeed> = either {
         val currentSeason = scheduleRepository.getCurrentSeason().bind()
         val currentYear = scheduleRepository.getCurrentYear().bind()
 
         parZip(
+            ctx = dispatcherProvider.io,
             { releasesRepository.getRandomReleases(10) },
             { scheduleRepository.getScheduleNow() },
             {

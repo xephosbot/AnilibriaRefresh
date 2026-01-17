@@ -7,7 +7,7 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "com.xbot.shared.data"
+        namespace = "com.xbot.shared.fixtures"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
@@ -19,24 +19,12 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.network)
         implementation(projects.shared.domain)
-        implementation(projects.shared.fixtures)
-        implementation(libs.androidx.datastore.core)
-        implementation(libs.androidx.datastore.preferences)
         implementation(libs.androidx.paging.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.ktor.client.core)
-        implementation(libs.ktor.client.auth)
         implementation(libs.arrow.core)
         implementation(libs.koin.core)
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
     }
 
     compilerOptions {

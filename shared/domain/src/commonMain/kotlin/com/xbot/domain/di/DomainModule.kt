@@ -5,10 +5,14 @@ import com.xbot.domain.usecase.GetCatalogFiltersUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
+import com.xbot.domain.utils.DefaultDispatcherProvider
+import com.xbot.domain.utils.DispatcherProvider
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
+    single<DispatcherProvider> { DefaultDispatcherProvider() }
+
     singleOf(::GetAuthStateUseCase)
     singleOf(::GetReleasesFeedUseCase)
     singleOf(::GetCatalogFiltersUseCase)

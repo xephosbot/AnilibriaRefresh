@@ -24,6 +24,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared.domain)
+        implementation(projects.shared.fixtures)
         implementation(libs.kotlinx.datetime)
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
@@ -38,6 +39,7 @@ kotlin {
         api(libs.androidx.paging.core)
         api(libs.androidx.paging.compose)
         api(libs.lifecycle.viewmodel.compose)
+        api(libs.lifecycle.runtime.compose)
         api(libs.coil.compose)
         api(libs.sticky.headers)
         api(libs.shimmer.compose)

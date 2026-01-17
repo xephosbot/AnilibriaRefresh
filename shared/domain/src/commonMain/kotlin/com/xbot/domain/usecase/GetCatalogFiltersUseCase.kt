@@ -6,12 +6,15 @@ import arrow.fx.coroutines.parZip
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
+import com.xbot.domain.utils.DispatcherProvider
 
 class GetCatalogFiltersUseCase(
-    private val catalogRepository: CatalogRepository
+    private val catalogRepository: CatalogRepository,
+    private val dispatcherProvider: DispatcherProvider,
 ) {
     suspend operator fun invoke(): Either<DomainError, CatalogFilters> = either {
         parZip(
+            ctx = dispatcherProvider.io,
             { catalogRepository.getCatalogAgeRatings() },
             { catalogRepository.getCatalogGenres() },
             { catalogRepository.getCatalogProductionStatuses() },
