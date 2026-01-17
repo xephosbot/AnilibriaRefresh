@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.WindowCompat
@@ -19,6 +20,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 @Composable
 actual fun SystemBarsEffect() {
+    if (LocalInspectionMode.current) return
+
     val context = LocalContext.current
     val view = LocalView.current
     val configuration = LocalConfiguration.current
