@@ -7,6 +7,9 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 
@@ -21,12 +24,16 @@ fun AutoScrollSideEffect(
         return
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     if (doAutoScroll) {
-        LaunchedEffect(pagerState) {
-            while (true) {
-                yield()
-                delay(autoScrollDurationMillis)
-                pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
+        LaunchedEffect(pagerState, lifecycleOwner) {
+            lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (true) {
+                    yield()
+                    delay(autoScrollDurationMillis)
+                    pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
+                }
             }
         }
     }
