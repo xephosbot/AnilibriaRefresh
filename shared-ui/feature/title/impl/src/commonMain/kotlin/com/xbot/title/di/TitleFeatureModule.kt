@@ -12,7 +12,7 @@ import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
@@ -24,7 +24,7 @@ val titleFeatureModule = module {
     }
     navigation<TitleRoute> { key ->
         val viewModel = koinViewModel<TitleViewModel> {
-            parametersOf(key.aliasOrId)
+            parametersOf(key)
         }
         val navigator = LocalNavigator.current
         TitleDetailsPane(
@@ -40,7 +40,5 @@ val titleFeatureModule = module {
             },
         )
     }
-    viewModel { (aliasOrId: String) ->
-        TitleViewModel(get(), get(), aliasOrId)
-    }
+    viewModelOf(::TitleViewModel)
 }
