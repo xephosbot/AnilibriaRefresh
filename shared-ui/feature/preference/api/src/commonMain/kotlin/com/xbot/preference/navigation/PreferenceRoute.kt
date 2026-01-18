@@ -8,6 +8,8 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.icons.Star
 import com.xbot.resources.Res
+import com.xbot.resources.preference_appearance_description
+import com.xbot.resources.preference_appearance_title
 import com.xbot.resources.preference_discord_description
 import com.xbot.resources.preference_discord_title
 import com.xbot.resources.preference_donate_description
@@ -16,8 +18,6 @@ import com.xbot.resources.preference_github_description
 import com.xbot.resources.preference_github_title
 import com.xbot.resources.preference_history_description
 import com.xbot.resources.preference_history_title
-import com.xbot.resources.preference_settings_description
-import com.xbot.resources.preference_settings_title
 import com.xbot.resources.preference_team_description
 import com.xbot.resources.preference_team_title
 import com.xbot.resources.preference_youtube_description
@@ -73,11 +73,11 @@ data object PreferenceDonateRoute : PreferenceOptionRoute {
 }
 
 @Serializable
-data object PreferenceSettingsRoute : PreferenceOptionRoute {
+data object PreferenceAppearanceRoute : PreferenceOptionRoute {
     override val title: StringResource
-        get() = Res.string.preference_settings_title
+        get() = Res.string.preference_appearance_title
     override val description: StringResource
-        get() = Res.string.preference_settings_description
+        get() = Res.string.preference_appearance_description
     override val icon: ImageVector = AnilibriaIcons.Filled.Settings
 }
 

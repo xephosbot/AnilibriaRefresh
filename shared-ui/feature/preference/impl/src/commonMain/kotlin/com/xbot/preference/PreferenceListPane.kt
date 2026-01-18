@@ -1,6 +1,5 @@
 package com.xbot.preference
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -11,16 +10,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,12 +35,13 @@ import com.xbot.domain.di.domainModule
 import com.xbot.fixtures.di.fixturesModule
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
+import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
-import com.xbot.preference.navigation.PreferenceSettingsRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.navigation.YouTubeRoute
+import com.xbot.preference.ui.PreferenceItem
 import com.xbot.resources.Res
 import com.xbot.resources.preference_screen_title
 import com.xbot.resources.preference_section_links
@@ -121,15 +118,33 @@ private fun PreferencesList(
                 }
                 itemsIndexed(items) { index, item ->
                     val isSelected = item == currentDestination && !isSinglePane
+                    val color = if (isSelected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceBright
+                    }
                     
                     PreferenceItem(
                         modifier = Modifier.section(index, items.size),
-                        title = stringResource(item.title),
-                        description = stringResource(item.description),
-                        icon = item.icon,
-                        onClick = { onNavigateToDetail(item) },
-                        isSelected = isSelected,
-                        showChevron = item !is ExternalLinkNavKey
+                        headlineContent = { Text(text = stringResource(item.title)) },
+                        supportingContent = { Text(text = stringResource(item.description)) },
+                        leadingContent = {
+                            Icon(
+                                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
+                                imageVector = item.icon,
+                                contentDescription = null
+                            )
+                        },
+                        trailingContent = {
+                            if (item !is ExternalLinkNavKey) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.ChevronRight,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        colors = ListItemDefaults.colors(containerColor = color),
+                        onClick = { onNavigateToDetail(item) }
                     )
                 }
                 item {
@@ -140,59 +155,13 @@ private fun PreferencesList(
     }
 }
 
-@Composable
-private fun PreferenceItem(
-    modifier: Modifier = Modifier,
-    title: String,
-    description: String,
-    icon: ImageVector,
-    onClick: () -> Unit,
-    isSelected: Boolean = false,
-    showChevron: Boolean = true
-) {
-    val color = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceBright
-    }
-
-    ListItem(
-        modifier = modifier
-            .clickable(onClick = onClick),
-        headlineContent = { Text(text = title) },
-        supportingContent = { Text(text = description) },
-        leadingContent = {
-            Icon(
-                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
-                imageVector = icon,
-                contentDescription = null
-            )
-        },
-        trailingContent = {
-            if (showChevron) {
-                Icon(
-                    imageVector = AnilibriaIcons.ChevronRight,
-                    contentDescription = null
-                )
-            }
-        },
-        colors = ListItemDefaults.colors(
-            containerColor = color,
-            headlineColor = MaterialTheme.colorScheme.contentColorFor(color),
-            leadingIconColor = MaterialTheme.colorScheme.contentColorFor(color),
-            overlineColor = MaterialTheme.colorScheme.contentColorFor(color),
-            supportingColor = MaterialTheme.colorScheme.contentColorFor(color),
-        )
-    )
-}
-
 object PreferenceListDefaults {
     val sections: Map<StringResource, List<PreferenceOptionRoute>> = mapOf(
         Res.string.preference_section_main to listOf(
             PreferenceHistoryRoute,
             PreferenceTeamRoute,
             PreferenceDonateRoute,
-            PreferenceSettingsRoute
+            PreferenceAppearanceRoute
         ),
         Res.string.preference_section_links to listOf(
             GitHubRoute,

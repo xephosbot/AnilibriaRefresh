@@ -1,5 +1,6 @@
 package com.xbot.data.di
 
+import com.xbot.data.repository.DefaultAppearanceRepository
 import com.xbot.data.repository.DefaultAuthRepository
 import com.xbot.data.repository.DefaultCatalogRepository
 import com.xbot.data.repository.DefaultFranchisesRepository
@@ -8,6 +9,7 @@ import com.xbot.data.repository.DefaultProfileRepository
 import com.xbot.data.repository.DefaultReleasesRepository
 import com.xbot.data.repository.DefaultScheduleRepository
 import com.xbot.data.repository.DefaultTokenStorage
+import com.xbot.domain.repository.AppearanceRepository
 import com.xbot.domain.repository.AuthRepository
 import com.xbot.domain.repository.CatalogRepository
 import com.xbot.domain.repository.FranchisesRepository
@@ -29,4 +31,5 @@ internal val repositoryModule = module {
     singleOf(::DefaultScheduleRepository) { bind<ScheduleRepository>() }
     singleOf(::DefaultGenresRepository) { bind<GenresRepository>() }
     singleOf(::DefaultTokenStorage) { bind<TokenStorage>() }
+    singleOf(::DefaultAppearanceRepository) { bind<AppearanceRepository>() }
 }

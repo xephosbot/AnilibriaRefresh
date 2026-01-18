@@ -107,14 +107,30 @@
     <string name="preference_team_description">Информация о команде</string>
     <string name="preference_donate_title">Поддержать проект</string>
     <string name="preference_donate_description">Пожертвования</string>
-    <string name="preference_settings_title">Настройки</string>
-    <string name="preference_settings_description">Настройки приложения</string>
+    <string name="preference_appearance_title">Внешний вид</string>
+    <string name="preference_appearance_description">Настройки внешнего вида</string>
     <string name="preference_github_title">GitHub</string>
     <string name="preference_github_description">Репозиторий проекта</string>
     <string name="preference_youtube_title">YouTube</string>
     <string name="preference_youtube_description">Наш канал</string>
     <string name="preference_discord_title">Discord</string>
     <string name="preference_discord_description">Наш сервер</string>
+
+    <!-- Appearance Options -->
+    <string name="preference_appearance_theme_title">Тема</string>
+    <string name="preference_appearance_theme_description">Выбор между светлым и тёмным оформлением</string>
+    <string name="preference_appearance_theme_system">Системная</string>
+    <string name="preference_appearance_theme_dark">Темная</string>
+    <string name="preference_appearance_theme_light">Светлая</string>
+
+    <string name="preference_appearance_dynamic_theme_title">Динамическая тема</string>
+    <string name="preference_appearance_dynamic_theme_description">Использовать цвета Material You</string>
+
+    <string name="preference_appearance_pure_black_title">Глубокий чёрный</string>
+    <string name="preference_appearance_pure_black_description">Использовать чёрный фон для экономии заряда на AMOLED-экранах</string>
+
+    <string name="preference_appearance_expressive_color_title">Выразительные цвета</string>
+    <string name="preference_appearance_expressive_color_description">Использовать более выразительную цветовую палитру в приложении</string>
 
     <string name="preference_screen_title">Настройки</string>
     <string name="preference_section_main">Основное</string>

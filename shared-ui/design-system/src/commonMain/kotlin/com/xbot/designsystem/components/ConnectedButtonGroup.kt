@@ -2,6 +2,7 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ToggleButtonShapes
@@ -17,7 +18,7 @@ fun <T> SingleChoiceConnectedButtonGroup(
     selectedItem: T,
     modifier: Modifier = Modifier,
     spacing: Dp = ConnectedButtonGroupDefaults.Spacing,
-    itemContent: @Composable (selected: Boolean, item: T) -> Unit
+    itemContent: @Composable RowScope.(selected: Boolean, item: T) -> Unit
 ) {
     Row(
         modifier = modifier,

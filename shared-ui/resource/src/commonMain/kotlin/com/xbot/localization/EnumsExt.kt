@@ -64,3 +64,10 @@ val MemberRole.stringRes: StringResource
         MemberRole.DECORATING -> Res.string.member_role_decorating
         MemberRole.TRANSLATING -> Res.string.member_role_translating
     }
+
+val ThemeOption.stringRes: StringResource
+    get() = when (this) {
+        ThemeOption.System -> Res.string.preference_appearance_theme_system
+        ThemeOption.Dark -> Res.string.preference_appearance_theme_dark
+        ThemeOption.Light -> Res.string.preference_appearance_theme_light
+    }

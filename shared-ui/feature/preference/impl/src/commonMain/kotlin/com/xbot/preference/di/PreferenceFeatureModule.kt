@@ -8,21 +8,21 @@ import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.preference.PreferenceListPane
+import com.xbot.preference.appearance.AppearancePane
+import com.xbot.preference.appearance.AppearanceViewModel
 import com.xbot.preference.donate.DonatePane
 import com.xbot.preference.donate.DonateViewModel
 import com.xbot.preference.history.HistoryPane
 import com.xbot.preference.history.HistoryViewModel
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
+import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
-import com.xbot.preference.navigation.PreferenceSettingsRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.navigation.YouTubeRoute
-import com.xbot.preference.settings.SettingsPane
-import com.xbot.preference.settings.SettingsViewModel
 import com.xbot.preference.team.TeamPane
 import com.xbot.preference.team.TeamViewModel
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
@@ -39,7 +39,7 @@ val preferenceFeatureModule = module {
         subclass(PreferenceHistoryRoute::class)
         subclass(PreferenceTeamRoute::class)
         subclass(PreferenceDonateRoute::class)
-        subclass(PreferenceSettingsRoute::class)
+        subclass(PreferenceAppearanceRoute::class)
         subclass(GitHubRoute::class)
         subclass(YouTubeRoute::class)
         subclass(DiscordRoute::class)
@@ -95,11 +95,11 @@ val preferenceFeatureModule = module {
             }
         )
     }
-    navigation<PreferenceSettingsRoute>(
+    navigation<PreferenceAppearanceRoute>(
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
-        SettingsPane(
+        AppearancePane(
             onNavigateBack = {
                 navigator.navigateBack()
             }
@@ -108,5 +108,5 @@ val preferenceFeatureModule = module {
     viewModelOf(::HistoryViewModel)
     viewModelOf(::TeamViewModel)
     viewModelOf(::DonateViewModel)
-    viewModelOf(::SettingsViewModel)
+    viewModelOf(::AppearanceViewModel)
 }

@@ -40,4 +40,5 @@ internal val appModule = module {
     }
 
     factory { SnackbarManager }
+    viewModelOf(::AppViewModel)
 }

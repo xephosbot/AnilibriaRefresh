@@ -1,5 +1,6 @@
 package com.xbot.fixtures.di
 
+import com.xbot.domain.repository.AppearanceRepository
 import com.xbot.domain.repository.AuthRepository
 import com.xbot.domain.repository.CatalogRepository
 import com.xbot.domain.repository.CollectionsRepository
@@ -12,6 +13,7 @@ import com.xbot.domain.repository.ProfileRepository
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.domain.utils.DispatcherProvider
+import com.xbot.fixtures.repository.FakeAppearanceRepository
 import com.xbot.fixtures.repository.FakeAuthRepository
 import com.xbot.fixtures.repository.FakeCatalogRepository
 import com.xbot.fixtures.repository.FakeCollectionsRepository
@@ -40,4 +42,5 @@ val fixturesModule = module {
     single<OtpRepository> { FakeOtpRepository() }
     single<ProfileRepository> { FakeProfileRepository() }
     single<ScheduleRepository> { FakeScheduleRepository() }
+    single<AppearanceRepository> { FakeAppearanceRepository() }
 }
