@@ -29,6 +29,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,9 +66,11 @@ import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.Forward10
 import com.xbot.designsystem.icons.Pause
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.icons.PlaylistPlay
+import com.xbot.designsystem.icons.Replay10
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.domain.models.Episode
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
@@ -130,6 +133,12 @@ fun VideoPlayerController(
                         } else {
                             player.play()
                         }
+                    },
+                    onSeekBack = {
+                        player.seekBackward(10000L)
+                    },
+                    onSeekForward = {
+                        player.seekForward(10000L)
                     },
                     onTimeout = { isControllerVisible = false },
                     onOpenPlaylist = {
@@ -220,6 +229,8 @@ private fun ControllerOverlay(
     title: String,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
+    onSeekBack: () -> Unit,
+    onSeekForward: () -> Unit,
     onOpenPlaylist: () -> Unit,
     onTimeout: () -> Unit,
     modifier: Modifier = Modifier,
@@ -235,6 +246,8 @@ private fun ControllerOverlay(
                 title = title,
                 onClickBack = onClickBack,
                 onPlayPause = onPlayPause,
+                onSeekBack = onSeekBack,
+                onSeekForward = onSeekForward,
                 onOpenPlaylist = onOpenPlaylist,
                 onTimeout = onTimeout,
             )
@@ -248,6 +261,8 @@ private fun AutoHidingController(
     title: String,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
+    onSeekBack: () -> Unit,
+    onSeekForward: () -> Unit,
     onOpenPlaylist: () -> Unit,
     onTimeout: () -> Unit,
 ) {
@@ -275,13 +290,32 @@ private fun AutoHidingController(
         )
 
         if (!playerState.isLoading) {
-            PlayPauseButton(
-                state = playerState,
-                onClick = {
-                    onPlayPause()
-                    hideControllerKey++
-                }
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SeekBackButton(
+                    onClick = {
+                        onSeekBack()
+                        hideControllerKey++
+                    }
+                )
+
+                PlayPauseButton(
+                    state = playerState,
+                    onClick = {
+                        onPlayPause()
+                        hideControllerKey++
+                    }
+                )
+
+                SeekForwardButton(
+                    onClick = {
+                        onSeekForward()
+                        hideControllerKey++
+                    }
+                )
+            }
         }
 
         TimelineControls(
@@ -399,6 +433,44 @@ private fun PlayPauseButton(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun SeekBackButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FilledIconButton(
+        modifier = modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+        shapes = IconButtonDefaults.shapes(IconButtonDefaults.mediumSquareShape),
+        onClick = onClick,
+    ) {
+        Icon(
+            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+            imageVector = AnilibriaIcons.Replay10,
+            contentDescription = null,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun SeekForwardButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FilledIconButton(
+        modifier = modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+        shapes = IconButtonDefaults.shapes(IconButtonDefaults.mediumSquareShape),
+        onClick = onClick,
+    ) {
+        Icon(
+            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+            imageVector = AnilibriaIcons.Forward10,
+            contentDescription = null,
+        )
+    }
+}
+
 @Composable
 private fun Modifier.symmetricInsetsPadding(): Modifier {
     val insets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
@@ -427,6 +499,24 @@ private fun Modifier.symmetricInsetsPadding(): Modifier {
     }
     return this.windowInsetsPadding(symmetricInsets)
         .consumeWindowInsets(symmetricInsets)
+}
+
+private fun VideoPlayerState.seekForward(amount: Long) {
+    val durationSec = metadata.duration ?: 0
+    println("durationSec: $durationSec")
+    if (durationSec > 0) {
+        val delta = (amount.toFloat() / durationSec) * 1000f
+        seekTo((sliderPos + delta).coerceIn(0f, 1000f))
+    }
+}
+
+private fun VideoPlayerState.seekBackward(amount: Long) {
+    val durationSec = metadata.duration ?: 0
+    println("durationSec: $durationSec")
+    if (durationSec > 0) {
+        val delta = (amount.toFloat() / durationSec) * 1000f
+        seekTo((sliderPos - delta).coerceIn(0f, 1000f))
+    }
 }
 
 private const val CONTROLLER_HIDE_DELAY_MS = 3000L

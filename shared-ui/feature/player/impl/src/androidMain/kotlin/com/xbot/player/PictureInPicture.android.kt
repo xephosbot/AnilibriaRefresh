@@ -37,6 +37,7 @@ import androidx.core.pip.PictureInPictureDelegate.Event
 import androidx.core.pip.PictureInPictureDelegate.OnPictureInPictureEventListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.xbot.sharedui.feature.player.impl.R
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.flow.combine
 
@@ -81,6 +82,8 @@ actual fun rememberPictureInPictureController(player: VideoPlayerState): Picture
                     when (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
                         EXTRA_CONTROL_PAUSE -> player.pause()
                         EXTRA_CONTROL_PLAY -> player.play()
+                        EXTRA_CONTROL_REPLAY -> player.seekBackward(10000L)
+                        EXTRA_CONTROL_FORWARD -> player.seekForward(10000L)
                     }
                 }
             }
@@ -200,25 +203,51 @@ internal class PictureInPictureControllerImpl(
         isPlaying: Boolean,
         context: Context
     ): List<RemoteAction> {
-        return listOf(
-            if (isPlaying) {
+        val actions = mutableListOf<RemoteAction>()
+
+        actions.add(
+            buildRemoteAction(
+                iconResId = R.drawable.replay_10_24px,
+                title = "Replay 10s",
+                requestCode = REQUEST_REPLAY,
+                controlType = EXTRA_CONTROL_REPLAY,
+                context = context
+            )
+        )
+
+        if (isPlaying) {
+            actions.add(
                 buildRemoteAction(
-                    iconResId = android.R.drawable.ic_media_pause,
+                    iconResId = R.drawable.pause_24px,
                     title = "Pause",
                     requestCode = REQUEST_PAUSE,
                     controlType = EXTRA_CONTROL_PAUSE,
                     context = context
                 )
-            } else {
+            )
+        } else {
+            actions.add(
                 buildRemoteAction(
-                    iconResId = android.R.drawable.ic_media_play,
+                    iconResId = R.drawable.play_arrow_24px,
                     title = "Play",
                     requestCode = REQUEST_PLAY,
                     controlType = EXTRA_CONTROL_PLAY,
                     context = context
                 )
-            }
+            )
+        }
+
+        actions.add(
+            buildRemoteAction(
+                iconResId = R.drawable.forward_10_24px,
+                title = "Forward 10s",
+                requestCode = REQUEST_FORWARD,
+                controlType = EXTRA_CONTROL_FORWARD,
+                context = context
+            )
         )
+
+        return actions
     }
 
     companion object {
@@ -259,9 +288,29 @@ private fun buildRemoteAction(
     )
 }
 
+private fun VideoPlayerState.seekForward(amount: Long) {
+    val durationSec = metadata.duration ?: 0
+    if (durationSec > 0) {
+        val delta = (amount.toFloat() / durationSec) * 1000f
+        seekTo((sliderPos + delta).coerceIn(0f, 1000f))
+    }
+}
+
+private fun VideoPlayerState.seekBackward(amount: Long) {
+    val durationSec = metadata.duration ?: 0
+    if (durationSec > 0) {
+        val delta = (amount.toFloat() / durationSec) * 1000f
+        seekTo((sliderPos - delta).coerceIn(0f, 1000f))
+    }
+}
+
 private const val ACTION_BROADCAST_CONTROL = "broadcast_control"
 private const val EXTRA_CONTROL_TYPE = "control_type"
 private const val EXTRA_CONTROL_PLAY = 1
 private const val EXTRA_CONTROL_PAUSE = 2
-private const val REQUEST_PLAY = 3
-private const val REQUEST_PAUSE = 4
+private const val EXTRA_CONTROL_REPLAY = 3
+private const val EXTRA_CONTROL_FORWARD = 4
+private const val REQUEST_PLAY = 1
+private const val REQUEST_PAUSE = 2
+private const val REQUEST_REPLAY = 3
+private const val REQUEST_FORWARD = 4
