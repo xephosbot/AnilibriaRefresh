@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchViewModel(
+internal class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogFilters: GetCatalogFiltersUseCase,
     private val snackbarManager: SnackbarManager,
@@ -159,7 +159,7 @@ class SearchViewModel(
 }
 
 @Stable
-data class SearchFiltersState(
+internal data class SearchFiltersState(
     val loading: Boolean = true,
     val selectedGenres: Set<Genre> = emptySet(),
     val selectedReleaseTypes: Set<ReleaseType> = emptySet(),
@@ -188,7 +188,7 @@ private fun CatalogFilters.isEmpty(): Boolean {
             && this.ageRatings.isEmpty() && this.publishStatuses.isEmpty() && this.productionStatuses.isEmpty()
 }
 
-sealed interface SearchScreenAction {
+internal sealed interface SearchScreenAction {
     data class ToggleGenre(val genre: Genre) : SearchScreenAction
     data class TogglePublishStatus(val publishStatus: PublishStatus) : SearchScreenAction
     data class ToggleProductionStatus(val productionStatus: ProductionStatus) : SearchScreenAction

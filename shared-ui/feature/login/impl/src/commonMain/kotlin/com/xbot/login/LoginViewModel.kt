@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
+internal class LoginViewModel(
     private val authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -80,18 +80,18 @@ class LoginViewModel(
 }
 
 @Stable
-data class LoginScreenState(
+internal data class LoginScreenState(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
 )
 
 @Stable
-sealed interface LoginScreenAction {
+internal sealed interface LoginScreenAction {
     data object Login : LoginScreenAction
     data object Logout : LoginScreenAction
 }
 
 @Stable
-sealed interface LoginScreenEffect {
+internal sealed interface LoginScreenEffect {
     data object NavigateBack : LoginScreenEffect
 }

@@ -36,7 +36,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun DonatePane(
+internal fun DonatePane(
     modifier: Modifier = Modifier,
     viewModel: DonateViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,

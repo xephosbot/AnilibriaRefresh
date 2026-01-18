@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class AppearanceViewModel(
+internal class AppearanceViewModel(
     getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
     private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
@@ -63,7 +63,7 @@ class AppearanceViewModel(
     }
 }
 
-sealed interface AppearanceScreenAction {
+internal sealed interface AppearanceScreenAction {
     data class OnThemeOptionChange(val option: ThemeOption) : AppearanceScreenAction
     data class OnDynamicThemeChange(val enabled: Boolean) : AppearanceScreenAction
     data class OnPureBlackChange(val enabled: Boolean) : AppearanceScreenAction

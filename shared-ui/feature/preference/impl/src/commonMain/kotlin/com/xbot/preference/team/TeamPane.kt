@@ -36,7 +36,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun TeamPane(
+internal fun TeamPane(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,

@@ -62,7 +62,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AppearancePane(
+internal fun AppearancePane(
     modifier: Modifier = Modifier,
     viewModel: AppearanceViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,

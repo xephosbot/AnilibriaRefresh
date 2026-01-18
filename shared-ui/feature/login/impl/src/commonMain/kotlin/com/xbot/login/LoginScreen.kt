@@ -76,7 +76,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(
+internal class PlayerViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
     private val route: PlayerRoute,
@@ -78,12 +78,12 @@ class PlayerViewModel(
 }
 
 @Stable
-data class PlayerScreenState(
+internal data class PlayerScreenState(
     val isLoading: Boolean = true,
     val episodes: List<Episode> = emptyList(),
     val currentEpisode: Episode? = null,
 )
 
-sealed interface PlayerScreenAction {
+internal sealed interface PlayerScreenAction {
     data class OnEpisodeChange(val episode: Episode) : PlayerScreenAction
 }

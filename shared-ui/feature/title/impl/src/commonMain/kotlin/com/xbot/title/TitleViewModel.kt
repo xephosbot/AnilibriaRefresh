@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TitleViewModel(
+internal class TitleViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
     private val titleRoute: TitleRoute,
@@ -64,13 +64,13 @@ class TitleViewModel(
 }
 
 @Stable
-sealed interface TitleScreenState {
+internal sealed interface TitleScreenState {
     data object Loading : TitleScreenState
     data class Success(
         val title: ReleaseDetail,
     ) : TitleScreenState
 }
 
-sealed interface TitleScreenAction {
+internal sealed interface TitleScreenAction {
     // TODO: Actions for title screen
 }

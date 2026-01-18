@@ -29,7 +29,7 @@ import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
 
 @Composable
-fun PreferenceItem(
+internal fun PreferenceItem(
     headlineContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     supportingContent: @Composable (() -> Unit)? = null,
@@ -51,7 +51,7 @@ fun PreferenceItem(
 }
 
 @Composable
-fun SwitchPreferenceItem(
+internal fun SwitchPreferenceItem(
     headlineContent: @Composable () -> Unit,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
@@ -103,7 +103,7 @@ fun SwitchPreferenceItem(
 }
 
 @Composable
-fun ExperimentalPill(
+internal fun ExperimentalPill(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primaryContainer,
     contentColor: Color = contentColorFor(color),

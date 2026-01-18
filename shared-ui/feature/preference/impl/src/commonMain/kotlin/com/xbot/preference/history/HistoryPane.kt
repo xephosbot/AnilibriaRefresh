@@ -36,7 +36,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HistoryPane(
+internal fun HistoryPane(
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,

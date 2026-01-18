@@ -13,6 +13,10 @@ kotlin {
         namespace = "com.xbot.sharedui.feature.player.impl"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
+
+        androidResources {
+            enable = true
+        }
     }
     iosArm64()
     iosSimulatorArm64()

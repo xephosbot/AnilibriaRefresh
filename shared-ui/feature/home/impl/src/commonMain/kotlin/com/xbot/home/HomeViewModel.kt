@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModel(
+internal class HomeViewModel(
     getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     getAuthState: GetAuthStateUseCase,
     private val getReleasesFeed: GetReleasesFeedUseCase,
@@ -123,7 +123,7 @@ class HomeViewModel(
 }
 
 @Stable
-data class HomeScreenState(
+internal data class HomeScreenState(
     val isFeedLoading: Boolean = true,
     val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
@@ -133,7 +133,7 @@ data class HomeScreenState(
 )
 
 @Stable
-sealed interface HomeScreenAction {
+internal sealed interface HomeScreenAction {
     @Stable
     data class ShowErrorMessage(
         val error: Throwable,
@@ -148,6 +148,6 @@ sealed interface HomeScreenAction {
 }
 
 @Stable
-enum class BestType {
+internal enum class BestType {
     Now, AllTime
 }

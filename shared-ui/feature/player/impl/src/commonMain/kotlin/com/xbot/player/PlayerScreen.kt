@@ -30,7 +30,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 @Composable
-fun PlayerScreen(
+internal fun PlayerScreen(
     modifier: Modifier = Modifier,
     viewModel: PlayerViewModel = koinViewModel(),
     onBackClick: () -> Unit
@@ -48,7 +48,7 @@ fun PlayerScreen(
 }
 
 @Composable
-fun rememberVideoPlayerState(): VideoPlayerState {
+internal fun rememberVideoPlayerState(): VideoPlayerState {
     if (LocalInspectionMode.current) {
         return remember { PreviewableVideoPlayerState() }
     }
