@@ -6,12 +6,12 @@
 
 ### Tech Stack & Libraries
 
-- **Language**: Kotlin 2.0+
-- **UI Framework**: Compose Multiplatform (Material 3)
+- **Language**: Kotlin 2.3.0+
+- **UI Framework**: Compose Multiplatform (Material 3) 1.11.0
 - **Architecture**: Clean Architecture + MVI + Multi-Module
-- **DI**: Koin
-- **Networking**: Ktor Client
-- **Image Loading**: Coil 3
+- **DI**: Koin 4.2.0
+- **Networking**: Ktor Client 3.3.3
+- **Image Loading**: Coil 3.3.0
 - **Navigation**: Jetpack Navigation 3 (Type-safe)
 - **Serialization**: Kotlinx Serialization
 - **Asynchrony**: Coroutines & Flow
@@ -125,14 +125,19 @@ private fun FeedScreenContent(
 - Serializable data classes/objects for routes.
 - `Navigator` interface for abstracting navigation actions.
 
+### General Code Style Guidelines
+- **Visibility**: Always prefer `internal` visibility for classes, functions, and properties if they are not required to be `public`. Feature implementation details, repository implementations, and internal helpers MUST be `internal`.
+- **Imports**: Keep imports clean and remove any unused imports.
+- **File Formatting**: Every file MUST end with a single new line.
+
 ## Configuration
 
 ### Key Versions (`libs.versions.toml`)
-- **Kotlin**: 2.2.21
-- **Compose Multiplatform**: 1.10.0-beta02
-- **Android Gradle Plugin**: 9.0.0-beta02
-- **Koin**: 4.2.0-alpha2
-- **Ktor**: 3.3.2
+- **Kotlin**: 2.3.0
+- **Compose Multiplatform**: 1.11.0-alpha01
+- **Android Gradle Plugin**: 9.0.0
+- **Koin**: 4.2.0-beta3
+- **Ktor**: 3.3.3
 - **Coil**: 3.3.0
 
 ### API Configuration
