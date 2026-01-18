@@ -193,6 +193,7 @@ internal class PictureInPictureControllerImpl(
 
     fun close() {
         delegate.removeOnPictureInPictureEventListener(this)
+        updatePipParams(false, 0f, null)
     }
 
     private fun buildRemoteActions(
