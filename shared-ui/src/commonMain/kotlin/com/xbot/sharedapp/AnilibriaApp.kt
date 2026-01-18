@@ -1,5 +1,6 @@
 package com.xbot.sharedapp
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -16,43 +17,37 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.PlatformContext
-import coil3.compose.setSingletonImageLoaderFactory
-import coil3.disk.DiskCache
-import coil3.map.Mapper
-import coil3.memory.MemoryCache
-import coil3.network.ktor3.KtorNetworkFetcherFactory
-import coil3.request.CachePolicy
-import coil3.request.crossfade
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.SingletonImageLoader
 import com.xbot.common.navigation.LocalNavigator
-import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Search
 import com.xbot.designsystem.theme.AnilibriaTheme
-import com.xbot.domain.models.Poster
-import com.xbot.favorite.navigation.FavoriteRoute
+import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
-import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
+import com.xbot.sharedapp.navigation.TopLevelRoutes
 import com.xbot.sharedapp.navigation.rememberNavigator
-import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun AnilibriaApp() {
-    val httpClient: HttpClient = koinInject()
+internal fun AnilibriaApp(
+    viewModel: AppViewModel = koinViewModel()
+) {
+    SingletonImageLoader.setSafe(koinInject())
 
     setSingletonImageLoaderFactory { context ->
         getImageLoader(context, httpClient)
@@ -84,22 +79,13 @@ internal fun AnilibriaApp() {
             } else {
                 Modifier
             }
+            
             val fab = @Composable {
-                val startPadding =
-                    if (navSuiteType == NavigationSuiteType.ShortNavigationBarMedium) 0.dp else 20.dp
-                ExtendedFloatingActionButton(
-                    modifier = Modifier
-                        .padding(start = startPadding)
-                        .then(fabModifier),
-                    onClick = { navigator.navigateToSearch() },
+                SearchFloatingActionButton(
                     expanded = navSuiteType == NavigationSuiteType.WideNavigationRailExpanded,
-                    icon = {
-                        Icon(
-                            imageVector = AnilibriaIcons.Search,
-                            contentDescription = null
-                        )
-                    },
-                    text = { Text(stringResource(Res.string.fab_search)) }
+                    showOnlyIcon = navSuiteType == NavigationSuiteType.ShortNavigationBarMedium,
+                    modifier = fabModifier,
+                    onClick = { navigator.navigateToSearch() }
                 )
             }
             val fabMovable = remember(fab) { movableContentOf(fab) }
@@ -114,10 +100,7 @@ internal fun AnilibriaApp() {
                             onClick = { navigator.navigate(destination) },
                             icon = {
                                 Icon(
-                                    imageVector = when (isSelected) {
-                                        true -> destination.selectedIcon
-                                        else -> destination.unselectedIcon
-                                    },
+                                    imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
                                     contentDescription = stringResource(destination.textRes),
                                 )
                             },
@@ -135,39 +118,32 @@ internal fun AnilibriaApp() {
                 state = navigationSuiteScaffoldState,
                 navigationItemVerticalArrangement = Arrangement.Center
             ) {
-                AnilibriaNavGraph(
-                    navigator = navigator
-                )
+                AnilibriaNavGraph(navigator = navigator)
             }
         }
     }
 }
 
-private fun getImageLoader(
-    context: PlatformContext,
-    httpClient: HttpClient
-): ImageLoader = ImageLoader.Builder(context)
-    .crossfade(true)
-    .components {
-        add(
-            KtorNetworkFetcherFactory(
-                httpClient = { httpClient }
+@Composable
+private fun SearchFloatingActionButton(
+    expanded: Boolean,
+    showOnlyIcon: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val startPadding = if (showOnlyIcon) 0.dp else 20.dp
+    ExtendedFloatingActionButton(
+        modifier = Modifier
+            .padding(start = startPadding)
+            .then(modifier),
+        onClick = onClick,
+        expanded = expanded,
+        icon = {
+            Icon(
+                imageVector = AnilibriaIcons.Search,
+                contentDescription = null
             )
-        )
-        add(Mapper<Poster, String> { data, _ -> data.src })
-    }
-    .memoryCache {
-        MemoryCache.Builder()
-            .maxSizePercent(context)
-            .build()
-    }
-    .diskCache {
-        DiskCache.Builder()
-            .directory(getCacheDir(context).resolve("image_cache"))
-            .maxSizeBytes(512L * 1024 * 1024)
-            .build()
-    }
-    .diskCachePolicy(CachePolicy.ENABLED)
-    .build()
-
-private val TopLevelRoutes: Set<TopLevelNavKey> = setOf(HomeRoute, FavoriteRoute, PreferenceRoute)
+        },
+        text = { Text(stringResource(Res.string.fab_search)) }
+    )
+}
