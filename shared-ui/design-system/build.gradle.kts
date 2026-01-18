@@ -49,6 +49,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             api(libs.compose.ui.tooling)
+            api(libs.androidx.activity.compose)
         }
         val nonAndroid by creating {
             dependsOn(commonMain.get())
