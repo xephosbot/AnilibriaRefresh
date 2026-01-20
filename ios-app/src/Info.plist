@@ -29,7 +29,7 @@
 	<array>
 		<string>audio</string>
 	</array>
-	<key>UILaunchScreen</key>
-	<dict/>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
 </dict>
 </plist>

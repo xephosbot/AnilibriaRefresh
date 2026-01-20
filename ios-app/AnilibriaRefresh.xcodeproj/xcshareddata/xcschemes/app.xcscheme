@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
+   LastUpgradeVersion = "2600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -15,8 +17,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
                BuildableName = "ios-app.app"
-               BlueprintName = "app"
-               ReferencedContainer = "container:module.xcodeproj">
+               BlueprintName = "AnilibriaRefresh"
+               ReferencedContainer = "container:AnilibriaRefresh.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,14 +46,10 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
             BuildableName = "ios-app.app"
-            BlueprintName = "app"
-            ReferencedContainer = "container:module.xcodeproj">
+            BlueprintName = "AnilibriaRefresh"
+            ReferencedContainer = "container:AnilibriaRefresh.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <LocationScenarioReference
-         identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
-         referenceType = "1">
-      </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -59,6 +57,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
+            BuildableName = "ios-app.app"
+            BlueprintName = "AnilibriaRefresh"
+            ReferencedContainer = "container:AnilibriaRefresh.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

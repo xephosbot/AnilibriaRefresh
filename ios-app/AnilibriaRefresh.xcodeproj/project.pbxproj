@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */; };
 		CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF3566122EC8883F00EE2F35 /* AppIcon.icon */; };
+		CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF8DEA462F1E9B3400221689 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,15 +19,16 @@
 		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF3566122EC8883F00EE2F35 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		CF8DEA462F1E9B3400221689 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "app" target */ = {
+		279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "AnilibriaRefresh" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 279A4EBFBBE620E1DD374910 /* app */;
+			target = 279A4EBFBBE620E1DD374910 /* AnilibriaRefresh */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -34,7 +36,7 @@
 		279A4173E53941889080E058 /* src */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "app" target */,
+				279A47B008F3BE03254DB17B /* Exceptions for "src" folder in "AnilibriaRefresh" target */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -64,12 +66,13 @@
 		279A4C149BE22C4B16DC69BE = {
 			isa = PBXGroup;
 			children = (
+				CF8DEA462F1E9B3400221689 /* Assets.xcassets */,
+				CF3566122EC8883F00EE2F35 /* AppIcon.icon */,
 				279A476559D7F8A9A59270EB /* Products */,
 				279A48D438C7058F3D04C50C /* Info.plist */,
 				279A4173E53941889080E058 /* src */,
 				791897AF17EE8F87746B839E /* Pods */,
 				A10CF9F4FF4C10049E2416D9 /* Frameworks */,
-				CF3566122EC8883F00EE2F35 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,9 +96,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		279A4EBFBBE620E1DD374910 /* app */ = {
+		279A4EBFBBE620E1DD374910 /* AnilibriaRefresh */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "app" */;
+			buildConfigurationList = 279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "AnilibriaRefresh" */;
 			buildPhases = (
 				B14CA80658D710079D12222D /* [CP] Check Pods Manifest.lock */,
 				279A43B18AA0A099487C206B /* Sources */,
@@ -110,7 +113,7 @@
 			fileSystemSynchronizedGroups = (
 				279A4173E53941889080E058 /* src */,
 			);
-			name = app;
+			name = AnilibriaRefresh;
 			productName = app;
 			productReference = 279A4E4B21B0E55FFAD967CA /* ios-app.app */;
 			productType = "com.apple.product-type.application";
@@ -124,7 +127,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1640;
 			};
-			buildConfigurationList = 279A410007A90CD9C2786A5E /* Build configuration list for PBXProject "module" */;
+			buildConfigurationList = 279A410007A90CD9C2786A5E /* Build configuration list for PBXProject "AnilibriaRefresh" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -137,7 +140,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				279A4EBFBBE620E1DD374910 /* app */,
+				279A4EBFBBE620E1DD374910 /* AnilibriaRefresh */,
 			);
 		};
 /* End PBXProject section */
@@ -147,6 +150,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */,
 				CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,9 +166,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -212,6 +220,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
@@ -324,6 +333,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
@@ -352,7 +362,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		279A410007A90CD9C2786A5E /* Build configuration list for PBXProject "module" */ = {
+		279A410007A90CD9C2786A5E /* Build configuration list for PBXProject "AnilibriaRefresh" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				279A422A6669A40E0CFC0393 /* Debug */,
@@ -361,7 +371,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "app" */ = {
+		279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "AnilibriaRefresh" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				279A404797B8695B3B2EA96E /* Debug */,

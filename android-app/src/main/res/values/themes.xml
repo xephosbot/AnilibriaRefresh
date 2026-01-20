@@ -13,7 +13,8 @@
     <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen.IconBackground">
         <item name="android:windowLightStatusBar" >true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-        <item name="android:windowBackground" tools:targetApi="34">@android:color/system_surface_light</item>
+        <item name="android:windowBackground" tools:targetApi="34">@color/splash_background_light</item>
+        <item name="windowSplashScreenBackground">@color/splash_background_light</item>
     </style>
 
     <style name="Theme.AnilibriaRefresh.Splash" parent="NightAdjusted.Theme.Splash">

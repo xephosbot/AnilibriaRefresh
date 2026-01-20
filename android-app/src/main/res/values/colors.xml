@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="anilibria_red">#8F4A4E</color>
+    <color name="splash_background_light">#FCEAE7</color>
+    <color name="splash_background_dark">#271D1C</color>
 </resources>
