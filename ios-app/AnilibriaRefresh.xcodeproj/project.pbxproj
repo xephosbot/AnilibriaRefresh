@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */; };
+		1961B3D9BB6142CB018875BB /* Pods_AnilibriaRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D231FF922181B5E81E7BD /* Pods_AnilibriaRefresh.framework */; };
 		CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF3566122EC8883F00EE2F35 /* AppIcon.icon */; };
 		CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF8DEA462F1E9B3400221689 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -17,9 +17,11 @@
 		14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.release.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.release.xcconfig"; sourceTree = "<group>"; };
 		279A48D438C7058F3D04C50C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = Info.plist; path = src/Info.plist; sourceTree = "<group>"; };
 		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		869D231FF922181B5E81E7BD /* Pods_AnilibriaRefresh.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnilibriaRefresh.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB1CCF71F1AD1D42ED40D101 /* Pods-AnilibriaRefresh.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnilibriaRefresh.release.xcconfig"; path = "Target Support Files/Pods-AnilibriaRefresh/Pods-AnilibriaRefresh.release.xcconfig"; sourceTree = "<group>"; };
 		CF3566122EC8883F00EE2F35 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		CF8DEA462F1E9B3400221689 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E81A9931E3D57492A473200A /* Pods-AnilibriaRefresh.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnilibriaRefresh.debug.xcconfig"; path = "Target Support Files/Pods-AnilibriaRefresh/Pods-AnilibriaRefresh.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56FE0A10353D115F6A536BF6 /* Pods_app.framework in Frameworks */,
+				1961B3D9BB6142CB018875BB /* Pods_AnilibriaRefresh.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +83,8 @@
 			children = (
 				11EE8E8359E76DA8FDCFF539 /* Pods-app.debug.xcconfig */,
 				14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */,
+				E81A9931E3D57492A473200A /* Pods-AnilibriaRefresh.debug.xcconfig */,
+				AB1CCF71F1AD1D42ED40D101 /* Pods-AnilibriaRefresh.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -88,7 +92,7 @@
 		A10CF9F4FF4C10049E2416D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A192611078AF7EEE7E6DEAD1 /* Pods_app.framework */,
+				869D231FF922181B5E81E7BD /* Pods_AnilibriaRefresh.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -164,19 +168,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AnilibriaRefresh/Pods-AnilibriaRefresh-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AnilibriaRefresh/Pods-AnilibriaRefresh-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AnilibriaRefresh/Pods-AnilibriaRefresh-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B14CA80658D710079D12222D /* [CP] Check Pods Manifest.lock */ = {
@@ -194,7 +194,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-app-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-AnilibriaRefresh-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -216,14 +216,14 @@
 /* Begin XCBuildConfiguration section */
 		279A404797B8695B3B2EA96E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11EE8E8359E76DA8FDCFF539 /* Pods-app.debug.xcconfig */;
+			baseConfigurationReference = E81A9931E3D57492A473200A /* Pods-AnilibriaRefresh.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
 				ENABLE_USER_SELECTED_FILES = "$(inherited)";
@@ -329,7 +329,7 @@
 		};
 		279A46EE8014C2FB56B849CB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14432639D1BB5DF5036E3065 /* Pods-app.release.xcconfig */;
+			baseConfigurationReference = AB1CCF71F1AD1D42ED40D101 /* Pods-AnilibriaRefresh.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
