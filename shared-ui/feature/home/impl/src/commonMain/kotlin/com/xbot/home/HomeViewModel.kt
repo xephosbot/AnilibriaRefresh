@@ -1,6 +1,7 @@
 package com.xbot.home
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -39,12 +40,13 @@ internal class HomeViewModel(
     private val getReleasesFeed: GetReleasesFeedUseCase,
     private val getSortedScheduleWeekUseCase: GetSortedScheduleWeekUseCase,
     private val snackbarManager: SnackbarManager,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
         .cachedIn(viewModelScope)
 
     private val refreshTrigger = MutableStateFlow(0)
-    private val bestType = MutableStateFlow(BestType.Now)
+    private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
 
     private val feedData = refreshTrigger
         .flatMapLatest { attempt ->
@@ -108,7 +110,7 @@ internal class HomeViewModel(
     }
 
     private fun updateBestType(bestType: BestType) {
-        this.bestType.update { bestType }
+        savedStateHandle[BEST_TYPE_KEY] = bestType
     }
 
     private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
@@ -119,6 +121,10 @@ internal class HomeViewModel(
                 action = onConfirmAction,
             ),
         )
+    }
+
+    companion object {
+        private const val BEST_TYPE_KEY = "best_type"
     }
 }
 

@@ -1,5 +1,6 @@
 package com.xbot.sharedapp
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.domain.models.AppearanceSettings
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 internal class AppViewModel(
-    getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase
+    getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val appearanceSettings: StateFlow<AppearanceSettings> = getAppearanceSettingsUseCase()

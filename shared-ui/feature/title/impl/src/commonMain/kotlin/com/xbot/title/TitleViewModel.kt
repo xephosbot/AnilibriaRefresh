@@ -1,6 +1,7 @@
 package com.xbot.title
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.designsystem.utils.MessageAction
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 internal class TitleViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
+    private val savedStateHandle: SavedStateHandle,
     private val titleRoute: TitleRoute,
 ) : ViewModel() {
 

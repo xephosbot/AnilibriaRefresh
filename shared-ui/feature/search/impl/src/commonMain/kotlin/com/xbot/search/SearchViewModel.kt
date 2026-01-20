@@ -3,6 +3,7 @@ package com.xbot.search
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -43,10 +45,12 @@ internal class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogFilters: GetCatalogFiltersUseCase,
     private val snackbarManager: SnackbarManager,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val searchFieldState: TextFieldState = TextFieldState()
+    val searchFieldState: TextFieldState = TextFieldState(savedStateHandle[QUERY_KEY] ?: "")
     private val searchQuery: Flow<String> = snapshotFlow { searchFieldState.text.toString() }
+        .onEach { savedStateHandle[QUERY_KEY] = it }
 
     private val _availableFilters = MutableStateFlow<CatalogFilters?>(null)
     val availableFilters: StateFlow<CatalogFilters?> = _availableFilters
@@ -155,6 +159,10 @@ internal class SearchViewModel(
 
     private fun updateState(block: (SearchFiltersState) -> SearchFiltersState) {
         _selectedFilters.update { block(_selectedFilters.value) }
+    }
+
+    companion object {
+        private const val QUERY_KEY = "query"
     }
 }
 

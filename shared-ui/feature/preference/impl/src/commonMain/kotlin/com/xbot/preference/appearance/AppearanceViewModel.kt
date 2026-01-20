@@ -1,5 +1,6 @@
 package com.xbot.preference.appearance
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.domain.models.AppearanceSettings
@@ -19,7 +20,8 @@ internal class AppearanceViewModel(
     private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
     private val updatePureBlackUseCase: UpdatePureBlackUseCase,
-    private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase
+    private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val state: StateFlow<AppearanceSettings> = getAppearanceSettingsUseCase()

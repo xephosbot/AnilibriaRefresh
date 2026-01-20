@@ -1,6 +1,7 @@
 package com.xbot.player
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -23,10 +24,11 @@ import kotlinx.coroutines.launch
 internal class PlayerViewModel(
     private val repository: ReleasesRepository,
     private val snackbarManager: SnackbarManager,
+    private val savedStateHandle: SavedStateHandle,
     private val route: PlayerRoute,
 ) : ViewModel() {
     private val releaseId = route.releaseId
-    private val episodeOrdinal = route.episodeOrdinal
+    private val initialEpisodeOrdinal = route.episodeOrdinal
 
     private val _state: MutableStateFlow<PlayerScreenState> = MutableStateFlow(PlayerScreenState())
     val state: StateFlow<PlayerScreenState> = _state
@@ -44,6 +46,7 @@ internal class PlayerViewModel(
     }
 
     private fun onEpisodeChange(episode: Episode) {
+        savedStateHandle[EPISODE_ORDINAL_KEY] = episode.ordinal
         _state.update { it.copy(currentEpisode = episode) }
     }
 
@@ -52,7 +55,14 @@ internal class PlayerViewModel(
             when (val result = repository.getRelease(releaseId.toString())) {
                 is Either.Right -> {
                     val release = result.value
-                    val episode = release.episodes[episodeOrdinal]
+                    val savedOrdinal = savedStateHandle.get<Float>(EPISODE_ORDINAL_KEY)
+                    val targetOrdinal = savedOrdinal ?: initialEpisodeOrdinal
+                    
+                    // Find episode by ordinal, fallback to matching by index if ordinal not found, or first
+                    val episode = release.episodes.find { it.ordinal == targetOrdinal } 
+                        ?: release.episodes.getOrNull(targetOrdinal.toInt()) // Fallback mostly for safety
+                        ?: release.episodes.firstOrNull()
+                        
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -74,6 +84,10 @@ internal class PlayerViewModel(
                 action = onConfirmAction,
             ),
         )
+    }
+
+    companion object {
+        private const val EPISODE_ORDINAL_KEY = "episode_ordinal"
     }
 }
 
