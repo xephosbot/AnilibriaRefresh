@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
@@ -196,12 +195,20 @@ private fun ListItemLayout(
         modifier = modifier,
         contents = listOf(headlineBox, supportingBox, leadingContent, tagsBox),
     ) { (headlineMeasurable, supportingMeasurable, leadingMeasurable, tagsMeasurable), constraints ->
-        val leadingWidth = constraints.maxHeight * 7 / 10
+        val containerHeight = if (constraints.hasBoundedHeight) {
+            constraints.maxHeight
+        } else {
+            ReleaseItemContainerHeight.roundToPx()
+        }
+
+        val leadingWidth = containerHeight * 7 / 10
         val leadingPlaceable = leadingMeasurable.first()
             .measure(
                 constraints = constraints.copy(
                     minWidth = leadingWidth,
                     maxWidth = leadingWidth,
+                    minHeight = 0,
+                    maxHeight = containerHeight,
                 ),
             )
 
@@ -224,7 +231,7 @@ private fun ListItemLayout(
         val verticalPadding = ReleaseItemContainerPaddingVertical.roundToPx()
         val doubleVerticalPadding = (ReleaseItemContainerPaddingVertical * 2).roundToPx()
         val headlineHeight =
-            (constraints.maxHeight - doubleVerticalPadding - tagsPlaceable.height).coerceAtLeast(0)
+            (containerHeight - doubleVerticalPadding - tagsPlaceable.height).coerceAtLeast(0)
 
         val headlinePlaceable = headlineMeasurable.first()
             .measure(
@@ -248,9 +255,19 @@ private fun ListItemLayout(
                 ),
             )
 
+        val layoutWidth = if (constraints.hasBoundedWidth) {
+            constraints.maxWidth
+        } else {
+            leadingWidth + leadingPadding * 2 + maxOf(
+                headlinePlaceable.width,
+                tagsPlaceable.width,
+                supportingPlaceable.width
+            )
+        }
+
         layout(
-            width = constraints.maxWidth,
-            height = constraints.maxHeight,
+            width = layoutWidth,
+            height = containerHeight,
         ) {
             leadingPlaceable.placeRelative(
                 x = 0,
