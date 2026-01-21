@@ -1,5 +1,6 @@
 package com.xbot.designsystem.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +22,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,8 +49,8 @@ import kotlin.time.ExperimentalTime
 fun EpisodeListItem(
     episode: Episode,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
-    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
+    selected: Boolean = false,
+    colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
     shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     onClick: () -> Unit,
@@ -58,10 +59,19 @@ fun EpisodeListItem(
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
 
+    val containerColor by animateColorAsState(
+        targetValue = if (selected) colors.selectedContainerColor else colors.containerColor,
+        label = "EpisodeListItemContainerColor"
+    )
+    val contentColor by animateColorAsState(
+        targetValue = if (selected) colors.selectedContentColor else colors.contentColor,
+        label = "EpisodeListItemContentColor"
+    )
+
     Surface(
         modifier = modifier,
         onClick = onClick,
-        shape = shape.shapeForInteraction(pressed, false),
+        shape = shape.shapeForInteraction(pressed, selected),
         color = containerColor,
         contentColor = contentColor,
         interactionSource = interactionSource,
@@ -158,7 +168,28 @@ object ExpressiveEpisodeListItemDefaults {
             animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         )
     }
+
+    @Composable
+    fun colors(
+        containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
+        contentColor: Color = contentColorFor(containerColor),
+        selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+        selectedContentColor: Color = contentColorFor(selectedContainerColor)
+    ): EpisodeListItemColors = EpisodeListItemColors(
+        containerColor = containerColor,
+        contentColor = contentColor,
+        selectedContainerColor = selectedContainerColor,
+        selectedContentColor = selectedContentColor
+    )
 }
+
+@Immutable
+data class EpisodeListItemColors(
+    val containerColor: Color,
+    val contentColor: Color,
+    val selectedContainerColor: Color,
+    val selectedContentColor: Color
+)
 
 @OptIn(ExperimentalTime::class)
 @Preview
@@ -167,6 +198,7 @@ private fun EpisodeListItemPreview() {
     AnilibriaPreview {
         EpisodeListItem(
             episode = episodeMocks.first(),
+            selected = false,
             onClick = {
 
             }

@@ -203,16 +203,10 @@ private fun PlaylistContent(
             )
         }
         itemsIndexed(episodes) { index, episode ->
-            val isSelected = episode == selectedEpisode
-            val containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceBright
-            }
             EpisodeListItem(
                 modifier = Modifier.section(index, episodes.size),
                 episode = episode,
-                containerColor = containerColor,
+                selected = episode == selectedEpisode,
                 onClick = { onEpisodeClick(episode) }
             )
         }
