@@ -2,7 +2,6 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.MaterialTheme
@@ -96,7 +95,7 @@ private fun ReleaseAgeRatingPill(
     Surface(
         color = color,
         contentColor = contentColor,
-        shape = RoundedCornerShape(4.dp)
+        shape = MaterialTheme.shapes.extraSmall
     ) {
         Box(
             modifier = modifier,

@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -132,7 +131,7 @@ private fun FranchiseCardContent(
 
             Surface(
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = RoundedCornerShape(16.dp)
+                shape = MaterialTheme.shapes.large
             ) {
                 Row(
                     modifier = Modifier
@@ -243,7 +242,7 @@ private fun FranchiseCardPlaceholder(
                 .padding(horizontal = 4.dp)
                 .background(
                     MaterialTheme.colorScheme.surfaceContainer,
-                    RoundedCornerShape(16.dp)
+                    MaterialTheme.shapes.large
                 )
         )
     }

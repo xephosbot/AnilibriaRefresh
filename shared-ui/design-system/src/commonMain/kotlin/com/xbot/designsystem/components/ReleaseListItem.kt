@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -27,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
@@ -124,7 +124,7 @@ private fun LoadingReleaseListItem(
                 modifier = Modifier
                     .height(16.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(MaterialTheme.shapes.small)
                     .background(Color.LightGray),
             )
         },
@@ -132,7 +132,7 @@ private fun LoadingReleaseListItem(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .background(Color.LightGray),
             )
         },
@@ -153,7 +153,7 @@ private fun LoadingReleaseListItem(
                         modifier = Modifier
                             .height(16.dp)
                             .weight(1f)
-                            .clip(RoundedCornerShape(4.dp))
+                            .clip(MaterialTheme.shapes.extraSmall)
                             .background(Color.LightGray),
                     )
                     if (index != tagsCount - 1) Text("•")
@@ -279,9 +279,9 @@ object ExpressiveReleaseListItemDefaults {
     @Composable
     fun shape(): ExpressiveShape {
         return _shape ?: RoundedCornerExpressiveShape(
-            shape = RoundedCornerShape(0.dp),
-            pressedShape = RoundedCornerShape(16.dp),
-            selectedShape = RoundedCornerShape(16.dp),
+            shape = RectangleShape,
+            pressedShape = MaterialTheme.shapes.large,
+            selectedShape = MaterialTheme.shapes.large,
             animationSpec = spring()
         ).also { _shape = it }
     }

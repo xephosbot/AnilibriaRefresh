@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +46,7 @@ fun MediumReleaseCard(
 ) {
     Crossfade(
         modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(MaterialTheme.shapes.large)
             .clickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current,
@@ -115,7 +114,7 @@ private fun MediumReleaseCardLayout(
     ) {
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
+                .clip(MaterialTheme.shapes.extraSmall)
                 .background(MaterialTheme.colorScheme.surfaceBright),
             contentAlignment = Alignment.BottomStart
         ) {
@@ -137,7 +136,7 @@ private fun MediumReleaseCardLayout(
             }
         }
         Column(
-            modifier = Modifier.clip(RoundedCornerShape(4.dp)),
+            modifier = Modifier.clip(MaterialTheme.shapes.extraSmall),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             content()

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -133,9 +132,9 @@ object ExpressiveReleaseCardItemDefaults {
     @Composable
     fun shape(): ExpressiveShape {
         return _shape ?: RoundedCornerExpressiveShape(
-            shape = RoundedCornerShape(16.dp),
-            pressedShape = RoundedCornerShape(8.dp),
-            selectedShape = RoundedCornerShape(8.dp),
+            shape = MaterialTheme.shapes.large,
+            pressedShape = MaterialTheme.shapes.small,
+            selectedShape = MaterialTheme.shapes.small,
             animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }

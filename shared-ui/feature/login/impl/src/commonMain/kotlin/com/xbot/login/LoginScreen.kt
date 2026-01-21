@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.TextObfuscationMode
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -133,7 +131,7 @@ internal fun LoginScreenContent(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceBright
             ),
-            shape = RoundedCornerShape(24.dp)
+            shape = MaterialTheme.shapes.extraLarge
         ) {
             Column(
                 modifier = Modifier

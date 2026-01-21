@@ -34,6 +34,7 @@ fun AnilibriaTheme(
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
+            shapes = Shapes,
             motionScheme = MotionScheme.expressive(),
             typography = AnilibriaTypography(),
             content = content,
