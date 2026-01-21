@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
@@ -41,7 +42,6 @@ import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.navigation.YouTubeRoute
-import com.xbot.preference.ui.PreferenceItem
 import com.xbot.resources.Res
 import com.xbot.resources.preference_screen_title
 import com.xbot.resources.preference_section_links
@@ -118,11 +118,6 @@ private fun PreferencesList(
                 }
                 itemsIndexed(items) { index, item ->
                     val isSelected = item == currentDestination && !isSinglePane
-                    val color = if (isSelected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceBright
-                    }
                     
                     PreferenceItem(
                         modifier = Modifier.section(index, items.size),
@@ -143,7 +138,7 @@ private fun PreferencesList(
                                 )
                             }
                         },
-                        colors = ListItemDefaults.colors(containerColor = color),
+                        selected = isSelected,
                         onClick = { onNavigateToDetail(item) }
                     )
                 }

@@ -30,7 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
+import com.xbot.designsystem.components.ExperimentalPill
+import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
+import com.xbot.designsystem.components.SwitchPreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
@@ -41,9 +44,6 @@ import com.xbot.domain.models.AppearanceSettings
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.fixtures.di.fixturesModule
 import com.xbot.localization.stringRes
-import com.xbot.preference.ui.ExperimentalPill
-import com.xbot.preference.ui.PreferenceItem
-import com.xbot.preference.ui.SwitchPreferenceItem
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_dynamic_theme_description
 import com.xbot.resources.preference_appearance_dynamic_theme_title
