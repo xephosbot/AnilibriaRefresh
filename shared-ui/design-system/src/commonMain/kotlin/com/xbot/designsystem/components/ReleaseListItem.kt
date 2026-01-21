@@ -1,7 +1,6 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -274,16 +274,14 @@ private fun ListItemLayout(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseListItemDefaults {
-    private var _shape: ExpressiveShape? = null
-
     @Composable
     fun shape(): ExpressiveShape {
-        return _shape ?: RoundedCornerExpressiveShape(
-            shape = RectangleShape,
+        return RoundedCornerExpressiveShape(
+            shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
-            animationSpec = spring()
-        ).also { _shape = it }
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+        )
     }
 }
 

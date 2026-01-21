@@ -3,11 +3,10 @@ package com.xbot.designsystem.modifier
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector2D
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,12 +20,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 fun Modifier.animatePlacement(
-    animationSpec: AnimationSpec<IntOffset> = spring(
-        stiffness = Spring.StiffnessMediumLow,
-        visibilityThreshold = IntOffset.VisibilityThreshold
-    )
+    animationSpec: AnimationSpec<IntOffset>? = null
 ): Modifier = composed {
+    val effectiveAnimationSpec = animationSpec ?: MaterialTheme.motionScheme.defaultSpatialSpec()
+
     val scope = rememberCoroutineScope()
     var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
     var animatable by remember {
@@ -46,7 +45,7 @@ fun Modifier.animatePlacement(
                     }
             if (anim.targetValue != targetOffset) {
                 scope.launch {
-                    anim.animateTo(targetOffset, animationSpec)
+                    anim.animateTo(targetOffset, effectiveAnimationSpec)
                 }
             }
             // Offset the child in the opposite direction to the targetOffset, and slowly catch

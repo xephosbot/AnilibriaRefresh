@@ -148,7 +148,7 @@ object CircleContentItemDefaults {
     fun shape(): ExpressiveShape {
         return _shape ?: MorphingExpressiveShape(
             shape = MaterialShapes.Circle,
-            pressedShape = MaterialShapes.Cookie12Sided,
+            pressedShape = MaterialShapes.Cookie7Sided,
             animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec()
         ).also { _shape = it }
     }

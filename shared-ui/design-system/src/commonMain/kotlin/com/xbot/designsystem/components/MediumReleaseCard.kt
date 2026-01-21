@@ -5,6 +5,7 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,9 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.theme.ExpressiveShape
+import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
 import com.xbot.fixtures.data.releaseMocks
@@ -41,12 +47,17 @@ fun MediumReleaseCard(
     release: Release?,
     onClick: (Release) -> Unit,
     modifier: Modifier = Modifier,
+    shape: ExpressiveShape = ExpressiveMediumReleaseCardDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+
     Crossfade(
         modifier = Modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(shape.shapeForInteraction(pressed, false))
             .clickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current,
@@ -170,6 +181,19 @@ private fun MediumReleaseCardPlaceholder(
             content?.invoke(this)
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+object ExpressiveMediumReleaseCardDefaults {
+    @Composable
+    fun shape(): ExpressiveShape {
+        return RoundedCornerExpressiveShape(
+            shape = MaterialTheme.shapes.large,
+            pressedShape = MaterialTheme.shapes.small,
+            selectedShape = MaterialTheme.shapes.small,
+            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+        )
+    }
 }
 
 @Preview

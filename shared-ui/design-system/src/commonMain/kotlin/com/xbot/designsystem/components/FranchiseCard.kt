@@ -5,6 +5,7 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +42,9 @@ import androidx.compose.ui.zIndex
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.theme.ExpressiveShape
+import com.xbot.designsystem.theme.MorphingExpressiveShape
+import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
@@ -52,10 +59,12 @@ fun FranchiseCard(
     franchise: Franchise?,
     onClick: (Franchise) -> Unit,
     modifier: Modifier = Modifier,
+    shape: ExpressiveShape = ExpressiveFranchiseCardDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
 
     Crossfade(
         modifier = modifier,
@@ -66,7 +75,9 @@ fun FranchiseCard(
             null -> FranchiseCardPlaceholder()
             else -> FranchiseCardContent(
                 state,
-                Modifier.clickable(
+                Modifier
+                    .clip(shape.shapeForInteraction(pressed, false))
+                    .clickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
                 ) { franchise?.let { onClick(it) }}
@@ -89,7 +100,6 @@ private fun FranchiseCardContent(
         Box(
             modifier = Modifier
                 .size(FranchiseCardWidth)
-                .clip(CircleShape)
                 .then(modifier)
                 .fadedEdge(
                     startFraction = 0.25f,
@@ -244,6 +254,18 @@ private fun FranchiseCardPlaceholder(
                     MaterialTheme.colorScheme.surfaceContainer,
                     MaterialTheme.shapes.large
                 )
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+object ExpressiveFranchiseCardDefaults {
+    @Composable
+    fun shape(): ExpressiveShape {
+        return MorphingExpressiveShape(
+            shape = MaterialShapes.Circle,
+            pressedShape = MaterialShapes.Cookie12Sided,
+            animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec(),
         )
     }
 }

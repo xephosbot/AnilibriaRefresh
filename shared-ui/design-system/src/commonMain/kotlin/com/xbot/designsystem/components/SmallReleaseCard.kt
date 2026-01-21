@@ -127,16 +127,14 @@ private fun SmallReleaseCardPreview() {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseCardItemDefaults {
-    private var _shape: ExpressiveShape? = null
-
     @Composable
     fun shape(): ExpressiveShape {
-        return _shape ?: RoundedCornerExpressiveShape(
+        return RoundedCornerExpressiveShape(
             shape = MaterialTheme.shapes.large,
             pressedShape = MaterialTheme.shapes.small,
             selectedShape = MaterialTheme.shapes.small,
             animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
-        ).also { _shape = it }
+        )
     }
 }
 

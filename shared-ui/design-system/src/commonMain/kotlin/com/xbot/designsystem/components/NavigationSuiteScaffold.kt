@@ -1,14 +1,13 @@
 package com.xbot.designsystem.components
 
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.only
 import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationRailDefaults
@@ -115,6 +114,7 @@ internal fun NavigationSuiteScaffold(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun NavigationSuiteScaffoldLayout(
     navigationSuite: @Composable () -> Unit,
@@ -130,7 +130,7 @@ internal fun NavigationSuiteScaffoldLayout(
 ) {
     val animationProgress by animateFloatAsState(
         targetValue = if (state.currentValue == NavigationSuiteScaffoldValue.Hidden) 0f else 1f,
-        animationSpec = AnimationSpec
+        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
     )
 
     Layout(
@@ -285,12 +285,7 @@ class ScaffoldState(
     }
 }
 
-private const val SpringDefaultSpatialDamping = 0.9f
-private const val SpringDefaultSpatialStiffness = 700.0f
-
 private val NoWindowInsets = WindowInsets(0, 0, 0, 0)
-private val AnimationSpec: SpringSpec<Float> =
-    spring(dampingRatio = SpringDefaultSpatialDamping, stiffness = SpringDefaultSpatialStiffness)
 
 @OptIn(ExperimentalMaterial3AdaptiveComponentOverrideApi::class)
 object AnilibriaNavigationSuiteScaffold : NavigationSuiteScaffoldWithPrimaryActionOverride {
