@@ -12,3 +12,10 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.kotlin.cocoapods) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.kotlin.ksp.gradle.plugin)
+    }
+}
