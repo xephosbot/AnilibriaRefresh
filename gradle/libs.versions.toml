@@ -38,7 +38,7 @@ koin = "4.2.0-beta4"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization-json = "1.10.0"
-kotlinx-atomicfu = "0.29.0"
+kotlinx-atomicfu = "0.30.0"
 arrow = "2.2.1.1"
 
 # UI Libraries
