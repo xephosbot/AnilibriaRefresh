@@ -50,6 +50,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -76,26 +78,20 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.ReleaseDetail
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.fixtures.di.fixturesModule
+import com.xbot.fixtures.data.getReleaseDetailMock
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
-import com.xbot.title.navigation.TitleRoute
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -111,8 +107,26 @@ internal fun TitleDetailsPane(
     onReleaseClick: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val isSinglePane = LocalIsSinglePane.current
 
+    TitleDetailsPaneContent(
+        modifier = modifier,
+        state = state,
+        onBackClick = onBackClick,
+        onPlayClick = onPlayClick,
+        onReleaseClick = onReleaseClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun TitleDetailsPaneContent(
+    modifier: Modifier = Modifier,
+    state: TitleScreenState,
+    onBackClick: () -> Unit,
+    onPlayClick: (Int, Int) -> Unit,
+    onReleaseClick: (Int) -> Unit,
+) {
+    val isSinglePane = LocalIsSinglePane.current
     val gridState = rememberLazyGridState()
     var selected by remember { mutableStateOf(false) }
 
@@ -189,7 +203,7 @@ internal fun TitleDetailsPane(
                             )
                         )
                         .padding(horizontal = 24.dp, vertical = 16.dp),
-                    visible = state is TitleScreenState.Success && (state as TitleScreenState.Success).title.episodes.isNotEmpty(),
+                    visible = state is TitleScreenState.Success && state.title.episodes.isNotEmpty(),
                     enter = slideInVertically { it },
                     exit = slideOutVertically { it }
                 ) {
@@ -413,26 +427,22 @@ private fun LoadingScreen(
 
 @Preview
 @Composable
-private fun TitleDetailsPanePreview() {
+private fun TitleDetailsPanePreview(
+    @PreviewParameter(TitleScreenStateProvider::class) state: TitleScreenState
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        single { TitleRoute("1") }
-                        viewModelOf(::TitleViewModel)
-                    }
-                )
-            }
-        ) {
-            TitleDetailsPane(
-                onBackClick = {},
-                onPlayClick = { _, _ -> },
-                onReleaseClick = {}
-            )
-        }
+        TitleDetailsPaneContent(
+            state = state,
+            onBackClick = {},
+            onPlayClick = { _, _ -> },
+            onReleaseClick = {}
+        )
     }
+}
+
+private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenState> {
+    override val values = sequenceOf(
+        TitleScreenState.Loading,
+        TitleScreenState.Success(getReleaseDetailMock(1))
+    )
 }

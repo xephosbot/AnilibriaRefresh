@@ -23,22 +23,27 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.di.domainModule
-import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.preference_team_title
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun TeamPane(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel = koinViewModel(),
+    onNavigateBack: () -> Unit,
+) {
+    TeamPaneContent(
+        modifier = modifier,
+        onNavigateBack = onNavigateBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun TeamPaneContent(
+    modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -86,21 +91,8 @@ internal fun TeamPane(
 @Composable
 private fun TeamPanePreview() {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::TeamViewModel)
-                    }
-                )
-            }
-        ) {
-            TeamPane(
-                onNavigateBack = {}
-            )
-        }
+        TeamPaneContent(
+            onNavigateBack = {}
+        )
     }
 }

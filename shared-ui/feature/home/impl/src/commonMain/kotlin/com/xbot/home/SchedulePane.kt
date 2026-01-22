@@ -28,6 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
@@ -40,11 +42,9 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.plus
-import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Schedule
-import com.xbot.fixtures.di.fixturesModule
+import com.xbot.fixtures.data.scheduleMocks
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
@@ -53,10 +53,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -244,26 +241,30 @@ private fun LoadingScreen(
 
 @Preview
 @Composable
-private fun SchedulePanePreview() {
+private fun SchedulePanePreview(
+    @PreviewParameter(ScheduleScreenStateProvider::class) state: HomeScreenState
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::HomeViewModel)
-                    }
-                )
-            }
-        ) {
-            SchedulePane(
-                showBackButton = true,
-                onReleaseClick = {},
-                onBackClick = {}
-            )
-        }
+        SchedulePaneContent(
+            state = state,
+            showBackButton = true,
+            onReleaseClick = {},
+            onBackClick = {}
+        )
     }
 }
 
+private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
+    override val values = sequenceOf(
+        HomeScreenState(
+            isScheduleLoading = true,
+            scheduleWeek = null
+        ),
+        HomeScreenState(
+            isScheduleLoading = false,
+            scheduleWeek = mapOf(
+                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date to scheduleMocks
+            )
+        )
+    )
+}

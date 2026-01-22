@@ -12,22 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.di.domainModule
-import com.xbot.fixtures.di.fixturesModule
-import com.xbot.player.navigation.PlayerRoute
+import com.xbot.fixtures.data.episodeMocks
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 
 @Composable
 internal fun PlayerScreen(
@@ -108,24 +104,28 @@ private fun PlayerScreenContent(
 
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
-private fun PlayerScreenPreview() {
+private fun PlayerScreenPreview(
+    @PreviewParameter(PlayerScreenStateProvider::class) state: PlayerScreenState
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        single { PlayerRoute(releaseId = 1, episodeOrdinal = 0) }
-                        viewModelOf(::PlayerViewModel)
-                    }
-                )
-            }
-        ) {
-            PlayerScreen(
-                onBackClick = {}
-            )
-        }
+        PlayerScreenContent(
+            modifier = Modifier,
+            state = state,
+            onAction = {},
+            onBackClick = {}
+        )
     }
+}
+
+private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenState> {
+    override val values = sequenceOf(
+        PlayerScreenState(
+            isLoading = true
+        ),
+        PlayerScreenState(
+            isLoading = false,
+            episodes = episodeMocks,
+            currentEpisode = episodeMocks.first()
+        )
+    )
 }

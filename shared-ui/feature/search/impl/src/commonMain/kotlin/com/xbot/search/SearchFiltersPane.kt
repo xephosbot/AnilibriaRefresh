@@ -26,6 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.Header
@@ -36,8 +38,6 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -45,7 +45,8 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.fixtures.di.fixturesModule
+import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.fixtures.data.genreMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.label_age_ratings
@@ -57,13 +58,9 @@ import com.xbot.resources.label_seasons
 import com.xbot.resources.label_sorting_types
 import com.xbot.resources.label_years
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchFilterPane(
     modifier: Modifier = Modifier,
@@ -74,6 +71,26 @@ internal fun SearchFilterPane(
     val availableFilters by viewModel.availableFilters.collectAsStateWithLifecycle()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
 
+    SearchFilterPaneContent(
+        modifier = modifier,
+        availableFilters = availableFilters,
+        selectedFilters = selectedFilters,
+        showBackButton = showBackButton,
+        onAction = viewModel::onAction,
+        onBackClick = onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchFilterPaneContent(
+    modifier: Modifier = Modifier,
+    availableFilters: CatalogFilters?,
+    selectedFilters: SearchFiltersState,
+    showBackButton: Boolean,
+    onAction: (SearchScreenAction) -> Unit,
+    onBackClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,42 +122,42 @@ internal fun SearchFilterPane(
                     sortingTypes = targetState.sortingTypes,
                     selectedSortingType = selectedFilters.selectedSortingType,
                     onSortingTypeClick = {
-                        viewModel.onAction(SearchScreenAction.UpdateSortingType(it))
+                        onAction(SearchScreenAction.UpdateSortingType(it))
                     },
                     genres = targetState.genres,
                     selectedGenres = selectedFilters.selectedGenres.toList(),
                     onGenreClick = {
-                        viewModel.onAction(SearchScreenAction.ToggleGenre(it))
+                        onAction(SearchScreenAction.ToggleGenre(it))
                     },
                     releaseTypes = targetState.types,
                     selectedReleaseTypes = selectedFilters.selectedReleaseTypes.toList(),
                     onReleaseTypeClick = {
-                        viewModel.onAction(SearchScreenAction.ToggleReleaseType(it))
+                        onAction(SearchScreenAction.ToggleReleaseType(it))
                     },
                     publishStatuses = targetState.publishStatuses,
                     selectedPublishStatuses = selectedFilters.selectedPublishStatuses.toList(),
                     onPublishStatusClick = {
-                        viewModel.onAction(SearchScreenAction.TogglePublishStatus(it))
+                        onAction(SearchScreenAction.TogglePublishStatus(it))
                     },
                     productionStatuses = targetState.productionStatuses,
                     selectedProductionStatuses = selectedFilters.selectedProductionStatuses.toList(),
                     onProductionStatusClick = {
-                        viewModel.onAction(SearchScreenAction.ToggleProductionStatus(it))
+                        onAction(SearchScreenAction.ToggleProductionStatus(it))
                     },
                     seasons = targetState.seasons,
                     selectedSeasons = selectedFilters.selectedSeasons.toList(),
                     onSeasonClick = {
-                        viewModel.onAction(SearchScreenAction.ToggleSeason(it))
+                        onAction(SearchScreenAction.ToggleSeason(it))
                     },
                     years = targetState.years,
                     selectedYears = selectedFilters.selectedYears,
                     onYearsRangeChange = {
-                        viewModel.onAction(SearchScreenAction.UpdateYearsRange(it))
+                        onAction(SearchScreenAction.UpdateYearsRange(it))
                     },
                     ageRatings = targetState.ageRatings,
                     selectedAgeRatings = selectedFilters.selectedAgeRatings.toList(),
                     onAgeRatingClick = {
-                        viewModel.onAction(SearchScreenAction.ToggleAgeRating(it))
+                        onAction(SearchScreenAction.ToggleAgeRating(it))
                     }
                 )
             }
@@ -349,24 +366,35 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
 
 @Preview
 @Composable
-private fun SearchFilterPanePreview() {
+private fun SearchFilterPanePreview(
+    @PreviewParameter(SearchFiltersStateProvider::class) state: Pair<CatalogFilters?, SearchFiltersState>
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::SearchViewModel)
-                    }
-                )
-            }
-        ) {
-            SearchFilterPane(
-                showBackButton = true,
-                onBackClick = {},
-            )
-        }
+        SearchFilterPaneContent(
+            availableFilters = state.first,
+            selectedFilters = state.second,
+            showBackButton = true,
+            onAction = {},
+            onBackClick = {},
+        )
     }
+}
+
+private class SearchFiltersStateProvider : PreviewParameterProvider<Pair<CatalogFilters?, SearchFiltersState>> {
+    override val values = sequenceOf(
+        null to SearchFiltersState(),
+        CatalogFilters(
+            genres = genreMocks,
+            types = ReleaseType.entries,
+            publishStatuses = PublishStatus.entries,
+            productionStatuses = ProductionStatus.entries,
+            sortingTypes = SortingType.entries,
+            seasons = Season.entries,
+            ageRatings = AgeRating.entries,
+            years = 1990..2024
+        ) to SearchFiltersState(
+            selectedYears = 2000..2020,
+            selectedGenres = setOf(genreMocks.first())
+        )
+    )
 }

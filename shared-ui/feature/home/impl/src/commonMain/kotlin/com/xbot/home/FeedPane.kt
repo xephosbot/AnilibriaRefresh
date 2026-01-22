@@ -62,10 +62,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
@@ -103,12 +106,13 @@ import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
-import com.xbot.fixtures.di.fixturesModule
+import com.xbot.fixtures.data.franchiseMocks
+import com.xbot.fixtures.data.genreMocks
+import com.xbot.fixtures.data.releaseMocks
+import com.xbot.fixtures.data.scheduleMocks
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -121,14 +125,12 @@ import com.xbot.resources.label_franchises
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 import kotlin.time.ExperimentalTime
 
 @OptIn(
@@ -592,26 +594,40 @@ private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
 
 @Preview
 @Composable
-private fun FeedPanePreview() {
+private fun FeedPanePreview(
+    @PreviewParameter(FeedScreenStateProvider::class) state: HomeScreenState
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::HomeViewModel)
-                    }
-                )
-            }
-        ) {
-            FeedPane(
-                onScheduleClick = {},
-                onReleaseClick = {},
-                onEpisodeClick = { _, _ -> },
-                onProfileClick = {}
-            )
-        }
+        val items = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
+
+        FeedPaneContent(
+            state = state,
+            items = items,
+            onAction = {},
+            onScheduleClick = {},
+            onReleaseClick = {},
+            onEpisodeClick = { _, _ -> },
+            onProfileClick = {}
+        )
     }
+}
+
+private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
+    override val values = sequenceOf(
+        HomeScreenState(
+            isFeedLoading = true,
+            releasesFeed = null
+        ),
+        HomeScreenState(
+            isFeedLoading = false,
+            releasesFeed = ReleasesFeed(
+                recommendedReleases = releaseMocks,
+                scheduleNow = scheduleMocks,
+                bestNow = releaseMocks,
+                bestAllTime = releaseMocks,
+                recommendedFranchises = franchiseMocks,
+                genres = genreMocks
+            )
+        )
+    )
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.HorizontalDivider
@@ -34,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
@@ -52,21 +54,17 @@ import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
-import com.xbot.domain.di.domainModule
 import com.xbot.domain.models.Release
-import com.xbot.fixtures.di.fixturesModule
+import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters
 import com.xbot.resources.label_search_results
 import com.xbot.resources.search_bar_placeholder
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 
 @Composable
 internal fun SearchResultPane(
@@ -79,8 +77,31 @@ internal fun SearchResultPane(
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
 
+    SearchResultPaneContent(
+        modifier = modifier,
+        searchResult = searchResult,
+        selectedFilters = selectedFilters,
+        searchFieldState = viewModel.searchFieldState,
+        onAction = viewModel::onAction,
+        onBackClick = onBackClick,
+        onShowFilters = onShowFilters,
+        onReleaseClick = onReleaseClick
+    )
+}
+
+@Composable
+private fun SearchResultPaneContent(
+    modifier: Modifier = Modifier,
+    searchResult: LazyPagingItems<Release>,
+    selectedFilters: SearchFiltersState,
+    searchFieldState: TextFieldState,
+    onAction: (SearchScreenAction) -> Unit,
+    onBackClick: () -> Unit,
+    onShowFilters: () -> Unit,
+    onReleaseClick: (Int) -> Unit,
+) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
-        viewModel.onAction(
+        onAction(
             SearchScreenAction.ShowErrorMessage(
                 error = error,
                 onConfirmAction = { searchResult.retry() }
@@ -106,7 +127,7 @@ internal fun SearchResultPane(
             ) {
                 TopSearchInputField(
                     modifier = Modifier.fillMaxWidth(),
-                    state = viewModel.searchFieldState,
+                    state = searchFieldState,
                     onSearch = {},
                     placeholder = { Text(stringResource(Res.string.search_bar_placeholder)) },
                     leadingIcon = {
@@ -133,7 +154,7 @@ internal fun SearchResultPane(
                                 )
                             }
                             IconButton(
-                                onClick = { viewModel.searchFieldState.clearText() }
+                                onClick = { searchFieldState.clearText() }
                             ) {
                                 Icon(
                                     imageVector = AnilibriaIcons.Close,
@@ -155,7 +176,7 @@ internal fun SearchResultPane(
                     ChipGroup {
                         selectedFilters.selectedGenres.forEach { genre ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.ToggleGenre(genre)) },
+                                onClick = { onAction(SearchScreenAction.ToggleGenre(genre)) },
                                 label = { Text(genre.name) },
                                 trailingIcon = {
                                     Icon(
@@ -167,7 +188,7 @@ internal fun SearchResultPane(
                         }
                         selectedFilters.selectedReleaseTypes.forEach { type ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.ToggleReleaseType(type)) },
+                                onClick = { onAction(SearchScreenAction.ToggleReleaseType(type)) },
                                 label = { Text(stringResource(type.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -179,7 +200,7 @@ internal fun SearchResultPane(
                         }
                         selectedFilters.selectedPublishStatuses.forEach { status ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.TogglePublishStatus(status)) },
+                                onClick = { onAction(SearchScreenAction.TogglePublishStatus(status)) },
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -191,7 +212,7 @@ internal fun SearchResultPane(
                         }
                         selectedFilters.selectedProductionStatuses.forEach { status ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.ToggleProductionStatus(status)) },
+                                onClick = { onAction(SearchScreenAction.ToggleProductionStatus(status)) },
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -203,7 +224,7 @@ internal fun SearchResultPane(
                         }
                         selectedFilters.selectedSeasons.forEach { season ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.ToggleSeason(season)) },
+                                onClick = { onAction(SearchScreenAction.ToggleSeason(season)) },
                                 label = { Text(stringResource(season.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -215,7 +236,7 @@ internal fun SearchResultPane(
                         }
                         selectedFilters.selectedAgeRatings.forEach { rating ->
                             AssistChip(
-                                onClick = { viewModel.onAction(SearchScreenAction.ToggleAgeRating(rating)) },
+                                onClick = { onAction(SearchScreenAction.ToggleAgeRating(rating)) },
                                 label = { Text(stringResource(rating.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -282,23 +303,18 @@ private fun SearchResultContent(
 @Composable
 private fun SearchResultPanePreview() {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::SearchViewModel)
-                    }
-                )
-            }
-        ) {
-            SearchResultPane(
-                onBackClick = {},
-                onShowFilters = {},
-                onReleaseClick = {}
-            )
-        }
+        val searchResult = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
+        val searchFieldState = remember { TextFieldState() }
+
+        SearchResultPaneContent(
+            searchResult = searchResult,
+            selectedFilters = SearchFiltersState(),
+            searchFieldState = searchFieldState,
+            onAction = {},
+            onBackClick = {},
+            onShowFilters = {},
+            onReleaseClick = {}
+        )
     }
 }
+

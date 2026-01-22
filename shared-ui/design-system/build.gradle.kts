@@ -47,14 +47,14 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            api(libs.compose.ui.tooling)
-            api(libs.androidx.activity.compose)
-        }
         val nonAndroid by creating {
             dependsOn(commonMain.get())
         }
         jvmMain.get().dependsOn(nonAndroid)
         iosMain.get().dependsOn(nonAndroid)
     }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

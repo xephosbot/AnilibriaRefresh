@@ -49,16 +49,15 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
-import com.xbot.domain.di.domainModule
-import com.xbot.fixtures.di.fixturesModule
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -68,10 +67,7 @@ import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
 import com.xbot.resources.login_title
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 
 @Composable
 internal fun LoginScreen(
@@ -240,24 +236,23 @@ internal fun LoginScreenContent(
 
 @Preview
 @Composable
-private fun LoginScreenPreview() {
+private fun LoginScreenPreview(
+    @PreviewParameter(LoginScreenStateProvider::class) state: LoginScreenState
+) {
     AnilibriaPreview {
-        KoinApplicationPreview(
-            application = {
-                modules(
-                    domainModule,
-                    fixturesModule,
-                    module {
-                        single { SnackbarManager }
-                        viewModelOf(::LoginViewModel)
-                    }
-                )
-            }
-        ) {
-            LoginScreen(
-                onNavigateBack = {},
-                onNavigateToRegistration = {}
-            )
-        }
+        LoginScreenContent(
+            state = state,
+            usernameState = remember { TextFieldState() },
+            passwordState = remember { TextFieldState() },
+            onAction = {},
+            onNavigateToRegistration = {}
+        )
     }
+}
+
+private class LoginScreenStateProvider : PreviewParameterProvider<LoginScreenState> {
+    override val values = sequenceOf(
+        LoginScreenState(isLoading = false),
+        LoginScreenState(isLoading = true)
+    )
 }
