@@ -109,6 +109,10 @@
     <string name="preference_donate_description">Пожертвования</string>
     <string name="preference_appearance_title">Внешний вид</string>
     <string name="preference_appearance_description">Настройки внешнего вида</string>
+    <string name="preference_language_title">Язык</string>
+    <string name="preference_language_description">Смена языка приложения</string>
+    <string name="preference_language_en">Английский</string>
+    <string name="preference_language_ru">Русский</string>
     <string name="preference_github_title">GitHub</string>
     <string name="preference_github_description">Репозиторий проекта</string>
     <string name="preference_youtube_title">YouTube</string>

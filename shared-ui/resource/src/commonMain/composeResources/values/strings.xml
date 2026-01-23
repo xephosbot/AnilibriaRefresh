@@ -109,6 +109,10 @@
     <string name="preference_donate_description">Donations</string>
     <string name="preference_appearance_title">Appearance</string>
     <string name="preference_appearance_description">App appearance</string>
+    <string name="preference_language_title">Language</string>
+    <string name="preference_language_description">Change app language</string>
+    <string name="preference_language_en">English</string>
+    <string name="preference_language_ru">Russian</string>
     <string name="preference_github_title">GitHub</string>
     <string name="preference_github_description">Project repository</string>
     <string name="preference_youtube_title">YouTube</string>

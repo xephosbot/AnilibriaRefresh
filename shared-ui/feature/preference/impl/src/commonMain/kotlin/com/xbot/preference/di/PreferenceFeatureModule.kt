@@ -14,11 +14,14 @@ import com.xbot.preference.donate.DonatePane
 import com.xbot.preference.donate.DonateViewModel
 import com.xbot.preference.history.HistoryPane
 import com.xbot.preference.history.HistoryViewModel
+import com.xbot.preference.language.LanguagePane
+import com.xbot.preference.language.LanguageViewModel
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
+import com.xbot.preference.navigation.PreferenceLanguageRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
@@ -40,6 +43,7 @@ val preferenceFeatureModule = module {
         subclass(PreferenceTeamRoute::class)
         subclass(PreferenceDonateRoute::class)
         subclass(PreferenceAppearanceRoute::class)
+        subclass(PreferenceLanguageRoute::class)
         subclass(GitHubRoute::class)
         subclass(YouTubeRoute::class)
         subclass(DiscordRoute::class)
@@ -105,8 +109,19 @@ val preferenceFeatureModule = module {
             }
         )
     }
+    navigation<PreferenceLanguageRoute>(
+        metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
+    ) {
+        val navigator = LocalNavigator.current
+        LanguagePane(
+            onNavigateBack = {
+                navigator.navigateBack()
+            }
+        )
+    }
     viewModelOf(::HistoryViewModel)
     viewModelOf(::TeamViewModel)
     viewModelOf(::DonateViewModel)
     viewModelOf(::AppearanceViewModel)
+    viewModelOf(::LanguageViewModel)
 }

@@ -36,6 +36,7 @@ import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
+import com.xbot.preference.navigation.PreferenceLanguageRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.navigation.YouTubeRoute
@@ -151,7 +152,8 @@ object PreferenceListDefaults {
             PreferenceHistoryRoute,
             PreferenceTeamRoute,
             PreferenceDonateRoute,
-            PreferenceAppearanceRoute
+            PreferenceAppearanceRoute,
+            PreferenceLanguageRoute
         ),
         Res.string.preference_section_links to listOf(
             GitHubRoute,

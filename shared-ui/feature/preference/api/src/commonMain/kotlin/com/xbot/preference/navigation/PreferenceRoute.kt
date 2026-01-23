@@ -18,6 +18,8 @@ import com.xbot.resources.preference_github_description
 import com.xbot.resources.preference_github_title
 import com.xbot.resources.preference_history_description
 import com.xbot.resources.preference_history_title
+import com.xbot.resources.preference_language_description
+import com.xbot.resources.preference_language_title
 import com.xbot.resources.preference_team_description
 import com.xbot.resources.preference_team_title
 import com.xbot.resources.preference_youtube_description
@@ -78,6 +80,15 @@ data object PreferenceAppearanceRoute : PreferenceOptionRoute {
         get() = Res.string.preference_appearance_title
     override val description: StringResource
         get() = Res.string.preference_appearance_description
+    override val icon: ImageVector = AnilibriaIcons.Filled.Settings
+}
+
+@Serializable
+data object PreferenceLanguageRoute : PreferenceOptionRoute {
+    override val title: StringResource
+        get() = Res.string.preference_language_title
+    override val description: StringResource
+        get() = Res.string.preference_language_description
     override val icon: ImageVector = AnilibriaIcons.Filled.Settings
 }
 
