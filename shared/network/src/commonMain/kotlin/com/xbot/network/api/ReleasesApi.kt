@@ -3,6 +3,7 @@ package com.xbot.network.api
 import arrow.core.Either
 import com.xbot.network.client.NetworkError
 import com.xbot.network.client.request
+import com.xbot.network.models.dto.EpisodeTimecodeDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.dto.ReleaseMemberDto
 import com.xbot.network.models.responses.PaginatedResponse
@@ -25,6 +26,9 @@ interface ReleasesApi {
     suspend fun getReleaseMembers(
         aliasOrId: String
     ): Either<NetworkError, List<ReleaseMemberDto>>
+    suspend fun getReleaseEpisodesTimecodes(
+        aliasOrId: String
+    ): Either<NetworkError, List<EpisodeTimecodeDto>>
 }
 
 internal class DefaultReleasesApi(private val client: HttpClient) : ReleasesApi {
@@ -60,5 +64,9 @@ internal class DefaultReleasesApi(private val client: HttpClient) : ReleasesApi 
 
     override suspend fun getReleaseMembers(aliasOrId: String): Either<NetworkError, List<ReleaseMemberDto>> = client.request {
         get("anime/releases/$aliasOrId/members")
+    }
+
+    override suspend fun getReleaseEpisodesTimecodes(aliasOrId: String): Either<NetworkError, List<EpisodeTimecodeDto>> = client.request {
+        get("anime/releases/$aliasOrId/episodes/timecodes")
     }
 }
