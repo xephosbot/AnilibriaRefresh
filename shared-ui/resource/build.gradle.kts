@@ -28,6 +28,12 @@ kotlin {
         implementation(libs.compose.foundation)
         api(libs.compose.resources)
     }
+
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.appcompat)
+        }
+    }
 }
 
 compose.resources {
