@@ -19,6 +19,9 @@ object LocaleManager {
     }
 }
 
+/**
+ * Implementation referenced from https://kotlinlang.org/docs/multiplatform/compose-resource-environment.html#locale
+ */
 expect object LocalAppLocaleIso {
     val current: String @Composable get
     @Composable infix fun provides(value: String?): ProvidedValue<*>
