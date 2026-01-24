@@ -32,6 +32,7 @@ import com.xbot.designsystem.icons.Search
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
+import com.xbot.localization.ProvideAppLocale
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
@@ -64,70 +65,72 @@ internal fun AnilibriaApp(
     }
 
     CompositionLocalProvider(LocalNavigator provides navigator) {
-        AnilibriaTheme(
-            darkTheme = darkTheme,
-            dynamicColor = appearanceSettings.isDynamicTheme,
-            amoled = appearanceSettings.isPureBlack,
-            expressiveColor = appearanceSettings.isExpressiveColor
-        ) {
-            val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
-            val navSuiteType =
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
-
-            val currentDestination = navigator.currentDestination
-            val currentTopLevelDestination = navigator.currentTopLevelDestination
-
-            val fabModifier = if (
-                navSuiteType == NavigationSuiteType.ShortNavigationBarMedium ||
-                navSuiteType == NavigationSuiteType.ShortNavigationBarCompact
+        ProvideAppLocale {
+            AnilibriaTheme(
+                darkTheme = darkTheme,
+                dynamicColor = appearanceSettings.isDynamicTheme,
+                amoled = appearanceSettings.isPureBlack,
+                expressiveColor = appearanceSettings.isExpressiveColor
             ) {
-                Modifier.animateFloatingActionButton(
-                    visible = currentDestination == currentTopLevelDestination,
-                    alignment = Alignment.Center
-                )
-            } else {
-                Modifier
-            }
-            
-            val fab = @Composable {
-                SearchFloatingActionButton(
-                    expanded = navSuiteType == NavigationSuiteType.WideNavigationRailExpanded,
-                    showOnlyIcon = navSuiteType == NavigationSuiteType.ShortNavigationBarMedium,
-                    modifier = fabModifier,
-                    onClick = { navigator.navigateToSearch() }
-                )
-            }
-            val fabMovable = remember(fab) { movableContentOf(fab) }
+                val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
+                val navSuiteType =
+                    NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
 
-            NavigationSuiteScaffold(
-                navigationItems = {
-                    TopLevelRoutes.forEach { destination ->
-                        val isSelected = currentTopLevelDestination == destination
+                val currentDestination = navigator.currentDestination
+                val currentTopLevelDestination = navigator.currentTopLevelDestination
 
-                        NavigationSuiteItem(
-                            selected = isSelected,
-                            onClick = { navigator.navigate(destination) },
-                            icon = {
-                                Icon(
-                                    imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
-                                    contentDescription = stringResource(destination.textRes),
-                                )
-                            },
-                            label = { Text(stringResource(destination.textRes)) },
-                            navigationSuiteType = navSuiteType,
-                        )
-                    }
-                },
-                primaryActionContent = fabMovable,
-                navigationSuiteType = navSuiteType,
-                navigationSuiteColors = NavigationSuiteDefaults.colors(
-                    shortNavigationBarContainerColor = MaterialTheme.colorScheme.surface,
-                    navigationBarContainerColor = MaterialTheme.colorScheme.surface,
-                ),
-                state = navigationSuiteScaffoldState,
-                navigationItemVerticalArrangement = Arrangement.Center
-            ) {
-                AnilibriaNavGraph(navigator = navigator)
+                val fabModifier = if (
+                    navSuiteType == NavigationSuiteType.ShortNavigationBarMedium ||
+                    navSuiteType == NavigationSuiteType.ShortNavigationBarCompact
+                ) {
+                    Modifier.animateFloatingActionButton(
+                        visible = currentDestination == currentTopLevelDestination,
+                        alignment = Alignment.Center
+                    )
+                } else {
+                    Modifier
+                }
+
+                val fab = @Composable {
+                    SearchFloatingActionButton(
+                        expanded = navSuiteType == NavigationSuiteType.WideNavigationRailExpanded,
+                        showOnlyIcon = navSuiteType == NavigationSuiteType.ShortNavigationBarMedium,
+                        modifier = fabModifier,
+                        onClick = { navigator.navigateToSearch() }
+                    )
+                }
+                val fabMovable = remember(fab) { movableContentOf(fab) }
+
+                NavigationSuiteScaffold(
+                    navigationItems = {
+                        TopLevelRoutes.forEach { destination ->
+                            val isSelected = currentTopLevelDestination == destination
+
+                            NavigationSuiteItem(
+                                selected = isSelected,
+                                onClick = { navigator.navigate(destination) },
+                                icon = {
+                                    Icon(
+                                        imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
+                                        contentDescription = stringResource(destination.textRes),
+                                    )
+                                },
+                                label = { Text(stringResource(destination.textRes)) },
+                                navigationSuiteType = navSuiteType,
+                            )
+                        }
+                    },
+                    primaryActionContent = fabMovable,
+                    navigationSuiteType = navSuiteType,
+                    navigationSuiteColors = NavigationSuiteDefaults.colors(
+                        shortNavigationBarContainerColor = MaterialTheme.colorScheme.surface,
+                        navigationBarContainerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    state = navigationSuiteScaffoldState,
+                    navigationItemVerticalArrangement = Arrangement.Center
+                ) {
+                    AnilibriaNavGraph(navigator = navigator)
+                }
             }
         }
     }
