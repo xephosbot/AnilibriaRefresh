@@ -15,7 +15,6 @@ import com.xbot.preference.donate.DonateViewModel
 import com.xbot.preference.history.HistoryPane
 import com.xbot.preference.history.HistoryViewModel
 import com.xbot.preference.language.LanguagePane
-import com.xbot.preference.language.LanguageViewModel
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
@@ -123,5 +122,4 @@ val preferenceFeatureModule = module {
     viewModelOf(::TeamViewModel)
     viewModelOf(::DonateViewModel)
     viewModelOf(::AppearanceViewModel)
-    viewModelOf(::LanguageViewModel)
 }

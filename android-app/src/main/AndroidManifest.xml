@@ -20,7 +20,7 @@
         tools:targetApi="tiramisu">
         <activity
             android:name="com.xbot.anilibriarefresh.MainActivity"
-            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
+            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|locale|layoutDirection"
             android:exported="true"
             android:supportsPictureInPicture="true"
             android:windowSoftInputMode="adjustResize">

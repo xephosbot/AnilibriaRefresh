@@ -1,22 +1,34 @@
 package com.xbot.localization
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidedValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
-actual object LocaleManager {
-    actual fun setLocale(language: AppLanguage) {
-        val appLocale = LocaleListCompat.forLanguageTags(language.isoCode)
-        AppCompatDelegate.setApplicationLocales(appLocale)
-    }
-
-    actual fun getLocale(): AppLanguage {
-        val locales = AppCompatDelegate.getApplicationLocales()
-        val tag = if (!locales.isEmpty) {
-            locales.get(0)?.language
-        } else {
-            Locale.getDefault().language
+actual object LocalAppLocaleIso {
+    actual val current: String
+        @Composable get() {
+            val locales = AppCompatDelegate.getApplicationLocales()
+            return if (!locales.isEmpty) {
+                locales[0]?.language ?: Locale.getDefault().language
+            } else {
+                Locale.getDefault().language
+            }
         }
-        return AppLanguage.getByIsoCode(tag ?: "en")
+
+    @Composable
+    actual infix fun provides(value: String?): ProvidedValue<*> {
+        val configuration = LocalConfiguration.current
+        if (value != null) {
+            val appLocale = LocaleListCompat.forLanguageTags(value)
+            AppCompatDelegate.setApplicationLocales(appLocale)
+
+            configuration.setLocale(LocaleListCompat.getAdjustedDefault()[0])
+            configuration.setLayoutDirection(LocaleListCompat.getAdjustedDefault()[0])
+        }
+
+        return LocalConfiguration.provides(configuration)
     }
 }

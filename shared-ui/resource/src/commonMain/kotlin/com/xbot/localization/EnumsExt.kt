@@ -71,3 +71,10 @@ val ThemeOption.stringRes: StringResource
         ThemeOption.Dark -> Res.string.preference_appearance_theme_dark
         ThemeOption.Light -> Res.string.preference_appearance_theme_light
     }
+
+val AppLanguage.stringRes: StringResource
+    get() = when (this) {
+        AppLanguage.English -> Res.string.preference_language_en
+        AppLanguage.Russian -> Res.string.preference_language_ru
+    }
+

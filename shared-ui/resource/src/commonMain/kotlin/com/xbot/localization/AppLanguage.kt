@@ -1,10 +1,5 @@
 package com.xbot.localization
 
-import com.xbot.resources.Res
-import com.xbot.resources.preference_language_en
-import com.xbot.resources.preference_language_ru
-import org.jetbrains.compose.resources.StringResource
-
 enum class AppLanguage(
     val isoCode: String
 ) {
@@ -17,9 +12,3 @@ enum class AppLanguage(
         }
     }
 }
-
-val AppLanguage.title: StringResource
-    get() = when (this) {
-        AppLanguage.English -> Res.string.preference_language_en
-        AppLanguage.Russian -> Res.string.preference_language_ru
-    }

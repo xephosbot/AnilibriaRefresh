@@ -1,31 +1,25 @@
 package com.xbot.localization
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidedValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import platform.Foundation.NSLocale
 import platform.Foundation.NSUserDefaults
-import platform.Foundation.currentLocale
-import platform.Foundation.languageCode
 import platform.Foundation.preferredLanguages
-import platform.Foundation.setValue
 
-actual object LocaleManager {
-    private const val APPLE_LANGUAGES_KEY = "AppleLanguages"
+actual object LocalAppLocaleIso {
+    private const val LANG_KEY = "AppleLanguages"
+    private val default = NSLocale.preferredLanguages.first() as String
+    private val LocalAppLocaleIso = staticCompositionLocalOf { default }
+    actual val current: String
+        @Composable get() = LocalAppLocaleIso.current
 
-    actual fun setLocale(language: AppLanguage) {
-        val userDefaults = NSUserDefaults.standardUserDefaults
-        // We put the selected language first in priority
-        userDefaults.setObject(listOf(language.isoCode), forKey = APPLE_LANGUAGES_KEY)
-        userDefaults.synchronize()
-    }
-
-    actual fun getLocale(): AppLanguage {
-        val userDefaults = NSUserDefaults.standardUserDefaults
-        val languages = userDefaults.arrayForKey(APPLE_LANGUAGES_KEY) as? List<*>
-        val preferredLang = languages?.firstOrNull()?.toString()
-            ?: NSLocale.preferredLanguages.firstOrNull()?.toString()
-            ?: NSLocale.currentLocale.languageCode
-            ?: "en"
-        
-        val isoCode = preferredLang.split("-").first()
-        return AppLanguage.getByIsoCode(isoCode)
+    @Composable
+    actual infix fun provides(value: String?): ProvidedValue<*> {
+        val new = value ?: default
+        if (value != null) {
+            NSUserDefaults.standardUserDefaults.setObject(listOf(new), LANG_KEY)
+        }
+        return LocalAppLocaleIso.provides(new)
     }
 }

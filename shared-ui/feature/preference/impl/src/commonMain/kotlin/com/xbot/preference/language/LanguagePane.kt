@@ -14,12 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
@@ -27,24 +25,21 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.localization.AppLanguage
-import com.xbot.localization.title
+import com.xbot.localization.LocaleManager
+import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.preference_language_title
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun LanguagePane(
     modifier: Modifier = Modifier,
-    viewModel: LanguageViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
     LanguagePaneContent(
         modifier = modifier,
-        state = state,
-        onLanguageSelected = viewModel::onLanguageSelected,
+        currentLanguage = LocaleManager.locale,
+        onLanguageSelected = { LocaleManager.setLocale(it) },
         onNavigateBack = onNavigateBack
     )
 }
@@ -53,7 +48,7 @@ internal fun LanguagePane(
 @Composable
 private fun LanguagePaneContent(
     modifier: Modifier = Modifier,
-    state: LanguageScreenState,
+    currentLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
@@ -76,7 +71,7 @@ private fun LanguagePaneContent(
                     ) {
                         Icon(
                             imageVector = AnilibriaIcons.ArrowBack,
-                            contentDescription = null
+                            contentDescription = "Back"
                         )
                     }
                 },
@@ -92,15 +87,15 @@ private fun LanguagePaneContent(
         ) {
             val languages = AppLanguage.entries
             itemsIndexed(languages) { index, language ->
-                val isSelected = language == state.selectedLanguage
+                val isSelected = language == currentLanguage
                 PreferenceItem(
                     modifier = Modifier.section(index, languages.size),
-                    headlineContent = { Text(text = stringResource(language.title)) },
+                    headlineContent = { Text(text = stringResource(language.stringRes)) },
                     trailingContent = {
                         if (isSelected) {
                             Icon(
                                 imageVector = AnilibriaIcons.Check,
-                                contentDescription = null
+                                contentDescription = "Selected"
                             )
                         }
                     },
@@ -117,7 +112,7 @@ private fun LanguagePaneContent(
 private fun LanguagePanePreview() {
     AnilibriaPreview {
         LanguagePaneContent(
-            state = LanguageScreenState(),
+            currentLanguage = AppLanguage.English,
             onLanguageSelected = {},
             onNavigateBack = {}
         )

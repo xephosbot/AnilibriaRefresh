@@ -1,26 +1,38 @@
 package com.xbot.localization
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidedValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import java.util.Locale
 import java.util.prefs.Preferences
 
-actual object LocaleManager {
-    private const val LOCALE_KEY = "app_locale_tag"
-    private val prefs = Preferences.userNodeForPackage(LocaleManager::class.java)
+private val systemDefaultLocale by lazy { Locale.getDefault() }
+private const val LOCALE_KEY = "app_locale_tag"
+private val prefs = Preferences.userNodeForPackage(LocaleManager.javaClass)
 
-    actual fun setLocale(language: AppLanguage) {
-        val locale = Locale.forLanguageTag(language.isoCode)
-        Locale.setDefault(locale)
-        prefs.put(LOCALE_KEY, language.isoCode)
-    }
+actual object LocalAppLocaleIso {
+    private val LocalAppLocaleIso = staticCompositionLocalOf { systemDefaultLocale.toString() }
+    
+    actual val current: String
+        @Composable get() = LocalAppLocaleIso.current
 
-    actual fun getLocale(): AppLanguage {
-        val tag = prefs.get(LOCALE_KEY, Locale.getDefault().toLanguageTag())
-        val languageCode = Locale.forLanguageTag(tag).language
-        return AppLanguage.getByIsoCode(languageCode)
+    @Composable
+    actual infix fun provides(value: String?): ProvidedValue<*> {
+        val newLocale = if (value != null) {
+            prefs.put(LOCALE_KEY, value)
+            Locale.forLanguageTag(value)
+        } else {
+            val iso = prefs.get(LOCALE_KEY, systemDefaultLocale.language)
+            Locale.forLanguageTag(iso)
+        }
+
+        Locale.setDefault(newLocale)
+        return LocalAppLocaleIso.provides(newLocale.toString())
     }
 }
 
-fun LocaleManager.applyLocale() {
-    val language = getLocale()
-    Locale.setDefault(Locale.forLanguageTag(language.isoCode))
+fun LocaleManager.init() {
+    val iso = prefs.get(LOCALE_KEY, systemDefaultLocale.language)
+    val locale = Locale.forLanguageTag(iso)
+    Locale.setDefault(locale)
 }
