@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -182,6 +183,7 @@ private fun DateItem(
     date: LocalDate,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
 ) {
     Column(
         modifier = modifier
@@ -194,12 +196,12 @@ private fun DateItem(
         Text(
             text = date.dayOfWeek.toLocalizedString(style = DayOfWeekStyle.SHORT),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = contentColor
         )
         Text(
             text = date.day.toString(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.titleLarge,
+            color = contentColor
         )
     }
 }
