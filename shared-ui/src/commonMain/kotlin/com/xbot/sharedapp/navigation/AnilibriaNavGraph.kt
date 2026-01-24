@@ -48,6 +48,9 @@ internal fun AnilibriaNavGraph(
         )
     val supportingPaneSceneStrategy = rememberSupportingPaneSceneStrategy<NavKey>(
         directive = scaffoldDirective,
+        adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
+            supportingPaneAdaptStrategy = AdaptStrategy.Hide
+        ),
         // Uncomment when Google finishes the Levitate strategy
         /*adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Levitate(
