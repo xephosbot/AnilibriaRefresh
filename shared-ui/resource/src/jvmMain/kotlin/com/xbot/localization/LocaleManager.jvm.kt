@@ -11,7 +11,7 @@ private const val LOCALE_KEY = "app_locale_tag"
 private val prefs = Preferences.userNodeForPackage(LocaleManager.javaClass)
 
 actual object LocalAppLocaleIso {
-    private val LocalAppLocaleIso = staticCompositionLocalOf { systemDefaultLocale.toString() }
+    private val LocalAppLocaleIso = staticCompositionLocalOf { systemDefaultLocale.language }
     
     actual val current: String
         @Composable get() = LocalAppLocaleIso.current
@@ -27,7 +27,7 @@ actual object LocalAppLocaleIso {
         }
 
         Locale.setDefault(newLocale)
-        return LocalAppLocaleIso.provides(newLocale.toString())
+        return LocalAppLocaleIso.provides(newLocale.language)
     }
 }
 
