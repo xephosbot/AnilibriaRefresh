@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,11 +45,11 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
 import com.xbot.fixtures.data.franchiseMocks
+import com.xbot.localization.localizedName
 import com.xbot.resources.Res
 import com.xbot.resources.franchise_episodes_count
 import com.xbot.resources.franchise_seasons_count
@@ -123,7 +124,7 @@ private fun FranchiseCardContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp),
-                text = franchise.name,
+                text = franchise.localizedName(),
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.headlineLarge.fontSize,
                     minFontSize = MaterialTheme.typography.headlineSmall.fontSize,
@@ -160,8 +161,9 @@ private fun FranchiseCardContent(
                     ) {
                         Text(
                             text = stringResource(Res.string.franchise_seasons_count, franchise.totalReleases),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = stringResource(Res.string.franchise_episodes_count, franchise.totalEpisodes ?: 0),
