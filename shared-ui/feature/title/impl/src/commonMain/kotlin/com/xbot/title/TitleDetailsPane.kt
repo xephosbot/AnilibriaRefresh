@@ -4,9 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -58,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.LargeReleaseCard
@@ -272,16 +271,15 @@ private fun TitleDetails(
                     overscrollEffect = overscrollEffect,
                 ) {
                     if (details.genres.isNotEmpty()) {
-                        FlowRow(
+                        ChipGroup(
+                            items = details.genres,
                             maxLines = 1,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            details.genres.forEach { genre ->
-                                AssistChip(
-                                    onClick = {},
-                                    label = { Text(text = genre.name) }
-                                )
-                            }
+                            contentPadding = PaddingValues(0.dp)
+                        ) { genre ->
+                            AssistChip(
+                                onClick = {},
+                                label = { Text(text = genre.name) }
+                            )
                         }
                     }
                     if (!isSinglePane && details.episodes.isNotEmpty()) {

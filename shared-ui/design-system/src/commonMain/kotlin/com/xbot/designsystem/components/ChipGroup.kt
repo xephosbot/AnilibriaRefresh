@@ -34,6 +34,7 @@ fun <T> MultiChoiceChipGroup(
     items: List<T>,
     selectedItems: List<T>,
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     contentPadding: PaddingValues = ChipGroupDefaults.ContentPadding,
     spacing: Dp = ChipGroupDefaults.ChipSpacing,
     itemContent: @Composable ChipGroupScope.(selected: Boolean, item: T) -> Unit
@@ -41,6 +42,7 @@ fun <T> MultiChoiceChipGroup(
     ChipGroup(
         items = items,
         modifier = modifier,
+        maxLines = maxLines,
         contentPadding = contentPadding,
         spacing = spacing
     ) { item ->
@@ -53,6 +55,7 @@ fun <T> SingleChoiceChipGroup(
     items: List<T>,
     selectedItem: T,
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     contentPadding: PaddingValues = ChipGroupDefaults.ContentPadding,
     spacing: Dp = ChipGroupDefaults.ChipSpacing,
     itemContent: @Composable ChipGroupScope.(selected: Boolean, item: T) -> Unit
@@ -60,6 +63,7 @@ fun <T> SingleChoiceChipGroup(
     ChipGroup(
         items = items,
         modifier = modifier,
+        maxLines = maxLines,
         contentPadding = contentPadding,
         spacing = spacing
     ) { item ->
@@ -72,14 +76,15 @@ fun <T> SingleChoiceChipGroup(
 fun <T> ChipGroup(
     items: List<T>,
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     contentPadding: PaddingValues = ChipGroupDefaults.ContentPadding,
     spacing: Dp = ChipGroupDefaults.ChipSpacing,
     itemContent: @Composable ChipGroupScope.(item: T) -> Unit
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(spacing),
+        maxLines = maxLines,
         modifier = modifier
-            .fillMaxWidth()
             .wrapContentHeight()
             .padding(contentPadding)
     ) {
@@ -94,12 +99,14 @@ fun <T> ChipGroup(
 @Composable
 fun ChipGroup(
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     contentPadding: PaddingValues = ChipGroupDefaults.ContentPadding,
     spacing: Dp = ChipGroupDefaults.ChipSpacing,
     content: @Composable ChipGroupScope.() -> Unit
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(spacing),
+        maxLines = maxLines,
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
