@@ -1,10 +1,13 @@
 package com.xbot.fixtures.data
 
+import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.AvailabilityStatus
+import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import kotlinx.datetime.DayOfWeek
@@ -84,11 +87,20 @@ fun getReleaseDetailMock(id: Int): ReleaseDetail {
         season = Season.SPRING,
         isOngoing = true,
         publishDay = DayOfWeek.FRIDAY,
-        notification = null,
+        notification = "Episode 29 will be released on October 25",
         availabilityStatus = AvailabilityStatus.Available,
-        genres = emptyList(),
-        releaseMembers = emptyList(),
+        genres = listOf(
+            Genre(1, "Fantasy", 100, null),
+            Genre(2, "Adventure", 80, null),
+            Genre(3, "Drama", 50, null)
+        ),
+        releaseMembers = listOf(
+            ReleaseMember("1", MemberRole.VOICING, "Lupin", null),
+            ReleaseMember("2", MemberRole.VOICING, "Silv", null),
+            ReleaseMember("3", MemberRole.TIMING, "Mimal", null),
+            ReleaseMember("4", MemberRole.TRANSLATING, "Arta", null)
+        ),
         episodes = episodeMocks,
-        relatedReleases = emptyList()
+        relatedReleases = releaseMocks.filter { it.id != release.id }.take(3)
     )
 }
