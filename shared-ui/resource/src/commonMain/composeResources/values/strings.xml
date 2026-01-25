@@ -15,6 +15,7 @@
     <string name="label_genres">Genres</string>
     <string name="label_franchises">Franchises</string>
     <string name="label_description">Description</string>
+    <string name="label_episodes">Episodes</string>
     <string name="label_members">Working on the release</string>
     <string name="label_related_releases">Related releases</string>
     <string name="label_search_results">Search results</string>

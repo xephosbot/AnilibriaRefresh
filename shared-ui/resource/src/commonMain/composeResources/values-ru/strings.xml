@@ -15,6 +15,7 @@
     <string name="label_genres">Жанры</string>
     <string name="label_franchises">Франшизы</string>
     <string name="label_description">Описание</string>
+    <string name="label_episodes">Серии</string>
     <string name="label_members">Работа над релизом</string>
     <string name="label_related_releases">Связанное</string>
     <string name="label_search_results">Результаты поиска</string>

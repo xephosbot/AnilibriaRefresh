@@ -76,6 +76,7 @@ import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.only
@@ -86,6 +87,7 @@ import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_watch_continue
+import com.xbot.resources.label_episodes
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
 import com.xbot.title.ui.AlertCard
@@ -202,7 +204,7 @@ private fun TitleDetailsPaneContent(
                                 )
                             )
                         )
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                        .padding(horizontal = LocalMargins.current.horizontal + 8.dp, vertical = 16.dp),
                     visible = state is TitleScreenState.Success && state.title.episodes.isNotEmpty(),
                     enter = slideInVertically { it },
                     exit = slideOutVertically { it }
@@ -255,6 +257,7 @@ private fun TitleDetails(
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
     val overscrollEffect = rememberOverscrollEffect()
+    val horizontalMargin = LocalMargins.current.horizontal
 
     ProvideShimmer(shimmer) {
         Feed(
@@ -297,7 +300,7 @@ private fun TitleDetails(
 
                 row {
                     AlertCard(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = horizontalMargin),
                     ) {
                         Text(
                             text = when (details.availabilityStatus) {
@@ -315,7 +318,7 @@ private fun TitleDetails(
 
                 row {
                     NotificationCard(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = horizontalMargin),
                     ) {
                         Text(text = details.notification!!)
                     }
@@ -328,7 +331,7 @@ private fun TitleDetails(
                 )
                 horizontalItems(
                     items = details.releaseMembers,
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = horizontalMargin)
                 ) { member ->
                     MemberItem(
                         releaseMember = member,
@@ -343,7 +346,7 @@ private fun TitleDetails(
                 )
                 horizontalItems(
                     items = details.relatedReleases,
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(horizontal = horizontalMargin),
                 ) { release ->
                     SmallReleaseCard(
                         release = release,
@@ -354,7 +357,7 @@ private fun TitleDetails(
 
             if (details.episodes.isNotEmpty()) {
                 header(
-                    title = { Text(text = "Episodes") }
+                    title = { Text(text = stringResource(Res.string.label_episodes)) }
                 )
                 itemsIndexed(details.episodes) { index, episode ->
                     EpisodeListItem(
