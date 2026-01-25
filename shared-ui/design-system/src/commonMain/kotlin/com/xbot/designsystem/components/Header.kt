@@ -14,7 +14,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -72,7 +71,7 @@ fun Header(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = LocalMargins.current.horizontal),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             ProvideTextStyle(MaterialTheme.typography.titleLarge) {

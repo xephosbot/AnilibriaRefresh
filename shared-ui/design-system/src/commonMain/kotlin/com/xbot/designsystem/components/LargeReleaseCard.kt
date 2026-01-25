@@ -45,6 +45,7 @@ import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
 import com.xbot.fixtures.data.releaseMocks
@@ -148,7 +149,7 @@ private fun LargeReleaseCardLayout(
         val ratio = if (height > 0.dp) maxWidth / height else 1f
         val contentWidth = calculateContentWidth(maxWidth)
         val contentAlignment = calculateContentAlignment(maxWidth)
-        val contentPadding = calculateContentPadding(maxWidth)
+        val contentPadding = LocalMargins.current.horizontal + 8.dp
 
         Box(
             modifier = Modifier
@@ -289,15 +290,5 @@ internal fun calculateContentAlignment(width: Dp): Alignment.Horizontal {
     return when {
         windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> Alignment.Start
         else -> Alignment.CenterHorizontally
-    }
-}
-
-@Composable
-internal fun calculateContentPadding(width: Dp): Dp {
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    return when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 48.dp
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> 32.dp
-        else -> 24.dp
     }
 }

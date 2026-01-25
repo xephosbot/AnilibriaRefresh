@@ -2,7 +2,10 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.layout
@@ -10,10 +13,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.times
+import com.xbot.designsystem.theme.LocalMargins
 
 data class SectionShape(
-    val innerCornerRadius: Dp,
-    val outerCornerRadius: Dp,
+    val innerCornerSize: CornerSize,
+    val outerCornerSize: CornerSize,
 )
 
 data class SectionSpacing(
@@ -23,23 +27,21 @@ data class SectionSpacing(
 
 object SectionDefaults {
 
-    private val DefaultInnerCornerRadius = 4.dp
-    private val DefaultOuterCornerRadius = 16.dp
-
     private val DefaultInnerSpacing = 2.dp
-    private val DefaultOuterSpacing = 16.dp
 
+    @Composable
     fun shape(
-        innerCornerRadius: Dp = DefaultInnerCornerRadius,
-        outerCornerRadius: Dp = DefaultOuterCornerRadius,
+        innerCornerSize: CornerSize = MaterialTheme.shapes.extraSmall.topStart,
+        outerCornerSize: CornerSize = MaterialTheme.shapes.large.topStart,
     ): SectionShape = SectionShape(
-        innerCornerRadius = innerCornerRadius,
-        outerCornerRadius = outerCornerRadius,
+        innerCornerSize = innerCornerSize,
+        outerCornerSize = outerCornerSize,
     )
 
+    @Composable
     fun spacing(
         innerSpacing: Dp = DefaultInnerSpacing,
-        outerSpacing: Dp = DefaultOuterSpacing,
+        outerSpacing: Dp = LocalMargins.current.horizontal,
     ): SectionSpacing = SectionSpacing(
         innerSpacing = innerSpacing,
         outerSpacing = outerSpacing,
@@ -54,8 +56,8 @@ object SectionDefaults {
         @Suppress("NAME_SHADOWING")
         val columnsCount = if (columnsCount != 0) columnsCount else 1
 
-        val inner = CornerSize(sectionShape.innerCornerRadius)
-        val outer = CornerSize(sectionShape.outerCornerRadius)
+        val inner = sectionShape.innerCornerSize
+        val outer = sectionShape.outerCornerSize
 
         if (itemsCount == 1) return RoundedCornerShape(outer)
 
@@ -77,20 +79,24 @@ fun Modifier.section(
     index: Int,
     itemsCount: Int,
     columnsCount: Int = 1,
-    sectionShape: SectionShape = SectionDefaults.shape(),
-    sectionSpacing: SectionSpacing = SectionDefaults.spacing(),
-): Modifier =
+    sectionShape: SectionShape? = null,
+    sectionSpacing: SectionSpacing? = null,
+): Modifier = composed {
+    val resolvedShape = sectionShape ?: SectionDefaults.shape()
+    val resolvedSpacing = sectionSpacing ?: SectionDefaults.spacing()
+
     sectionSpacing(
         index = index,
         itemsCount = itemsCount,
         columnsCount = columnsCount,
-        sectionSpacing = sectionSpacing
+        sectionSpacing = resolvedSpacing
     ).sectionShape(
         index = index,
         itemsCount = itemsCount,
         columnsCount = columnsCount,
-        sectionShape = sectionShape
+        sectionShape = resolvedShape
     )
+}
 
 private fun Modifier.sectionShape(
     index: Int,
