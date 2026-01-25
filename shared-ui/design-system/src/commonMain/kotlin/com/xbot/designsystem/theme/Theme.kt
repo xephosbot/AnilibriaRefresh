@@ -9,9 +9,12 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldWithPrimaryActionOverride
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 
 @OptIn(
@@ -28,12 +31,20 @@ fun AnilibriaTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = rememberColorScheme(darkTheme, dynamicColor, amoled, expressiveColor)
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    val margins = if (windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+        Margins(horizontal = 24.dp)
+    } else {
+        Margins(horizontal = 16.dp)
+    }
 
     SystemAppearanceEffect(darkTheme)
 
     CompositionLocalProvider(
         LocalOverscrollFactory provides rememberPlatformOverscrollFactory(),
-        LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold
+        LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold,
+        LocalMargins provides margins
     ) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
