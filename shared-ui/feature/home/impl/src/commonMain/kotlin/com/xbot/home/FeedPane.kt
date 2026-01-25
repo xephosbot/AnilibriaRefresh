@@ -105,6 +105,7 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Release
@@ -327,6 +328,7 @@ private fun ReleaseFeed(
     }
     
     var activeMenuReleaseId by remember { mutableStateOf<Int?>(null) }
+    val horizontalMargin = LocalMargins.current.horizontal
 
     Feed(
         modifier = modifier,
@@ -407,7 +409,7 @@ private fun ReleaseFeed(
         horizontalSnappableItems(
             items = releasesFeed.scheduleNow,
             key = { it.release.id },
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = horizontalMargin),
             itemSpacing = 16.dp,
         ) { schedule ->
             MediumReleaseCard(
@@ -454,7 +456,7 @@ private fun ReleaseFeed(
         horizontalItemsIndexed(
             items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
             key = { _, item -> item.id },
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { index, release ->
             SmallReleaseCard(
                 modifier = Modifier.badgeOverlay(
@@ -476,10 +478,11 @@ private fun ReleaseFeed(
         header(
             title = { Text(text = stringResource(Res.string.label_franchises)) },
         )
-        horizontalItems(
+        horizontalSnappableItems(
             items = releasesFeed.recommendedFranchises,
             key = { it.id },
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = horizontalMargin),
+            itemSpacing = 16.dp,
         ) { franchise ->
             FranchiseCard(
                 franchise = franchise,
@@ -493,7 +496,7 @@ private fun ReleaseFeed(
         horizontalItems(
             items = releasesFeed.genres,
             key = { it.id },
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { genre ->
             GenreItem(
                 genre = genre,
@@ -521,6 +524,7 @@ private fun LoadingScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
+    val horizontalMargin = LocalMargins.current.horizontal
     Column(
         modifier = modifier
             .padding(contentPadding.only(WindowInsetsSides.Horizontal))
@@ -535,7 +539,7 @@ private fun LoadingScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .horizontalScroll(rememberScrollState(), enabled = false)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = horizontalMargin)
         ) {
             repeat(10) {
                 MediumReleaseCard(
