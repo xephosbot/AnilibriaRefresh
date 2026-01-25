@@ -1,5 +1,7 @@
 package com.xbot.designsystem.theme
 
+import androidx.compose.foundation.LocalOverscrollFactory
+import androidx.compose.foundation.OverscrollFactory
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ComponentOverrideApi
@@ -30,6 +32,7 @@ fun AnilibriaTheme(
     SystemAppearanceEffect(darkTheme)
 
     CompositionLocalProvider(
+        LocalOverscrollFactory provides rememberPlatformOverscrollFactory(),
         LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         MaterialExpressiveTheme(
@@ -49,6 +52,9 @@ expect fun rememberColorScheme(
     amoled: Boolean,
     expressiveColor: Boolean
 ): ColorScheme
+
+@Composable
+expect fun rememberPlatformOverscrollFactory(): OverscrollFactory?
 
 @Composable
 expect fun SystemAppearanceEffect(darkTheme: Boolean)

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
@@ -254,18 +255,21 @@ private fun TitleDetails(
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
+    val overscrollEffect = rememberOverscrollEffect()
 
     ProvideShimmer(shimmer) {
         Feed(
             modifier = modifier.shimmerUpdater(shimmer),
             state = gridState,
             columns = GridCells.Adaptive(400.dp),
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+            overscrollEffect = overscrollEffect,
         ) {
             row {
                 LargeReleaseCard(
                     modifier = Modifier.verticalParallax(gridState),
-                    release = details.release
+                    release = details.release,
+                    overscrollEffect = overscrollEffect,
                 ) {
                     if (details.genres.isNotEmpty()) {
                         FlowRow(

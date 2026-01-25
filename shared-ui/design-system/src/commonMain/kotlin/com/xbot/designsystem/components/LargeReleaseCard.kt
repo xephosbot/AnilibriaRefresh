@@ -1,6 +1,7 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,9 +9,9 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
@@ -55,18 +58,21 @@ fun LargeReleaseCard(
     release: Release?,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    overscrollEffect: OverscrollEffect? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
     Crossfade(targetState = release) { state ->
         when (state) {
             null -> LargeReleaseCardPlaceholder(
-                modifier = modifier
+                modifier = modifier,
+                overscrollEffect = overscrollEffect
             )
 
             else -> LargeReleaseCardContent(
                 modifier = modifier,
                 contentModifier = contentModifier,
                 release = state,
+                overscrollEffect = overscrollEffect,
                 content = content
             )
         }
@@ -78,11 +84,13 @@ private fun LargeReleaseCardContent(
     release: Release,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    overscrollEffect: OverscrollEffect?,
     content: @Composable (ColumnScope.() -> Unit)?
 ) {
     LargeReleaseCardLayout(
         modifier = Modifier,
         contentModifier = contentModifier,
+        overscrollEffect = overscrollEffect,
         poster = {
             PosterImage(
                 poster = release.poster,
@@ -131,24 +139,28 @@ private fun LargeReleaseCardContent(
 private fun LargeReleaseCardLayout(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    overscrollEffect: OverscrollEffect?,
     poster: @Composable () -> Unit,
     content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit,
 ) {
     BoxWithConstraints {
         val height = calculateContainerHeight(maxWidth)
+        val ratio = if (height > 0.dp) maxWidth / height else 1f
         val contentWidth = calculateContentWidth(maxWidth)
         val contentAlignment = calculateContentAlignment(maxWidth)
         val contentPadding = calculateContentPadding(maxWidth)
 
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(height),
+                .aspectRatio(ratio)
+                .then(modifier),
             contentAlignment = Alignment.BottomStart
         ) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
+                    .overscrollScale(overscrollEffect)
                     .fadedEdge(
                         startFraction = 0.25f,
                         endFraction = 0.75f,
@@ -172,21 +184,19 @@ private fun LargeReleaseCardLayout(
 @Composable
 private fun LargeReleaseCardPlaceholder(
     modifier: Modifier = Modifier,
+    overscrollEffect: OverscrollEffect?,
 ) {
     val shimmer = LocalShimmer.current
 
     LargeReleaseCardLayout(
         modifier = Modifier,
+        overscrollEffect = overscrollEffect,
         poster = {
             Box(
                 modifier = modifier
                     .fillMaxSize()
                     .shimmer(shimmer)
                     .background(Color.LightGray)
-                    .fadedEdge(
-                        startFraction = 0.25f,
-                        endFraction = 0.75f,
-                    )
             )
         },
         content = {}
@@ -232,6 +242,18 @@ private fun LargeReleaseCardPreview() {
     }
 }
 
+private fun Modifier.overscrollScale(overscrollEffect: OverscrollEffect?): Modifier = graphicsLayer {
+    if (overscrollEffect != null) {
+        transformOrigin = TransformOrigin(0.5f, 0f)
+        val overscrollOffset = getOverscrollOffset(overscrollEffect)
+        val scale = 1f + (overscrollOffset / size.height)
+        scaleX = scale
+        scaleY = scale
+        translationY -= overscrollOffset
+    }
+}
+
+internal expect fun getOverscrollOffset(overscrollEffect: OverscrollEffect): Float
 
 @Composable
 internal fun calculateContainerHeight(width: Dp): Dp {

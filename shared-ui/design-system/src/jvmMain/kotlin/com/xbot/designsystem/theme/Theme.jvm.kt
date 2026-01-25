@@ -1,5 +1,6 @@
 package com.xbot.designsystem.theme
 
+import androidx.compose.foundation.OverscrollFactory
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,6 +35,11 @@ actual fun rememberColorScheme(
             )
         }
     }
+}
+
+@Composable
+actual fun rememberPlatformOverscrollFactory(): OverscrollFactory? {
+    return null
 }
 
 @Composable

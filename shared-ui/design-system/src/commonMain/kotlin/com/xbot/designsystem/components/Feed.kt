@@ -1,5 +1,6 @@
 package com.xbot.designsystem.components
 
+import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
@@ -24,6 +25,7 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -49,6 +51,7 @@ fun Feed(
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
+    overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     content: FeedScope.() -> Unit
 ) {
     val latestContent = rememberUpdatedState(content)
@@ -65,7 +68,8 @@ fun Feed(
         verticalArrangement = verticalArrangement,
         horizontalArrangement = horizontalArrangement,
         flingBehavior = flingBehavior,
-        userScrollEnabled = userScrollEnabled
+        userScrollEnabled = userScrollEnabled,
+        overscrollEffect = overscrollEffect,
     ) {
         feedScope.items.forEach { feedItem ->
             items(

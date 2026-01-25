@@ -19,8 +19,6 @@ kotlin {
 
     jvmToolchain(21)
 
-    applyDefaultHierarchyTemplate()
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared.domain)
@@ -44,14 +42,6 @@ kotlin {
         api(libs.sticky.headers)
         api(libs.shimmer.compose)
         api(libs.material.motion.compose.core)
-    }
-
-    sourceSets {
-        val nonAndroid by creating {
-            dependsOn(commonMain.get())
-        }
-        jvmMain.get().dependsOn(nonAndroid)
-        iosMain.get().dependsOn(nonAndroid)
     }
 }
 

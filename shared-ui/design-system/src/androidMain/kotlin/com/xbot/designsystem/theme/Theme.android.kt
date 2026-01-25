@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.OverscrollFactory
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicTonalPalette
 import androidx.compose.runtime.Composable
@@ -59,6 +60,11 @@ actual fun rememberColorScheme(
             )
         }
     }
+}
+
+@Composable
+actual fun rememberPlatformOverscrollFactory(): OverscrollFactory? {
+    return androidx.compose.foundation.rememberPlatformOverscrollFactory()
 }
 
 @Composable
