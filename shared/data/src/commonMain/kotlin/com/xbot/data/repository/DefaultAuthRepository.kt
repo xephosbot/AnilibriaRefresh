@@ -9,36 +9,45 @@ import com.xbot.domain.models.enums.SocialType
 import com.xbot.domain.repository.AuthRepository
 import com.xbot.network.api.AuthApi
 import com.xbot.network.client.NetworkError
-import com.xbot.network.client.TokenStorage
+import com.xbot.network.client.SessionStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class DefaultAuthRepository(
     private val authApi: AuthApi,
-    private val tokenStorage: TokenStorage
+    private val tokenStorage: SessionStorage
 ) : AuthRepository {
 
     override val authState: Flow<Boolean> =
-        tokenStorage.tokenFlow.map { it != null }
+        tokenStorage.tokenFlow.map { !it.isNullOrBlank() }
 
-    override suspend fun login(login: String, password: String): Either<DomainError, Unit> =
-        authApi.login(login, password)
+    override suspend fun login(login: String, password: String): Either<DomainError, Unit> = either {
+        val response = authApi.login(login, password)
             .mapLeft(NetworkError::toDomain)
-            .map {}
+            .bind()
 
-    override suspend fun logout(): Either<DomainError, Unit> =
-        authApi.logout()
+        response.token?.let { tokenStorage.saveToken(login, it) }
+    }
+
+    override suspend fun logout(): Either<DomainError, Unit> = either {
+        val result = authApi.logout()
             .mapLeft(NetworkError::toDomain)
-            .map {}
+        
+        tokenStorage.clearToken()
+        
+        result.bind()
+    }
 
     override suspend fun socialLogin(provider: SocialType): Either<DomainError, Unit> = either {
         val state = authApi.socialLogin(provider.toDto())
             .mapLeft(NetworkError::toDomain)
             .bind().state
 
-        authApi.socialAuthenticate(state)
+        val response = authApi.socialAuthenticate(state)
             .mapLeft(NetworkError::toDomain)
             .bind()
+
+        response.token?.let { tokenStorage.saveToken("Anilibria User", it) }
     }
 
     override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = authApi
