@@ -2,7 +2,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.xbot.sharedapp.di.initKoin
-import com.xbot.sharedapp.navigation.ExternalUriHandler
+import com.xbot.sharedapp.navigation.deeplink.ExternalUriHandler
 import java.awt.Desktop
 import window.ProvidePlatformWindowInsets
 import window.enableEdgeToEdge

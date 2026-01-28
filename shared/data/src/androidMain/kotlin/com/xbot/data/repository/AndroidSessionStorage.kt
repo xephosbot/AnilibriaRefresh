@@ -40,6 +40,11 @@ internal class AndroidSessionStorage(
     }.distinctUntilChanged()
 
     override suspend fun saveToken(username: String, token: String) {
+        val accounts = accountManager.getAccountsByType(accountType)
+        for (account in accounts) {
+            removeAccount(account)
+        }
+        
         val account = Account(username, accountType)
         accountManager.addAccountExplicitly(account, null, null)
         accountManager.setAuthToken(account, authTokenType, token)
@@ -51,8 +56,10 @@ internal class AndroidSessionStorage(
     }
 
     override suspend fun clearToken() {
-        val account = getAccount() ?: return
-        removeAccount(account)
+        val accounts = accountManager.getAccountsByType(accountType)
+        for (account in accounts) {
+            removeAccount(account)
+        }
     }
 
     private fun getAccount(): Account? {

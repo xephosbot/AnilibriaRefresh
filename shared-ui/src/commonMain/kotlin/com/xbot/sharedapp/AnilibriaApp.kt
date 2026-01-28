@@ -33,12 +33,10 @@ import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
-import com.xbot.login.navigation.navigateToLogin
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
-import com.xbot.sharedapp.navigation.DeepLinkListener
 import com.xbot.sharedapp.navigation.TopLevelRoutes
 import com.xbot.sharedapp.navigation.rememberNavigator
 import org.jetbrains.compose.resources.stringResource
@@ -59,12 +57,6 @@ internal fun AnilibriaApp(
         topLevelRoutes = TopLevelRoutes,
         serializersModule = koinInject()
     )
-
-    DeepLinkListener { uri ->
-        if (uri == "anilibria://login") {
-            navigator.navigateToLogin()
-        }
-    }
 
     val darkTheme = when (appearanceSettings.themeOption) {
         ThemeOption.System -> isSystemInDarkTheme()
