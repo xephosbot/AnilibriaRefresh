@@ -8,6 +8,8 @@ import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.login.navigation.LoginRoute
+import com.xbot.sharedapp.navigation.deeplink.DeepLinkListener
+import com.xbot.sharedapp.navigation.deeplink.parseDeepLink
 import kotlinx.serialization.modules.SerializersModule
 
 @Composable
@@ -19,13 +21,23 @@ fun rememberNavigator(
     val navigationState = rememberNavigationState(startRoute, topLevelRoutes, serializersModule)
     val uriHandler = LocalUriHandler.current
 
-    return remember(navigationState) {
+    val navigator = remember(navigationState) {
         AnilibriaNavigator(
             state = navigationState,
             onNavigateToRestrictedKey = { _ -> LoginRoute },
             externalLinkHandler = { url -> uriHandler.openUri(url) }
         )
     }
+
+    DeepLinkListener { uri ->
+        val key = parseDeepLink(uri)
+        println("DEEPLINK $uri -> $key")
+        if (key != null) {
+            navigator.navigate(key)
+        }
+    }
+
+    return navigator
 }
 
 internal class AnilibriaNavigator(

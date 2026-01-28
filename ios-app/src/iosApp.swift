@@ -14,8 +14,21 @@ struct ContentView: View {
     }
 }
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        ExternalUriHandler.shared.onNewUri(uri: url.absoluteString)
+        return true
+    }
+}
+
 @main
 struct iosApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     init() {
         StartKoinKt.doInitKoin()
     }
@@ -23,6 +36,9 @@ struct iosApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    ExternalUriHandler.shared.onNewUri(uri: url.absoluteString)
+                }
         }
     }
 }
