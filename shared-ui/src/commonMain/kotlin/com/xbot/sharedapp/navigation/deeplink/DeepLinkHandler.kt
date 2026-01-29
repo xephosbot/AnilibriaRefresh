@@ -39,7 +39,6 @@ object ExternalUriHandler {
         }
 
     fun onNewUri(uri: String) {
-        println("DEEPLINK onNewUri: $uri")
         cached = uri
         listener?.let {
             it.invoke(uri)

@@ -3,6 +3,7 @@ package com.xbot.sharedapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import com.xbot.common.navigation.ExternalLinkNavKey
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
@@ -21,20 +22,16 @@ fun rememberNavigator(
     val navigationState = rememberNavigationState(startRoute, topLevelRoutes, serializersModule)
     val uriHandler = LocalUriHandler.current
 
-    val navigator = remember(navigationState) {
+    val navigator = remember(navigationState, uriHandler) {
         AnilibriaNavigator(
             state = navigationState,
             onNavigateToRestrictedKey = { _ -> LoginRoute },
-            externalLinkHandler = { url -> uriHandler.openUri(url) }
+            uriHandler = uriHandler
         )
     }
 
     DeepLinkListener { uri ->
-        val key = parseDeepLink(uri)
-        println("DEEPLINK $uri -> $key")
-        if (key != null) {
-            navigator.navigate(key)
-        }
+        navigator.handleDeepLink(uri)
     }
 
     return navigator
@@ -43,7 +40,7 @@ fun rememberNavigator(
 internal class AnilibriaNavigator(
     val state: NavigationState,
     val onNavigateToRestrictedKey: (targetKey: NavKey?) -> NavKey,
-    val externalLinkHandler: (String) -> Unit,
+    val uriHandler: UriHandler,
 ) : Navigator {
     override val currentTopLevelDestination: TopLevelNavKey
         get() = state.topLevelRoute
@@ -61,7 +58,7 @@ internal class AnilibriaNavigator(
         }
 
         if (key is ExternalLinkNavKey) {
-            externalLinkHandler(key.url)
+            uriHandler.openUri(key.url)
             return
         }
 
@@ -72,6 +69,13 @@ internal class AnilibriaNavigator(
             else -> {
                 state.backStacks[state.topLevelRoute]?.add(key)
             }
+        }
+    }
+
+    fun handleDeepLink(uri: String) {
+        val key = parseDeepLink(uri)
+        if (key != null) {
+            navigate(key)
         }
     }
 

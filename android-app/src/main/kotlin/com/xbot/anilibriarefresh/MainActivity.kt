@@ -13,7 +13,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import com.xbot.sharedapp.navigation.ExternalUriHandler
+import com.xbot.sharedapp.navigation.deeplink.ExternalUriHandler
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,13 +21,11 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        intent?.data?.toString()?.let { uri ->
-            ExternalUriHandler.onNewUri(uri)
-        }
-
         splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
             onSplashScreenExit(splashScreenViewProvider)
         }
+
+        handleIntent(intent)
 
         enableEdgeToEdge()
         setContent {
@@ -37,9 +35,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.toString()?.let { uri ->
-            ExternalUriHandler.onNewUri(uri)
-        }
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action != Intent.ACTION_VIEW) return
+        if (intent.extras == null) return
+        val uri = intent.data?.toString() ?: return
+        ExternalUriHandler.onNewUri(uri)
     }
 
     private fun onSplashScreenExit(splashScreenViewProvider: SplashScreenViewProvider) {

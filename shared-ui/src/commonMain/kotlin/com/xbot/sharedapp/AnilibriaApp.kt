@@ -38,6 +38,8 @@ import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import com.xbot.sharedapp.navigation.TopLevelRoutes
+import com.xbot.sharedapp.navigation.deeplink.DeepLinkListener
+import com.xbot.sharedapp.navigation.deeplink.parseDeepLink
 import com.xbot.sharedapp.navigation.rememberNavigator
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
