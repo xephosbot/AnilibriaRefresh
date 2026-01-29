@@ -14,6 +14,7 @@ internal class JvmSessionStorage : SessionStorage {
     override val tokenFlow: Flow<String?> = _tokenFlow.asStateFlow()
 
     override suspend fun saveToken(username: String, token: String) {
+        // TODO: Use a secure storage mechanism or encrypt the token before storage
         preferences.put(key, token)
         _tokenFlow.value = token
     }

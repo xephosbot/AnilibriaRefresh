@@ -39,7 +39,7 @@ internal class DefaultAppearanceRepository(
     }
 
     override val isPureBlack: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[Keys.isPureBlack] ?: true
+        preferences[Keys.isPureBlack] ?: false
     }
 
     override val isExpressiveColor: Flow<Boolean> = dataStore.data.map { preferences ->
