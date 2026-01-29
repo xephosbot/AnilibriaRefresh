@@ -3,6 +3,7 @@ package com.xbot.anilibriarefresh
 import MainView
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import com.xbot.sharedapp.navigation.deeplink.ExternalUriHandler
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,10 +25,25 @@ class MainActivity : AppCompatActivity() {
             onSplashScreenExit(splashScreenViewProvider)
         }
 
+        handleIntent(intent)
+
         enableEdgeToEdge()
         setContent {
             MainView()
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action != Intent.ACTION_VIEW) return
+        if (intent.extras == null) return
+        val uri = intent.data?.toString() ?: return
+        ExternalUriHandler.onNewUri(uri)
     }
 
     private fun onSplashScreenExit(splashScreenViewProvider: SplashScreenViewProvider) {

@@ -206,7 +206,10 @@ internal fun LoginScreenContent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextButton(
-                    onClick = { /* TODO */ },
+                    onClick = {
+                        //TODO: Handle forgot password
+                        onAction(LoginScreenAction.Logout)
+                    },
                 ) {
                     Text(stringResource(Res.string.login_forgot_password))
                 }
