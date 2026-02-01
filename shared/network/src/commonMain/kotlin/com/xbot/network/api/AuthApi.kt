@@ -3,6 +3,7 @@ package com.xbot.network.api
 import arrow.core.Either
 import com.xbot.network.client.NetworkError
 import com.xbot.network.client.request
+import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.enums.SocialTypeDto
 import com.xbot.network.models.responses.AuthResponse
 import com.xbot.network.models.responses.LoginResponse
@@ -37,7 +38,9 @@ internal class DefaultAuthApi(private val client: HttpClient) : AuthApi {
     }
 
     override suspend fun logout(): Either<NetworkError, LogoutResponse> = client.request {
-        post("accounts/users/auth/logout")
+        post("accounts/users/auth/logout") {
+            requiresAuth()
+        }
     }
 
     override suspend fun socialLogin(provider: SocialTypeDto): Either<NetworkError, SocialAuthResponse> = client.request {

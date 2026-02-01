@@ -4,7 +4,9 @@ import arrow.core.Either
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpResponse
+import io.ktor.util.AttributeKey
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
@@ -26,4 +28,10 @@ internal suspend inline fun <reified T> HttpClient.request(
             else -> NetworkError.UnknownError(e)
         }
     }
+}
+
+internal val AuthenticatedRequest = AttributeKey<Unit>("AuthenticatedRequest")
+
+internal fun HttpRequestBuilder.requiresAuth() {
+    attributes.put(AuthenticatedRequest, Unit)
 }

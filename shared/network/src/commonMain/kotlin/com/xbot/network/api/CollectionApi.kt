@@ -3,8 +3,9 @@ package com.xbot.network.api
 import arrow.core.Either
 import com.xbot.network.client.NetworkError
 import com.xbot.network.client.request
-import com.xbot.network.models.dto.ReleaseDto
+import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.dto.GenreDto
+import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.enums.AgeRatingDto
 import com.xbot.network.models.enums.CollectionTypeDto
 import com.xbot.network.models.enums.ReleaseTypeDto
@@ -15,8 +16,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
 interface CollectionApi {
     suspend fun getCollectionIds(): Either<NetworkError, Map<Int, CollectionTypeDto>>
@@ -44,7 +43,9 @@ interface CollectionApi {
 
 internal class DefaultCollectionApi(private val client: HttpClient) : CollectionApi {
     override suspend fun getCollectionIds(): Either<NetworkError, Map<Int, CollectionTypeDto>> = client.request {
-        get("accounts/users/me/collections/ids")
+        get("accounts/users/me/collections/ids") {
+            requiresAuth()
+        }
     }
 
     override suspend fun getCollectionReleases(
@@ -58,6 +59,7 @@ internal class DefaultCollectionApi(private val client: HttpClient) : Collection
         ageRatings: List<AgeRatingDto>?
     ): Either<NetworkError, PaginatedResponse<ReleaseDto>> = client.request {
         get("accounts/users/me/collections/releases") {
+            requiresAuth()
             parameter("page", page)
             parameter("limit", limit)
             parameter("type_of_collection", collectionType)
@@ -71,7 +73,7 @@ internal class DefaultCollectionApi(private val client: HttpClient) : Collection
 
     override suspend fun addToCollections(collections: Map<Int, CollectionTypeDto>): Either<NetworkError, Map<Int, CollectionTypeDto>> = client.request {
         post("accounts/users/me/collections") {
-            contentType(ContentType.Application.Json)
+            requiresAuth()
             setBody(collections.map { (releaseId, collectionType) ->
                 mapOf(
                     "release_id" to releaseId,
@@ -83,24 +85,32 @@ internal class DefaultCollectionApi(private val client: HttpClient) : Collection
 
     override suspend fun removeFromCollections(releaseIds: List<Int>): Either<NetworkError, Map<Int, CollectionTypeDto>> = client.request {
         delete("accounts/users/me/collections") {
-            contentType(ContentType.Application.Json)
+            requiresAuth()
             setBody(releaseIds.map { mapOf("release_id" to it) })
         }
     }
 
     override suspend fun getCollectionAgeRatings(): Either<NetworkError, List<AgeRatingDto>> = client.request {
-        get("accounts/users/me/collections/references/age-ratings")
+        get("accounts/users/me/collections/references/age-ratings") {
+            requiresAuth()
+        }
     }
 
     override suspend fun getCollectionGenres(): Either<NetworkError, List<GenreDto>> = client.request {
-        get("accounts/users/me/collections/references/genres")
+        get("accounts/users/me/collections/references/genres") {
+            requiresAuth()
+        }
     }
 
     override suspend fun getCollectionReleaseTypes(): Either<NetworkError, List<ReleaseTypeDto>> = client.request {
-        get("accounts/users/me/collections/references/types")
+        get("accounts/users/me/collections/references/types") {
+            requiresAuth()
+        }
     }
 
     override suspend fun getCollectionYears(): Either<NetworkError, List<Int>> = client.request {
-        get("accounts/users/me/collections/references/years")
+        get("accounts/users/me/collections/references/years") {
+            requiresAuth()
+        }
     }
 }
