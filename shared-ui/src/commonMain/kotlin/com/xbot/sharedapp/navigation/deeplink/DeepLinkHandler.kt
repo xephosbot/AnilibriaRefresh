@@ -4,17 +4,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalUriHandler
 import com.xbot.common.navigation.NavKey
 import com.xbot.login.navigation.LoginRoute
 import com.xbot.title.navigation.TitleRoute
 import io.ktor.http.Url
 
 @Composable
-internal fun DeepLinkListener(onUri: (String) -> Unit) {
-    val currentOnUri by rememberUpdatedState(onUri)
+internal fun DeepLinkListener(onDeepLink: (NavKey) -> Unit) {
+    val uriHandler = LocalUriHandler.current
+    val currentOnDeepLink by rememberUpdatedState(onDeepLink)
+
     DisposableEffect(Unit) {
         ExternalUriHandler.listener = { uri ->
-            currentOnUri.invoke(uri)
+            val navKey = parseDeepLink(uri)
+            if (navKey != null) {
+                currentOnDeepLink(navKey)
+            } else {
+                uriHandler.openUri(uri)
+            }
         }
 
         onDispose {
@@ -22,7 +30,6 @@ internal fun DeepLinkListener(onUri: (String) -> Unit) {
         }
     }
 }
-
 object ExternalUriHandler {
 
     private var cached: String? = null

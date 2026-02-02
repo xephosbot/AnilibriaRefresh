@@ -4,6 +4,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation3.scene.DialogSceneStrategy
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
+import com.xbot.common.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.login.LoginScreen
 import com.xbot.login.LoginViewModel
@@ -24,11 +25,16 @@ val loginFeatureModule = module {
     }
     navigation<LoginRoute>(
         metadata = DialogSceneStrategy.dialog(DialogProperties(usePlatformDefaultWidth = false))
-    ) {
+    ) { key ->
         val navigator = LocalNavigator.current
         LoginScreen(
             onNavigateBack = {
-                navigator.navigateBack()
+                val returnTo = key.returnTo
+                if (returnTo != null) {
+                    navigator.replace<LoginRoute>(returnTo)
+                } else {
+                    navigator.navigateBack()
+                }
             },
             onNavigateToRegistration = {
                 navigator.navigateToRegistration()

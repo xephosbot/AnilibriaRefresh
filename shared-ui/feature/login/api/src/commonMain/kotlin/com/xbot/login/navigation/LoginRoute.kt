@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data object LoginRoute : NavKey
+data class LoginRoute(val returnTo: NavKey? = null) : NavKey
 
 @Serializable
 data object RegistrationRoute : ExternalLinkNavKey {
@@ -15,8 +15,8 @@ data object RegistrationRoute : ExternalLinkNavKey {
     override val url: String = "https://aniliberty.top/app/auth/registration/newRegistration"
 }
 
-fun Navigator.navigateToLogin() {
-    navigate(LoginRoute)
+fun Navigator.navigateToLogin(returnTo: NavKey? = null) {
+    navigate(LoginRoute(returnTo))
 }
 
 fun Navigator.navigateToRegistration() {

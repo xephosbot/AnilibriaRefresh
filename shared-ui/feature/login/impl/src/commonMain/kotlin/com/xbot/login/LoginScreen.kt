@@ -78,7 +78,7 @@ internal fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.effects) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is LoginScreenEffect.NavigateBack -> onNavigateBack()

@@ -65,7 +65,7 @@ internal fun createHttpClient(
                 null
             }
             sendWithoutRequest { request ->
-                !request.attributes.contains(AuthenticatedRequest)
+                request.attributes.contains(AuthenticatedRequest)
             }
         }
     }
