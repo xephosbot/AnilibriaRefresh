@@ -1,10 +1,9 @@
 package com.xbot.network.client
 
-import kotlinx.coroutines.flow.Flow
+import io.ktor.client.plugins.auth.providers.BearerTokens
 
 interface SessionStorage {
-    val tokenFlow: Flow<String?>
-    suspend fun saveToken(username: String, token: String)
-    suspend fun getToken(): String?
+    suspend fun saveToken(token: String)
+    suspend fun getToken(): BearerTokens?
     suspend fun clearToken()
 }

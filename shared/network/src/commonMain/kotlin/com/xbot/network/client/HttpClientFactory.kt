@@ -7,7 +7,6 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -55,10 +54,7 @@ internal fun createHttpClient(
         bearer {
             cacheTokens = false
             loadTokens {
-                val accessToken = sessionStorage.getToken()
-                accessToken?.let {
-                    BearerTokens(accessToken = it, refreshToken = null)
-                }
+                sessionStorage.getToken()
             }
             refreshTokens {
                 sessionStorage.clearToken()

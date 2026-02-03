@@ -1,13 +1,11 @@
 package com.xbot.data.di
 
-import com.xbot.data.datasource.createDataStore
-import com.xbot.data.repository.JvmSessionStorage
-import com.xbot.network.client.SessionStorage
+import com.xbot.data.datasource.DataStorePathProvider
+import com.xbot.data.datasource.JvmDataStorePathProvider
 import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-actual val platformModule = module {
-    single { createDataStore() }
-    singleOf(::JvmSessionStorage) { bind<SessionStorage>() }
+internal actual val platformModule = module {
+    factoryOf(::JvmDataStorePathProvider) { bind<DataStorePathProvider>() }
 }

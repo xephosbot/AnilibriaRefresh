@@ -19,14 +19,14 @@ internal class DefaultAuthRepository(
 ) : AuthRepository {
 
     override val authState: Flow<Boolean> =
-        tokenStorage.tokenFlow.map { !it.isNullOrBlank() }
+        (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
 
     override suspend fun login(login: String, password: String): Either<DomainError, Unit> = either {
         val response = authApi.login(login, password)
             .mapLeft(NetworkError::toDomain)
             .bind()
 
-        response.token?.let { tokenStorage.saveToken(login, it) }
+        response.token?.let { tokenStorage.saveToken(it) }
     }
 
     override suspend fun logout(): Either<DomainError, Unit> = either {
@@ -47,7 +47,7 @@ internal class DefaultAuthRepository(
             .mapLeft(NetworkError::toDomain)
             .bind()
 
-        response.token?.let { tokenStorage.saveToken("Anilibria User", it) }
+        response.token?.let { tokenStorage.saveToken(it) }
     }
 
     override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = authApi

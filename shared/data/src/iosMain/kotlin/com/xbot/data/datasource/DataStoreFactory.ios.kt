@@ -1,18 +1,14 @@
 package com.xbot.data.datasource
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
-import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
 @OptIn(ExperimentalForeignApi::class)
-internal fun createDataStore(): DataStore<Preferences> = createDataStore(
-    producePath = {
+internal class IosDataStorePathProvider : DataStorePathProvider {
+    override fun getPath(fileName: String): String {
         val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,
             inDomain = NSUserDomainMask,
@@ -20,6 +16,6 @@ internal fun createDataStore(): DataStore<Preferences> = createDataStore(
             create = false,
             error = null,
         )
-        requireNotNull(documentDirectory).path + "/$dataStoreFileName"
+        return requireNotNull(documentDirectory).path + "/$fileName"
     }
-)
+}
