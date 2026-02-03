@@ -27,6 +27,16 @@
     <string name="label_seasons">Seasons</string>
     <string name="label_years">Years range</string>
 
+    <!-- Filter Descriptions -->
+    <string name="description_filter_genres">Specify the genres by which all our releases will be filtered. If multiple are selected, a combination will be used</string>
+    <string name="description_filter_release_types">Specify the release types by which all releases will be filtered</string>
+    <string name="description_filter_publish_statuses">Specify the desired release statuses by which all titles in the catalog will be filtered</string>
+    <string name="description_filter_production_statuses">Specify the desired dubbing statuses by which all titles in the catalog will be filtered</string>
+    <string name="description_filter_sorting_types">Specify the sorting method to display all titles in the catalog</string>
+    <string name="description_filter_seasons">Specify the desired release seasons by which all titles in the catalog will be filtered</string>
+    <string name="description_filter_years">Specify the release years by which all titles in the catalog will be filtered</string>
+    <string name="description_filter_age_ratings">Specify the allowable age rating of releases by which all titles will be filtered</string>
+
     <!-- Кнопки -->
     <string name="button_retry">Retry</string>
     <string name="button_watch">Watch</string>

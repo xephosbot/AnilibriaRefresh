@@ -47,7 +47,7 @@ val searchFeatureModule = module {
         val navigator = LocalNavigator.current
         SearchFilterPane(
             showBackButton = true,
-            onBackClick = {
+            onNavigateBack = {
                 navigator.navigateBack()
             },
         )

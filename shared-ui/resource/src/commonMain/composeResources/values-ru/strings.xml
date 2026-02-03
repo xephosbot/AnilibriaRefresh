@@ -27,6 +27,16 @@
     <string name="label_seasons">Сезоны</string>
     <string name="label_years">Период выхода</string>
 
+    <!-- Описания фильтров -->
+    <string name="description_filter_genres">Укажите жанры, по которым будут отфильтрованы все наши релизы. При выборе нескольких — будет использована комбинация</string>
+    <string name="description_filter_release_types">Укажите типы релизов, по которым будут отфильтрованы все релизы</string>
+    <string name="description_filter_publish_statuses">Укажите желаемые статусы выхода релиза, по которым будут отфильтрованы все тайтлы в каталоге</string>
+    <string name="description_filter_production_statuses">Укажите желаемые статусы озвучки релиза, по которым будут отфильтрованы все тайтлы в каталоге</string>
+    <string name="description_filter_sorting_types">Укажите способ сортировки для отображения всех тайтлов в каталоге</string>
+    <string name="description_filter_seasons">Укажите желаемые сезоны выхода релизов, по которым будут отфильтрованы все тайтлы в каталоге</string>
+    <string name="description_filter_years">Укажите года выхода релиза, по которым будут отфильтрованы все тайтлы в каталоге</string>
+    <string name="description_filter_age_ratings">Укажите допустимы возрстаной рейтинг релизов, по которым будут отфильтрованы все тайтлы</string>
+
     <!-- Кнопки -->
     <string name="button_retry">Повторить</string>
     <string name="button_watch">Смотреть</string>

@@ -38,7 +38,7 @@ fun RangeSlider(
     val endInteractionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
