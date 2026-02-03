@@ -16,10 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +37,7 @@ import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Release
+import com.xbot.fixtures.data.episodeMocks
 import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 
@@ -204,12 +203,10 @@ private fun MediumReleaseCardPreview() {
             release = releaseMocks[0],
             onClick = {},
         ) {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { /*TODO*/ },
-            ) {
-                Text(text = "Button")
-            }
+            EpisodeListItem(
+                episode = episodeMocks.first(),
+                onClick = {}
+            )
         }
     }
 }
