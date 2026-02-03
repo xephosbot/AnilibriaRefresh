@@ -14,6 +14,6 @@ interface TopLevelNavKey : NavKey {
     val unselectedIcon: ImageVector
 }
 
-interface ExternalLinkNavKey : NavKey {
-    val url: String
+interface ExternalUriNavKey : NavKey {
+    val uri: String
 }

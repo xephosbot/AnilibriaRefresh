@@ -2,7 +2,7 @@ package com.xbot.preference.di
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
-import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.replace
@@ -59,12 +59,11 @@ val preferenceFeatureModule = module {
         PreferenceListPane(
             currentDestination = navigator.currentDestination as? PreferenceOptionRoute,
             onNavigateToDetail = { destination ->
-                if (destination is ExternalLinkNavKey) {
+                if (destination is ExternalUriNavKey) {
                     navigator.navigate(destination)
-                    return@PreferenceListPane
+                } else {
+                    navigator.replace<PreferenceOptionRoute>(destination)
                 }
-
-                navigator.replace<PreferenceOptionRoute>(destination)
             }
         )
     }

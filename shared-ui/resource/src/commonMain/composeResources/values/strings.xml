@@ -120,6 +120,8 @@
     <string name="preference_youtube_description">Our channel</string>
     <string name="preference_discord_title">Discord</string>
     <string name="preference_discord_description">Our server</string>
+    <string name="preference_telegram_title">Telegram</string>
+    <string name="preference_telegram_description">Our channel</string>
 
     <!-- Appearance Options -->
     <string name="preference_appearance_theme_title">Theme</string>
@@ -127,16 +129,12 @@
     <string name="preference_appearance_theme_system">System</string>
     <string name="preference_appearance_theme_dark">Dark</string>
     <string name="preference_appearance_theme_light">Light</string>
-
     <string name="preference_appearance_dynamic_theme_title">Dynamic Theme</string>
     <string name="preference_appearance_dynamic_theme_description">Use Material you colors for app theme</string>
-
     <string name="preference_appearance_pure_black_title">Pure black</string>
     <string name="preference_appearance_pure_black_description">Use a pure black background color to save energy on AMOLED screens</string>
-
     <string name="preference_appearance_expressive_color_title">Expressive color scheme</string>
     <string name="preference_appearance_expressive_color_description">Use a more expressive color scheme for the application</string>
-
     <string name="preference_screen_title">Settings</string>
     <string name="preference_section_main">Main</string>
     <string name="preference_section_links">Useful links</string>

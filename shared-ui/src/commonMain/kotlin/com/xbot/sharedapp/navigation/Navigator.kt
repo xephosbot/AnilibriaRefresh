@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
@@ -53,8 +53,8 @@ internal class AnilibriaNavigator(
     override fun navigate(key: NavKey) {
         val targetKey = navigationInterceptor(key)
 
-        if (targetKey is ExternalLinkNavKey) {
-            ExternalUriHandler.onNewUri(targetKey.url)
+        if (targetKey is ExternalUriNavKey) {
+            ExternalUriHandler.onNewUri(targetKey.uri)
             return
         }
 

@@ -1,12 +1,13 @@
 package com.xbot.preference.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.icons.Star
+import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_description
 import com.xbot.resources.preference_appearance_title
@@ -22,6 +23,8 @@ import com.xbot.resources.preference_language_description
 import com.xbot.resources.preference_language_title
 import com.xbot.resources.preference_team_description
 import com.xbot.resources.preference_team_title
+import com.xbot.resources.preference_telegram_title
+import com.xbot.resources.preference_telegram_description
 import com.xbot.resources.preference_youtube_description
 import com.xbot.resources.preference_youtube_title
 import com.xbot.resources.tab_preference
@@ -93,31 +96,41 @@ data object PreferenceLanguageRoute : PreferenceOptionRoute {
 }
 
 @Serializable
-data object GitHubRoute : PreferenceOptionRoute, ExternalLinkNavKey {
+data object GitHubRoute : PreferenceOptionRoute, ExternalUriNavKey {
     override val title: StringResource
         get() = Res.string.preference_github_title
     override val description: StringResource
         get() = Res.string.preference_github_description
     override val icon: ImageVector = AnilibriaIcons.Filled.Star
-    override val url: String = "https://github.com/xephosbot/AnilibriaRefresh"
+    override val uri: String = "https://github.com/xephosbot/AnilibriaRefresh"
 }
 
 @Serializable
-data object YouTubeRoute : PreferenceOptionRoute, ExternalLinkNavKey {
+data object YouTubeRoute : PreferenceOptionRoute, ExternalUriNavKey {
     override val title: StringResource
         get() = Res.string.preference_youtube_title
     override val description: StringResource
         get() = Res.string.preference_youtube_description
     override val icon: ImageVector = AnilibriaIcons.Filled.Star
-    override val url: String = "https://youtube.com"
+    override val uri: String = "https://www.youtube.com/user/anilibriatv"
 }
 
 @Serializable
-data object DiscordRoute : PreferenceOptionRoute, ExternalLinkNavKey {
+data object DiscordRoute : PreferenceOptionRoute, ExternalUriNavKey {
     override val title: StringResource
         get() = Res.string.preference_discord_title
     override val description: StringResource
         get() = Res.string.preference_discord_description
     override val icon: ImageVector = AnilibriaIcons.Filled.Star
-    override val url: String = "https://discord.gg"
+    override val uri: String = "https://discord.com/M6yCGeGN9B"
+}
+
+@Serializable
+data object TelegramRoute : PreferenceOptionRoute, ExternalUriNavKey {
+    override val title: StringResource
+        get() = Res.string.preference_telegram_title
+    override val description: StringResource
+        get() = Res.string.preference_telegram_description
+    override val icon: ImageVector = AnilibriaIcons.TelegramLogo
+    override val uri: String = "https://t.me/aniliberty_tv"
 }

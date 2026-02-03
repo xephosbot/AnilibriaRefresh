@@ -10,7 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
@@ -39,6 +38,7 @@ import com.xbot.preference.navigation.PreferenceHistoryRoute
 import com.xbot.preference.navigation.PreferenceLanguageRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
+import com.xbot.preference.navigation.TelegramRoute
 import com.xbot.preference.navigation.YouTubeRoute
 import com.xbot.resources.Res
 import com.xbot.resources.preference_screen_title
@@ -127,7 +127,7 @@ private fun PreferencesList(
                             )
                         },
                         trailingContent = {
-                            if (item !is ExternalLinkNavKey) {
+                            if (item !is ExternalUriNavKey) {
                                 Icon(
                                     imageVector = AnilibriaIcons.ChevronRight,
                                     contentDescription = null
@@ -156,9 +156,10 @@ object PreferenceListDefaults {
             PreferenceLanguageRoute
         ),
         Res.string.preference_section_links to listOf(
-            GitHubRoute,
+            TelegramRoute,
+            DiscordRoute,
             YouTubeRoute,
-            DiscordRoute
+            GitHubRoute,
         )
     )
 }

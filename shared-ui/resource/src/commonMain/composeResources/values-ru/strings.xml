@@ -120,6 +120,8 @@
     <string name="preference_youtube_description">Наш канал</string>
     <string name="preference_discord_title">Discord</string>
     <string name="preference_discord_description">Наш сервер</string>
+    <string name="preference_telegram_title">Telegram</string>
+    <string name="preference_telegram_description">Наш канал</string>
 
     <!-- Appearance Options -->
     <string name="preference_appearance_theme_title">Тема</string>
@@ -127,16 +129,12 @@
     <string name="preference_appearance_theme_system">Системная</string>
     <string name="preference_appearance_theme_dark">Темная</string>
     <string name="preference_appearance_theme_light">Светлая</string>
-
     <string name="preference_appearance_dynamic_theme_title">Динамическая тема</string>
     <string name="preference_appearance_dynamic_theme_description">Использовать цвета Material You</string>
-
     <string name="preference_appearance_pure_black_title">Глубокий чёрный</string>
     <string name="preference_appearance_pure_black_description">Использовать чёрный фон для экономии заряда на AMOLED-экранах</string>
-
     <string name="preference_appearance_expressive_color_title">Выразительные цвета</string>
     <string name="preference_appearance_expressive_color_description">Использовать более выразительную цветовую палитру в приложении</string>
-
     <string name="preference_screen_title">Настройки</string>
     <string name="preference_section_main">Основное</string>
     <string name="preference_section_links">Полезные ссылки</string>

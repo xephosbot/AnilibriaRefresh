@@ -1,6 +1,6 @@
 package com.xbot.login.navigation
 
-import com.xbot.common.navigation.ExternalLinkNavKey
+import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.Navigator
 import kotlinx.serialization.Serializable
@@ -10,9 +10,9 @@ import kotlinx.serialization.Transient
 data class LoginRoute(val returnTo: NavKey? = null) : NavKey
 
 @Serializable
-data object RegistrationRoute : ExternalLinkNavKey {
+data object RegistrationRoute : ExternalUriNavKey {
     @Transient
-    override val url: String = "https://aniliberty.top/app/auth/registration/newRegistration"
+    override val uri: String = "https://aniliberty.top/app/auth/registration/newRegistration"
 }
 
 fun Navigator.navigateToLogin(returnTo: NavKey? = null) {
