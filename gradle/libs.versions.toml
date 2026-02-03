@@ -19,9 +19,9 @@ androidx-appcompat = "1.7.1"
 androidx-core-splashscreen = "1.2.0"
 androidx-core-pip = "1.0.0-alpha01"
 androidx-datastore = "1.2.0"
-androidx-paging = "3.4.0-rc01"
+androidx-paging = "3.4.0"
 androidx-interpolator = "1.0.0"
-androidx-media3 = "1.9.0"
+androidx-media3 = "1.9.1"
 
 # Navigation & Lifecycle
 navigation3-runtime = "1.0.0"
