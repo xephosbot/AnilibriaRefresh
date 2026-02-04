@@ -138,6 +138,7 @@ private fun LoadingReleaseListItem(
         leadingContent = {
             Box(
                 modifier = Modifier
+                    .fillMaxSize()
                     .background(Color.LightGray),
             )
         },
