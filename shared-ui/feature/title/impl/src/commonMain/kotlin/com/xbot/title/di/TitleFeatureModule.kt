@@ -1,6 +1,8 @@
 package com.xbot.title.di
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
@@ -27,16 +29,21 @@ val titleFeatureModule = module {
             parametersOf(key)
         }
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         TitleDetailsPane(
             viewModel = viewModel,
-            onBackClick = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             },
             onPlayClick = { releaseId, episodeOrdinal ->
-                navigator.navigateToPlayer(releaseId, episodeOrdinal)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToPlayer(releaseId, episodeOrdinal)
+                }.invoke()
             },
             onReleaseClick = { releaseId ->
-                navigator.navigateToTitle(releaseId)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToTitle(releaseId)
+                }.invoke()
             },
         )
     }

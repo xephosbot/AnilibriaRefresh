@@ -32,11 +32,11 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun HistoryPane(
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     HistoryPaneContent(
         modifier = modifier,
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -44,7 +44,7 @@ internal fun HistoryPane(
 @Composable
 private fun HistoryPaneContent(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -59,7 +59,7 @@ private fun HistoryPaneContent(
                 navigationIcon = {
                     FilledTonalIconButton(
                         modifier = Modifier.padding(start = 6.dp),
-                        onClick = onNavigateBack,
+                        onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
@@ -92,7 +92,7 @@ private fun HistoryPaneContent(
 private fun HistoryPanePreview() {
     AnilibriaPreview {
         HistoryPaneContent(
-            onNavigateBack = {}
+            onBackClick = {}
         )
     }
 }

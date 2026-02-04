@@ -71,7 +71,7 @@ internal fun SearchResultPane(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onShowFilters: () -> Unit,
+    onFiltersClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
@@ -84,7 +84,7 @@ internal fun SearchResultPane(
         searchFieldState = viewModel.searchFieldState,
         onAction = viewModel::onAction,
         onBackClick = onBackClick,
-        onShowFilters = onShowFilters,
+        onFiltersClick = onFiltersClick,
         onReleaseClick = onReleaseClick
     )
 }
@@ -97,7 +97,7 @@ private fun SearchResultPaneContent(
     searchFieldState: TextFieldState,
     onAction: (SearchScreenAction) -> Unit,
     onBackClick: () -> Unit,
-    onShowFilters: () -> Unit,
+    onFiltersClick: () -> Unit,
     onReleaseClick: (Int) -> Unit,
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
@@ -146,7 +146,7 @@ private fun SearchResultPaneContent(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             IconButton(
-                                onClick = { onShowFilters() }
+                                onClick = { onFiltersClick() }
                             ) {
                                 Icon(
                                     imageVector = AnilibriaIcons.Filter,
@@ -312,9 +312,8 @@ private fun SearchResultPanePreview() {
             searchFieldState = searchFieldState,
             onAction = {},
             onBackClick = {},
-            onShowFilters = {},
+            onFiltersClick = {},
             onReleaseClick = {}
         )
     }
 }
-

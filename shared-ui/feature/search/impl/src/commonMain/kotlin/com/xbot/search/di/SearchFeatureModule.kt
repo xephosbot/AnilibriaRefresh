@@ -2,6 +2,8 @@ package com.xbot.search.di
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
@@ -11,6 +13,7 @@ import com.xbot.search.SearchResultPane
 import com.xbot.search.SearchViewModel
 import com.xbot.search.navigation.SearchFiltersRoute
 import com.xbot.search.navigation.SearchRoute
+import com.xbot.search.navigation.navigateToSearchFilters
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -28,15 +31,18 @@ val searchFeatureModule = module {
         metadata = SupportingPaneSceneStrategy.mainPane(SearchRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         SearchResultPane(
-            onBackClick = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             },
-            onShowFilters = {
-                navigator.navigate(SearchFiltersRoute)
+            onFiltersClick = lifecycleOwner.dropUnlessResumed {
+                navigator.navigateToSearchFilters()
             },
             onReleaseClick = { releaseId ->
-                navigator.navigateToTitle(releaseId)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToTitle(releaseId)
+                }.invoke()
             }
         )
     }
@@ -45,9 +51,10 @@ val searchFeatureModule = module {
             + SharedViewModelStoreNavEntryDecorator.viewModelParent(SearchRoute.toString())
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         SearchFilterPane(
             showBackButton = true,
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             },
         )

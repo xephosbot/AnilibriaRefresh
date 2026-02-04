@@ -59,7 +59,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AppearancePane(
     modifier: Modifier = Modifier,
     viewModel: AppearanceViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -67,7 +67,7 @@ internal fun AppearancePane(
         modifier = modifier,
         state = state,
         onAction = viewModel::onAction,
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -77,7 +77,7 @@ private fun AppearanceScreenContent(
     modifier: Modifier = Modifier,
     state: AppearanceSettings,
     onAction: (AppearanceScreenAction) -> Unit,
-    onNavigateBack: () -> Unit
+    onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -92,7 +92,7 @@ private fun AppearanceScreenContent(
                 navigationIcon = {
                     FilledTonalIconButton(
                         modifier = Modifier.padding(start = 6.dp),
-                        onClick = onNavigateBack,
+                        onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
@@ -190,7 +190,7 @@ private fun AppearancePanePreview() {
                     is AppearanceScreenAction.OnExpressiveColorChange -> state = state.copy(isExpressiveColor = action.enabled)
                 }
             },
-            onNavigateBack = {}
+            onBackClick = {}
         )
     }
 }

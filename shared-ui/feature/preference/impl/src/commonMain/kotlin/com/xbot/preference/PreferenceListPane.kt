@@ -55,7 +55,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun PreferenceListPane(
     modifier: Modifier = Modifier,
     currentDestination: PreferenceOptionRoute?,
-    onNavigateToDetail: (PreferenceOptionRoute) -> Unit,
+    onDetailClick: (PreferenceOptionRoute) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -80,7 +80,7 @@ internal fun PreferenceListPane(
             preferences = PreferenceListDefaults.sections,
             currentDestination = currentDestination,
             contentPadding = innerPadding,
-            onNavigateToDetail = onNavigateToDetail,
+            onDetailClick = onDetailClick,
         )
     }
 }
@@ -91,7 +91,7 @@ private fun PreferencesList(
     currentDestination: PreferenceOptionRoute?,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onNavigateToDetail: (PreferenceOptionRoute) -> Unit,
+    onDetailClick: (PreferenceOptionRoute) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val isSinglePane = LocalIsSinglePane.current
@@ -135,7 +135,7 @@ private fun PreferencesList(
                             }
                         },
                         selected = isSelected,
-                        onClick = { onNavigateToDetail(item) }
+                        onClick = { onDetailClick(item) }
                     )
                 }
                 item {
@@ -170,7 +170,7 @@ private fun PreferenceListPanePreview() {
     AnilibriaPreview {
         PreferenceListPane(
             currentDestination = null,
-            onNavigateToDetail = {}
+            onDetailClick = {}
         )
     }
 }

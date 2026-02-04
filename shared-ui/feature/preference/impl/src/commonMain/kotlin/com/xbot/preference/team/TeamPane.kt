@@ -32,11 +32,11 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun TeamPane(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     TeamPaneContent(
         modifier = modifier,
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -44,7 +44,7 @@ internal fun TeamPane(
 @Composable
 private fun TeamPaneContent(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -59,7 +59,7 @@ private fun TeamPaneContent(
                 navigationIcon = {
                     FilledTonalIconButton(
                         modifier = Modifier.padding(start = 6.dp),
-                        onClick = onNavigateBack,
+                        onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
@@ -92,7 +92,7 @@ private fun TeamPaneContent(
 private fun TeamPanePreview() {
     AnilibriaPreview {
         TeamPaneContent(
-            onNavigateBack = {}
+            onBackClick = {}
         )
     }
 }

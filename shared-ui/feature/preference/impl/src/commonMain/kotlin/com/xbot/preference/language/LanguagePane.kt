@@ -34,13 +34,13 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun LanguagePane(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     LanguagePaneContent(
         modifier = modifier,
         currentLanguage = LocaleManager.locale,
         onLanguageSelected = { LocaleManager.setLocale(it) },
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -50,7 +50,7 @@ private fun LanguagePaneContent(
     modifier: Modifier = Modifier,
     currentLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -65,7 +65,7 @@ private fun LanguagePaneContent(
                 navigationIcon = {
                     FilledTonalIconButton(
                         modifier = Modifier.padding(start = 6.dp),
-                        onClick = onNavigateBack,
+                        onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
@@ -114,7 +114,7 @@ private fun LanguagePanePreview() {
         LanguagePaneContent(
             currentLanguage = AppLanguage.English,
             onLanguageSelected = {},
-            onNavigateBack = {}
+            onBackClick = {}
         )
     }
 }

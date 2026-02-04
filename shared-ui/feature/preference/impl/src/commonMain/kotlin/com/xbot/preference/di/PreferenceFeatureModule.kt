@@ -2,6 +2,8 @@ package com.xbot.preference.di
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.ExternalUriNavKey
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
@@ -56,14 +58,17 @@ val preferenceFeatureModule = module {
         )
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         PreferenceListPane(
             currentDestination = navigator.currentDestination as? PreferenceOptionRoute,
-            onNavigateToDetail = { destination ->
-                if (destination is ExternalUriNavKey) {
-                    navigator.navigate(destination)
-                } else {
-                    navigator.replace<PreferenceOptionRoute>(destination)
-                }
+            onDetailClick = { destination ->
+                lifecycleOwner.dropUnlessResumed {
+                    if (destination is ExternalUriNavKey) {
+                        navigator.navigate(destination)
+                    } else {
+                        navigator.replace<PreferenceOptionRoute>(destination)
+                    }
+                }.invoke()
             }
         )
     }
@@ -71,8 +76,9 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         HistoryPane(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )
@@ -81,8 +87,9 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         TeamPane(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )
@@ -91,8 +98,9 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         DonatePane(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )
@@ -101,8 +109,9 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         AppearancePane(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )
@@ -111,8 +120,9 @@ val preferenceFeatureModule = module {
         metadata = ListDetailSceneStrategy.detailPane(PreferenceRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         LanguagePane(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )

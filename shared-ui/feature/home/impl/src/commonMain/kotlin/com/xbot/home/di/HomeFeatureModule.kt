@@ -2,6 +2,8 @@ package com.xbot.home.di
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
@@ -11,6 +13,7 @@ import com.xbot.home.HomeViewModel
 import com.xbot.home.SchedulePane
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
+import com.xbot.home.navigation.navigateToSchedule
 import com.xbot.login.navigation.navigateToLogin
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
@@ -30,17 +33,22 @@ val homeFeatureModule = module {
         metadata = SupportingPaneSceneStrategy.mainPane(HomeRoute)
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         FeedPane(
-            onScheduleClick = {
-                navigator.navigate(ScheduleRoute)
+            onScheduleClick = lifecycleOwner.dropUnlessResumed {
+                navigator.navigateToSchedule()
             },
             onReleaseClick = { releaseId ->
-                navigator.navigateToTitle(releaseId)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToTitle(releaseId)
+                }.invoke()
             },
             onEpisodeClick = { releaseId, episodeOrdinal ->
-                navigator.navigateToPlayer(releaseId, episodeOrdinal)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToPlayer(releaseId, episodeOrdinal)
+                }.invoke()
             },
-            onProfileClick = {
+            onProfileClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateToLogin()
             }
         )
@@ -50,12 +58,15 @@ val homeFeatureModule = module {
             + SharedViewModelStoreNavEntryDecorator.viewModelParent(HomeRoute.toString())
     ) {
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         SchedulePane(
             showBackButton = true,
             onReleaseClick = { releaseId ->
-                navigator.navigateToTitle(releaseId)
+                lifecycleOwner.dropUnlessResumed {
+                    navigator.navigateToTitle(releaseId)
+                }.invoke()
             },
-            onBackClick = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             }
         )

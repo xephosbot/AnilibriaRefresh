@@ -79,7 +79,7 @@ internal fun SearchFilterPane(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = koinViewModel(),
     showBackButton: Boolean,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val availableFilters by viewModel.availableFilters.collectAsStateWithLifecycle()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
@@ -90,7 +90,7 @@ internal fun SearchFilterPane(
         selectedFilters = selectedFilters,
         showBackButton = showBackButton,
         onAction = viewModel::onAction,
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -102,7 +102,7 @@ private fun SearchFilterPaneContent(
     selectedFilters: SearchFiltersState,
     showBackButton: Boolean,
     onAction: (SearchScreenAction) -> Unit,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -112,7 +112,7 @@ private fun SearchFilterPaneContent(
                     if (showBackButton) {
                         FilledTonalIconButton(
                             modifier = Modifier.padding(start = 6.dp),
-                            onClick = onNavigateBack,
+                            onClick = onBackClick,
                             shapes = IconButtonDefaults.shapes(),
                             colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                         ) {
@@ -480,7 +480,7 @@ private fun SearchFilterPanePreview(
             selectedFilters = state.second,
             showBackButton = true,
             onAction = {},
-            onNavigateBack = {},
+            onBackClick = {},
         )
     }
 }

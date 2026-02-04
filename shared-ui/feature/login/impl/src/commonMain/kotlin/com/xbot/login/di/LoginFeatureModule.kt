@@ -1,7 +1,9 @@
 package com.xbot.login.di
 
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.scene.DialogSceneStrategy
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.replace
@@ -27,8 +29,9 @@ val loginFeatureModule = module {
         metadata = DialogSceneStrategy.dialog(DialogProperties(usePlatformDefaultWidth = false))
     ) { key ->
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         LoginScreen(
-            onNavigateBack = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 val returnTo = key.returnTo
                 if (returnTo != null) {
                     navigator.replace<LoginRoute>(returnTo)
@@ -36,7 +39,7 @@ val loginFeatureModule = module {
                     navigator.navigateBack()
                 }
             },
-            onNavigateToRegistration = {
+            onRegistrationClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateToRegistration()
             }
         )

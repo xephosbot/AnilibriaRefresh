@@ -32,11 +32,11 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun DonatePane(
     modifier: Modifier = Modifier,
     viewModel: DonateViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     DonatePaneContent(
         modifier = modifier,
-        onNavigateBack = onNavigateBack
+        onBackClick = onBackClick
     )
 }
 
@@ -44,7 +44,7 @@ internal fun DonatePane(
 @Composable
 private fun DonatePaneContent(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -59,7 +59,7 @@ private fun DonatePaneContent(
                 navigationIcon = {
                     FilledTonalIconButton(
                         modifier = Modifier.padding(start = 6.dp),
-                        onClick = onNavigateBack,
+                        onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
@@ -92,7 +92,7 @@ private fun DonatePaneContent(
 private fun DonatePanePreview() {
     AnilibriaPreview {
         DonatePaneContent(
-            onNavigateBack = {}
+            onBackClick = {}
         )
     }
 }

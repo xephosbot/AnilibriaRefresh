@@ -1,7 +1,9 @@
 package com.xbot.player.di
 
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.scene.DialogSceneStrategy
+import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
@@ -30,9 +32,10 @@ val playerFeatureModule = module {
             parametersOf(key)
         }
         val navigator = LocalNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
         PlayerScreen(
             viewModel = viewModel,
-            onBackClick = {
+            onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
             },
         )

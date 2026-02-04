@@ -2,6 +2,7 @@ package com.xbot.home.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.xbot.common.navigation.NavKey
+import com.xbot.common.navigation.Navigator
 import com.xbot.common.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Home
@@ -22,3 +23,7 @@ data object HomeRoute : TopLevelNavKey {
 
 @Serializable
 data object ScheduleRoute : NavKey
+
+fun Navigator.navigateToSchedule() {
+    navigate(ScheduleRoute)
+}

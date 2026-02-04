@@ -13,3 +13,7 @@ data object SearchFiltersRoute : NavKey
 fun Navigator.navigateToSearch() {
     navigate(SearchRoute)
 }
+
+fun Navigator.navigateToSearchFilters() {
+    navigate(SearchFiltersRoute)
+}

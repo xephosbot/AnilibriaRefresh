@@ -73,15 +73,15 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit,
-    onNavigateToRegistration: () -> Unit,
+    onBackClick: () -> Unit,
+    onRegistrationClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel.effects) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is LoginScreenEffect.NavigateBack -> onNavigateBack()
+                is LoginScreenEffect.NavigateBack -> onBackClick()
             }
         }
     }
@@ -92,7 +92,7 @@ internal fun LoginScreen(
         usernameState = viewModel.usernameState,
         passwordState = viewModel.passwordState,
         onAction = viewModel::onAction,
-        onNavigateToRegistration = onNavigateToRegistration,
+        onRegistrationClick = onRegistrationClick,
     )
 }
 
@@ -104,7 +104,7 @@ internal fun LoginScreenContent(
     usernameState: TextFieldState,
     passwordState: TextFieldState,
     onAction: (LoginScreenAction) -> Unit,
-    onNavigateToRegistration: () -> Unit,
+    onRegistrationClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -221,7 +221,7 @@ internal fun LoginScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FilledTonalButton(onClick = { onNavigateToRegistration() }) {
+                    FilledTonalButton(onClick = { onRegistrationClick() }) {
                         Text(stringResource(Res.string.login_create_account))
                     }
 
@@ -248,7 +248,7 @@ private fun LoginScreenPreview(
             usernameState = remember { TextFieldState() },
             passwordState = remember { TextFieldState() },
             onAction = {},
-            onNavigateToRegistration = {}
+            onRegistrationClick = {}
         )
     }
 }
