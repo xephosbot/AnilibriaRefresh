@@ -78,6 +78,30 @@ To enforce separation of concerns and build performance, features are split:
 - **Use Cases**: `{Verb}{Noun}UseCase` (e.g., `GetReleasesFeedUseCase`).
 - **Repositories**: `{Noun}Repository` (e.g., `ReleaseRepository`).
 
+#### Navigation Callbacks
+- **Naming**: Use `on[Target]Click` pattern (e.g., `onScheduleClick`, `onReleaseClick`, `onBackClick`).
+- **Lifecycle Protection**: All navigation callbacks must be wrapped with `dropUnlessResumed` using the custom extension.
+- **Extensions**: Use helper extension functions for navigation (e.g., `navigator.navigateToSchedule()`) instead of raw `navigate()`.
+
+**Example:**
+```kotlin
+// In FeatureModule.kt or Navigation Graph
+val lifecycleOwner = LocalLifecycleOwner.current
+FeedPane(
+    onScheduleClick = {
+        lifecycleOwner.dropUnlessResumed {
+            navigator.navigateToSchedule()
+        }
+    },
+    // For callbacks with parameters:
+    onReleaseClick = { releaseId ->
+        lifecycleOwner.dropUnlessResumed {
+            navigator.navigateToTitle(releaseId)
+        }.invoke()
+    }
+)
+```
+
 #### Composables
 1.  **Stateful Screen (Root)**: Named `{Feature}Screen` or `{Feature}Pane`.
     *   Accepts `ViewModel` (via `koinViewModel()`).
@@ -95,13 +119,13 @@ To enforce separation of concerns and build performance, features are split:
 @Composable
 fun FeedPane(
     viewModel: FeedViewModel = koinViewModel(),
-    onNavigateToDetails: (Int) -> Unit
+    onReleaseClick: (Int) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     FeedScreenContent(
         state = state,
         onAction = viewModel::onAction,
-        onReleaseClick = onNavigateToDetails
+        onReleaseClick = onReleaseClick
     )
 }
 
