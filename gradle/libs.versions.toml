@@ -7,7 +7,7 @@ android-gradle-plugin = "9.0.0"
 android-desugar-jdk-libs = "2.1.5"
 
 # Kotlin & Compose
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 ksp = "2.3.5"
 compose-multiplatform = "1.11.0-alpha02"
 compose-material3 = "1.11.0-alpha02"
