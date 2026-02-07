@@ -39,14 +39,18 @@ import com.xbot.network.api.ViewsApi
 import com.xbot.network.client.createHttpClient
 import io.ktor.client.HttpClient
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+internal expect val platformNetworkModule: Module
+
 @OptIn(KoinInternalApi::class)
 val networkModule = module {
+    includes(platformNetworkModule)
     single<HttpClient> {
-        createHttpClient(get(), getKoin().logger)
+        createHttpClient(get(), get(), getKoin().logger)
     }
     singleOf(::DefaultAdsApi) { bind<AdsApi>() }
     singleOf(::DefaultAuthApi) { bind<AuthApi>() }

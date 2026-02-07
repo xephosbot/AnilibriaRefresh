@@ -1,10 +1,12 @@
 package com.xbot.network.client
 
 import com.xbot.network.Constants
+import com.xbot.network.utils.MultiBaseUrlRequest
+import com.xbot.network.utils.NetworkObserver
+import com.xbot.network.utils.NetworkReachability
 import com.xbot.network.utils.brotli
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.bearer
@@ -26,6 +28,7 @@ import io.ktor.client.plugins.logging.Logger as KtorLogger
  */
 internal fun createHttpClient(
     sessionStorage: SessionStorage,
+    networkObserver: NetworkObserver,
     logger: Logger
 ): HttpClient = HttpClient {
     expectSuccess = true
@@ -76,8 +79,12 @@ internal fun createHttpClient(
         brotli()
     }
 
-    install(DefaultRequest) {
-        url(Constants.BASE_URL_API)
+    install(NetworkReachability) {
+        this.networkObserver = networkObserver
+    }
+
+    install(MultiBaseUrlRequest) {
+        urls(Constants.BASE_URL_API, Constants.FALLBACK_URL_API)
         contentType(ContentType.Application.Json)
         accept(ContentType.Application.Json)
     }

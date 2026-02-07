@@ -26,6 +26,7 @@ kotlin {
         implementation(libs.ktor.client.logging)
         implementation(libs.ktor.client.auth)
         implementation(libs.ktor.serialization.kotlinx.json)
+        implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
         implementation(libs.koin.core)
