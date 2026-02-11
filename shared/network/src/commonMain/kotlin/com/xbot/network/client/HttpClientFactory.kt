@@ -5,12 +5,13 @@ import com.xbot.network.utils.NetworkObserver
 import com.xbot.network.utils.brotli
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
@@ -32,6 +33,18 @@ internal fun createHttpClient(
 ): HttpClient = HttpClient {
     expectSuccess = true
 
+    defaultRequest {
+        url(Constants.FALLBACK_URL_API)
+        contentType(ContentType.Application.Json)
+        accept(ContentType.Application.Json)
+    }
+
+    install(HttpTimeout) {
+        requestTimeoutMillis = 15000
+        connectTimeoutMillis = 15000
+        socketTimeoutMillis = 15000
+    }
+
     install(ContentNegotiation) {
         json(Json {
             prettyPrint = true
@@ -41,18 +54,7 @@ internal fun createHttpClient(
         })
     }
 
-    HttpResponseValidator {
-        handleResponseExceptionWithRequest { exception, _ ->
-            val clientException = exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
-            val exceptionResponse = clientException.response
-
-            if (exceptionResponse.status == HttpStatusCode.Unauthorized) {
-                sessionStorage.clearToken()
-            }
-        }
-    }
-
-    install(Auth) {
+    Auth {
         bearer {
             cacheTokens = false
             loadTokens {
@@ -68,20 +70,25 @@ internal fun createHttpClient(
         }
     }
 
-    install(Logging) {
+    Logging {
         this.logger = logger.toKtorLogger()
         this.level = LogLevel.INFO
     }
 
-    install(ContentEncoding) {
+    ContentEncoding {
         gzip()
         brotli()
     }
 
-    install(DefaultRequest) {
-        url(Constants.FALLBACK_URL_API)
-        contentType(ContentType.Application.Json)
-        accept(ContentType.Application.Json)
+    HttpResponseValidator {
+        handleResponseExceptionWithRequest { exception, _ ->
+            val clientException = exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
+            val exceptionResponse = clientException.response
+
+            if (exceptionResponse.status == HttpStatusCode.Unauthorized) {
+                sessionStorage.clearToken()
+            }
+        }
     }
 }
 
