@@ -1,5 +1,6 @@
 package com.xbot.network.di
 
+import coil3.SingletonImageLoader
 import com.xbot.network.api.AdsApi
 import com.xbot.network.api.AuthApi
 import com.xbot.network.api.CatalogApi
@@ -37,6 +38,7 @@ import com.xbot.network.api.TorrentsApi
 import com.xbot.network.api.VideosApi
 import com.xbot.network.api.ViewsApi
 import com.xbot.network.client.createHttpClient
+import com.xbot.network.utils.createCoilImageLoader
 import io.ktor.client.HttpClient
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.module.Module
@@ -51,6 +53,9 @@ val networkModule = module {
     includes(platformNetworkModule)
     single<HttpClient> {
         createHttpClient(get(), get(), getKoin().logger)
+    }
+    single<SingletonImageLoader.Factory> {
+        createCoilImageLoader(get(), get())
     }
     singleOf(::DefaultAdsApi) { bind<AdsApi>() }
     singleOf(::DefaultAuthApi) { bind<AuthApi>() }

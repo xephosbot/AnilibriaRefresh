@@ -38,8 +38,8 @@ internal fun GenreDto.toDomain() = Genre(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     }
 )
@@ -62,8 +62,8 @@ internal fun ReleaseDto.toDomain() = Release(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     }
 )
@@ -81,8 +81,8 @@ internal fun EpisodeDto.toDomain() = Episode(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     },
     hls480 = hls480,
@@ -106,8 +106,8 @@ internal fun ReleaseMemberDto.toDomain() = ReleaseMember(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     }
 )
@@ -125,8 +125,8 @@ internal fun ProfileDto.toDomain() = User(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     },
     isBanned = isBanned,
@@ -171,8 +171,8 @@ internal fun FranchiseDto.toDomain() = Franchise(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withBaseUrl),
-            thumbnail = thumbnail?.let(Constants::withBaseUrl),
+            src = src.let(Constants::withImageUrl),
+            thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     },
     franchiseReleases = franchiseReleases?.map { it.release.toDomain() },

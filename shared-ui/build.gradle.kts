@@ -60,8 +60,6 @@ kotlin {
         implementation(libs.lifecycle.viewmodel.navigation3)
         implementation(libs.lifecycle.runtime.compose)
         implementation(libs.ktor.client.core)
-        implementation(libs.coil.compose)
-        implementation(libs.coil.network.ktor)
         implementation(libs.koin.core)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
