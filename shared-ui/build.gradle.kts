@@ -59,7 +59,7 @@ kotlin {
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.viewmodel.navigation3)
         implementation(libs.lifecycle.runtime.compose)
-        implementation(libs.ktor.client.core)
+        implementation(libs.eygraber.uri)
         implementation(libs.koin.core)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)

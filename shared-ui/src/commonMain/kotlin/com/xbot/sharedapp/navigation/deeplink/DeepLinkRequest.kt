@@ -1,6 +1,6 @@
 package com.xbot.sharedapp.navigation.deeplink
 
-import io.ktor.http.Url
+import com.eygraber.uri.Uri
 
 /**
  * Parse the requested Uri and store it in a easily readable format
@@ -8,7 +8,7 @@ import io.ktor.http.Url
  * @param uri the target deeplink uri to link to
  */
 internal class DeepLinkRequest(
-    val uri: Url
+    val uri: Uri
 ) {
     /**
      * A list of path segments
@@ -19,8 +19,8 @@ internal class DeepLinkRequest(
      * A map of query name to query value
      */
     val queries = buildMap {
-        uri.parameters.names().forEach { argName ->
-            uri.parameters[argName]?.let { this[argName] = it }
+        uri.getQueryParameterNames().forEach { argName ->
+            uri.getQueryParameter(argName)?.let { this[argName] = it }
         }
     }
 

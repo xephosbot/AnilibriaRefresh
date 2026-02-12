@@ -41,6 +41,7 @@ kotlinx-datetime = "0.7.1"
 kotlinx-serialization-json = "1.10.0"
 kotlinx-atomicfu = "0.31.0"
 arrow = "2.2.1.1"
+eygraber-uri = "0.0.21"
 
 # UI Libraries
 coil = "3.3.0"
@@ -104,6 +105,7 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
+eygraber-uri = { module = "com.eygraber:uri-kmp", version.ref = "eygraber-uri" }
 
 # Networking - Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

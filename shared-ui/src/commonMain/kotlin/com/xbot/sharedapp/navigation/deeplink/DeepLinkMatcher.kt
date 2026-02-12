@@ -13,7 +13,7 @@ internal class DeepLinkMatcher<T : NavKey>(
      * Returns a [DeepLinkMatchResult] if this matches the pattern, returns null otherwise
      */
     fun match(): DeepLinkMatchResult<T>? {
-        if (request.uri.protocol.name != deepLinkPattern.uriPattern.protocol.name) return null
+        if (request.uri.scheme != deepLinkPattern.uriPattern.scheme) return null
         if (request.uri.host != deepLinkPattern.uriPattern.host) return null
         if (request.pathSegments.size != deepLinkPattern.pathSegments.size) return null
         // exact match (url does not contain any arguments)

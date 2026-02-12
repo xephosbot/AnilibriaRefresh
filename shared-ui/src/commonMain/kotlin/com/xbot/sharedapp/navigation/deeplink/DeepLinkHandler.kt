@@ -5,10 +5,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalUriHandler
+import com.eygraber.uri.Uri
 import com.xbot.common.navigation.NavKey
 import com.xbot.login.navigation.LoginRoute
 import com.xbot.title.navigation.TitleRoute
-import io.ktor.http.Url
 
 @Composable
 internal fun DeepLinkListener(onDeepLink: (NavKey) -> Unit) {
@@ -55,14 +55,14 @@ object ExternalUriHandler {
 }
 
 internal val deepLinkPatterns = listOf(
-    DeepLinkPattern(TitleRoute.serializer(), Url("https://aniliberty.top/anime/releases/release/{aliasOrId}")),
-    DeepLinkPattern(TitleRoute.serializer(), Url("https://anilibria.top/anime/releases/release/{aliasOrId}")),
-    DeepLinkPattern(TitleRoute.serializer(), Url("anilibria://release/{aliasOrId}")),
-    DeepLinkPattern(LoginRoute.serializer(), Url("anilibria://login")),
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("https://aniliberty.top/anime/releases/release/{aliasOrId}")),
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("https://anilibria.top/anime/releases/release/{aliasOrId}")),
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("anilibria://release/{aliasOrId}")),
+    DeepLinkPattern(LoginRoute.serializer(), Uri.parse("anilibria://login")),
 )
 
 internal fun parseDeepLink(uri: String): NavKey? {
-    val url = try { Url(uri) } catch (e: Exception) { return null }
+    val url = try { Uri.parse(uri) } catch (e: Exception) { return null }
     val request = DeepLinkRequest(url)
 
     return deepLinkPatterns.firstNotNullOfOrNull { pattern ->
