@@ -1,15 +1,10 @@
 package com.xbot.home
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
@@ -20,8 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -196,7 +189,7 @@ private fun FeedPaneContent(
     }
 
     val isRefreshing by remember(state, items) {
-        derivedStateOf { items.loadState.refresh == LoadState.Loading || state.isFeedLoading }
+        derivedStateOf { items.loadState.refresh == LoadState.Loading }
     }
 
     val showResetScrollButton by remember {
@@ -276,25 +269,17 @@ private fun FeedPaneContent(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ) { innerPadding ->
             Box {
-                Crossfade(
-                    targetState = state.isFeedLoading
-                ) { isLoading ->
-                    if (isLoading) {
-                        LoadingScreen(contentPadding = innerPadding)
-                    } else {
-                        ReleaseFeed(
-                            gridState = gridState,
-                            items = items,
-                            releasesFeed = state.releasesFeed!!,
-                            currentBestType = state.currentBestType,
-                            contentPadding = innerPadding,
-                            onScheduleClick = onScheduleClick,
-                            onBestTypeChange = { onAction(HomeScreenAction.UpdateBestType(it)) },
-                            onReleaseClick = { onReleaseClick(it.id) },
-                            onEpisodeClick = onEpisodeClick,
-                        )
-                    }
-                }
+                ReleaseFeed(
+                    gridState = gridState,
+                    items = items,
+                    releasesFeed = state.releasesFeed,
+                    currentBestType = state.currentBestType,
+                    contentPadding = innerPadding,
+                    onScheduleClick = onScheduleClick,
+                    onBestTypeChange = { onAction(HomeScreenAction.UpdateBestType(it)) },
+                    onReleaseClick = { onReleaseClick(it.id) },
+                    onEpisodeClick = onEpisodeClick,
+                )
 
                 LoadingIndicator(
                     modifier = Modifier
@@ -349,55 +334,57 @@ private fun ReleaseFeed(
                     .fadeWithParallax(pagerState, page),
                 release = release
             ) {
-                val isChecked by rememberUpdatedState(activeMenuReleaseId == release.id)
+                release?.let {
+                    val isChecked by rememberUpdatedState(activeMenuReleaseId == release.id)
 
-                MediumSplitButton(
-                    onLeadingClick = {
-                        onReleaseClick(release)
-                    },
-                    trailingChecked = isChecked,
-                    onTrailingCheckedChange = { checked ->
-                        activeMenuReleaseId = if (checked) release.id else null
-                    },
-                    leadingContent = {
-                        Icon(
-                            modifier = Modifier
-                                .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                            imageVector = AnilibriaIcons.Filled.PlayArrow,
-                            contentDescription = null
-                        )
-                        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                        Text(
-                            text = stringResource(Res.string.button_watch),
-                            maxLines = 1
-                        )
-                    },
-                    trailingContent = {
-                        val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
+                    MediumSplitButton(
+                        onLeadingClick = {
+                            onReleaseClick(release)
+                        },
+                        trailingChecked = isChecked,
+                        onTrailingCheckedChange = { checked ->
+                            activeMenuReleaseId = if (checked) release.id else null
+                        },
+                        leadingContent = {
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                            Text(
+                                text = stringResource(Res.string.button_watch),
+                                maxLines = 1
+                            )
+                        },
+                        trailingContent = {
+                            val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
 
-                        Icon(
-                            modifier = Modifier
-                                .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
-                                .graphicsLayer {
-                                    rotationZ = rotation
-                                },
-                            imageVector = AnilibriaIcons.ArrowDropDown,
-                            contentDescription = null
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    },
+                                imageVector = AnilibriaIcons.ArrowDropDown,
+                                contentDescription = null
+                            )
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 1") },
+                            onClick = { /* Handle item 1 click */ }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 2") },
+                            onClick = { /* Handle item 3 click */ }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Item 3") },
+                            onClick = { /* Handle item 3 click */ }
                         )
                     }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 1") },
-                        onClick = { /* Handle item 1 click */ }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 2") },
-                        onClick = { /* Handle item 3 click */ }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 3") },
-                        onClick = { /* Handle item 3 click */ }
-                    )
                 }
             }
         }
@@ -408,23 +395,24 @@ private fun ReleaseFeed(
         )
         horizontalSnappableItems(
             items = releasesFeed.scheduleNow,
-            key = { it.release.id },
             contentPadding = PaddingValues(horizontal = horizontalMargin),
             itemSpacing = 16.dp,
         ) { schedule ->
             MediumReleaseCard(
                 modifier = Modifier,
-                release = schedule.release,
+                release = schedule?.release,
                 onClick = onReleaseClick,
             ) {
-                val episode = schedule.toEpisode()
+                schedule?.let {
+                    val episode = schedule.toEpisode()
 
-                EpisodeListItem(
-                    episode = episode,
-                    onClick = {
-                        onEpisodeClick(schedule.release.id, episode.ordinal.toInt())
-                    }
-                )
+                    EpisodeListItem(
+                        episode = episode,
+                        onClick = {
+                            onEpisodeClick(schedule.release.id, episode.ordinal.toInt())
+                        }
+                    )
+                }
             }
         }
 
@@ -455,24 +443,26 @@ private fun ReleaseFeed(
         }
         horizontalItemsIndexed(
             items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
-            key = { _, item -> item.id },
             contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { index, release ->
-            SmallReleaseCard(
-                modifier = Modifier.badgeOverlay(
-                    index = index,
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White,
-                            MaterialTheme.colorScheme.primaryFixedDim
-                        ),
-                        startY = 0.0f,
-                        endY = 250.0f
-                    )
-                ),
-                release = release,
-                onClick = onReleaseClick,
-            )
+            // TODO: SmallReleaseCard might need to support null release
+            release?.let {
+                SmallReleaseCard(
+                    modifier = Modifier.badgeOverlay(
+                        index = index,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White,
+                                MaterialTheme.colorScheme.primaryFixedDim
+                            ),
+                            startY = 0.0f,
+                            endY = 250.0f
+                        )
+                    ),
+                    release = release,
+                    onClick = onReleaseClick,
+                )
+            }
         }
 
         header(
@@ -480,14 +470,16 @@ private fun ReleaseFeed(
         )
         horizontalSnappableItems(
             items = releasesFeed.recommendedFranchises,
-            key = { it.id },
             contentPadding = PaddingValues(horizontal = horizontalMargin),
             itemSpacing = 16.dp,
         ) { franchise ->
-            FranchiseCard(
-                franchise = franchise,
-                onClick = { /*TODO*/ }
-            )
+            // TODO: FranchiseCard might need to support null franchise
+            franchise?.let {
+                FranchiseCard(
+                    franchise = franchise,
+                    onClick = { /*TODO*/ }
+                )
+            }
         }
 
         header(
@@ -495,13 +487,15 @@ private fun ReleaseFeed(
         )
         horizontalItems(
             items = releasesFeed.genres,
-            key = { it.id },
             contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { genre ->
-            GenreItem(
-                genre = genre,
-                onClick = { /*TODO*/ }
-            )
+             // TODO: GenreItem might need to support null genre
+            genre?.let {
+                GenreItem(
+                    genre = genre,
+                    onClick = { /*TODO*/ }
+                )
+            }
         }
 
         header(
@@ -514,39 +508,6 @@ private fun ReleaseFeed(
                 release = release,
                 onClick = onReleaseClick,
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun LoadingScreen(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
-) {
-    val horizontalMargin = LocalMargins.current.horizontal
-    Column(
-        modifier = modifier
-            .padding(contentPadding.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState(), enabled = false)
-    ) {
-        LargeReleaseCard(null)
-        Header(
-            title = { Text(stringResource(Res.string.label_schedule_now)) },
-            onClick = {},
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState(), enabled = false)
-                .padding(horizontal = horizontalMargin)
-        ) {
-            repeat(10) {
-                MediumReleaseCard(
-                    release = null,
-                    onClick = {}
-                )
-            }
         }
     }
 }
@@ -619,11 +580,9 @@ private fun FeedPanePreview(
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            isFeedLoading = true,
-            releasesFeed = null
+            releasesFeed = ReleasesFeed()
         ),
         HomeScreenState(
-            isFeedLoading = false,
             releasesFeed = ReleasesFeed(
                 recommendedReleases = releaseMocks,
                 scheduleNow = scheduleMocks,

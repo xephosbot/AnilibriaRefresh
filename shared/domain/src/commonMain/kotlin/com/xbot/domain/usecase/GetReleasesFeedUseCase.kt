@@ -1,11 +1,8 @@
 package com.xbot.domain.usecase
 
-import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import arrow.fx.coroutines.parMap
-import arrow.fx.coroutines.parZip
-import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
@@ -15,6 +12,9 @@ import com.xbot.domain.repository.GenresRepository
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.domain.utils.DispatcherProvider
+import com.xbot.domain.utils.combinePartial
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 class GetReleasesFeedUseCase(
     private val releasesRepository: ReleasesRepository,
@@ -24,15 +24,13 @@ class GetReleasesFeedUseCase(
     private val genresRepository: GenresRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) {
-    suspend operator fun invoke(): Either<DomainError, ReleasesFeed> = either {
-        val currentSeason = scheduleRepository.getCurrentSeason().bind()
-        val currentYear = scheduleRepository.getCurrentYear().bind()
-
-        parZip(
-            ctx = dispatcherProvider.io,
-            { releasesRepository.getRandomReleases(10) },
-            { scheduleRepository.getScheduleNow() },
-            {
+    operator fun invoke(): Flow<ReleasesFeed> = combinePartial(
+        { releasesRepository.getRandomReleases(10).getOrNull() },
+        { scheduleRepository.getScheduleNow().getOrNull() },
+        {
+            either {
+                val currentSeason = scheduleRepository.getCurrentSeason().bind()
+                val currentYear = scheduleRepository.getCurrentYear().bind()
                 catalogRepository.getCatalogReleases(
                     search = null,
                     filters = CatalogFilters(
@@ -41,33 +39,33 @@ class GetReleasesFeedUseCase(
                         sortingTypes = listOf(SortingType.RATING_DESC)
                     ),
                     limit = 10
-                )
-            },
-            {
-                catalogRepository.getCatalogReleases(
-                    search = null,
-                    filters = CatalogFilters(sortingTypes = listOf(SortingType.RATING_DESC)),
-                    limit = 10
-                )
-            },
-            {
-                either {
-                    val franchises = franchisesRepository.getRandomFranchises(10).bind()
-                    franchises.parMap { franchise ->
-                        franchisesRepository.getFranchise(franchise.id).getOrElse { franchise }
-                    }
+                ).bind()
+            }.getOrNull()
+        },
+        {
+            catalogRepository.getCatalogReleases(
+                search = null,
+                filters = CatalogFilters(sortingTypes = listOf(SortingType.RATING_DESC)),
+                limit = 10
+            ).getOrNull()
+        },
+        {
+            either {
+                val franchises = franchisesRepository.getRandomFranchises(10).bind()
+                franchises.parMap { franchise ->
+                    franchisesRepository.getFranchise(franchise.id).getOrElse { franchise }
                 }
-            },
-            { genresRepository.getRandomGenres(10) }
-        ) { recommendedTitles, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
-            ReleasesFeed(
-                recommendedReleases = recommendedTitles.bind(),
-                scheduleNow = scheduleNow.bind(),
-                bestNow = bestNow.bind(),
-                bestAllTime = bestAllTime.bind(),
-                recommendedFranchises = recommendedFranchises.bind(),
-                genres = genres.bind(),
-            )
-        }
-    }
+            }.getOrNull()
+        },
+        { genresRepository.getRandomGenres(10).getOrNull() }
+    ) { recommendedReleases, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
+        ReleasesFeed(
+            recommendedReleases = recommendedReleases ?: List(10) { null },
+            scheduleNow = scheduleNow ?: List(10) { null },
+            bestNow = bestNow ?: List(10) { null },
+            bestAllTime = bestAllTime ?: List(10) { null },
+            recommendedFranchises = recommendedFranchises ?: List(10) { null },
+            genres = genres ?: List(10) { null },
+        )
+    }.flowOn(dispatcherProvider.io)
 }

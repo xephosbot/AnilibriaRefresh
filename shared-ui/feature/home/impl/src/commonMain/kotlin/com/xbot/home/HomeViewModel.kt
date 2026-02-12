@@ -49,19 +49,7 @@ internal class HomeViewModel(
     private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
 
     private val feedData = refreshTrigger
-        .flatMapLatest { attempt ->
-            flow {
-                when (val result = getReleasesFeed()) {
-                    is Either.Left -> {
-                        showErrorMessage(result.value.toString()) { refresh() }
-                        if (attempt == 0) {
-                            emit(null)
-                        }
-                    }
-                    is Either.Right -> emit(result.value)
-                }
-            }
-        }
+        .flatMapLatest { getReleasesFeed() }
 
     private val scheduleData = refreshTrigger
         .flatMapLatest {
@@ -84,7 +72,6 @@ internal class HomeViewModel(
             }
 
             HomeScreenState(
-                isFeedLoading = feed == null,
                 isScheduleLoading = schedule == null,
                 currentUser = user,
                 releasesFeed = feed,
@@ -130,10 +117,9 @@ internal class HomeViewModel(
 
 @Stable
 internal data class HomeScreenState(
-    val isFeedLoading: Boolean = true,
     val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
-    val releasesFeed: ReleasesFeed? = null,
+    val releasesFeed: ReleasesFeed = ReleasesFeed(),
     val scheduleWeek: Map<LocalDate, List<Schedule>>? = null,
     val currentBestType: BestType = BestType.Now,
 )
