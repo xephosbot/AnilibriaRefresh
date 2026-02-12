@@ -26,14 +26,17 @@ kotlin {
         implementation(libs.ktor.client.logging)
         implementation(libs.ktor.client.auth)
         implementation(libs.ktor.serialization.kotlinx.json)
+        implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
         implementation(libs.koin.core)
+        implementation(libs.coil.core)
+        implementation(libs.coil.network.ktor)
     }
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.cio)
             implementation(libs.brotli.dec)
         }
         iosMain.dependencies {

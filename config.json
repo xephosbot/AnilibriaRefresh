@@ -1,0 +1,10 @@
+{
+  "api_urls": [
+    "https://aniliberty.top/api/v1/",
+    "https://api.anilibria.app/api/v1/"
+  ],
+  "storage_urls": [
+    "https://aniliberty.top/",
+    "https://api.anilibria.app/"
+  ]
+}

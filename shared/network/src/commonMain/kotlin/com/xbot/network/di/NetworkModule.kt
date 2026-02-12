@@ -37,8 +37,10 @@ import com.xbot.network.api.TorrentsApi
 import com.xbot.network.api.VideosApi
 import com.xbot.network.api.ViewsApi
 import com.xbot.network.client.createHttpClient
+import com.xbot.network.coil.createCoilImageLoader
 import io.ktor.client.HttpClient
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -48,6 +50,7 @@ val networkModule = module {
     single<HttpClient> {
         createHttpClient(get(), getKoin().logger)
     }
+    singleOf(::createCoilImageLoader)
     singleOf(::DefaultAdsApi) { bind<AdsApi>() }
     singleOf(::DefaultAuthApi) { bind<AuthApi>() }
     singleOf(::DefaultCatalogApi) { bind<CatalogApi>() }
@@ -67,3 +70,5 @@ val networkModule = module {
     singleOf(::DefaultVideosApi) { bind<VideosApi>() }
     singleOf(::DefaultViewsApi) { bind<ViewsApi>() }
 }
+
+internal expect val platformNetworkModule: Module

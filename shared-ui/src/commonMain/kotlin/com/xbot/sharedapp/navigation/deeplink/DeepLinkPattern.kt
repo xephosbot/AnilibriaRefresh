@@ -1,7 +1,7 @@
 package com.xbot.sharedapp.navigation.deeplink
 
 import com.xbot.common.navigation.NavKey
-import io.ktor.http.Url
+import com.eygraber.uri.Uri
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialKind
@@ -38,7 +38,7 @@ import kotlinx.serialization.encoding.CompositeDecoder
  */
 internal class DeepLinkPattern<T : NavKey>(
     val serializer: KSerializer<T>,
-    val uriPattern: Url
+    val uriPattern: Uri
 ) {
     /**
      * Help differentiate if a path segment is an argument or a static value
@@ -83,7 +83,7 @@ internal class DeepLinkPattern<T : NavKey>(
      * This will be used later on to parse a provided query value into the correct KType
      */
     val queryValueParsers: Map<String, TypeParser> = buildMap {
-        uriPattern.parameters.names().forEach { paramName ->
+        uriPattern.getQueryParameterNames().forEach { paramName ->
             val elementIndex = serializer.descriptor.getElementIndex(paramName)
             if (elementIndex == CompositeDecoder.UNKNOWN_NAME) {
                 throw IllegalArgumentException(

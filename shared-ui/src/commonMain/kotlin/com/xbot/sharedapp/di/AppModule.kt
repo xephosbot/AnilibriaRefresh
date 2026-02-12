@@ -20,7 +20,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val appModule = module {
-    includes(networkModule, dataModule, domainModule, coilModule)
+    includes(networkModule, dataModule, domainModule)
     includes(
         favoriteFeatureModule,
         homeFeatureModule,

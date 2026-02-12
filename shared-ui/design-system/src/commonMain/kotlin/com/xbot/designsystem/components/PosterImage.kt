@@ -41,7 +41,7 @@ fun PosterImage(
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = poster,
+            model = poster?.src,
             placeholder = rememberAsyncImagePainter(poster?.thumbnail),
             error = placeholder ?: painterResource(Res.drawable.placeholder_default),
             contentDescription = contentDescription,
