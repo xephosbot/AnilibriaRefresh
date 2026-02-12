@@ -493,7 +493,10 @@ private fun ReleaseFeed(
         header(
             title = { Text(text = stringResource(Res.string.label_updates)) },
         )
-        pagingItems(items) { index, release ->
+        pagingItems(
+            items = items,
+            loadingPlaceholderCount = 10,
+        ) { index, release ->
             ReleaseListItem(
                 modifier = Modifier
                     .section(index, items.itemCount, columnsCount.value),

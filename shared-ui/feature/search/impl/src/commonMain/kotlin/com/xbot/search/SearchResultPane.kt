@@ -287,10 +287,14 @@ private fun SearchResultContent(
             header(
                 title = { Text(text = stringResource(Res.string.label_search_results)) },
             )
-            pagingItems(items) { index, release ->
+            
+            pagingItems(
+                items = items,
+                loadingPlaceholderCount = 10,
+            ) { index, release ->
                 ReleaseListItem(
                     modifier = Modifier
-                        .section(index, items.itemCount, columnsCount.value),
+                        .section(index, items.itemCount.takeIf { it > 0 } ?: 10, columnsCount.value),
                     release = release,
                     onClick = onReleaseClick,
                 )

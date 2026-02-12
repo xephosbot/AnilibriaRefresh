@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
@@ -408,14 +409,20 @@ inline fun FeedScope.header(
 
 inline fun <T : Any> FeedScope.pagingItems(
     items: LazyPagingItems<T>,
+    loadingPlaceholderCount: Int = 0,
     noinline key: ((index: Int) -> Any)? = items.itemKey(),
     crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit,
 ) {
+    val isLoading = items.loadState.refresh is LoadState.Loading && items.itemCount == 0
+    val count = if (isLoading) loadingPlaceholderCount else items.itemCount
+
     items(
-        count = items.itemCount,
-        key = key,
-        contentType = items.itemContentType { "Paging Items" },
-    ) {
-        itemContent(it, items[it])
+        count = count,
+        //TODO: key = items.itemKey(),
+        //key = if (isLoading) null else key,
+        contentType = if (isLoading) { _ -> null } else items.itemContentType { "Paging Items" },
+    ) { index ->
+        val item = if (isLoading) null else items[index]
+        itemContent(index, item)
     }
 }
