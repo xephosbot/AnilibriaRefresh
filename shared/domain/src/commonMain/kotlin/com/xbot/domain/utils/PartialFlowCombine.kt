@@ -2,6 +2,8 @@
 
 package com.xbot.domain.utils
 
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -98,17 +100,32 @@ private fun <R> combinePartialInternal(
     fetchers: List<suspend () -> Any?>,
     combine: (List<Any?>) -> R
 ): Flow<R> = channelFlow {
-    val results = MutableList<Any?>(fetchers.size) { null }
-    val state = MutableStateFlow(combine(results))
+    val results = AtomicList(List<Any?>(fetchers.size) { null })
+    val state = MutableStateFlow(combine(results.get()))
 
     launch { state.collect { send(it) } }
 
     coroutineScope {
         fetchers.forEachIndexed { index, fetcher ->
             launch {
-                results[index] = fetcher()
-                state.update { combine(results.toList()) }
+                val result = fetcher()
+                results[index] = result
+                state.update { combine(results.get()) }
             }
         }
     }
+}
+
+private class AtomicList<T>(initialList: List<T>) {
+    private val listRef = atomic(initialList)
+
+    operator fun set(index: Int, element: T) {
+        listRef.update { list ->
+            val newList = list.toMutableList()
+            newList[index] = element
+            newList
+        }
+    }
+
+    fun get(): List<T> = listRef.value
 }

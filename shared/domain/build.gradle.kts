@@ -22,6 +22,7 @@ kotlin {
         implementation(libs.androidx.paging.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
+        implementation(libs.kotlinx.atomicfu)
         implementation(libs.arrow.core)
         implementation(libs.arrow.coroutines)
         implementation(libs.koin.core)
