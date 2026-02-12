@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.Rect
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Log
@@ -25,14 +24,9 @@ import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toAndroidRectF
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.core.app.PictureInPictureParamsCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toRect
 import androidx.core.pip.PictureInPictureDelegate.Event
 import androidx.core.pip.PictureInPictureDelegate.OnPictureInPictureEventListener
 import androidx.lifecycle.Lifecycle
@@ -120,18 +114,18 @@ internal class PictureInPictureControllerImpl(
     private val playerState: VideoPlayerState,
 ) : PictureInPictureController, OnPictureInPictureEventListener {
 
-    private val delegate = PictureInPictureDelegate(activity)
+    private val delegate = ComposePictureInPicture(activity)
+    private val boundsTracker = BoundsTracker()
 
-    private var _isInPictureInPictureMode by mutableStateOf(activity.isInPictureInPictureMode)
-    override val isInPictureInPictureMode: Boolean get() = _isInPictureInPictureMode
+    override var isInPictureInPictureMode by mutableStateOf(activity.isInPictureInPictureMode)
+        private set
 
-    private var _isTransitioningToPip by mutableStateOf(false)
-    override val isTransitioningToPip: Boolean get() = _isTransitioningToPip
-
-    private var lastBounds: Rect? by mutableStateOf(null)
+    override var isTransitioningToPip by mutableStateOf(false)
+        private set
 
     init {
         delegate.addOnPictureInPictureEventListener(ContextCompat.getMainExecutor(activity), this)
+        delegate.setBoundsTracker(boundsTracker)
     }
 
     override fun onPictureInPictureEvent(
@@ -140,55 +134,37 @@ internal class PictureInPictureControllerImpl(
     ) {
         Log.d(LOG_TAG, "Event: $event, config: $config")
         when (event) {
-            Event.ENTERED -> _isInPictureInPictureMode = true
-            Event.EXITED -> _isInPictureInPictureMode = false
-            Event.ENTER_ANIMATION_START -> _isTransitioningToPip = true
-            Event.ENTER_ANIMATION_END -> _isTransitioningToPip = false
+            Event.ENTERED -> isInPictureInPictureMode = true
+            Event.EXITED -> isInPictureInPictureMode = false
+            // TODO: Uncomment after ENTER_ANIMATION_END event will fixed
+            // Event.ENTER_ANIMATION_START -> isTransitioningToPip = true
+            Event.ENTER_ANIMATION_END -> isTransitioningToPip = false
             else -> {}
         }
     }
 
     fun updateParams() {
-        updatePipParams(playerState.isPlaying, playerState.aspectRatio, lastBounds)
-    }
-
-    private fun updatePipParams(isPlaying: Boolean, aspectRatio: Float, bounds: Rect?) {
-        Log.d(LOG_TAG, "Params changed - isPlaying: ${isPlaying}, aspectRatio: ${aspectRatio}, lastBounds: ${bounds?.toShortString()}")
         try {
-            val params = buildPipParams(isPlaying, aspectRatio, bounds)
-            delegate.setPictureInPictureParams(params)
+            val aspectRatio = playerState.aspectRatio
+            val rational = if (aspectRatio > 0) {
+                Rational((aspectRatio * 100).toInt(), 100)
+            } else {
+                Rational(16, 9)
+            }
+            delegate.setAspectRatio(rational)
+                .setActions(buildRemoteActions(playerState.isPlaying, activity))
+                .setEnabled(playerState.isPlaying)
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to update params", e)
         }
     }
 
-    private fun buildPipParams(
-        isPlaying: Boolean,
-        aspectRatio: Float,
-        bounds: Rect?
-    ): PictureInPictureParamsCompat = PictureInPictureParamsCompat.Builder()
-        .setSourceRectHint(bounds)
-        .setAspectRatio(
-            if (aspectRatio > 0) {
-                Rational((aspectRatio * 100).toInt(), 100)
-            } else {
-                Rational(16, 9)
-            }
-        )
-        .setActions(buildRemoteActions(isPlaying, activity))
-        .setEnabled(isPlaying)
-        .setSeamlessResizeEnabled(true)
-        .build()
-
-    override val modifier: Modifier = Modifier.onGloballyPositioned { coordinates ->
-        lastBounds = coordinates.boundsInWindow().toAndroidRectF().toRect()
-        updateParams()
-    }
+    override val modifier: Modifier get() = boundsTracker.modifier
 
     override fun enterPictureInPictureMode() {
         try {
-            val params = buildPipParams(playerState.isPlaying, playerState.aspectRatio, lastBounds)
-            activity.enterPictureInPictureMode(params)
+            updateParams()
+            delegate.enter()
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to enter picture in picture mode", e)
         }
@@ -196,58 +172,8 @@ internal class PictureInPictureControllerImpl(
 
     fun close() {
         delegate.removeOnPictureInPictureEventListener(this)
-        updatePipParams(false, 0f, null)
-    }
-
-    private fun buildRemoteActions(
-        isPlaying: Boolean,
-        context: Context
-    ): List<RemoteAction> {
-        val actions = mutableListOf<RemoteAction>()
-
-        actions.add(
-            buildRemoteAction(
-                iconResId = R.drawable.replay_10_24px,
-                title = "Replay 10s",
-                requestCode = REQUEST_REPLAY,
-                controlType = EXTRA_CONTROL_REPLAY,
-                context = context
-            )
-        )
-
-        if (isPlaying) {
-            actions.add(
-                buildRemoteAction(
-                    iconResId = R.drawable.pause_24px,
-                    title = "Pause",
-                    requestCode = REQUEST_PAUSE,
-                    controlType = EXTRA_CONTROL_PAUSE,
-                    context = context
-                )
-            )
-        } else {
-            actions.add(
-                buildRemoteAction(
-                    iconResId = R.drawable.play_arrow_24px,
-                    title = "Play",
-                    requestCode = REQUEST_PLAY,
-                    controlType = EXTRA_CONTROL_PLAY,
-                    context = context
-                )
-            )
-        }
-
-        actions.add(
-            buildRemoteAction(
-                iconResId = R.drawable.forward_10_24px,
-                title = "Forward 10s",
-                requestCode = REQUEST_FORWARD,
-                controlType = EXTRA_CONTROL_FORWARD,
-                context = context
-            )
-        )
-
-        return actions
+        delegate.setEnabled(false)
+        delegate.close()
     }
 
     companion object {
@@ -263,6 +189,58 @@ private class PictureInPictureControllerStub : PictureInPictureController {
     override val isInPictureInPictureMode: Boolean = false
     override val isTransitioningToPip: Boolean = false
     override fun enterPictureInPictureMode() {}
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun buildRemoteActions(
+    isPlaying: Boolean,
+    context: Context
+): List<RemoteAction> {
+    val actions = mutableListOf<RemoteAction>()
+
+    actions.add(
+        buildRemoteAction(
+            iconResId = R.drawable.replay_10_24px,
+            title = "Replay 10s",
+            requestCode = REQUEST_REPLAY,
+            controlType = EXTRA_CONTROL_REPLAY,
+            context = context
+        )
+    )
+
+    if (isPlaying) {
+        actions.add(
+            buildRemoteAction(
+                iconResId = R.drawable.pause_24px,
+                title = "Pause",
+                requestCode = REQUEST_PAUSE,
+                controlType = EXTRA_CONTROL_PAUSE,
+                context = context
+            )
+        )
+    } else {
+        actions.add(
+            buildRemoteAction(
+                iconResId = R.drawable.play_arrow_24px,
+                title = "Play",
+                requestCode = REQUEST_PLAY,
+                controlType = EXTRA_CONTROL_PLAY,
+                context = context
+            )
+        )
+    }
+
+    actions.add(
+        buildRemoteAction(
+            iconResId = R.drawable.forward_10_24px,
+            title = "Forward 10s",
+            requestCode = REQUEST_FORWARD,
+            controlType = EXTRA_CONTROL_FORWARD,
+            context = context
+        )
+    )
+
+    return actions
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
