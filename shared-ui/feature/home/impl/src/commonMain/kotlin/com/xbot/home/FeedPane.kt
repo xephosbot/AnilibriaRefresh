@@ -372,6 +372,7 @@ private fun ReleaseFeed(
                             )
                         }
                     ) {
+                        //TODO>
                         DropdownMenuItem(
                             text = { Text(text = "Item 1") },
                             onClick = { /* Handle item 1 click */ }
@@ -445,24 +446,21 @@ private fun ReleaseFeed(
             items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
             contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { index, release ->
-            // TODO: SmallReleaseCard might need to support null release
-            release?.let {
-                SmallReleaseCard(
-                    modifier = Modifier.badgeOverlay(
-                        index = index,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White,
-                                MaterialTheme.colorScheme.primaryFixedDim
-                            ),
-                            startY = 0.0f,
-                            endY = 250.0f
-                        )
-                    ),
-                    release = release,
-                    onClick = onReleaseClick,
-                )
-            }
+            SmallReleaseCard(
+                modifier = Modifier.badgeOverlay(
+                    index = index,
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White,
+                            MaterialTheme.colorScheme.primaryFixedDim
+                        ),
+                        startY = 0.0f,
+                        endY = 250.0f
+                    )
+                ),
+                release = release,
+                onClick = onReleaseClick,
+            )
         }
 
         header(
@@ -473,13 +471,10 @@ private fun ReleaseFeed(
             contentPadding = PaddingValues(horizontal = horizontalMargin),
             itemSpacing = 16.dp,
         ) { franchise ->
-            // TODO: FranchiseCard might need to support null franchise
-            franchise?.let {
-                FranchiseCard(
-                    franchise = franchise,
-                    onClick = { /*TODO*/ }
-                )
-            }
+            FranchiseCard(
+                franchise = franchise,
+                onClick = { /*TODO*/ }
+            )
         }
 
         header(
@@ -489,13 +484,10 @@ private fun ReleaseFeed(
             items = releasesFeed.genres,
             contentPadding = PaddingValues(horizontal = horizontalMargin),
         ) { genre ->
-             // TODO: GenreItem might need to support null genre
-            genre?.let {
-                GenreItem(
-                    genre = genre,
-                    onClick = { /*TODO*/ }
-                )
-            }
+            GenreItem(
+                genre = genre,
+                onClick = { /*TODO*/ }
+            )
         }
 
         header(
