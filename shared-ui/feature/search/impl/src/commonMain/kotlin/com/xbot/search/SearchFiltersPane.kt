@@ -174,6 +174,7 @@ private fun SearchFilterPaneContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FiltersScreenContent(
     modifier: Modifier = Modifier,

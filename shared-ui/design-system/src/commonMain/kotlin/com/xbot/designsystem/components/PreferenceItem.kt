@@ -1,8 +1,6 @@
 package com.xbot.designsystem.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -22,9 +22,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,10 +31,9 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceItem(
     headlineContent: @Composable () -> Unit,
@@ -46,50 +42,30 @@ fun PreferenceItem(
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     selected: Boolean = false,
-    colors: PreferenceItemColors = ExpressivePreferenceItemDefaults.colors(),
-    shape: ExpressiveShape = ExpressivePreferenceItemDefaults.shape(),
+    colors: ListItemColors = ExpressivePreferenceItemDefaults.colors(),
+    shapes: ListItemShapes = ExpressivePreferenceItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
+    val validOnClick = onClick ?: {}
+    val enabled = onClick != null
 
-    val containerColor by animateColorAsState(
-        targetValue = if (selected) colors.selectedContainerColor else colors.containerColor,
-        label = "PreferenceItemContainerColor"
-    )
-    val contentColor by animateColorAsState(
-        targetValue = if (selected) colors.selectedContentColor else colors.contentColor,
-        label = "PreferenceItemContentColor"
-    )
-
-    Surface(
+    ListItem(
+        selected = selected,
+        onClick = validOnClick,
         modifier = modifier,
-        shape = shape.shapeForInteraction(pressed, selected),
-        color = containerColor,
-        contentColor = contentColor,
-        onClick = onClick ?: {},
-        enabled = onClick != null,
-        interactionSource = interactionSource
-    ) {
-        ListItem(
-            headlineContent = headlineContent,
-            supportingContent = supportingContent,
-            leadingContent = leadingContent,
-            trailingContent = trailingContent,
-            colors = ListItemDefaults.colors(
-                containerColor = Color.Transparent,
-                headlineColor = contentColor,
-                leadingIconColor = contentColor,
-                overlineColor = contentColor,
-                supportingColor = contentColor.copy(alpha = 0.7f),
-                trailingIconColor = contentColor
-            )
-        )
-    }
+        enabled = enabled,
+        leadingContent = leadingContent,
+        trailingContent = trailingContent,
+        supportingContent = supportingContent,
+        colors = colors,
+        shapes = shapes,
+        interactionSource = interactionSource,
+        content = headlineContent
+    )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SwitchPreferenceItem(
     headlineContent: @Composable () -> Unit,
@@ -175,12 +151,15 @@ fun ExperimentalPill(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressivePreferenceItemDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
-            shape = RoundedCornerShape(0.dp),
-            pressedShape = MaterialTheme.shapes.large,
-            selectedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+    fun shapes(
+        shape: Shape = RoundedCornerShape(0.dp),
+        pressedShape: Shape = MaterialTheme.shapes.large,
+        selectedShape: Shape = MaterialTheme.shapes.large,
+    ): ListItemShapes {
+        return ListItemDefaults.shapes(
+            shape = shape,
+            pressedShape = pressedShape,
+            selectedShape = selectedShape,
         )
     }
 
@@ -188,26 +167,36 @@ object ExpressivePreferenceItemDefaults {
     fun colors(
         containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
         contentColor: Color = contentColorFor(containerColor),
-        selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+        supportingContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+        selectedContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
         selectedContentColor: Color = contentColorFor(selectedContainerColor)
-    ): PreferenceItemColors = PreferenceItemColors(
-        containerColor = containerColor,
-        contentColor = contentColor,
-        selectedContainerColor = selectedContainerColor,
-        selectedContentColor = selectedContentColor
-    )
+    ): ListItemColors {
+        return ListItemDefaults.colors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            leadingContentColor = contentColor,
+            overlineContentColor = contentColor,
+            supportingContentColor = supportingContentColor,
+            trailingContentColor = contentColor,
+            disabledContainerColor = containerColor,
+            disabledContentColor = contentColor,
+            disabledLeadingContentColor = contentColor,
+            disabledOverlineContentColor = contentColor,
+            disabledSupportingContentColor = supportingContentColor,
+            disabledTrailingContentColor = contentColor,
+            selectedContainerColor = selectedContainerColor,
+            selectedContentColor = selectedContentColor,
+            selectedLeadingContentColor = selectedContentColor,
+            selectedOverlineContentColor = selectedContentColor,
+            selectedSupportingContentColor = selectedContentColor.copy(alpha = 0.7f),
+            selectedTrailingContentColor = selectedContentColor
+        )
+    }
 }
-
-@Immutable
-data class PreferenceItemColors(
-    val containerColor: Color,
-    val contentColor: Color,
-    val selectedContainerColor: Color,
-    val selectedContentColor: Color
-)
 
 @Preview
 @Composable
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun PreferenceItemPreview() {
     AnilibriaPreview {
         Column {
@@ -230,6 +219,7 @@ private fun PreferenceItemPreview() {
 
 @Preview
 @Composable
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun SwitchPreferenceItemPreview() {
     AnilibriaPreview {
         Column {
