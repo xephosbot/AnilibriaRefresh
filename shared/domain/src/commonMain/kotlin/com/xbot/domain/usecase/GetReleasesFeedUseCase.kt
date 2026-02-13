@@ -59,13 +59,13 @@ class GetReleasesFeedUseCase(
         },
         { genresRepository.getRandomGenres(10).getOrNull() }
     ) { recommendedReleases, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
-        ReleasesFeed(
-            recommendedReleases = recommendedReleases ?: List(10) { null },
-            scheduleNow = scheduleNow ?: List(10) { null },
-            bestNow = bestNow ?: List(10) { null },
-            bestAllTime = bestAllTime ?: List(10) { null },
-            recommendedFranchises = recommendedFranchises ?: List(10) { null },
-            genres = genres ?: List(10) { null },
+        ReleasesFeed.create(
+            recommendedReleases = recommendedReleases,
+            scheduleNow = scheduleNow,
+            bestNow = bestNow,
+            bestAllTime = bestAllTime,
+            recommendedFranchises = recommendedFranchises,
+            genres = genres,
         )
     }.flowOn(dispatcherProvider.io)
 }

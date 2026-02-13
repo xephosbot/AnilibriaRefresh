@@ -334,58 +334,56 @@ private fun ReleaseFeed(
                     .fadeWithParallax(pagerState, page),
                 release = release
             ) {
-                release?.let {
-                    val isChecked by rememberUpdatedState(activeMenuReleaseId == release.id)
+                val isChecked by rememberUpdatedState(activeMenuReleaseId != null && activeMenuReleaseId == release?.id)
 
-                    MediumSplitButton(
-                        onLeadingClick = {
-                            onReleaseClick(release)
-                        },
-                        trailingChecked = isChecked,
-                        onTrailingCheckedChange = { checked ->
-                            activeMenuReleaseId = if (checked) release.id else null
-                        },
-                        leadingContent = {
-                            Icon(
-                                modifier = Modifier
-                                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                            Text(
-                                text = stringResource(Res.string.button_watch),
-                                maxLines = 1
-                            )
-                        },
-                        trailingContent = {
-                            val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
+                MediumSplitButton(
+                    onLeadingClick = {
+                        release?.let { onReleaseClick(it) }
+                    },
+                    trailingChecked = isChecked,
+                    onTrailingCheckedChange = { checked ->
+                        activeMenuReleaseId = if (checked) release?.id else null
+                    },
+                    leadingContent = {
+                        Icon(
+                            modifier = Modifier
+                                .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                            imageVector = AnilibriaIcons.Filled.PlayArrow,
+                            contentDescription = null
+                        )
+                        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                        Text(
+                            text = stringResource(Res.string.button_watch),
+                            maxLines = 1
+                        )
+                    },
+                    trailingContent = {
+                        val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
 
-                            Icon(
-                                modifier = Modifier
-                                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
-                                    .graphicsLayer {
-                                        rotationZ = rotation
-                                    },
-                                imageVector = AnilibriaIcons.ArrowDropDown,
-                                contentDescription = null
-                            )
-                        }
-                    ) {
-                        //TODO>
-                        DropdownMenuItem(
-                            text = { Text(text = "Item 1") },
-                            onClick = { /* Handle item 1 click */ }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text = "Item 2") },
-                            onClick = { /* Handle item 3 click */ }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text = "Item 3") },
-                            onClick = { /* Handle item 3 click */ }
+                        Icon(
+                            modifier = Modifier
+                                .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                .graphicsLayer {
+                                    rotationZ = rotation
+                                },
+                            imageVector = AnilibriaIcons.ArrowDropDown,
+                            contentDescription = null
                         )
                     }
+                ) {
+                    //TODO>
+                    DropdownMenuItem(
+                        text = { Text(text = "Item 1") },
+                        onClick = { /* Handle item 1 click */ }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Item 2") },
+                        onClick = { /* Handle item 3 click */ }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Item 3") },
+                        onClick = { /* Handle item 3 click */ }
+                    )
                 }
             }
         }
@@ -575,10 +573,10 @@ private fun FeedPanePreview(
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            releasesFeed = ReleasesFeed()
+            releasesFeed = ReleasesFeed.create()
         ),
         HomeScreenState(
-            releasesFeed = ReleasesFeed(
+            releasesFeed = ReleasesFeed.create(
                 recommendedReleases = releaseMocks,
                 scheduleNow = scheduleMocks,
                 bestNow = releaseMocks,
