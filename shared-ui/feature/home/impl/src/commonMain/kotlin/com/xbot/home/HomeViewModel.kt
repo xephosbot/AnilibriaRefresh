@@ -6,14 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
-import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.ScheduleWeek
 import com.xbot.domain.models.User
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
@@ -28,10 +27,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class HomeViewModel(
@@ -52,17 +49,7 @@ internal class HomeViewModel(
         .flatMapLatest { getReleasesFeed() }
 
     private val scheduleData = refreshTrigger
-        .flatMapLatest {
-            flow {
-                when (val result = getSortedScheduleWeekUseCase()) {
-                    is Either.Left -> {
-                        showErrorMessage(result.value.toString()) { refresh() }
-                        emit(null)
-                    }
-                    is Either.Right -> emit(result.value)
-                }
-            }
-        }
+        .flatMapLatest { getSortedScheduleWeekUseCase() }
 
     val state: StateFlow<HomeScreenState> =
         combine(getAuthState(), feedData, scheduleData, bestType) { authState, feed, schedule, currentBestType ->
@@ -72,10 +59,9 @@ internal class HomeViewModel(
             }
 
             HomeScreenState(
-                isScheduleLoading = schedule == null,
                 currentUser = user,
                 releasesFeed = feed,
-                scheduleWeek = schedule.orEmpty(),
+                scheduleWeek = schedule,
                 currentBestType = currentBestType,
             )
         }.stateIn(
@@ -117,10 +103,9 @@ internal class HomeViewModel(
 
 @Stable
 internal data class HomeScreenState(
-    val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
-    val releasesFeed: ReleasesFeed = ReleasesFeed(),
-    val scheduleWeek: Map<LocalDate, List<Schedule>>? = null,
+    val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
+    val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
     val currentBestType: BestType = BestType.Now,
 )
 
