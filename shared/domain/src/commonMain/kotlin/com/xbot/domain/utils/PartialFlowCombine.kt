@@ -96,6 +96,54 @@ fun <T1, T2, T3, T4, T5, T6, R> combinePartial(
     )
 }
 
+fun <T1, T2, T3, T4, T5, T6, T7, R> combinePartial(
+    fetcher1: suspend () -> T1,
+    fetcher2: suspend () -> T2,
+    fetcher3: suspend () -> T3,
+    fetcher4: suspend () -> T4,
+    fetcher5: suspend () -> T5,
+    fetcher6: suspend () -> T6,
+    fetcher7: suspend () -> T7,
+    combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?) -> R
+): Flow<R> = combinePartialInternal(
+    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5, fetcher6, fetcher7)
+) { results ->
+    combine(
+        results[0] as? T1,
+        results[1] as? T2,
+        results[2] as? T3,
+        results[3] as? T4,
+        results[4] as? T5,
+        results[5] as? T6,
+        results[6] as? T7
+    )
+}
+
+fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combinePartial(
+    fetcher1: suspend () -> T1,
+    fetcher2: suspend () -> T2,
+    fetcher3: suspend () -> T3,
+    fetcher4: suspend () -> T4,
+    fetcher5: suspend () -> T5,
+    fetcher6: suspend () -> T6,
+    fetcher7: suspend () -> T7,
+    fetcher8: suspend () -> T8,
+    combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?) -> R
+): Flow<R> = combinePartialInternal(
+    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5, fetcher6, fetcher7, fetcher8)
+) { results ->
+    combine(
+        results[0] as? T1,
+        results[1] as? T2,
+        results[2] as? T3,
+        results[3] as? T4,
+        results[4] as? T5,
+        results[5] as? T6,
+        results[6] as? T7,
+        results[7] as? T8
+    )
+}
+
 private fun <R> combinePartialInternal(
     fetchers: List<suspend () -> Any?>,
     combine: (List<Any?>) -> R

@@ -33,7 +33,7 @@ class GetReleasesFeedUseCase(
                 val currentYear = scheduleRepository.getCurrentYear().bind()
                 catalogRepository.getCatalogReleases(
                     search = null,
-                    filters = CatalogFilters(
+                    filters = CatalogFilters.create(
                         seasons = listOf(currentSeason),
                         years = currentYear.let { it..it },
                         sortingTypes = listOf(SortingType.RATING_DESC)
@@ -45,7 +45,7 @@ class GetReleasesFeedUseCase(
         {
             catalogRepository.getCatalogReleases(
                 search = null,
-                filters = CatalogFilters(sortingTypes = listOf(SortingType.RATING_DESC)),
+                filters = CatalogFilters.create(sortingTypes = listOf(SortingType.RATING_DESC)),
                 limit = 10
             ).getOrNull()
         },

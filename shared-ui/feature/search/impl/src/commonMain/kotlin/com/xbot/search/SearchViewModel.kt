@@ -52,8 +52,8 @@ internal class SearchViewModel(
     private val searchQuery: Flow<String> = snapshotFlow { searchFieldState.text.toString() }
         .onEach { savedStateHandle[QUERY_KEY] = it }
 
-    private val _availableFilters = MutableStateFlow<CatalogFilters?>(null)
-    val availableFilters: StateFlow<CatalogFilters?> = _availableFilters
+    private val _availableFilters = MutableStateFlow(CatalogFilters.create())
+    val availableFilters: StateFlow<CatalogFilters> = _availableFilters
         .onStart { fetchCatalogFilters() }
         .stateIn(
             scope = viewModelScope,
@@ -97,17 +97,12 @@ internal class SearchViewModel(
 
     private fun fetchCatalogFilters() {
         viewModelScope.launch {
-            getCatalogFilters().fold(
-                ifRight = { catalogFilters ->
-                    _availableFilters.update { catalogFilters }
-                    if (_selectedFilters.value.selectedYears == IntRange.EMPTY) {
-                        updateState { it.copy(selectedYears = catalogFilters.years) }
-                    }
-                },
-                ifLeft = {
-                    showErrorMessage(it.toString(), ::fetchCatalogFilters)
+            getCatalogFilters().collect { catalogFilters ->
+                _availableFilters.update { catalogFilters }
+                if (_selectedFilters.value.selectedYears == IntRange.EMPTY && catalogFilters.years != IntRange.EMPTY) {
+                    _selectedFilters.update { it.copy(selectedYears = catalogFilters.years) }
                 }
-            )
+            }
         }
     }
 
