@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
 }
@@ -37,7 +36,7 @@ kotlin {
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.arrow.core)
         implementation(libs.koin.compose)

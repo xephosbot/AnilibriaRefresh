@@ -51,7 +51,7 @@ internal fun AnilibriaNavGraph(
         adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Hide
         ),
-        // Uncomment when Google finishes the Levitate strategy
+        //TODO: Uncomment when Google finishes the Levitate strategy
         /*adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Levitate(
                 alignment = Alignment.BottomCenter,
