@@ -13,7 +13,11 @@ import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_status_satisfied
 import platform.darwin.dispatch_queue_create
 
-class IosNetworkObserver : NetworkObserver {
+actual fun createNetworkObserver(): NetworkObserver {
+    return IosNetworkObserver()
+}
+
+internal class IosNetworkObserver : NetworkObserver {
 
     override val isConnected: Flow<Boolean> = callbackFlow {
         val monitor = nw_path_monitor_create()

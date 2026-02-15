@@ -1,7 +1,9 @@
 package com.xbot.network.client
 
 import com.xbot.network.Constants
+import com.xbot.network.utils.NetworkReachability
 import com.xbot.network.utils.brotli
+import com.xbot.network.utils.createNetworkObserver
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
@@ -43,6 +45,10 @@ internal fun createHttpClient(
             ignoreUnknownKeys = true
             coerceInputValues = true
         })
+    }
+
+    install(NetworkReachability) {
+        networkObserver = createNetworkObserver()
     }
 
     Auth {

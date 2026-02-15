@@ -8,6 +8,8 @@ interface NetworkObserver {
     val isConnected: Flow<Boolean>
 }
 
+expect fun createNetworkObserver(): NetworkObserver
+
 internal suspend fun NetworkObserver.awaitConnection() {
     isConnected.filter { it }.first()
 }

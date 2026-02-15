@@ -42,6 +42,7 @@ kotlinx-serialization = "1.10.0"
 kotlinx-atomicfu = "0.31.0"
 arrow = "2.2.1.1"
 eygraber-uri = "0.0.21"
+androidcontextprovider = "1.0.1"
 
 # UI Libraries
 coil = "3.3.0"
@@ -107,6 +108,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
 eygraber-uri = { module = "com.eygraber:uri-kmp", version.ref = "eygraber-uri" }
+androidcontextprovider = { module = "io.github.kdroidfilter:androidcontextprovider", version.ref = "androidcontextprovider" }
 
 # Networking - Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
