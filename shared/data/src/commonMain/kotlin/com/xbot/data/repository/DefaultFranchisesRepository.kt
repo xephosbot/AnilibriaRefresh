@@ -1,15 +1,20 @@
 package com.xbot.data.repository
 
 import arrow.core.Either
+import arrow.core.raise.either
 import com.xbot.data.mapper.toDomain
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Franchise
+import com.xbot.domain.models.Release
 import com.xbot.domain.repository.FranchisesRepository
 import com.xbot.network.api.FranchisesApi
+import com.xbot.network.api.ReleasesApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.FranchiseDto
+import com.xbot.network.models.dto.ReleaseDto
 
 internal class DefaultFranchisesRepository(
+    private val releasesApi: ReleasesApi,
     private val franchisesApi: FranchisesApi
 ) : FranchisesRepository {
     override suspend fun getFranchises(): Either<DomainError, List<Franchise>> = franchisesApi
@@ -31,4 +36,20 @@ internal class DefaultFranchisesRepository(
         .getFranchisesByRelease(releaseId)
         .mapLeft(NetworkError::toDomain)
         .map { it.map(FranchiseDto::toDomain) }
+
+    override suspend fun getFranchiseReleases(aliasOrId: String): Either<DomainError, List<Release>> = either {
+        val releaseId = aliasOrId.toIntOrNull() ?: releasesApi.getRelease(aliasOrId)
+            .mapLeft(NetworkError::toDomain)
+            .bind()
+            .id
+
+        val franchises = franchisesApi.getFranchisesByRelease(releaseId)
+            .mapLeft(NetworkError::toDomain)
+            .bind()
+
+        franchises
+            .flatMap { it.franchiseReleases ?: emptyList() }
+            .map { it.release.toDomain() }
+            .filterNot { it.id == releaseId }
+    }
 }

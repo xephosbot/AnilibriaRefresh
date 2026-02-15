@@ -83,7 +83,7 @@ import kotlin.math.max
 fun VideoPlayerController(
     player: VideoPlayerState,
     title: String,
-    episodes: List<Episode>,
+    episodes: List<Episode?>,
     selectedEpisode: Episode?,
     onEpisodeClick: (Episode) -> Unit,
     buffering: @Composable () -> Unit,
@@ -189,7 +189,7 @@ private fun PlaylistDrawer(
 
 @Composable
 private fun PlaylistContent(
-    episodes: List<Episode>,
+    episodes: List<Episode?>,
     selectedEpisode: Episode?,
     onEpisodeClick: (Episode) -> Unit,
     modifier: Modifier = Modifier
@@ -207,7 +207,11 @@ private fun PlaylistContent(
                 modifier = Modifier.section(index, episodes.size),
                 episode = episode,
                 selected = episode == selectedEpisode,
-                onClick = { onEpisodeClick(episode) }
+                onClick = {
+                    if (episode != null) {
+                        onEpisodeClick(episode)
+                    }
+                }
             )
         }
         item {

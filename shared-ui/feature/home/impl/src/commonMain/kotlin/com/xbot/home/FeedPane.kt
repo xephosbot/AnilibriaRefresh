@@ -137,7 +137,7 @@ internal fun FeedPane(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
     onScheduleClick: () -> Unit,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
     onProfileClick: () -> Unit,
 ) {
@@ -168,7 +168,7 @@ private fun FeedPaneContent(
     items: LazyPagingItems<Release>,
     onAction: (HomeScreenAction) -> Unit,
     onScheduleClick: () -> Unit,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
     onProfileClick: () -> Unit,
 ) {
@@ -277,7 +277,7 @@ private fun FeedPaneContent(
                     contentPadding = innerPadding,
                     onScheduleClick = onScheduleClick,
                     onBestTypeChange = { onAction(HomeScreenAction.UpdateBestType(it)) },
-                    onReleaseClick = { onReleaseClick(it.id) },
+                    onReleaseClick = onReleaseClick,
                     onEpisodeClick = onEpisodeClick,
                 )
 
@@ -394,6 +394,7 @@ private fun ReleaseFeed(
         )
         horizontalSnappableItems(
             items = releasesFeed.scheduleNow,
+            //key = { schedule -> schedule?.release?.id },
             contentPadding = PaddingValues(horizontal = horizontalMargin),
             itemSpacing = 16.dp,
         ) { schedule ->

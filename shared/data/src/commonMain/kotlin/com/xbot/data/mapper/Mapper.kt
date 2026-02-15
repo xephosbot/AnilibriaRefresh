@@ -6,10 +6,12 @@ import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.ScheduleType
 import com.xbot.domain.models.User
+import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.network.Constants
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.EpisodeDto
@@ -66,6 +68,22 @@ internal fun ReleaseDto.toDomain() = Release(
             thumbnail = thumbnail?.let(Constants::withImageUrl),
         )
     }
+)
+
+internal fun ReleaseDto.toReleaseDetails() = ReleaseDetails(
+    release = this.toDomain(),
+    season = season?.toDomain(),
+    isOngoing = isOngoing,
+    publishDay = publishDay!!.toDayOfWeek(),
+    notification = notification,
+    availabilityStatus = when {
+        isBlockedByGeo -> AvailabilityStatus.GeoBlocked
+        isBlockedByCopyrights -> AvailabilityStatus.CopyrightBlocked
+        else -> AvailabilityStatus.Available
+    },
+    genres = genres?.map(GenreDto::toDomain) ?: emptyList(),
+    releaseMembers = members?.map(ReleaseMemberDto::toDomain) ?: emptyList(),
+    episodes = episodes?.map(EpisodeDto::toDomain) ?: emptyList(),
 )
 
 @OptIn(ExperimentalTime::class)

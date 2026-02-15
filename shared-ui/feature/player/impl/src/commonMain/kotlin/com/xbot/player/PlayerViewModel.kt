@@ -59,7 +59,7 @@ internal class PlayerViewModel(
                     val targetOrdinal = savedOrdinal ?: initialEpisodeOrdinal
                     
                     // Find episode by ordinal, fallback to matching by index if ordinal not found, or first
-                    val episode = release.episodes.find { it.ordinal == targetOrdinal } 
+                    val episode = release.episodes.find { it?.ordinal == targetOrdinal }
                         ?: release.episodes.getOrNull(targetOrdinal.toInt()) // Fallback mostly for safety
                         ?: release.episodes.firstOrNull()
                         
@@ -94,7 +94,7 @@ internal class PlayerViewModel(
 @Stable
 internal data class PlayerScreenState(
     val isLoading: Boolean = true,
-    val episodes: List<Episode> = emptyList(),
+    val episodes: List<Episode?> = emptyList(),
     val currentEpisode: Episode? = null,
 )
 

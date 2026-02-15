@@ -38,9 +38,9 @@ val homeFeatureModule = module {
             onScheduleClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateToSchedule()
             },
-            onReleaseClick = { releaseId ->
+            onReleaseClick = { release ->
                 lifecycleOwner.dropUnlessResumed {
-                    navigator.navigateToTitle(releaseId)
+                    navigator.navigateToTitle(release)
                 }.invoke()
             },
             onEpisodeClick = { releaseId, episodeOrdinal ->
@@ -61,9 +61,9 @@ val homeFeatureModule = module {
         val lifecycleOwner = LocalLifecycleOwner.current
         SchedulePane(
             showBackButton = true,
-            onReleaseClick = { releaseId ->
+            onReleaseClick = { release ->
                 lifecycleOwner.dropUnlessResumed {
-                    navigator.navigateToTitle(releaseId)
+                    navigator.navigateToTitle(release)
                 }.invoke()
             },
             onBackClick = lifecycleOwner.dropUnlessResumed {

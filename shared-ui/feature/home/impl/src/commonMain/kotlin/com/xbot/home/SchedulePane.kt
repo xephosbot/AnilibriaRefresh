@@ -42,6 +42,7 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.plus
+import com.xbot.domain.models.Release
 import com.xbot.domain.models.ScheduleWeek
 import com.xbot.fixtures.data.scheduleMocks
 import com.xbot.localization.DayOfWeekStyle
@@ -66,7 +67,7 @@ internal fun SchedulePane(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
     showBackButton: Boolean,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -90,7 +91,7 @@ private fun SchedulePaneContent(
     modifier: Modifier = Modifier,
     state: HomeScreenState,
     showBackButton: Boolean,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -136,7 +137,7 @@ private fun ScheduleContent(
     modifier: Modifier = Modifier,
     scheduleWeek: ScheduleWeek,
     contentPadding: PaddingValues,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
@@ -156,7 +157,7 @@ private fun ScheduleContent(
                 MediumReleaseCard(
                     modifier = Modifier.fillMaxWidth(),
                     release = schedule?.release,
-                    onClick = { schedule?.release?.id?.let(onReleaseClick) },
+                    onClick = { schedule?.release?.let(onReleaseClick) },
                 ) {
                     schedule?.let {
                         EpisodeListItem(

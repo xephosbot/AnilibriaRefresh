@@ -6,7 +6,7 @@ import arrow.core.Either
 import arrow.core.right
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.fixtures.data.getReleaseDetailMock
@@ -25,13 +25,13 @@ class FakeReleasesRepository : ReleasesRepository {
         return FakePagingSource(releaseMocks)
     }
 
-    override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetail> {
+    override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetails> {
         val id = aliasOrId.toIntOrNull()
         return if (id != null) {
-            getReleaseDetailMock(id).right()
+            getReleaseDetailMock(id).details.right()
         } else {
             // Return first or error, let's return first for convenience
-            getReleaseDetailMock(releaseMocks.first().id).right()
+            getReleaseDetailMock(releaseMocks.first().id).details.right()
         }
     }
 
