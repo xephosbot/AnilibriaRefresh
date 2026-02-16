@@ -413,7 +413,7 @@ inline fun <T : Any> FeedScope.pagingItems(
     noinline key: ((index: Int) -> Any)? = items.itemKey(),
     crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit,
 ) {
-    val isLoading = items.loadState.refresh is LoadState.Loading && items.itemCount == 0
+    val isLoading = items.loadState.refresh is LoadState.NotLoading && items.itemCount == 0
     val count = if (isLoading) loadingPlaceholderCount else items.itemCount
 
     items(
