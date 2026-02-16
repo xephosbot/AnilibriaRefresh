@@ -26,13 +26,17 @@ object SnackbarManager {
     val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 
     fun showMessage(title: StringResource, action: MessageAction? = null) {
-        val message = Message(
-            id = Uuid.random().toLongs { mostSignificantBits, _ -> mostSignificantBits },
-            title = title,
-            action = action,
-        )
         _messages.update { currentMessages ->
-            currentMessages + message
+            if (currentMessages.any { it.title == title }) {
+                currentMessages
+            } else {
+                val message = Message(
+                    id = Uuid.random().toLongs { mostSignificantBits, _ -> mostSignificantBits },
+                    title = title,
+                    action = action,
+                )
+                currentMessages + message
+            }
         }
     }
 

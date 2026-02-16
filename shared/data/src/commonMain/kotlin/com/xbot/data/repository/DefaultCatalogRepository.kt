@@ -47,8 +47,8 @@ internal class DefaultCatalogRepository(
                     ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
                     publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
                     productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).getOrElse { domainError ->
-                    throw IllegalStateException()
+                ).getOrElse { error ->
+                    throw error.toDomain()
                 }
                 CommonPagingSource.PaginatedResponse(
                     items = result.data.map(ReleaseDto::toDomain),

@@ -24,14 +24,54 @@ suspend fun stringResource(stringResource: StringResource): String {
 }
 
 sealed interface StringResource {
-    class String(val text: kotlin.String) : StringResource
+    data class String(val text: kotlin.String) : StringResource
+    
     class Text(
         val resource: org.jetbrains.compose.resources.StringResource,
         vararg val formatArgs: Any,
-    ) : StringResource
+    ) : StringResource {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+
+            other as Text
+
+            if (resource != other.resource) return false
+            if (!formatArgs.contentEquals(other.formatArgs)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = resource.hashCode()
+            result = 31 * result + formatArgs.contentHashCode()
+            return result
+        }
+    }
+
     class Plural(
         val resource: org.jetbrains.compose.resources.PluralStringResource,
         val quantity: Int,
         vararg val formatArgs: Any,
-    ) : StringResource
+    ) : StringResource {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+
+            other as Plural
+
+            if (resource != other.resource) return false
+            if (quantity != other.quantity) return false
+            if (!formatArgs.contentEquals(other.formatArgs)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = resource.hashCode()
+            result = 31 * result + quantity
+            result = 31 * result + formatArgs.contentHashCode()
+            return result
+        }
+    }
 }

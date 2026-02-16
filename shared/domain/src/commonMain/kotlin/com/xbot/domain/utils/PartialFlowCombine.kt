@@ -2,178 +2,186 @@
 
 package com.xbot.domain.utils
 
-import kotlinx.atomicfu.atomic
-import kotlinx.atomicfu.update
+import arrow.core.Either
+import kotlinx.atomicfu.AtomicArray
+import kotlinx.atomicfu.atomicArrayOfNulls
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
-fun <T1, T2, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    combine: (T1?, T2?) -> R
+inline fun <E, T1, T2, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline combine: (T1?, T2?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value)
     )
 }
 
-fun <T1, T2, T3, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    combine: (T1?, T2?, T3?) -> R
+inline fun <E, T1, T2, T3, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline combine: (T1?, T2?, T3?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value)
     )
 }
 
-fun <T1, T2, T3, T4, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    fetcher4: suspend () -> T4,
-    combine: (T1?, T2?, T3?, T4?) -> R
+inline fun <E, T1, T2, T3, T4, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline fetcher4: suspend () -> Either<E, T4>,
+    crossinline combine: (T1?, T2?, T3?, T4?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3,
-        results[3] as? T4
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value),
+        unwrapEither(results[3].value)
     )
 }
 
-fun <T1, T2, T3, T4, T5, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    fetcher4: suspend () -> T4,
-    fetcher5: suspend () -> T5,
-    combine: (T1?, T2?, T3?, T4?, T5?) -> R
+inline fun <E, T1, T2, T3, T4, T5, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline fetcher4: suspend () -> Either<E, T4>,
+    crossinline fetcher5: suspend () -> Either<E, T5>,
+    crossinline combine: (T1?, T2?, T3?, T4?, T5?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3,
-        results[3] as? T4,
-        results[4] as? T5
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value),
+        unwrapEither(results[3].value),
+        unwrapEither(results[4].value)
     )
 }
 
-fun <T1, T2, T3, T4, T5, T6, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    fetcher4: suspend () -> T4,
-    fetcher5: suspend () -> T5,
-    fetcher6: suspend () -> T6,
-    combine: (T1?, T2?, T3?, T4?, T5?, T6?) -> R
+inline fun <E, T1, T2, T3, T4, T5, T6, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline fetcher4: suspend () -> Either<E, T4>,
+    crossinline fetcher5: suspend () -> Either<E, T5>,
+    crossinline fetcher6: suspend () -> Either<E, T6>,
+    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5, fetcher6)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3,
-        results[3] as? T4,
-        results[4] as? T5,
-        results[5] as? T6
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value),
+        unwrapEither(results[3].value),
+        unwrapEither(results[4].value),
+        unwrapEither(results[5].value)
     )
 }
 
-fun <T1, T2, T3, T4, T5, T6, T7, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    fetcher4: suspend () -> T4,
-    fetcher5: suspend () -> T5,
-    fetcher6: suspend () -> T6,
-    fetcher7: suspend () -> T7,
-    combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?) -> R
+inline fun <E, T1, T2, T3, T4, T5, T6, T7, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline fetcher4: suspend () -> Either<E, T4>,
+    crossinline fetcher5: suspend () -> Either<E, T5>,
+    crossinline fetcher6: suspend () -> Either<E, T6>,
+    crossinline fetcher7: suspend () -> Either<E, T7>,
+    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5, fetcher6, fetcher7)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() }, { fetcher7() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3,
-        results[3] as? T4,
-        results[4] as? T5,
-        results[5] as? T6,
-        results[6] as? T7
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value),
+        unwrapEither(results[3].value),
+        unwrapEither(results[4].value),
+        unwrapEither(results[5].value),
+        unwrapEither(results[6].value)
     )
 }
 
-fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combinePartial(
-    fetcher1: suspend () -> T1,
-    fetcher2: suspend () -> T2,
-    fetcher3: suspend () -> T3,
-    fetcher4: suspend () -> T4,
-    fetcher5: suspend () -> T5,
-    fetcher6: suspend () -> T6,
-    fetcher7: suspend () -> T7,
-    fetcher8: suspend () -> T8,
-    combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?) -> R
+inline fun <E, T1, T2, T3, T4, T5, T6, T7, T8, R> combinePartial(
+    crossinline fetcher1: suspend () -> Either<E, T1>,
+    crossinline fetcher2: suspend () -> Either<E, T2>,
+    crossinline fetcher3: suspend () -> Either<E, T3>,
+    crossinline fetcher4: suspend () -> Either<E, T4>,
+    crossinline fetcher5: suspend () -> Either<E, T5>,
+    crossinline fetcher6: suspend () -> Either<E, T6>,
+    crossinline fetcher7: suspend () -> Either<E, T7>,
+    crossinline fetcher8: suspend () -> Either<E, T8>,
+    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?) -> R
 ): Flow<R> = combinePartialInternal(
-    fetchers = listOf(fetcher1, fetcher2, fetcher3, fetcher4, fetcher5, fetcher6, fetcher7, fetcher8)
+    fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() }, { fetcher7() }, { fetcher8() })
 ) { results ->
     combine(
-        results[0] as? T1,
-        results[1] as? T2,
-        results[2] as? T3,
-        results[3] as? T4,
-        results[4] as? T5,
-        results[5] as? T6,
-        results[6] as? T7,
-        results[7] as? T8
+        unwrapEither(results[0].value),
+        unwrapEither(results[1].value),
+        unwrapEither(results[2].value),
+        unwrapEither(results[3].value),
+        unwrapEither(results[4].value),
+        unwrapEither(results[5].value),
+        unwrapEither(results[6].value),
+        unwrapEither(results[7].value)
     )
 }
 
-private fun <R> combinePartialInternal(
+@PublishedApi
+internal inline fun <R> combinePartialInternal(
     fetchers: List<suspend () -> Any?>,
-    combine: (List<Any?>) -> R
+    concurrency: Int = fetchers.size,
+    crossinline combine: (AtomicArray<Any?>) -> R
 ): Flow<R> = channelFlow {
-    val results = AtomicList(List<Any?>(fetchers.size) { null })
-    val state = MutableStateFlow(combine(results.get()))
+    val results = atomicArrayOfNulls<Any>(fetchers.size)
+    val state = MutableStateFlow(combine(results))
 
     launch { state.collect { send(it) } }
 
+    val semaphore = Semaphore(concurrency)
+
     coroutineScope {
-        fetchers.forEachIndexed { index, fetcher ->
+        for (i in fetchers.indices) {
             launch {
-                val result = fetcher()
-                results[index] = result
-                state.update { combine(results.get()) }
+                semaphore.withPermit {
+                    val result = fetchers[i]()
+                    results[i].value = result
+                    state.update { combine(results) }
+                }
             }
         }
     }
 }
 
-private class AtomicList<T>(initialList: List<T>) {
-    private val listRef = atomic(initialList)
-
-    operator fun set(index: Int, element: T) {
-        listRef.update { list ->
-            val newList = list.toMutableList()
-            newList[index] = element
-            newList
-        }
+@PublishedApi
+internal fun <T> unwrapEither(result: Any?): T? {
+    return when (result) {
+        is Either<*, *> -> result.fold(
+            ifLeft = { error ->
+                throw (error as? Throwable) ?: IllegalStateException(error.toString())
+            },
+            ifRight = { value -> value as? T }
+        )
+        else -> null
     }
-
-    fun get(): List<T> = listRef.value
 }

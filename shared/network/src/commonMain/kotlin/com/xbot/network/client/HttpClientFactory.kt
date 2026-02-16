@@ -47,10 +47,6 @@ internal fun createHttpClient(
         })
     }
 
-    install(NetworkReachability) {
-        networkObserver = createNetworkObserver()
-    }
-
     Auth {
         bearer {
             cacheTokens = false

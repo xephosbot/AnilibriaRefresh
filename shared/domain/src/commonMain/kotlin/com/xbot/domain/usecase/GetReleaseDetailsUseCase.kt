@@ -14,8 +14,8 @@ class GetReleaseDetailsUseCase(
     private val dispatcherProvider: DispatcherProvider,
 ) {
     operator fun invoke(aliasOrId: String): Flow<ReleaseDetailsExtended> = combinePartial(
-        { releasesRepository.getRelease(aliasOrId).getOrNull() },
-        { franchisesRepository.getFranchiseReleases(aliasOrId).getOrNull() }
+        { releasesRepository.getRelease(aliasOrId) },
+        { franchisesRepository.getFranchiseReleases(aliasOrId) }
     ) { details, relatedReleases ->
         ReleaseDetailsExtended.create(
             details = details,

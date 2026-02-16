@@ -3,6 +3,7 @@ package com.xbot.domain.usecase
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import arrow.fx.coroutines.parMap
+import arrow.fx.coroutines.parZip
 import com.xbot.domain.models.ReleasesFeed
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
@@ -25,12 +26,15 @@ class GetReleasesFeedUseCase(
     private val dispatcherProvider: DispatcherProvider,
 ) {
     operator fun invoke(): Flow<ReleasesFeed> = combinePartial(
-        { releasesRepository.getRandomReleases(10).getOrNull() },
-        { scheduleRepository.getScheduleNow().getOrNull() },
+        { releasesRepository.getRandomReleases(10) },
+        { scheduleRepository.getScheduleNow() },
         {
             either {
-                val currentSeason = scheduleRepository.getCurrentSeason().bind()
-                val currentYear = scheduleRepository.getCurrentYear().bind()
+                val (currentSeason, currentYear) = parZip(
+                    { scheduleRepository.getCurrentSeason().bind() },
+                    { scheduleRepository.getCurrentYear().bind() }
+                ) { season, year -> season to year }
+
                 catalogRepository.getCatalogReleases(
                     search = null,
                     filters = CatalogFilters.create(
@@ -40,14 +44,14 @@ class GetReleasesFeedUseCase(
                     ),
                     limit = 10
                 ).bind()
-            }.getOrNull()
+            }
         },
         {
             catalogRepository.getCatalogReleases(
                 search = null,
                 filters = CatalogFilters.create(sortingTypes = listOf(SortingType.RATING_DESC)),
                 limit = 10
-            ).getOrNull()
+            )
         },
         {
             either {
@@ -55,9 +59,9 @@ class GetReleasesFeedUseCase(
                 franchises.parMap { franchise ->
                     franchisesRepository.getFranchise(franchise.id).getOrElse { franchise }
                 }
-            }.getOrNull()
+            }
         },
-        { genresRepository.getRandomGenres(10).getOrNull() }
+        { genresRepository.getRandomGenres(10) }
     ) { recommendedReleases, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
         ReleasesFeed.create(
             recommendedReleases = recommendedReleases,

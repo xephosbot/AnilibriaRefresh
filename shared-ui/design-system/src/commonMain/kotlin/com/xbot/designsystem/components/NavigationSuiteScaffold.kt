@@ -259,9 +259,7 @@ class ScaffoldState(
 ) {
     init {
         coroutineScope.launch {
-            println("StartScope")
             snackbarManager.messages.collect { currentMessages ->
-                println(currentMessages.toString())
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
                     val text = stringResource(message.title)

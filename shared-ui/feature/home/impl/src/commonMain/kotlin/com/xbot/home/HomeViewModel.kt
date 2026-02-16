@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
+import com.xbot.designsystem.utils.localizedMessage
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -45,11 +47,13 @@ internal class HomeViewModel(
     private val refreshTrigger = MutableStateFlow(0)
     private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
 
-    private val feedData = refreshTrigger
-        .flatMapLatest { getReleasesFeed() }
+    private val feedData = refreshTrigger.flatMapLatest {
+        getReleasesFeed().catch { showErrorMessage(it) { refresh() } }
+    }
 
-    private val scheduleData = refreshTrigger
-        .flatMapLatest { getSortedScheduleWeekUseCase() }
+    private val scheduleData = refreshTrigger.flatMapLatest {
+        getSortedScheduleWeekUseCase().catch { showErrorMessage(it) { refresh() } }
+    }
 
     val state: StateFlow<HomeScreenState> =
         combine(getAuthState(), feedData, scheduleData, bestType) { authState, feed, schedule, currentBestType ->
@@ -72,7 +76,7 @@ internal class HomeViewModel(
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
-            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
+            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onConfirmAction)
             is HomeScreenAction.Refresh -> refresh()
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
         }
@@ -86,9 +90,9 @@ internal class HomeViewModel(
         savedStateHandle[BEST_TYPE_KEY] = bestType
     }
 
-    private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
+    private fun showErrorMessage(error: Throwable, onConfirmAction: () -> Unit) {
         snackbarManager.showMessage(
-            title = StringResource.String(error),
+            title = error.localizedMessage(),
             action = MessageAction(
                 title = StringResource.Text(Res.string.button_retry),
                 action = onConfirmAction,

@@ -1,11 +1,8 @@
 package com.xbot.domain.models
 
-sealed interface DomainError {
-    data class HttpError(val code: Int, val message: String?) : DomainError
-
-    data class SerializationError(val cause: Throwable) : DomainError
-
-    data class ConnectionError(val cause: Throwable) : DomainError
-
-    data class UnknownError(val cause: Throwable) : DomainError
+sealed class DomainError(override val message: String? = null, override val cause: Throwable? = null) : Exception(message, cause) {
+    data class HttpError(val code: Int, override val message: String?) : DomainError(message)
+    data class SerializationError(override val cause: Throwable) : DomainError(cause.message, cause)
+    data class ConnectionError(override val cause: Throwable) : DomainError(cause.message, cause)
+    data class UnknownError(override val cause: Throwable) : DomainError(cause.message, cause)
 }

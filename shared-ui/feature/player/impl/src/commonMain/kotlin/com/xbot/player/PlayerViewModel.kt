@@ -8,6 +8,7 @@ import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
+import com.xbot.designsystem.utils.localizedMessage
 import com.xbot.domain.models.Episode
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.player.navigation.PlayerRoute
@@ -16,10 +17,12 @@ import com.xbot.resources.button_retry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 internal class PlayerViewModel(
     private val repository: ReleasesRepository,
@@ -35,7 +38,7 @@ internal class PlayerViewModel(
         .onStart { fetchTitleDetails() }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(5.seconds),
             initialValue = _state.value
         )
 
@@ -71,14 +74,14 @@ internal class PlayerViewModel(
                         )
                     }
                 }
-                is Either.Left -> showErrorMessage(result.value.toString(), ::fetchTitleDetails)
+                is Either.Left -> showErrorMessage(result.value, ::fetchTitleDetails)
             }
         }
     }
 
-    private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
+    private fun showErrorMessage(error: Throwable, onConfirmAction: () -> Unit) {
         snackbarManager.showMessage(
-            title = StringResource.String(error),
+            title = error.localizedMessage(),
             action = MessageAction(
                 title = StringResource.Text(Res.string.button_retry),
                 action = onConfirmAction,

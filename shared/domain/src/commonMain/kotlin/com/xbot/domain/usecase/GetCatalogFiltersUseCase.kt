@@ -12,14 +12,14 @@ class GetCatalogFiltersUseCase(
     private val dispatcherProvider: DispatcherProvider,
 ) {
     operator fun invoke(): Flow<CatalogFilters> = combinePartial(
-        { catalogRepository.getCatalogAgeRatings().getOrNull() },
-        { catalogRepository.getCatalogGenres().getOrNull() },
-        { catalogRepository.getCatalogProductionStatuses().getOrNull() },
-        { catalogRepository.getCatalogPublishStatuses().getOrNull() },
-        { catalogRepository.getCatalogSeasons().getOrNull() },
-        { catalogRepository.getCatalogSortingTypes().getOrNull() },
-        { catalogRepository.getCatalogReleaseTypes().getOrNull() },
-        { catalogRepository.getCatalogYears().getOrNull() }
+        { catalogRepository.getCatalogAgeRatings() },
+        { catalogRepository.getCatalogGenres() },
+        { catalogRepository.getCatalogProductionStatuses() },
+        { catalogRepository.getCatalogPublishStatuses() },
+        { catalogRepository.getCatalogSeasons() },
+        { catalogRepository.getCatalogSortingTypes() },
+        { catalogRepository.getCatalogReleaseTypes() },
+        { catalogRepository.getCatalogYears() }
     ) { ageRatings, genres, productionStatuses, publishStatuses, seasons, sortingTypes, releaseTypes, years ->
         CatalogFilters.create(
             ageRatings = ageRatings,

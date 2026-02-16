@@ -40,7 +40,7 @@ internal class DefaultGenresRepository(
                     page = page,
                     limit = limit,
                 ).getOrElse { error ->
-                    throw IllegalStateException()
+                    throw error.toDomain()
                 }
                 CommonPagingSource.PaginatedResponse(
                     items = result.data.map(ReleaseDto::toDomain),

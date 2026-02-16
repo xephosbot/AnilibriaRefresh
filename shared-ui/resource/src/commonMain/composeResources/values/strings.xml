@@ -61,8 +61,10 @@
     <string name="franchise_episodes_count">%1$d episodes</string>
 
     <!-- Сообщения ошибок -->
-    <string name="error_unknown">Unknown error</string>
-    <string name="error_name_not_found">Name not found</string>
+    <string name="error_connection">Connection error</string>
+    <string name="error_serialization">Data processing error: %1$s</string>
+    <string name="error_http">Server error (%1$d)</string>
+    <string name="error_unknown">Unknown error %1$s caused by %2$s: %3$s</string>
 
     <!-- Типы релизов -->
     <string name="release_type_tv">TV</string>

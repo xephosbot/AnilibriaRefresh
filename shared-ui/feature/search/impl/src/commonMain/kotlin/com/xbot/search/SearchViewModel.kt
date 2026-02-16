@@ -11,6 +11,7 @@ import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.StringResource
+import com.xbot.designsystem.utils.localizedMessage
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -31,12 +32,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -48,99 +52,90 @@ internal class SearchViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    private val refreshTrigger = MutableStateFlow(0)
+
     val searchFieldState: TextFieldState = TextFieldState(savedStateHandle[QUERY_KEY] ?: "")
+
     private val searchQuery: Flow<String> = snapshotFlow { searchFieldState.text.toString() }
         .onEach { savedStateHandle[QUERY_KEY] = it }
 
-    private val _availableFilters = MutableStateFlow(CatalogFilters.create())
-    val availableFilters: StateFlow<CatalogFilters> = _availableFilters
-        .onStart { fetchCatalogFilters() }
+    private val catalogFilters = refreshTrigger
+        .flatMapLatest { getCatalogFilters().catch { showErrorMessage(it) { refresh() } } }
+
+    val availableFilters: StateFlow<CatalogFilters> = catalogFilters
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = _availableFilters.value
+            initialValue = CatalogFilters.create()
         )
 
     private val _selectedFilters = MutableStateFlow(SearchFiltersState())
     val selectedFilters: StateFlow<SearchFiltersState> = _selectedFilters.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            availableFilters
+                .filter { it.years != IntRange.EMPTY }
+                .take(1)
+                .collect { filters ->
+                    _selectedFilters.update { it.copy(selectedYears = filters.years) }
+                }
+        }
+    }
+
     @OptIn(FlowPreview::class)
     val searchResult: Flow<PagingData<Release>> = combine(
         searchQuery.debounce(500L), selectedFilters
-    ) { searchQuery, filters ->
-        searchQuery to filters
-    }
-        .flatMapLatest { (searchQuery, filters) ->
-            val catalogFilters = filters.toCatalogFilters()
+    ) { query, filters -> query to filters }
+        .distinctUntilChanged()
+        .flatMapLatest { (query, filters) ->
             getCatalogReleasesPager(
-                search = searchQuery,
-                filters = if (catalogFilters.isEmpty()) null else catalogFilters,
+                search = query,
+                filters = filters.toCatalogFilters().takeIf { !it.isEmpty() }
             )
         }
         .cachedIn(viewModelScope)
 
     fun onAction(action: SearchScreenAction) {
         when (action) {
-            is SearchScreenAction.ToggleGenre -> toggleGenre(action.genre)
-            is SearchScreenAction.ToggleProductionStatus -> toggleProductionStatus(action.productionStatus)
-            is SearchScreenAction.TogglePublishStatus -> togglePublishStatus(action.publishStatus)
-            is SearchScreenAction.ToggleReleaseType -> toggleReleaseType(action.releaseType)
-            is SearchScreenAction.ToggleSeason -> toggleSeason(action.season)
-            is SearchScreenAction.UpdateSortingType -> updateSortingType(action.sortingType)
-            is SearchScreenAction.UpdateYearsRange -> updateYearsRange(action.years)
-            is SearchScreenAction.ToggleAgeRating -> toggleAgeRating(action.ageRating)
+            is SearchScreenAction.ToggleGenre -> updateState {
+                it.copy(selectedGenres = it.selectedGenres.toggle(action.genre))
+            }
+            is SearchScreenAction.ToggleProductionStatus -> updateState {
+                it.copy(selectedProductionStatuses = it.selectedProductionStatuses.toggle(action.productionStatus))
+            }
+            is SearchScreenAction.TogglePublishStatus -> updateState {
+                it.copy(selectedPublishStatuses = it.selectedPublishStatuses.toggle(action.publishStatus))
+            }
+            is SearchScreenAction.ToggleReleaseType -> updateState {
+                it.copy(selectedReleaseTypes = it.selectedReleaseTypes.toggle(action.releaseType))
+            }
+            is SearchScreenAction.ToggleSeason -> updateState {
+                it.copy(selectedSeasons = it.selectedSeasons.toggle(action.season))
+            }
+            is SearchScreenAction.UpdateSortingType -> updateState {
+                it.copy(selectedSortingType = action.sortingType)
+            }
+            is SearchScreenAction.UpdateYearsRange -> updateState {
+                it.copy(selectedYears = action.years)
+            }
+            is SearchScreenAction.ToggleAgeRating -> updateState {
+                it.copy(selectedAgeRatings = it.selectedAgeRatings.toggle(action.ageRating))
+            }
             is SearchScreenAction.ShowErrorMessage -> {
-                showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
+                showErrorMessage(action.error, action.onConfirmAction)
             }
+            is SearchScreenAction.Refresh -> refresh()
         }
     }
 
-    private fun fetchCatalogFilters() {
-        viewModelScope.launch {
-            getCatalogFilters().collect { catalogFilters ->
-                _availableFilters.update { catalogFilters }
-                if (_selectedFilters.value.selectedYears == IntRange.EMPTY && catalogFilters.years != IntRange.EMPTY) {
-                    _selectedFilters.update { it.copy(selectedYears = catalogFilters.years) }
-                }
-            }
-        }
+    private fun refresh() {
+        refreshTrigger.update { it + 1 }
     }
 
-    private fun toggleGenre(genre: Genre) = updateState {
-        it.copy(selectedGenres = it.selectedGenres.addOrRemove(genre))
-    }
-
-    private fun toggleReleaseType(releaseType: ReleaseType) = updateState {
-        it.copy(selectedReleaseTypes = it.selectedReleaseTypes.addOrRemove(releaseType))
-    }
-
-    private fun togglePublishStatus(publishStatus: PublishStatus) = updateState {
-        it.copy(selectedPublishStatuses = it.selectedPublishStatuses.addOrRemove(publishStatus))
-    }
-
-    private fun toggleProductionStatus(productionStatus: ProductionStatus) = updateState {
-        it.copy(selectedProductionStatuses = it.selectedProductionStatuses.addOrRemove(productionStatus))
-    }
-
-    private fun updateSortingType(sortingType: SortingType) = updateState {
-        it.copy(selectedSortingType = sortingType)
-    }
-
-    private fun toggleSeason(season: Season) = updateState {
-        it.copy(selectedSeasons = it.selectedSeasons.addOrRemove(season))
-    }
-
-    private fun updateYearsRange(years: IntRange) = updateState {
-        it.copy(selectedYears = years)
-    }
-
-    private fun toggleAgeRating(ageRating: AgeRating) = updateState {
-        it.copy(selectedAgeRatings = it.selectedAgeRatings.addOrRemove(ageRating))
-    }
-
-    private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
+    private fun showErrorMessage(error: Throwable, onConfirmAction: () -> Unit) {
         snackbarManager.showMessage(
-            title = StringResource.String(error),
+            title = error.localizedMessage(),
             action = MessageAction(
                 title = StringResource.Text(Res.string.button_retry),
                 action = onConfirmAction,
@@ -148,12 +143,10 @@ internal class SearchViewModel(
         )
     }
 
-    private fun <T> Set<T>.addOrRemove(item: T): Set<T> {
-        return if (item in this) this - item else this + item
-    }
+    private fun <T> Set<T>.toggle(item: T) = if (item in this) this - item else this + item
 
     private fun updateState(block: (SearchFiltersState) -> SearchFiltersState) {
-        _selectedFilters.update { block(_selectedFilters.value) }
+        _selectedFilters.update { block(selectedFilters.value) }
     }
 
     companion object {
@@ -185,23 +178,39 @@ internal data class SearchFiltersState(
     )
 }
 
-private fun CatalogFilters.isEmpty(): Boolean {
-    return this.genres.isEmpty() && this.types.isEmpty() && this.seasons.isEmpty()
-            && this.years == IntRange.EMPTY && this.sortingTypes.isEmpty()
-            && this.ageRatings.isEmpty() && this.publishStatuses.isEmpty() && this.productionStatuses.isEmpty()
-}
+internal fun CatalogFilters.isEmpty(): Boolean =
+    genres.isEmpty() &&
+    types.isEmpty() &&
+    seasons.isEmpty() &&
+    years == IntRange.EMPTY &&
+    sortingTypes.isEmpty() &&
+    ageRatings.isEmpty() &&
+    publishStatuses.isEmpty() &&
+    productionStatuses.isEmpty()
 
+@Stable
 internal sealed interface SearchScreenAction {
+    @Stable
     data class ToggleGenre(val genre: Genre) : SearchScreenAction
+    @Stable
     data class TogglePublishStatus(val publishStatus: PublishStatus) : SearchScreenAction
+    @Stable
     data class ToggleProductionStatus(val productionStatus: ProductionStatus) : SearchScreenAction
+    @Stable
     data class ToggleReleaseType(val releaseType: ReleaseType) : SearchScreenAction
+    @Stable
     data class ToggleSeason(val season: Season) : SearchScreenAction
+    @Stable
     data class UpdateSortingType(val sortingType: SortingType) : SearchScreenAction
+    @Stable
     data class UpdateYearsRange(val years: IntRange) : SearchScreenAction
+    @Stable
     data class ToggleAgeRating(val ageRating: AgeRating) : SearchScreenAction
+    @Stable
     data class ShowErrorMessage(
         val error: Throwable,
         val onConfirmAction: () -> Unit,
     ) : SearchScreenAction
+    @Stable
+    data object Refresh : SearchScreenAction
 }

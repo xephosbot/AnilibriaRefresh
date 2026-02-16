@@ -12,8 +12,8 @@ class GetSortedScheduleWeekUseCase(
     private val dispatcherProvider: DispatcherProvider,
 ) {
     operator fun invoke(): Flow<ScheduleWeek> = combinePartial(
-        { scheduleRepository.getCurrentDay().getOrNull() },
-        { scheduleRepository.getScheduleWeek().getOrNull() }
+        { scheduleRepository.getCurrentDay() },
+        { scheduleRepository.getScheduleWeek() }
     ) { currentDate, scheduleWeek ->
         ScheduleWeek.create(currentDate, scheduleWeek)
     }.flowOn(dispatcherProvider.io)
