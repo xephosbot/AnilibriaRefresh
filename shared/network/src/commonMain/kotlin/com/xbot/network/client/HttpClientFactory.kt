@@ -33,7 +33,7 @@ internal fun createHttpClient(
     expectSuccess = true
 
     defaultRequest {
-        url(Constants.FALLBACK_URL_API)
+        url(Constants.BASE_URL_API)
         contentType(ContentType.Application.Json)
         accept(ContentType.Application.Json)
     }
