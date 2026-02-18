@@ -36,8 +36,9 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.okhttp)
             implementation(libs.brotli.dec)
+            implementation(libs.androidcontextprovider)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

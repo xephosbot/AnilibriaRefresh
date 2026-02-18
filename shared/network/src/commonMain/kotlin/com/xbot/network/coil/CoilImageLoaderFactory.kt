@@ -55,7 +55,7 @@ private fun transformUrlIfNeeded(url: String, request: ImageRequest): ImageReque
     val aliasUrl = Url(Constants.IMAGE_URL_ALIAS)
 
     return if (currentUrl.host == aliasUrl.host) {
-        val fallbackUrl = Url(Constants.FALLBACK_URL)
+        val fallbackUrl = Url(Constants.BASE_URL)
         val newUrl = currentUrl.replaceBaseUrl(fallbackUrl)
         request.newBuilder().data(newUrl).build()
     } else {

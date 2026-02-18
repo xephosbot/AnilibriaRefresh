@@ -1,7 +1,12 @@
 package com.xbot.designsystem.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +16,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -27,11 +34,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valentinilk.shimmer.shimmer
+import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
@@ -47,7 +57,7 @@ import kotlin.time.ExperimentalTime
 
 @Composable
 fun EpisodeListItem(
-    episode: Episode,
+    episode: Episode?,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
@@ -58,6 +68,17 @@ fun EpisodeListItem(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = selected,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     val containerColor by animateColorAsState(
         targetValue = if (selected) colors.selectedContainerColor else colors.containerColor,
@@ -71,62 +92,122 @@ fun EpisodeListItem(
     Surface(
         modifier = modifier,
         onClick = onClick,
-        shape = shape.shapeForInteraction(pressed, selected),
+        enabled = episode != null,
+        shape = shape,
         color = containerColor,
         contentColor = contentColor,
         interactionSource = interactionSource,
     ) {
-        ListItemLayout(
-            modifier = Modifier,
-            content = {
+        Crossfade(
+            targetState = episode,
+            label = "EpisodeListItem Crossfade to ${if (episode == null) "Loading" else "Loaded Episode"}"
+        ) { state ->
+            if (state != null) {
+                EpisodeListItemContent(state)
+            } else {
+                LoadingEpisodeListItem()
+            }
+        }
+    }
+}
+
+@Composable
+private fun EpisodeListItemContent(
+    episode: Episode,
+    modifier: Modifier = Modifier
+) {
+    ListItemLayout(
+        modifier = modifier,
+        content = {
+            Text(
+                text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 10.sp,
+                color = LocalContentColor.current.copy(alpha = 0.6f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = episode.localizedName().orEmpty(),
+                style = MaterialTheme.typography.labelLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            episode.updatedAt?.let { date ->
                 Text(
-                    text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
+                    text = date.toLocalizedString(),
                     style = MaterialTheme.typography.bodySmall,
-                    fontSize = 10.sp,
                     color = LocalContentColor.current.copy(alpha = 0.6f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = episode.localizedName().orEmpty(),
-                    style = MaterialTheme.typography.labelLarge,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+            }
+        },
+        leadingContent = {
+            Box {
+                PosterImage(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(16f / 11f)
+                        .scrim(edgeHeightRatio = 1f, opacity = 0.5f),
+                    poster = episode.preview
                 )
-                episode.updatedAt?.let { date ->
+                episode.duration?.let { duration ->
                     Text(
-                        text = date.toLocalizedString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LocalContentColor.current.copy(alpha = 0.6f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            },
-            leadingContent = {
-                Box {
-                    PosterImage(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .aspectRatio(16f / 11f)
-                            .scrim(edgeHeightRatio = 1f, opacity = 0.5f),
-                        poster = episode.preview
-                    )
-                    episode.duration?.let { duration ->
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(8.dp),
+                            .align(Alignment.BottomEnd)
+                            .padding(8.dp),
                             text = duration.toLocalizedString(),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White
-                        )
-                    }
+                    )
                 }
-            },
-        )
-    }
+            }
+        },
+    )
+}
+
+@Composable
+private fun LoadingEpisodeListItem() {
+    val shimmer = LocalShimmer.current
+    ListItemLayout(
+        modifier = Modifier.shimmer(shimmer),
+        leadingContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(16f / 11f)
+                    .clip(MaterialTheme.shapes.small)
+                    .background(Color.LightGray)
+            )
+        },
+        content = {
+            Box(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(10.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(Color.LightGray)
+            )
+            Spacer(Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(Color.LightGray)
+            )
+            Spacer(Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(10.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(Color.LightGray)
+            )
+        }
+    )
 }
 
 @Composable
@@ -165,7 +246,10 @@ object ExpressiveEpisodeListItemDefaults {
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+            focusedShape = MaterialTheme.shapes.large,
+            hoveredShape = MaterialTheme.shapes.medium,
+            draggedShape = MaterialTheme.shapes.large,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
         )
     }
 
@@ -202,6 +286,17 @@ private fun EpisodeListItemPreview() {
             onClick = {
 
             }
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun EpisodeListItemLoadingPreview() {
+    AnilibriaPreview {
+        EpisodeListItem(
+            episode = null,
+            onClick = {}
         )
     }
 }

@@ -85,6 +85,7 @@ internal fun PreferenceListPane(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun PreferencesList(
     preferences: Map<StringResource, List<PreferenceOptionRoute>>,

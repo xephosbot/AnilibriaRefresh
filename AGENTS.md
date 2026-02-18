@@ -10,7 +10,7 @@
 - **UI Framework**: Compose Multiplatform (Material 3) 1.11.0
 - **Architecture**: Clean Architecture + MVI + Multi-Module
 - **DI**: Koin 4.2.0
-- **Networking**: Ktor Client 3.3.3
+  - **Networking**: Ktor Client 3.3.3
 - **Image Loading**: Coil 3.3.0
 - **Navigation**: Jetpack Navigation 3 (Type-safe)
 - **Serialization**: Kotlinx Serialization
@@ -153,6 +153,65 @@ private fun FeedScreenContent(
 - **Visibility**: Always prefer `internal` visibility for classes, functions, and properties if they are not required to be `public`. Feature implementation details, repository implementations, and internal helpers MUST be `internal`.
 - **Imports**: Keep imports clean and remove any unused imports.
 - **File Formatting**: Every file MUST end with a single new line.
+
+## Adding Dependencies
+
+All dependencies are declared in `libs.versions.toml` and consumed via the version catalog (`libs.*`). Never hardcode versions directly in `build.gradle.kts`.
+
+### build.gradle.kts Structure
+
+Modules use the `android.multiplatform.library` plugin with a standard layout:
+
+```kotlin
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
+plugins {
+    alias(libs.plugins.android.multiplatform.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    // add other plugins as needed, e.g. kotlin.serialization
+}
+
+kotlin {
+    androidLibrary {
+        namespace = "com.xbot."
+        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        minSdk = libs.versions.android.minsdk.get().toInt()
+    }
+    iosArm64()
+    iosSimulatorArm64()
+    jvm()
+
+    jvmToolchain(21)
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    dependencies {
+        // common dependencies go here
+    }
+
+    sourceSets {
+        androidMain.dependencies {
+            // Android-specific dependencies
+        }
+        iosMain.dependencies {
+            // iOS-specific dependencies
+        }
+        jvmMain.dependencies {
+            // Desktop-specific dependencies
+        }
+    }
+}
+```
+
+### Rules
+
+- **Common dependencies** go in the top-level `@OptIn(ExperimentalKotlinGradlePluginApi::class) dependencies { }` block inside `kotlin { }`. This makes them available on all targets.
+- **Platform-specific dependencies** go in the corresponding `sourceSets` block:
+    - `androidMain.dependencies { }` — Android only (e.g., OkHttp, Brotli decoder, AndroidContextProvider)
+    - `iosMain.dependencies { }` — iOS only (e.g., `ktor-client-darwin`)
+    - `jvmMain.dependencies { }` — Desktop only (e.g., `ktor-client-cio`)
+- **Ktor engine** is always platform-specific: `okhttp` for Android, `darwin` for iOS, `cio` for JVM. Never add an engine to common dependencies.
+- All dependency references use the version catalog: `libs.<group>.<artifact>` (e.g., `libs.ktor.client.core`, `libs.koin.core`).
+- When adding a new library, always add its version to `[versions]` and its coordinates to `[libraries]` in `libs.versions.toml` first, following the existing grouping structure.
 
 ## Configuration
 

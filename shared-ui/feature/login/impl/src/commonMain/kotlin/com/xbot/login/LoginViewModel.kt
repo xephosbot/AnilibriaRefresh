@@ -6,18 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.repository.AuthRepository
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.login_success_message
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 internal class LoginViewModel(
     private val authRepository: AuthRepository,
@@ -38,7 +40,7 @@ internal class LoginViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
+        started = SharingStarted.WhileSubscribed(5.seconds),
         initialValue = LoginScreenState()
     )
 
@@ -64,13 +66,13 @@ internal class LoginViewModel(
                 is Either.Left -> {
                     _isLoading.value = false
                     snackbarManager.showMessage(
-                        title = StringResource.String(result.value.toString())
+                        title = UiText.String(result.value.toString())
                     )
                 }
                 is Either.Right -> {
                     _isLoading.value = false
                     snackbarManager.showMessage(
-                        title = StringResource.Text(Res.string.login_success_message)
+                        title = UiText.Text(Res.string.login_success_message)
                     )
                     _effects.send(LoginScreenEffect.NavigateBack)
                 }

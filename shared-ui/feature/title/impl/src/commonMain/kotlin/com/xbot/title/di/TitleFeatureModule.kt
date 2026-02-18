@@ -40,9 +40,9 @@ val titleFeatureModule = module {
                     navigator.navigateToPlayer(releaseId, episodeOrdinal)
                 }.invoke()
             },
-            onReleaseClick = { releaseId ->
+            onReleaseClick = { release ->
                 lifecycleOwner.dropUnlessResumed {
-                    navigator.navigateToTitle(releaseId)
+                    navigator.navigateToTitle(release)
                 }.invoke()
             },
         )

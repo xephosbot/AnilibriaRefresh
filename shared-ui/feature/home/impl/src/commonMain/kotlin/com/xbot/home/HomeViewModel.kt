@@ -6,19 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
+import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
-import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.ScheduleWeek
 import com.xbot.domain.models.User
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,12 +26,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class HomeViewModel(
@@ -48,33 +47,13 @@ internal class HomeViewModel(
     private val refreshTrigger = MutableStateFlow(0)
     private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
 
-    private val feedData = refreshTrigger
-        .flatMapLatest { attempt ->
-            flow {
-                when (val result = getReleasesFeed()) {
-                    is Either.Left -> {
-                        showErrorMessage(result.value.toString()) { refresh() }
-                        if (attempt == 0) {
-                            emit(null)
-                        }
-                    }
-                    is Either.Right -> emit(result.value)
-                }
-            }
-        }
+    private val feedData = refreshTrigger.flatMapLatest {
+        getReleasesFeed().catch { showErrorMessage(it) { refresh() } }
+    }
 
-    private val scheduleData = refreshTrigger
-        .flatMapLatest {
-            flow {
-                when (val result = getSortedScheduleWeekUseCase()) {
-                    is Either.Left -> {
-                        showErrorMessage(result.value.toString()) { refresh() }
-                        emit(null)
-                    }
-                    is Either.Right -> emit(result.value)
-                }
-            }
-        }
+    private val scheduleData = refreshTrigger.flatMapLatest {
+        getSortedScheduleWeekUseCase().catch { showErrorMessage(it) { refresh() } }
+    }
 
     val state: StateFlow<HomeScreenState> =
         combine(getAuthState(), feedData, scheduleData, bestType) { authState, feed, schedule, currentBestType ->
@@ -84,11 +63,9 @@ internal class HomeViewModel(
             }
 
             HomeScreenState(
-                isFeedLoading = feed == null,
-                isScheduleLoading = schedule == null,
                 currentUser = user,
                 releasesFeed = feed,
-                scheduleWeek = schedule.orEmpty(),
+                scheduleWeek = schedule,
                 currentBestType = currentBestType,
             )
         }.stateIn(
@@ -99,7 +76,7 @@ internal class HomeViewModel(
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
-            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error.message.orEmpty(), action.onConfirmAction)
+            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onConfirmAction)
             is HomeScreenAction.Refresh -> refresh()
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
         }
@@ -113,11 +90,11 @@ internal class HomeViewModel(
         savedStateHandle[BEST_TYPE_KEY] = bestType
     }
 
-    private fun showErrorMessage(error: String, onConfirmAction: () -> Unit) {
+    private fun showErrorMessage(error: Throwable, onConfirmAction: () -> Unit) {
         snackbarManager.showMessage(
-            title = StringResource.String(error),
+            title = error.localizedMessage(),
             action = MessageAction(
-                title = StringResource.Text(Res.string.button_retry),
+                title = UiText.Text(Res.string.button_retry),
                 action = onConfirmAction,
             ),
         )
@@ -130,11 +107,9 @@ internal class HomeViewModel(
 
 @Stable
 internal data class HomeScreenState(
-    val isFeedLoading: Boolean = true,
-    val isScheduleLoading: Boolean = true,
     val currentUser: User? = null,
-    val releasesFeed: ReleasesFeed? = null,
-    val scheduleWeek: Map<LocalDate, List<Schedule>>? = null,
+    val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
+    val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
     val currentBestType: BestType = BestType.Now,
 )
 

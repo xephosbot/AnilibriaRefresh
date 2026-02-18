@@ -11,7 +11,11 @@ import java.net.Socket
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class JvmNetworkObserver(
+actual fun createNetworkObserver(): NetworkObserver {
+    return JvmNetworkObserver()
+}
+
+internal class JvmNetworkObserver(
     private val checkInterval: Duration = 3.seconds,
     private val timeout: Int = 2000,
     private val host: String = "8.8.8.8",

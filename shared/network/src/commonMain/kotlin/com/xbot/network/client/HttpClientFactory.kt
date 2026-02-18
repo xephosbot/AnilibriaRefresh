@@ -1,7 +1,9 @@
 package com.xbot.network.client
 
 import com.xbot.network.Constants
+import com.xbot.network.utils.NetworkReachability
 import com.xbot.network.utils.brotli
+import com.xbot.network.utils.createNetworkObserver
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
@@ -31,7 +33,7 @@ internal fun createHttpClient(
     expectSuccess = true
 
     defaultRequest {
-        url(Constants.FALLBACK_URL_API)
+        url(Constants.BASE_URL_API)
         contentType(ContentType.Application.Json)
         accept(ContentType.Application.Json)
     }

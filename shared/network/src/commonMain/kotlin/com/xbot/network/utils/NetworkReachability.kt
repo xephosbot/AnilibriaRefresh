@@ -1,8 +1,12 @@
 package com.xbot.network.utils
 
+import com.xbot.network.client.UnknownHostException
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.http.content.OutgoingContent
+import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
@@ -53,8 +57,10 @@ val NetworkReachability = createClientPlugin("NetworkReachability", ::NetworkRea
 }
 
 private fun isConnectivityError(cause: Throwable): Boolean {
-    return cause is IOException
-            || cause::class.simpleName?.contains("SocketException") == true
-            || cause::class.simpleName?.contains("UnknownHostException") == true
+    return cause is UnresolvedAddressException
+            || cause is UnknownHostException
+            || cause is SocketTimeoutException
+            || cause is ConnectTimeoutException
+            || cause is IOException
             || (cause.message ?: "").contains("Network is unreachable")
 }

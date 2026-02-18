@@ -1,6 +1,9 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +42,17 @@ fun LabeledIconButton(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = false,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     Column(
         modifier = modifier,
@@ -48,7 +62,7 @@ fun LabeledIconButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
             colors = colors,
-            shape = shape.shapeForInteraction(pressed, false),
+            shape = shape,
             interactionSource = interactionSource
         ) {
             Icon(
@@ -69,25 +83,29 @@ fun LabeledIconButton(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveIconButtonDefaults {
-    private var _shape: ExpressiveShape? = null
-
     @Composable
     fun smallShape(): ExpressiveShape {
-        return _shape ?: RoundedCornerExpressiveShape(
+        return RoundedCornerExpressiveShape(
             shape = IconButtonDefaults.smallRoundShape,
             pressedShape = IconButtonDefaults.smallPressedShape,
             selectedShape = IconButtonDefaults.smallSquareShape,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
-        ).also { _shape = it }
+            focusedShape = IconButtonDefaults.smallRoundShape,
+            hoveredShape = IconButtonDefaults.smallRoundShape,
+            draggedShape = IconButtonDefaults.smallPressedShape,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+        )
     }
 
     @Composable
     fun largeShape(): ExpressiveShape {
-        return _shape ?: RoundedCornerExpressiveShape(
+        return RoundedCornerExpressiveShape(
             shape = IconButtonDefaults.largeRoundShape,
             pressedShape = IconButtonDefaults.largePressedShape,
             selectedShape = IconButtonDefaults.largeSquareShape,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
-        ).also { _shape = it }
+            focusedShape = IconButtonDefaults.largeRoundShape,
+            hoveredShape = IconButtonDefaults.largeRoundShape,
+            draggedShape = IconButtonDefaults.largePressedShape,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+        )
     }
 }

@@ -62,19 +62,21 @@ fun LargeReleaseCard(
     overscrollEffect: OverscrollEffect? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
-    Crossfade(targetState = release) { state ->
-        when (state) {
-            null -> LargeReleaseCardPlaceholder(
+    Crossfade(targetState = release != null) { isLoaded ->
+        if (isLoaded) {
+            release?.let {
+                LargeReleaseCardContent(
+                    modifier = modifier,
+                    contentModifier = contentModifier,
+                    release = it,
+                    overscrollEffect = overscrollEffect,
+                    content = content
+                )
+            }
+        } else {
+            LargeReleaseCardPlaceholder(
                 modifier = modifier,
                 overscrollEffect = overscrollEffect
-            )
-
-            else -> LargeReleaseCardContent(
-                modifier = modifier,
-                contentModifier = contentModifier,
-                release = state,
-                overscrollEffect = overscrollEffect,
-                content = content
             )
         }
     }

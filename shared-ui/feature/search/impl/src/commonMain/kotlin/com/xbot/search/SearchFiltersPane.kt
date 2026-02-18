@@ -1,8 +1,8 @@
 package com.xbot.search
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -27,7 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -42,6 +40,7 @@ import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
+import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
@@ -98,7 +97,7 @@ internal fun SearchFilterPane(
 @Composable
 private fun SearchFilterPaneContent(
     modifier: Modifier = Modifier,
-    availableFilters: CatalogFilters?,
+    availableFilters: CatalogFilters,
     selectedFilters: SearchFiltersState,
     showBackButton: Boolean,
     onAction: (SearchScreenAction) -> Unit,
@@ -128,60 +127,54 @@ private fun SearchFilterPaneContent(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
-        Crossfade(
-            targetState = availableFilters
-        ) { targetState ->
-            when (targetState) {
-                null -> LoadingFiltersScreen(modifier)
-                else -> FiltersScreenContent(
-                    modifier = modifier,
-                    contentPadding = innerPadding,
-                    sortingTypes = targetState.sortingTypes,
-                    selectedSortingType = selectedFilters.selectedSortingType,
-                    onSortingTypeClick = {
-                        onAction(SearchScreenAction.UpdateSortingType(it))
-                    },
-                    genres = targetState.genres,
-                    selectedGenres = selectedFilters.selectedGenres.toList(),
-                    onGenreClick = {
-                        onAction(SearchScreenAction.ToggleGenre(it))
-                    },
-                    releaseTypes = targetState.types,
-                    selectedReleaseTypes = selectedFilters.selectedReleaseTypes.toList(),
-                    onReleaseTypeClick = {
-                        onAction(SearchScreenAction.ToggleReleaseType(it))
-                    },
-                    publishStatuses = targetState.publishStatuses,
-                    selectedPublishStatuses = selectedFilters.selectedPublishStatuses.toList(),
-                    onPublishStatusClick = {
-                        onAction(SearchScreenAction.TogglePublishStatus(it))
-                    },
-                    productionStatuses = targetState.productionStatuses,
-                    selectedProductionStatuses = selectedFilters.selectedProductionStatuses.toList(),
-                    onProductionStatusClick = {
-                        onAction(SearchScreenAction.ToggleProductionStatus(it))
-                    },
-                    seasons = targetState.seasons,
-                    selectedSeasons = selectedFilters.selectedSeasons.toList(),
-                    onSeasonClick = {
-                        onAction(SearchScreenAction.ToggleSeason(it))
-                    },
-                    years = targetState.years,
-                    selectedYears = selectedFilters.selectedYears,
-                    onYearsRangeChange = {
-                        onAction(SearchScreenAction.UpdateYearsRange(it))
-                    },
-                    ageRatings = targetState.ageRatings,
-                    selectedAgeRatings = selectedFilters.selectedAgeRatings.toList(),
-                    onAgeRatingClick = {
-                        onAction(SearchScreenAction.ToggleAgeRating(it))
-                    }
-                )
+        FiltersScreenContent(
+            modifier = modifier,
+            contentPadding = innerPadding,
+            sortingTypes = availableFilters.sortingTypes,
+            selectedSortingType = selectedFilters.selectedSortingType,
+            onSortingTypeClick = {
+                onAction(SearchScreenAction.UpdateSortingType(it))
+            },
+            genres = availableFilters.genres,
+            selectedGenres = selectedFilters.selectedGenres.toList(),
+            onGenreClick = {
+                onAction(SearchScreenAction.ToggleGenre(it))
+            },
+            releaseTypes = availableFilters.types,
+            selectedReleaseTypes = selectedFilters.selectedReleaseTypes.toList(),
+            onReleaseTypeClick = {
+                onAction(SearchScreenAction.ToggleReleaseType(it))
+            },
+            publishStatuses = availableFilters.publishStatuses,
+            selectedPublishStatuses = selectedFilters.selectedPublishStatuses.toList(),
+            onPublishStatusClick = {
+                onAction(SearchScreenAction.TogglePublishStatus(it))
+            },
+            productionStatuses = availableFilters.productionStatuses,
+            selectedProductionStatuses = selectedFilters.selectedProductionStatuses.toList(),
+            onProductionStatusClick = {
+                onAction(SearchScreenAction.ToggleProductionStatus(it))
+            },
+            seasons = availableFilters.seasons,
+            selectedSeasons = selectedFilters.selectedSeasons.toList(),
+            onSeasonClick = {
+                onAction(SearchScreenAction.ToggleSeason(it))
+            },
+            years = availableFilters.years,
+            selectedYears = selectedFilters.selectedYears,
+            onYearsRangeChange = {
+                onAction(SearchScreenAction.UpdateYearsRange(it))
+            },
+            ageRatings = availableFilters.ageRatings,
+            selectedAgeRatings = selectedFilters.selectedAgeRatings.toList(),
+            onAgeRatingClick = {
+                onAction(SearchScreenAction.ToggleAgeRating(it))
             }
-        }
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FiltersScreenContent(
     modifier: Modifier = Modifier,
@@ -221,27 +214,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(0, 8),
             headlineContent = { Text(stringResource(Res.string.label_sorting_types)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_sorting_types),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    SingleChoiceChipGroup(
-                        items = sortingTypes,
-                        selectedItem = selectedSortingType,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onSortingTypeClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = sortingTypes.isNotEmpty()) {
+                        SingleChoiceChipGroup(
+                            items = sortingTypes,
+                            selectedItem = selectedSortingType,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onSortingTypeClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -251,27 +250,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(1, 8),
             headlineContent = { Text(stringResource(Res.string.label_genres)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_genres),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = genres,
-                        selectedItems = selectedGenres,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onGenreClick(item) },
-                            label = { Text(item.name) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = genres.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = genres,
+                            selectedItems = selectedGenres,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onGenreClick(item) },
+                                label = { Text(item.name) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -281,27 +286,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(2, 8),
             headlineContent = { Text(stringResource(Res.string.label_release_types)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_release_types),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = releaseTypes,
-                        selectedItems = selectedReleaseTypes,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onReleaseTypeClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = releaseTypes.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = releaseTypes,
+                            selectedItems = selectedReleaseTypes,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onReleaseTypeClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -311,27 +322,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(3, 8),
             headlineContent = { Text(stringResource(Res.string.label_publish_statuses)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_publish_statuses),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = publishStatuses,
-                        selectedItems = selectedPublishStatuses,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onPublishStatusClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = publishStatuses.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = publishStatuses,
+                            selectedItems = selectedPublishStatuses,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onPublishStatusClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -341,27 +358,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(4, 8),
             headlineContent = { Text(stringResource(Res.string.label_production_statuses)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_production_statuses),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = productionStatuses,
-                        selectedItems = selectedProductionStatuses,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onProductionStatusClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = productionStatuses.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = productionStatuses,
+                            selectedItems = selectedProductionStatuses,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onProductionStatusClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -371,27 +394,33 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(5, 8),
             headlineContent = { Text(stringResource(Res.string.label_seasons)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_seasons),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = seasons,
-                        selectedItems = selectedSeasons,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onSeasonClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = seasons.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = seasons,
+                            selectedItems = selectedSeasons,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onSeasonClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
@@ -401,19 +430,24 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(6, 8),
             headlineContent = { Text(stringResource(Res.string.label_years)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_years),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    RangeSlider(
-                        sliderPosition = selectedYears.toFloatRange(),
-                        onValueChange = {
-                            onYearsRangeChange(it.toIntRange())
-                        },
-                        valueRange = years.toFloatRange(),
-                    )
+                    AnimatedVisibility(visible = years != IntRange.EMPTY) {
+                        RangeSlider(
+                            sliderPosition = selectedYears.toFloatRange(),
+                            onValueChange = {
+                                onYearsRangeChange(it.toIntRange())
+                            },
+                            valueRange = years.toFloatRange(),
+                        )
+                    }
                 }
             }
         )
@@ -422,42 +456,38 @@ private fun FiltersScreenContent(
             modifier = Modifier.section(7, 8),
             headlineContent = { Text(stringResource(Res.string.label_age_ratings)) },
             supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.animateContentSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = stringResource(Res.string.description_filter_age_ratings),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    MultiChoiceChipGroup(
-                        items = ageRatings,
-                        selectedItems = selectedAgeRatings,
-                        contentPadding = PaddingValues()
-                    ) { selected, item ->
-                        FilterChip(
-                            selected = selected,
-                            onClick = { onAgeRatingClick(item) },
-                            label = { Text(stringResource(item.stringRes)) },
-                            leadingIcon = if (selected) {
-                                {
-                                    Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
-                                }
-                            } else null
-                        )
+                    AnimatedVisibility(visible = ageRatings.isNotEmpty()) {
+                        MultiChoiceChipGroup(
+                            items = ageRatings,
+                            selectedItems = selectedAgeRatings,
+                            contentPadding = PaddingValues()
+                        ) { selected, item ->
+                            FilterChip(
+                                modifier = Modifier.animatePlacement(),
+                                selected = selected,
+                                onClick = { onAgeRatingClick(item) },
+                                label = { Text(stringResource(item.stringRes)) },
+                                leadingIcon = if (selected) {
+                                    {
+                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                    }
+                                } else null
+                            )
+                        }
                     }
                 }
             }
         )
         Spacer(Modifier.height(16.dp))
-    }
-}
-
-@Composable
-private fun LoadingFiltersScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
     }
 }
 
@@ -472,7 +502,7 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
 @Preview
 @Composable
 private fun SearchFilterPanePreview(
-    @PreviewParameter(SearchFiltersStateProvider::class) state: Pair<CatalogFilters?, SearchFiltersState>
+    @PreviewParameter(SearchFiltersStateProvider::class) state: Pair<CatalogFilters, SearchFiltersState>
 ) {
     AnilibriaPreview {
         SearchFilterPaneContent(
@@ -485,10 +515,10 @@ private fun SearchFilterPanePreview(
     }
 }
 
-private class SearchFiltersStateProvider : PreviewParameterProvider<Pair<CatalogFilters?, SearchFiltersState>> {
+private class SearchFiltersStateProvider : PreviewParameterProvider<Pair<CatalogFilters, SearchFiltersState>> {
     override val values = sequenceOf(
-        null to SearchFiltersState(),
-        CatalogFilters(
+        CatalogFilters.create() to SearchFiltersState(),
+        CatalogFilters.create(
             genres = genreMocks,
             types = ReleaseType.entries,
             publishStatuses = PublishStatus.entries,

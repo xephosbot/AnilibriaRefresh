@@ -6,6 +6,7 @@ import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
 import com.xbot.domain.usecase.GetAppearanceSettingsUseCase
+import com.xbot.domain.usecase.GetReleaseDetailsUseCase
 import com.xbot.domain.usecase.UpdateDynamicThemeUseCase
 import com.xbot.domain.usecase.UpdateExpressiveColorUseCase
 import com.xbot.domain.usecase.UpdatePureBlackUseCase
@@ -22,6 +23,7 @@ val domainModule = module {
     singleOf(::GetReleasesFeedUseCase)
     singleOf(::GetCatalogFiltersUseCase)
     singleOf(::GetCatalogReleasesPagerUseCase)
+    singleOf(::GetReleaseDetailsUseCase)
     singleOf(::GetSortedScheduleWeekUseCase)
     singleOf(::GetAppearanceSettingsUseCase)
     singleOf(::UpdateThemeOptionUseCase)

@@ -12,8 +12,10 @@ import com.xbot.domain.usecase.UpdatePureBlackUseCase
 import com.xbot.domain.usecase.UpdateThemeOptionUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 internal class AppearanceViewModel(
     getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
@@ -27,7 +29,7 @@ internal class AppearanceViewModel(
     val state: StateFlow<AppearanceSettings> = getAppearanceSettingsUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.WhileSubscribed(5.seconds),
             initialValue = AppearanceSettings()
         )
 

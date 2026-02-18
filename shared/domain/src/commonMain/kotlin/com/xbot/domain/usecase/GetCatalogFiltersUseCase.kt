@@ -1,39 +1,35 @@
 package com.xbot.domain.usecase
 
-import arrow.core.Either
-import arrow.core.raise.either
-import arrow.fx.coroutines.parZip
-import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 import com.xbot.domain.utils.DispatcherProvider
+import com.xbot.domain.utils.combinePartial
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 class GetCatalogFiltersUseCase(
     private val catalogRepository: CatalogRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) {
-    suspend operator fun invoke(): Either<DomainError, CatalogFilters> = either {
-        parZip(
-            ctx = dispatcherProvider.io,
-            { catalogRepository.getCatalogAgeRatings() },
-            { catalogRepository.getCatalogGenres() },
-            { catalogRepository.getCatalogProductionStatuses() },
-            { catalogRepository.getCatalogPublishStatuses() },
-            { catalogRepository.getCatalogSeasons() },
-            { catalogRepository.getCatalogSortingTypes() },
-            { catalogRepository.getCatalogReleaseTypes() },
-            { catalogRepository.getCatalogYears() }
-        ) { ageRatings, genres, productionStatuses, publishStatuses, seasons, sortingTypes, releaseTypes, years ->
-            CatalogFilters(
-                ageRatings = ageRatings.bind(),
-                genres = genres.bind(),
-                productionStatuses = productionStatuses.bind(),
-                publishStatuses = publishStatuses.bind(),
-                seasons = seasons.bind(),
-                sortingTypes = sortingTypes.bind(),
-                types = releaseTypes.bind(),
-                years = years.bind()
-            )
-        }
-    }
+    operator fun invoke(): Flow<CatalogFilters> = combinePartial(
+        { catalogRepository.getCatalogAgeRatings() },
+        { catalogRepository.getCatalogGenres() },
+        { catalogRepository.getCatalogProductionStatuses() },
+        { catalogRepository.getCatalogPublishStatuses() },
+        { catalogRepository.getCatalogSeasons() },
+        { catalogRepository.getCatalogSortingTypes() },
+        { catalogRepository.getCatalogReleaseTypes() },
+        { catalogRepository.getCatalogYears() }
+    ) { ageRatings, genres, productionStatuses, publishStatuses, seasons, sortingTypes, releaseTypes, years ->
+        CatalogFilters.create(
+            ageRatings = ageRatings,
+            genres = genres,
+            productionStatuses = productionStatuses,
+            publishStatuses = publishStatuses,
+            seasons = seasons,
+            sortingTypes = sortingTypes,
+            types = releaseTypes,
+            years = years
+        )
+    }.flowOn(dispatcherProvider.io)
 }

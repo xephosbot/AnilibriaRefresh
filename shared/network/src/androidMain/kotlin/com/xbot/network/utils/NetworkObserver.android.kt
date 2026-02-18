@@ -1,15 +1,23 @@
 package com.xbot.network.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import com.kdroid.androidcontextprovider.ContextProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-class AndroidNetworkObserver(context: Context) : NetworkObserver {
+actual fun createNetworkObserver(): NetworkObserver {
+    val context = ContextProvider.getContext()
+    return AndroidNetworkObserver(context)
+}
+
+@SuppressLint("MissingPermission")
+internal class AndroidNetworkObserver(context: Context) : NetworkObserver {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

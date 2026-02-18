@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.stringResource
+import com.xbot.localization.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -259,9 +259,7 @@ class ScaffoldState(
 ) {
     init {
         coroutineScope.launch {
-            println("StartScope")
             snackbarManager.messages.collect { currentMessages ->
-                println(currentMessages.toString())
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
                     val text = stringResource(message.title)

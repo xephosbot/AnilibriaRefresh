@@ -25,7 +25,7 @@ kotlin {
         implementation(projects.shared.domain)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.designSystem)
-        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.navigation3.runtime)
     }
 }

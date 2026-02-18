@@ -3,7 +3,8 @@ package com.xbot.fixtures.data
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleaseDetail
+import com.xbot.domain.models.ReleaseDetails
+import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.AvailabilityStatus
@@ -80,27 +81,29 @@ val releaseMocks = listOf(
     )
 )
 
-fun getReleaseDetailMock(id: Int): ReleaseDetail {
+fun getReleaseDetailMock(id: Int): ReleaseDetailsExtended {
     val release = releaseMocks.find { it.id == id } ?: releaseMocks.first()
-    return ReleaseDetail(
-        release = release,
-        season = Season.SPRING,
-        isOngoing = true,
-        publishDay = DayOfWeek.FRIDAY,
-        notification = "Episode 29 will be released on October 25",
-        availabilityStatus = AvailabilityStatus.Available,
-        genres = listOf(
-            Genre(1, "Fantasy", 100, null),
-            Genre(2, "Adventure", 80, null),
-            Genre(3, "Drama", 50, null)
+    return ReleaseDetailsExtended(
+        details = ReleaseDetails(
+            release = release,
+            season = Season.SPRING,
+            isOngoing = true,
+            publishDay = DayOfWeek.FRIDAY,
+            notification = "Episode 29 will be released on October 25",
+            availabilityStatus = AvailabilityStatus.Available,
+            genres = listOf(
+                Genre(1, "Fantasy", 100, null),
+                Genre(2, "Adventure", 80, null),
+                Genre(3, "Drama", 50, null)
+            ),
+            releaseMembers = listOf(
+                ReleaseMember("1", MemberRole.VOICING, "Lupin", null),
+                ReleaseMember("2", MemberRole.VOICING, "Silv", null),
+                ReleaseMember("3", MemberRole.TIMING, "Mimal", null),
+                ReleaseMember("4", MemberRole.TRANSLATING, "Arta", null)
+            ),
+            episodes = episodeMocks,
         ),
-        releaseMembers = listOf(
-            ReleaseMember("1", MemberRole.VOICING, "Lupin", null),
-            ReleaseMember("2", MemberRole.VOICING, "Silv", null),
-            ReleaseMember("3", MemberRole.TIMING, "Mimal", null),
-            ReleaseMember("4", MemberRole.TRANSLATING, "Arta", null)
-        ),
-        episodes = episodeMocks,
         relatedReleases = releaseMocks.filter { it.id != release.id }.take(3)
     )
 }

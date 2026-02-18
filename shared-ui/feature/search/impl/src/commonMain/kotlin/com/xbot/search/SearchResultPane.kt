@@ -72,7 +72,7 @@ internal fun SearchResultPane(
     viewModel: SearchViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onFiltersClick: () -> Unit,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
@@ -98,7 +98,7 @@ private fun SearchResultPaneContent(
     onAction: (SearchScreenAction) -> Unit,
     onBackClick: () -> Unit,
     onFiltersClick: () -> Unit,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
     val showErrorMessage: (Throwable) -> Unit = { error ->
         onAction(
@@ -259,7 +259,7 @@ private fun SearchResultPaneContent(
             items = searchResult,
             state = feedState,
             contentPadding = innerPadding,
-            onReleaseClick = { onReleaseClick(it.id) },
+            onReleaseClick = onReleaseClick,
         )
     }
 }
@@ -287,10 +287,14 @@ private fun SearchResultContent(
             header(
                 title = { Text(text = stringResource(Res.string.label_search_results)) },
             )
-            pagingItems(items) { index, release ->
+            
+            pagingItems(
+                items = items,
+                loadingPlaceholderCount = 10,
+            ) { index, release ->
                 ReleaseListItem(
                     modifier = Modifier
-                        .section(index, items.itemCount, columnsCount.value),
+                        .section(index, items.itemCount.takeIf { it > 0 } ?: 10, columnsCount.value),
                     release = release,
                     onClick = onReleaseClick,
                 )

@@ -10,6 +10,7 @@ import androidx.compose.material3.internal.rememberAnimatedShape
 import androidx.compose.material3.toPath
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Matrix
@@ -22,7 +23,13 @@ import androidx.graphics.shapes.RoundedPolygon
 
 interface ExpressiveShape {
     @Composable
-    fun shapeForInteraction(pressed: Boolean, selected: Boolean): Shape
+    fun shapeForInteraction(
+        pressed: Boolean,
+        selected: Boolean,
+        focused: Boolean,
+        hovered: Boolean,
+        dragged: Boolean
+    ): Shape
 }
 
 internal class MorphingExpressiveShape(
@@ -32,7 +39,13 @@ internal class MorphingExpressiveShape(
 ) : ExpressiveShape {
 
     @Composable
-    override fun shapeForInteraction(pressed: Boolean, selected: Boolean): Shape {
+    override fun shapeForInteraction(
+        pressed: Boolean,
+        selected: Boolean,
+        focused: Boolean,
+        hovered: Boolean,
+        dragged: Boolean
+    ): Shape {
         val morph = remember { Morph(shape, pressedShape) }
         val progress by animateFloatAsState(
             targetValue = if (pressed) 1f else 0f,
@@ -47,18 +60,36 @@ internal class RoundedCornerExpressiveShape(
     private val shape: Shape,
     private val pressedShape: Shape,
     private val selectedShape: Shape,
+    private val focusedShape: Shape,
+    private val hoveredShape: Shape,
+    private val draggedShape: Shape,
     private val animationSpec: FiniteAnimationSpec<Float>
 ) : ExpressiveShape {
 
     @Composable
-    override fun shapeForInteraction(pressed: Boolean, selected: Boolean): Shape {
-        val targetShape = if (selected) selectedShape else if (pressed) pressedShape else shape
+    override fun shapeForInteraction(
+        pressed: Boolean,
+        selected: Boolean,
+        focused: Boolean,
+        hovered: Boolean,
+        dragged: Boolean
+    ): Shape {
+        val targetShape = when {
+            pressed -> pressedShape
+            dragged -> draggedShape
+            selected -> selectedShape
+            focused -> focusedShape
+            hovered -> hoveredShape
+            else -> shape
+        }
 
         return if (targetShape is RoundedCornerShape) {
-            rememberAnimatedShape(
-                currentShape = targetShape,
-                animationSpec = animationSpec
-            )
+            key(shape, pressedShape, selectedShape, focusedShape, hoveredShape, draggedShape) {
+                rememberAnimatedShape(
+                    currentShape = targetShape,
+                    animationSpec = animationSpec
+                )
+            }
         } else targetShape
     }
 }

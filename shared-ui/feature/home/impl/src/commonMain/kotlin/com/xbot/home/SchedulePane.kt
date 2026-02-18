@@ -1,6 +1,5 @@
 package com.xbot.home
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +42,8 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.plus
-import com.xbot.domain.models.Schedule
+import com.xbot.domain.models.Release
+import com.xbot.domain.models.ScheduleWeek
 import com.xbot.fixtures.data.scheduleMocks
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.toLocalizedString
@@ -68,7 +67,7 @@ internal fun SchedulePane(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
     showBackButton: Boolean,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -92,7 +91,7 @@ private fun SchedulePaneContent(
     modifier: Modifier = Modifier,
     state: HomeScreenState,
     showBackButton: Boolean,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -124,19 +123,11 @@ private fun SchedulePaneContent(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
-        Crossfade(
-            targetState = state.isScheduleLoading
-        ) { isLoading ->
-            if (isLoading) {
-                LoadingScreen(contentPadding = innerPadding)
-            } else {
-                ScheduleContent(
-                    scheduleWeek = state.scheduleWeek!!,
-                    contentPadding = innerPadding,
-                    onReleaseClick = onReleaseClick
-                )
-            }
-        }
+        ScheduleContent(
+            scheduleWeek = state.scheduleWeek,
+            contentPadding = innerPadding,
+            onReleaseClick = onReleaseClick
+        )
     }
 }
 
@@ -144,15 +135,15 @@ private fun SchedulePaneContent(
 @Composable
 private fun ScheduleContent(
     modifier: Modifier = Modifier,
-    scheduleWeek: Map<LocalDate, List<Schedule>>,
+    scheduleWeek: ScheduleWeek,
     contentPadding: PaddingValues,
-    onReleaseClick: (Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
     ProvideShimmer(shimmer) {
         LazyColumnWithStickyHeader(
-            items = scheduleWeek,
+            items = scheduleWeek.days,
             modifier = modifier.shimmerUpdater(shimmer),
             contentPadding = contentPadding.plus(PaddingValues(16.dp)),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -165,13 +156,15 @@ private fun ScheduleContent(
             itemContent = { schedule ->
                 MediumReleaseCard(
                     modifier = Modifier.fillMaxWidth(),
-                    release = schedule.release,
-                    onClick = { onReleaseClick(schedule.release.id) },
+                    release = schedule?.release,
+                    onClick = { schedule?.release?.let(onReleaseClick) },
                 ) {
-                    EpisodeListItem(
-                        episode = schedule.toEpisode(),
-                        onClick = {}
-                    )
+                    schedule?.let {
+                        EpisodeListItem(
+                            episode = it.toEpisode(),
+                            onClick = {}
+                        )
+                    }
                 }
             }
         )
@@ -206,41 +199,6 @@ private fun DateItem(
     }
 }
 
-@OptIn(ExperimentalTime::class)
-@Composable
-private fun LoadingScreen(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues,
-) {
-    val shimmer = rememberShimmer(ShimmerBounds.Window)
-    val placeholderItems = remember {
-        mutableMapOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date to (0..5).toList())
-    }
-
-    ProvideShimmer(shimmer) {
-        LazyColumnWithStickyHeader(
-            items = placeholderItems,
-            modifier = modifier,
-            contentPadding = contentPadding.plus(PaddingValues(16.dp)),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            userScrollEnabled = false,
-            stickyHeader = { date ->
-                DateItem(
-                    modifier = Modifier.padding(start = 16.dp),
-                    date = date
-                )
-            },
-            itemContent = {
-                MediumReleaseCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    release = null,
-                    onClick = {},
-                )
-            }
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun SchedulePanePreview(
@@ -259,14 +217,15 @@ private fun SchedulePanePreview(
 private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            isScheduleLoading = true,
-            scheduleWeek = null
+            scheduleWeek = ScheduleWeek.create(
+                startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                scheduleWeek = mapOf(
+                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.dayOfWeek to scheduleMocks
+                )
+            )
         ),
         HomeScreenState(
-            isScheduleLoading = false,
-            scheduleWeek = mapOf(
-                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date to scheduleMocks
-            )
+            scheduleWeek = ScheduleWeek.create()
         )
     )
 }

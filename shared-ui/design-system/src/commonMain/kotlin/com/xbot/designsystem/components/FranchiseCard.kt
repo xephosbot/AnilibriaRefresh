@@ -5,6 +5,9 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,6 +69,17 @@ fun FranchiseCard(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = false,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     Crossfade(
         modifier = modifier,
@@ -77,7 +91,7 @@ fun FranchiseCard(
             else -> FranchiseCardContent(
                 state,
                 Modifier
-                    .clip(shape.shapeForInteraction(pressed, false))
+                    .clip(shape)
                     .clickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
@@ -234,9 +248,12 @@ private fun FranchiseCardPlaceholder(
     modifier: Modifier = Modifier
 ) {
     val shimmer = LocalShimmer.current
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .width(FranchiseCardWidth)
+            .height(FranchiseCardWidth + 20.dp)
+            .then(modifier),
+        contentAlignment = Alignment.TopCenter
     ) {
         Box(
             modifier = Modifier
@@ -246,17 +263,33 @@ private fun FranchiseCardPlaceholder(
                 .background(Color.LightGray)
         )
 
-        Box(
+        Column(
             modifier = Modifier
-                .offset(y = (-16).dp)
-                .fillMaxWidth()
-                .height(72.dp)
-                .padding(horizontal = 4.dp)
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainer,
-                    MaterialTheme.shapes.large
-                )
-        )
+                .width(FranchiseCardWidth)
+                .height(FranchiseCardWidth + 20.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(32.dp)
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmer(shimmer)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(72.dp)
+                    .padding(4.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            )
+        }
     }
 }
 
@@ -267,7 +300,7 @@ object ExpressiveFranchiseCardDefaults {
         return MorphingExpressiveShape(
             shape = MaterialShapes.Circle,
             pressedShape = MaterialShapes.Cookie12Sided,
-            animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec(),
+            animationSpec =  MaterialTheme.motionScheme.fastSpatialSpec(),
         )
     }
 }
@@ -280,6 +313,14 @@ private fun FranchiseCardPreview() {
             franchise = franchiseMocks.first(),
             onClick = {}
         )
+    }
+}
+
+@Preview
+@Composable
+private fun FranchiseCardPlaceholderPreview() {
+    AnilibriaPreview {
+        FranchiseCardPlaceholder()
     }
 }
 
