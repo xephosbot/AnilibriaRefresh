@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
 import com.xbot.domain.repository.AuthRepository
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.login_success_message
 import kotlinx.coroutines.channels.Channel
@@ -66,13 +66,13 @@ internal class LoginViewModel(
                 is Either.Left -> {
                     _isLoading.value = false
                     snackbarManager.showMessage(
-                        title = StringResource.String(result.value.toString())
+                        title = UiText.String(result.value.toString())
                     )
                 }
                 is Either.Right -> {
                     _isLoading.value = false
                     snackbarManager.showMessage(
-                        title = StringResource.Text(Res.string.login_success_message)
+                        title = UiText.Text(Res.string.login_success_message)
                     )
                     _effects.send(LoginScreenEffect.NavigateBack)
                 }

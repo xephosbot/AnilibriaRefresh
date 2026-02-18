@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
-import com.xbot.designsystem.utils.localizedMessage
+import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.usecase.GetReleaseDetailsUseCase
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.title.navigation.TitleRoute
@@ -62,7 +62,7 @@ internal class TitleViewModel(
         snackbarManager.showMessage(
             title = error.localizedMessage(),
             action = MessageAction(
-                title = StringResource.Text(Res.string.button_retry),
+                title = UiText.Text(Res.string.button_retry),
                 action = onConfirmAction,
             ),
         )

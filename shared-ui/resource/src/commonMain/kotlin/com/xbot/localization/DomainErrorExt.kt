@@ -1,4 +1,4 @@
-package com.xbot.designsystem.utils
+package com.xbot.localization
 
 import com.xbot.domain.models.DomainError
 import com.xbot.resources.Res
@@ -7,13 +7,13 @@ import com.xbot.resources.error_http
 import com.xbot.resources.error_serialization
 import com.xbot.resources.error_unknown
 
-fun Throwable.localizedMessage(): StringResource {
+fun Throwable.localizedMessage(): UiText {
     return when (this) {
-        is DomainError.HttpError -> StringResource.Text(Res.string.error_http, this.code)
-        is DomainError.ConnectionError -> StringResource.Text(Res.string.error_connection)
+        is DomainError.HttpError -> UiText.Text(Res.string.error_http, this.code)
+        is DomainError.ConnectionError -> UiText.Text(Res.string.error_connection)
         is DomainError.SerializationError -> {
             val message = findRecursiveMessage(this) ?: "Empty message"
-            StringResource.Text(Res.string.error_serialization, message)
+            UiText.Text(Res.string.error_serialization, message)
         }
         else -> {
             val message = findRecursiveMessage(this) ?: "Empty message"
@@ -22,7 +22,7 @@ fun Throwable.localizedMessage(): StringResource {
             val errorName = this::class.simpleName ?: "Unknown"
             val causeName = rootCause::class.simpleName ?: "Unknown"
 
-            StringResource.Text(Res.string.error_unknown, errorName, causeName, message)
+            UiText.Text(Res.string.error_unknown, errorName, causeName, message)
         }
     }
 }

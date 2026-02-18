@@ -1,35 +1,35 @@
-package com.xbot.designsystem.utils
+package com.xbot.localization
 
 import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 
-suspend fun stringResource(stringResource: StringResource): String {
-    return when (stringResource) {
-        is StringResource.String -> stringResource.text
-        is StringResource.Text -> {
-            if (stringResource.formatArgs.isEmpty()) {
-                getString(stringResource.resource)
+suspend fun stringResource(uiText: UiText): String {
+    return when (uiText) {
+        is UiText.String -> uiText.text
+        is UiText.Text -> {
+            if (uiText.formatArgs.isEmpty()) {
+                getString(uiText.resource)
             } else {
-                getString(stringResource.resource, *stringResource.formatArgs)
+                getString(uiText.resource, *uiText.formatArgs)
             }
         }
-        is StringResource.Plural -> {
-            if (stringResource.formatArgs.isEmpty()) {
-                getPluralString(stringResource.resource, stringResource.quantity)
+        is UiText.Plural -> {
+            if (uiText.formatArgs.isEmpty()) {
+                getPluralString(uiText.resource, uiText.quantity)
             } else {
-                getPluralString(stringResource.resource, stringResource.quantity, *stringResource.formatArgs)
+                getPluralString(uiText.resource, uiText.quantity, *uiText.formatArgs)
             }
         }
     }
 }
 
-sealed interface StringResource {
-    data class String(val text: kotlin.String) : StringResource
+sealed interface UiText {
+    data class String(val text: kotlin.String) : UiText
     
     class Text(
         val resource: org.jetbrains.compose.resources.StringResource,
         vararg val formatArgs: Any,
-    ) : StringResource {
+    ) : UiText {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -53,7 +53,7 @@ sealed interface StringResource {
         val resource: org.jetbrains.compose.resources.PluralStringResource,
         val quantity: Int,
         vararg val formatArgs: Any,
-    ) : StringResource {
+    ) : UiText {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

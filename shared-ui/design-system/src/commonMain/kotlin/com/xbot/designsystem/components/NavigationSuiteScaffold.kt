@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.stringResource
+import com.xbot.localization.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

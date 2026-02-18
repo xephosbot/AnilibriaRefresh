@@ -10,8 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
-import com.xbot.designsystem.utils.localizedMessage
+import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -23,6 +22,7 @@ import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.usecase.GetCatalogFiltersUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -137,7 +137,7 @@ internal class SearchViewModel(
         snackbarManager.showMessage(
             title = error.localizedMessage(),
             action = MessageAction(
-                title = StringResource.Text(Res.string.button_retry),
+                title = UiText.Text(Res.string.button_retry),
                 action = onConfirmAction,
             ),
         )

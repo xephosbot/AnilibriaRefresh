@@ -5,6 +5,9 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,10 +57,21 @@ fun ReleaseListItem(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = false,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     Surface(
         modifier = modifier,
-        shape = shape.shapeForInteraction(pressed, false),
+        shape = shape,
         color = containerColor,
         contentColor = contentColor
     ) {
@@ -298,7 +312,10 @@ object ExpressiveReleaseListItemDefaults {
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+            focusedShape = MaterialTheme.shapes.large,
+            hoveredShape = MaterialTheme.shapes.medium,
+            draggedShape = MaterialTheme.shapes.large,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
         )
     }
 }

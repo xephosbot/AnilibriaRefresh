@@ -5,6 +5,9 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,6 +69,17 @@ fun FranchiseCard(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = false,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     Crossfade(
         modifier = modifier,
@@ -77,7 +91,7 @@ fun FranchiseCard(
             else -> FranchiseCardContent(
                 state,
                 Modifier
-                    .clip(shape.shapeForInteraction(pressed, false))
+                    .clip(shape)
                     .clickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
@@ -286,7 +300,7 @@ object ExpressiveFranchiseCardDefaults {
         return MorphingExpressiveShape(
             shape = MaterialShapes.Circle,
             pressedShape = MaterialShapes.Cookie12Sided,
-            animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec(),
+            animationSpec =  MaterialTheme.motionScheme.fastSpatialSpec(),
         )
     }
 }

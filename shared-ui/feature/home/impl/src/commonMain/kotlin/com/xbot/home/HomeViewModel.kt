@@ -8,8 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.StringResource
-import com.xbot.designsystem.utils.localizedMessage
+import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
@@ -19,6 +18,7 @@ import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -94,7 +94,7 @@ internal class HomeViewModel(
         snackbarManager.showMessage(
             title = error.localizedMessage(),
             action = MessageAction(
-                title = StringResource.Text(Res.string.button_retry),
+                title = UiText.Text(Res.string.button_retry),
                 action = onConfirmAction,
             ),
         )

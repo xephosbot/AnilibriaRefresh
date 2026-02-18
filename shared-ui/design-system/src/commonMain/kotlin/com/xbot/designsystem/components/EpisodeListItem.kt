@@ -4,6 +4,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,6 +68,17 @@ fun EpisodeListItem(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = selected,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     val containerColor by animateColorAsState(
         targetValue = if (selected) colors.selectedContainerColor else colors.containerColor,
@@ -79,7 +93,7 @@ fun EpisodeListItem(
         modifier = modifier,
         onClick = onClick,
         enabled = episode != null,
-        shape = shape.shapeForInteraction(pressed, selected),
+        shape = shape,
         color = containerColor,
         contentColor = contentColor,
         interactionSource = interactionSource,
@@ -232,7 +246,10 @@ object ExpressiveEpisodeListItemDefaults {
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+            focusedShape = MaterialTheme.shapes.large,
+            hoveredShape = MaterialTheme.shapes.medium,
+            draggedShape = MaterialTheme.shapes.large,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
         )
     }
 

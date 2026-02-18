@@ -5,6 +5,9 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -184,6 +187,17 @@ fun CircleContentItem(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val dragged by interactionSource.collectIsDraggedAsState()
+
+    val shape = shape.shapeForInteraction(
+        pressed = pressed,
+        selected = false,
+        focused = focused,
+        hovered = hovered,
+        dragged = dragged
+    )
 
     Column(
         modifier = modifier,
@@ -192,7 +206,7 @@ fun CircleContentItem(
         Box(
             modifier = Modifier
                 .size(PosterSize)
-                .clip(shape.shapeForInteraction(pressed, false))
+                .clip(shape)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
@@ -261,15 +275,13 @@ private fun CircleContentPlaceholderPreview() {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object CircleContentItemDefaults {
-    private var _shape: ExpressiveShape? = null
-
     @Composable
     fun shape(): ExpressiveShape {
-        return _shape ?: MorphingExpressiveShape(
+        return MorphingExpressiveShape(
             shape = MaterialShapes.Circle,
             pressedShape = MaterialShapes.Cookie7Sided,
-            animationSpec =  MaterialTheme.motionScheme.defaultSpatialSpec()
-        ).also { _shape = it }
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+        )
     }
 }
 
