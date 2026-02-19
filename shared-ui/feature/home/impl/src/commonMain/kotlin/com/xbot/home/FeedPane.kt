@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -77,6 +78,7 @@ import com.xbot.designsystem.components.MediumReleaseCard
 import com.xbot.designsystem.components.MediumSplitButton
 import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.components.ReleaseListItem
+import com.xbot.designsystem.components.SectionDefaults
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
@@ -319,7 +321,7 @@ private fun ReleaseFeed(
         modifier = modifier,
         state = gridState,
         columns = GridCells.Adaptive(400.dp),
-        contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+        contentPadding = contentPadding.only(WindowInsetsSides.Bottom)
     ) {
         horizontalPagerItems(
             items = releasesFeed.recommendedReleases,
@@ -332,7 +334,8 @@ private fun ReleaseFeed(
                     .verticalParallax(gridState),
                 contentModifier = Modifier
                     .fadeWithParallax(pagerState, page),
-                release = release
+                release = release,
+                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal)
             ) {
                 val isChecked by rememberUpdatedState(activeMenuReleaseId != null && activeMenuReleaseId == release?.id)
 
@@ -390,12 +393,13 @@ private fun ReleaseFeed(
 
         header(
             title = { Text(text = stringResource(Res.string.label_schedule_now)) },
-            onClick = onScheduleClick
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            onClick = onScheduleClick,
         )
         horizontalSnappableItems(
             items = releasesFeed.scheduleNow,
             //key = { schedule -> schedule?.release?.id },
-            contentPadding = PaddingValues(horizontal = horizontalMargin),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
         ) { schedule ->
             MediumReleaseCard(
@@ -419,6 +423,7 @@ private fun ReleaseFeed(
         row {
             Header(
                 title = { Text(text = stringResource(Res.string.label_best)) },
+                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
                 content = {
                     val items = remember { BestType.entries }
                     SingleChoiceConnectedButtonGroup(
@@ -443,7 +448,7 @@ private fun ReleaseFeed(
         }
         horizontalItemsIndexed(
             items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
-            contentPadding = PaddingValues(horizontal = horizontalMargin),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { index, release ->
             SmallReleaseCard(
                 modifier = Modifier.badgeOverlay(
@@ -464,10 +469,11 @@ private fun ReleaseFeed(
 
         header(
             title = { Text(text = stringResource(Res.string.label_franchises)) },
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalSnappableItems(
             items = releasesFeed.recommendedFranchises,
-            contentPadding = PaddingValues(horizontal = horizontalMargin),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
         ) { franchise ->
             FranchiseCard(
@@ -477,11 +483,12 @@ private fun ReleaseFeed(
         }
 
         header(
-            title = { Text(text = stringResource(Res.string.label_genres)) }
+            title = { Text(text = stringResource(Res.string.label_genres)) },
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalItems(
             items = releasesFeed.genres,
-            contentPadding = PaddingValues(horizontal = horizontalMargin),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { genre ->
             GenreItem(
                 genre = genre,
@@ -491,6 +498,7 @@ private fun ReleaseFeed(
 
         header(
             title = { Text(text = stringResource(Res.string.label_updates)) },
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         pagingItems(
             items = items,
@@ -498,7 +506,14 @@ private fun ReleaseFeed(
         ) { index, release ->
             ReleaseListItem(
                 modifier = Modifier
-                    .section(index, items.itemCount, columnsCount.value),
+                    .section(
+                        index = index,
+                        itemsCount = items.itemCount,
+                        columnsCount = columnsCount.value,
+                        sectionSpacing = SectionDefaults.spacing(
+                            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                        )
+                    ),
                 release = release,
                 onClick = onReleaseClick,
             )

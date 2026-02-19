@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -257,7 +258,7 @@ private fun TitleDetails(
         modifier = modifier,
         state = gridState,
         columns = GridCells.Adaptive(400.dp),
-        contentPadding = contentPadding.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+        contentPadding = contentPadding.only(WindowInsetsSides.Bottom),
         overscrollEffect = overscrollEffect,
     ) {
         row {
@@ -265,6 +266,7 @@ private fun TitleDetails(
                 modifier = Modifier.verticalParallax(gridState),
                 contentModifier = Modifier.animateContentSize(),
                 release = state.release.details.release,
+                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
                 overscrollEffect = overscrollEffect,
             ) {
                 AnimatedVisibility(
@@ -335,11 +337,12 @@ private fun TitleDetails(
 
         if (state.releaseMembers.isNotEmpty()) {
             header(
-                title = { Text(text = stringResource(Res.string.label_members)) }
+                title = { Text(text = stringResource(Res.string.label_members)) },
+                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             horizontalItems(
                 items = state.releaseMembers,
-                contentPadding = PaddingValues(horizontal = horizontalMargin),
+                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             ) { member ->
                 MemberItem(
                     releaseMember = member,
@@ -350,11 +353,12 @@ private fun TitleDetails(
 
         if (state.relatedReleases.isNotEmpty()) {
             header(
-                title = { Text(text = stringResource(Res.string.label_related_releases)) }
+                title = { Text(text = stringResource(Res.string.label_related_releases)) },
+                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             horizontalItems(
                 items = state.relatedReleases,
-                contentPadding = PaddingValues(horizontal = horizontalMargin),
+                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             ) { release ->
                 SmallReleaseCard(
                     release = release,
@@ -365,7 +369,8 @@ private fun TitleDetails(
 
         if (state.episodes.isNotEmpty()) {
             header(
-                title = { Text(text = stringResource(Res.string.label_episodes)) }
+                title = { Text(text = stringResource(Res.string.label_episodes)) },
+                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             itemsIndexed(state.episodes) { index, episode ->
                 val release = state.release.details.release

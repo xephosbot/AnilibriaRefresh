@@ -1,15 +1,20 @@
 package com.xbot.designsystem.components
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.times
@@ -22,7 +27,7 @@ data class SectionShape(
 
 data class SectionSpacing(
     val innerSpacing: Dp,
-    val outerSpacing: Dp,
+    val outerSpacing: PaddingValues,
 )
 
 object SectionDefaults {
@@ -41,11 +46,33 @@ object SectionDefaults {
     @Composable
     fun spacing(
         innerSpacing: Dp = DefaultInnerSpacing,
-        outerSpacing: Dp = LocalMargins.current.horizontal,
-    ): SectionSpacing = SectionSpacing(
-        innerSpacing = innerSpacing,
-        outerSpacing = outerSpacing,
-    )
+        contentPadding: PaddingValues? = null,
+    ): SectionSpacing {
+        val margin = LocalMargins.current.horizontal
+        
+        val outerSpacing = remember(contentPadding, margin) {
+            if (contentPadding != null) {
+                object : PaddingValues {
+                    override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp =
+                        contentPadding.calculateLeftPadding(layoutDirection) + margin
+
+                    override fun calculateTopPadding(): Dp = 0.dp
+
+                    override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp =
+                        contentPadding.calculateRightPadding(layoutDirection) + margin
+
+                    override fun calculateBottomPadding(): Dp = 0.dp
+                }
+            } else {
+                PaddingValues(horizontal = margin)
+            }
+        }
+
+        return SectionSpacing(
+            innerSpacing = innerSpacing,
+            outerSpacing = outerSpacing,
+        )
+    }
 
     internal fun itemShape(
         index: Int,
@@ -124,21 +151,25 @@ private fun Modifier.sectionSpacing(
     val isBottom = index >= itemsCount - columnsCount
     val columnIndex = index % columnsCount
 
-    val paddingPerItem =
-        (2 * sectionSpacing.outerSpacing + (columnsCount - 1) * sectionSpacing.innerSpacing) / columnsCount
-    val translation = if (columnIndex == 0) {
-        sectionSpacing.outerSpacing
-    } else {
-        sectionSpacing.outerSpacing + columnIndex * sectionSpacing.innerSpacing - columnIndex * paddingPerItem
-    }
-
     return this
         .layout { measurable, constraints ->
-            val endPadding = paddingPerItem.roundToPx()
-            val adjustedConstraints = constraints.offset(horizontal = -endPadding)
+            val startPadding = sectionSpacing.outerSpacing.calculateStartPadding(layoutDirection)
+            val endPadding = sectionSpacing.outerSpacing.calculateEndPadding(layoutDirection)
+            
+            val paddingPerItem =
+                (startPadding + endPadding + (columnsCount - 1) * sectionSpacing.innerSpacing) / columnsCount
+            
+            val translation = if (columnIndex == 0) {
+                startPadding
+            } else {
+                startPadding + columnIndex * sectionSpacing.innerSpacing - columnIndex * paddingPerItem
+            }
+            
+            val endPaddingPx = paddingPerItem.roundToPx()
+            val adjustedConstraints = constraints.offset(horizontal = -endPaddingPx)
             val placeable = measurable.measure(adjustedConstraints)
             val spacing = if (!isBottom) sectionSpacing.innerSpacing.roundToPx() else 0
-            layout(placeable.width + endPadding, placeable.height + spacing) {
+            layout(placeable.width + endPaddingPx, placeable.height + spacing) {
                 placeable.placeWithLayer(0, 0) {
                     translationX = translation.toPx()
                 }

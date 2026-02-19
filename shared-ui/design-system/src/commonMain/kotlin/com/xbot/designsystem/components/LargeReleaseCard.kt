@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,6 +60,7 @@ fun LargeReleaseCard(
     release: Release?,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = LocalMargins.current.horizontal + 8.dp),
     overscrollEffect: OverscrollEffect? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
@@ -68,6 +70,7 @@ fun LargeReleaseCard(
                 LargeReleaseCardContent(
                     modifier = modifier,
                     contentModifier = contentModifier,
+                    contentPadding = contentPadding,
                     release = it,
                     overscrollEffect = overscrollEffect,
                     content = content
@@ -76,6 +79,7 @@ fun LargeReleaseCard(
         } else {
             LargeReleaseCardPlaceholder(
                 modifier = modifier,
+                contentPadding = contentPadding,
                 overscrollEffect = overscrollEffect
             )
         }
@@ -87,12 +91,14 @@ private fun LargeReleaseCardContent(
     release: Release,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
     overscrollEffect: OverscrollEffect?,
     content: @Composable (ColumnScope.() -> Unit)?
 ) {
     LargeReleaseCardLayout(
         modifier = Modifier,
         contentModifier = contentModifier,
+        contentPadding = contentPadding,
         overscrollEffect = overscrollEffect,
         poster = {
             PosterImage(
@@ -142,6 +148,7 @@ private fun LargeReleaseCardContent(
 private fun LargeReleaseCardLayout(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
     overscrollEffect: OverscrollEffect?,
     poster: @Composable () -> Unit,
     content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit,
@@ -151,7 +158,6 @@ private fun LargeReleaseCardLayout(
         val ratio = if (height > 0.dp) maxWidth / height else 1f
         val contentWidth = calculateContentWidth(maxWidth)
         val contentAlignment = calculateContentAlignment(maxWidth)
-        val contentPadding = LocalMargins.current.horizontal + 8.dp
 
         Box(
             modifier = Modifier
@@ -175,7 +181,7 @@ private fun LargeReleaseCardLayout(
             Column(
                 modifier = contentModifier
                     .width(contentWidth)
-                    .padding(horizontal = contentPadding),
+                    .padding(contentPadding),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = contentAlignment,
                 content = { content(contentAlignment) }
@@ -187,12 +193,14 @@ private fun LargeReleaseCardLayout(
 @Composable
 private fun LargeReleaseCardPlaceholder(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
     overscrollEffect: OverscrollEffect?,
 ) {
     val shimmer = LocalShimmer.current
 
     LargeReleaseCardLayout(
         modifier = Modifier,
+        contentPadding = contentPadding,
         overscrollEffect = overscrollEffect,
         poster = {
             Box(

@@ -1,6 +1,7 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.theme.LocalMargins
+import com.xbot.designsystem.theme.asPaddingValues
 import com.xbot.designsystem.utils.AnilibriaPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -31,11 +33,13 @@ import com.xbot.designsystem.utils.AnilibriaPreview
 fun Header(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = LocalMargins.current.asPaddingValues(),
     onClick: (() -> Unit)? = null,
 ) {
     Header(
         title = title,
         modifier = modifier,
+        contentPadding = contentPadding,
         content = if (onClick != null) {
             {
                 FilledTonalIconButton(
@@ -60,6 +64,7 @@ fun Header(
 fun Header(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = LocalMargins.current.horizontal),
     content: @Composable (RowScope.() -> Unit)?,
 ) {
     Box(
@@ -71,7 +76,7 @@ fun Header(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = LocalMargins.current.horizontal),
+                .padding(contentPadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             ProvideTextStyle(MaterialTheme.typography.titleLarge) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -40,8 +41,9 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
+import com.xbot.designsystem.theme.LocalMargins
+import com.xbot.designsystem.theme.asPaddingValues
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.plus
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ScheduleWeek
 import com.xbot.fixtures.data.scheduleMocks
@@ -145,7 +147,7 @@ private fun ScheduleContent(
         LazyColumnWithStickyHeader(
             items = scheduleWeek.days,
             modifier = modifier.shimmerUpdater(shimmer),
-            contentPadding = contentPadding.plus(PaddingValues(16.dp)),
+            contentPadding = contentPadding + LocalMargins.current.asPaddingValues(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             stickyHeader = { date ->
                 DateItem(
