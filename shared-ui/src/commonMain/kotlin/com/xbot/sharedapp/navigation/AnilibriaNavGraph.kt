@@ -1,7 +1,6 @@
 package com.xbot.sharedapp.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -16,7 +15,6 @@ import androidx.compose.material3.adaptive.navigation3.rememberSupportingPaneSce
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -68,28 +66,25 @@ internal fun AnilibriaNavGraph(
     CompositionLocalProvider(
         LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1)
     ) {
-        SharedTransitionLayout {
-            NavDisplay(
-                backStack = navigator.backStack,
-                modifier = modifier.fillMaxSize(),
-                onBack = { navigator.navigateBack() },
-                transitionSpec = {
-                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
-                },
-                popTransitionSpec = {
-                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
-                },
-                predictivePopTransitionSpec = {
-                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
-                },
-                entryDecorators = listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberSharedViewModelStoreNavEntryDecorator(),
-                ),
-                sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy then dialogStrategy,
-                sharedTransitionScope = this,
-                entryProvider = koinEntryProvider()
-            )
-        }
+        NavDisplay(
+            backStack = navigator.backStack,
+            modifier = modifier.fillMaxSize(),
+            onBack = { navigator.navigateBack() },
+            transitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            popTransitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            predictivePopTransitionSpec = {
+                materialFadeThroughIn() togetherWith materialFadeThroughOut()
+            },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberSharedViewModelStoreNavEntryDecorator(),
+            ),
+            sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy then dialogStrategy,
+            entryProvider = koinEntryProvider()
+        )
     }
 }
