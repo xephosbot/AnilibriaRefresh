@@ -8,9 +8,11 @@ import com.xbot.domain.usecase.GetAppearanceSettingsUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 internal class AppViewModel(
-    getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
+    private val getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

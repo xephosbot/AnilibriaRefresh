@@ -2,43 +2,33 @@ package com.xbot.sharedapp.di
 
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.serialization.PolymorphicSerializerConfig
-import com.xbot.data.di.dataModule
+import com.xbot.data.di.DataModule
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.di.domainModule
-import com.xbot.favorite.di.favoriteFeatureModule
-import com.xbot.home.di.homeFeatureModule
-import com.xbot.login.di.loginFeatureModule
-import com.xbot.network.di.networkModule
-import com.xbot.player.di.playerFeatureModule
-import com.xbot.preference.di.preferenceFeatureModule
-import com.xbot.search.di.searchFeatureModule
-import com.xbot.sharedapp.AppViewModel
-import com.xbot.title.di.titleFeatureModule
+import com.xbot.domain.di.DomainModule
+import com.xbot.network.di.NetworkModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-internal val appModule = module {
-    includes(networkModule, dataModule, domainModule)
-    includes(
-        favoriteFeatureModule,
-        homeFeatureModule,
-        playerFeatureModule,
-        preferenceFeatureModule,
-        searchFeatureModule,
-        titleFeatureModule,
-        loginFeatureModule
-    )
+@KoinApplication(modules = [NetworkModule::class, DataModule::class, DomainModule::class, AppModule::class])
+internal class AnilibriaApp
 
-    single {
-        SerializersModule {
-            polymorphic(NavKey::class) {
-                getAll<PolymorphicSerializerConfig<NavKey>>().forEach { it.configure(this) }
-            }
+@Module
+@ComponentScan("com.xbot.sharedapp")
+internal class AppModule {
+
+    @Single
+    fun snackbarManager(): SnackbarManager = SnackbarManager
+
+    @Single
+    fun navKeySerializersModule(
+        configs: List<PolymorphicSerializerConfig<NavKey>>
+    ): SerializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            configs.forEach { it.configure(this) }
         }
     }
-
-    factory { SnackbarManager }
-    viewModelOf(::AppViewModel)
 }

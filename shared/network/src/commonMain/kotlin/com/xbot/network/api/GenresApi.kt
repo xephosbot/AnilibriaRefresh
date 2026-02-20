@@ -9,6 +9,7 @@ import com.xbot.network.models.responses.PaginatedResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Singleton
 
 interface GenresApi {
     suspend fun getGenres(): Either<NetworkError, List<GenreDto>>
@@ -21,6 +22,7 @@ interface GenresApi {
     ): Either<NetworkError, PaginatedResponse<ReleaseDto>>
 }
 
+@Singleton
 internal class DefaultGenresApi(private val client: HttpClient) : GenresApi {
     override suspend fun getGenres(): Either<NetworkError, List<GenreDto>> = client.request {
         get("anime/genres")

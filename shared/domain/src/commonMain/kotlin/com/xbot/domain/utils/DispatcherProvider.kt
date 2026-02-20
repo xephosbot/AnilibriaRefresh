@@ -3,6 +3,7 @@ package com.xbot.domain.utils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import org.koin.core.annotation.Singleton
 
 interface DispatcherProvider {
     val main: CoroutineDispatcher
@@ -11,7 +12,8 @@ interface DispatcherProvider {
     val unconfined: CoroutineDispatcher
 }
 
-class DefaultDispatcherProvider : DispatcherProvider {
+@Singleton
+internal class DefaultDispatcherProvider : DispatcherProvider {
     override val main: CoroutineDispatcher get() = Dispatchers.Main
     override val io: CoroutineDispatcher get() = Dispatchers.IO
     override val default: CoroutineDispatcher get() = Dispatchers.Default

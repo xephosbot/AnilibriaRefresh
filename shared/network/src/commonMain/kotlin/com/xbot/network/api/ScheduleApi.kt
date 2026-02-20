@@ -6,12 +6,14 @@ import com.xbot.network.client.request
 import com.xbot.network.models.dto.ScheduleDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import org.koin.core.annotation.Singleton
 
 interface ScheduleApi {
     suspend fun getScheduleNow(): Either<NetworkError, Map<String, List<ScheduleDto>>>
     suspend fun getScheduleWeek(): Either<NetworkError, List<ScheduleDto>>
 }
 
+@Singleton
 internal class DefaultScheduleApi(private val client: HttpClient) : ScheduleApi {
     override suspend fun getScheduleNow(): Either<NetworkError, Map<String, List<ScheduleDto>>> = client.request {
         get("anime/schedule/now")

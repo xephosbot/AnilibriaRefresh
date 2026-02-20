@@ -7,9 +7,10 @@ import com.xbot.domain.models.enums.SocialType
 import com.xbot.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeAuthRepository : AuthRepository {
     private val _authState = MutableStateFlow(false)
     override val authState: Flow<Boolean> = flow {

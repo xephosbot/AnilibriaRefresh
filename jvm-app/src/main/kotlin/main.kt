@@ -17,9 +17,7 @@ fun main(args: Array<String>) {
     }
 
     application {
-        initKoin {
-            printLogger()
-        }
+        initKoin()
 
         Window(
             onCloseRequest = ::exitApplication,

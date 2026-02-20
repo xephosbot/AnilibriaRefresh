@@ -7,7 +7,9 @@ import com.xbot.domain.models.User
 import com.xbot.domain.repository.ProfileRepository
 import com.xbot.fixtures.data.userMock
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeProfileRepository : ProfileRepository {
     private val user = MutableStateFlow(userMock)
 

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -31,6 +32,7 @@ kotlin {
         implementation(libs.ktor.client.auth)
         implementation(libs.arrow.core)
         implementation(libs.koin.core)
+        implementation(libs.koin.annotations)
     }
 
     sourceSets {

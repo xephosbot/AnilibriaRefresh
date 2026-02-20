@@ -9,7 +9,9 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultSessionStorage(
     private val dataStore: DataStore<Preferences>
 ) : SessionStorage {

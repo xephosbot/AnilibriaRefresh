@@ -6,7 +6,9 @@ import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Episode
 import com.xbot.domain.repository.EpisodesRepository
 import com.xbot.fixtures.data.episodeMocks
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeEpisodesRepository : EpisodesRepository {
     override suspend fun getEpisode(episodeId: String): Either<DomainError, Episode> {
         val episode = episodeMocks.find { it.id == episodeId } ?: episodeMocks.first()

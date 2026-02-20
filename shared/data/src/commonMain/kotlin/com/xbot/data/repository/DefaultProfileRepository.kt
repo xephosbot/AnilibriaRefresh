@@ -7,7 +7,9 @@ import com.xbot.domain.models.User
 import com.xbot.domain.repository.ProfileRepository
 import com.xbot.network.client.NetworkError
 import com.xbot.network.api.ProfileApi
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultProfileRepository(
     private val profileApi: ProfileApi
 ) : ProfileRepository {

@@ -11,7 +11,9 @@ import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.fixtures.data.getReleaseDetailMock
 import com.xbot.fixtures.data.releaseMocks
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeReleasesRepository : ReleasesRepository {
     override suspend fun getLatestReleases(limit: Int): Either<DomainError, List<Release>> {
         return releaseMocks.take(limit).right()

@@ -15,6 +15,7 @@ import com.xbot.network.models.responses.PaginatedResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Singleton
 
 interface CatalogApi {
     suspend fun getCatalogReleases(
@@ -41,6 +42,7 @@ interface CatalogApi {
     suspend fun getCatalogYears(): Either<NetworkError, List<Int>>
 }
 
+@Singleton
 internal class DefaultCatalogApi(private val client: HttpClient) : CatalogApi {
     override suspend fun getCatalogReleases(
         page: Int,

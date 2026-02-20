@@ -12,7 +12,9 @@ import com.xbot.network.client.NetworkError
 import com.xbot.network.client.SessionStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultAuthRepository(
     private val authApi: AuthApi,
     private val tokenStorage: SessionStorage

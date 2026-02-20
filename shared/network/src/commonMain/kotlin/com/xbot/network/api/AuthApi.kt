@@ -16,6 +16,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import org.koin.core.annotation.Singleton
 
 interface AuthApi {
     suspend fun login(login: String, password: String): Either<NetworkError, LoginResponse>
@@ -26,6 +27,7 @@ interface AuthApi {
     suspend fun resetPassword(token: String, password: String, passwordConfirmation: String): Either<NetworkError, Unit>
 }
 
+@Singleton
 internal class DefaultAuthApi(private val client: HttpClient) : AuthApi {
     override suspend fun login(
         login: String,

@@ -16,7 +16,9 @@ import com.xbot.network.api.SearchApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.dto.ReleaseMemberDto
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultReleasesRepository(
     private val releasesApi: ReleasesApi,
     private val searchApi: SearchApi,

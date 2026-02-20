@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -30,6 +31,8 @@ kotlin {
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
         implementation(libs.koin.core)
+        implementation(libs.koin.annotations)
+        implementation(libs.kermit)
         implementation(libs.coil.core)
         implementation(libs.coil.network.ktor)
     }

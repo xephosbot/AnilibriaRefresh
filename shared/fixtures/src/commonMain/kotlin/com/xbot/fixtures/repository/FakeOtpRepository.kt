@@ -4,7 +4,9 @@ import arrow.core.Either
 import arrow.core.right
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.repository.OtpRepository
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeOtpRepository : OtpRepository {
     override suspend fun getOtp(deviceId: String): Either<DomainError, Int> {
         return 123456.right()

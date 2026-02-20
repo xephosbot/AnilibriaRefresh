@@ -16,7 +16,9 @@ import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 import com.xbot.fixtures.data.genreMocks
 import com.xbot.fixtures.data.releaseMocks
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeCatalogRepository : CatalogRepository {
     override fun getCatalogReleases(search: String?, filters: CatalogFilters?): PagingSource<Int, Release> {
         return FakePagingSource(releaseMocks)

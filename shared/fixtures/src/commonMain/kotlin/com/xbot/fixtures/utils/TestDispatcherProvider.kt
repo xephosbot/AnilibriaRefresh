@@ -3,7 +3,9 @@ package com.xbot.fixtures.utils
 import com.xbot.domain.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class TestDispatcherProvider(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : DispatcherProvider {

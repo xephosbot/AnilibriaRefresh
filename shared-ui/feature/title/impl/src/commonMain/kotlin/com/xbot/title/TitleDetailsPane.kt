@@ -65,6 +65,7 @@ import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.MemberItem
+import com.xbot.designsystem.components.SectionDefaults
 import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.horizontalItems
@@ -375,7 +376,14 @@ private fun TitleDetails(
             itemsIndexed(state.episodes) { index, episode ->
                 val release = state.release.details.release
                 EpisodeListItem(
-                    modifier = Modifier.section(index, state.episodes.size, columnsCount.value),
+                    modifier = Modifier.section(
+                        index = index,
+                        itemsCount = state.episodes.size,
+                        columnsCount = columnsCount.value,
+                        sectionSpacing = SectionDefaults.spacing(
+                            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                        )
+                    ),
                     episode = episode,
                     onClick = {
                         if (release != null) {

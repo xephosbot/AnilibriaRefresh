@@ -10,7 +10,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -23,6 +22,7 @@ import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.usecase.GetCatalogFiltersUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,8 +48,8 @@ import kotlinx.coroutines.launch
 internal class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogFilters: GetCatalogFiltersUseCase,
-    private val snackbarManager: SnackbarManager,
     private val savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager = SnackbarManager,
 ) : ViewModel() {
 
     private val refreshTrigger = MutableStateFlow(0)

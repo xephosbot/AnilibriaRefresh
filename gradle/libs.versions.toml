@@ -7,7 +7,7 @@ android-gradle-plugin = "9.0.1"
 android-desugar-jdk = "2.1.5"
 
 # Kotlin
-kotlin = "2.3.10"
+kotlin = "2.3.20-Beta1"
 ksp = "2.3.6"
 compose-multiplatform = "1.11.0-alpha02"
 compose-material3 = "1.11.0-alpha02"
@@ -36,6 +36,8 @@ kotlinx-serialization = "1.10.0"
 ktor = "3.4.0"
 brotli = "0.1.2"
 koin = "4.2.0-RC1"
+koin-plugin = "0.3.0"
+kermit = "2.0.8"
 coil = "3.3.0"
 arrow = "2.2.1.1"
 eygraber-uri = "0.0.21"
@@ -108,6 +110,9 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-navigation3 = { group = "io.insert-koin", name = "koin-compose-navigation3", version.ref = "koin" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
+kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
+kermit-koin = { group = "co.touchlab", name = "kermit-koin", version.ref = "kermit" }
 coil-core = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
@@ -142,3 +147,6 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 # Compose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+
+# Koin
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }

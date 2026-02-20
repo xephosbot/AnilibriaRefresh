@@ -9,10 +9,9 @@ import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.fixtures.data.scheduleMocks
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeScheduleRepository : ScheduleRepository {
     override suspend fun getScheduleNow(): Either<DomainError, List<Schedule>> {
         return scheduleMocks.right()

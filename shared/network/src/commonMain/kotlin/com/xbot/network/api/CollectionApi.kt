@@ -16,6 +16,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import org.koin.core.annotation.Singleton
 
 interface CollectionApi {
     suspend fun getCollectionIds(): Either<NetworkError, Map<Int, CollectionTypeDto>>
@@ -41,6 +42,7 @@ interface CollectionApi {
     suspend fun getCollectionYears(): Either<NetworkError, List<Int>>
 }
 
+@Singleton
 internal class DefaultCollectionApi(private val client: HttpClient) : CollectionApi {
     override suspend fun getCollectionIds(): Either<NetworkError, Map<Int, CollectionTypeDto>> = client.request {
         get("accounts/users/me/collections/ids") {

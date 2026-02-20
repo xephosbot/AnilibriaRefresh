@@ -7,7 +7,9 @@ import com.xbot.domain.utils.DispatcherProvider
 import com.xbot.domain.utils.combinePartial
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import org.koin.core.annotation.Factory
 
+@Factory
 class GetReleaseDetailsUseCase(
     private val releasesRepository: ReleasesRepository,
     private val franchisesRepository: FranchisesRepository,

@@ -9,7 +9,9 @@ import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.domain.repository.AppearanceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultAppearanceRepository(
     private val dataStore: DataStore<Preferences>
 ) : AppearanceRepository {

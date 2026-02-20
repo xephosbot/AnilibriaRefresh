@@ -7,6 +7,7 @@ import com.xbot.network.models.dto.FranchiseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Singleton
 
 interface FranchisesApi {
     suspend fun getFranchises(): Either<NetworkError, List<FranchiseDto>>
@@ -15,6 +16,7 @@ interface FranchisesApi {
     suspend fun getFranchisesByRelease(releaseId: Int): Either<NetworkError, List<FranchiseDto>>
 }
 
+@Singleton
 internal class DefaultFranchisesApi(private val client: HttpClient) : FranchisesApi {
     override suspend fun getFranchises(): Either<NetworkError, List<FranchiseDto>> = client.request {
         get("anime/franchises")

@@ -5,7 +5,9 @@ import com.xbot.domain.repository.AppearanceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeAppearanceRepository : AppearanceRepository {
 
     private val _themeOption = MutableStateFlow(ThemeOption.System)

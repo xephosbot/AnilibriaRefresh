@@ -11,8 +11,9 @@ import com.xbot.network.api.FranchisesApi
 import com.xbot.network.api.ReleasesApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.FranchiseDto
-import com.xbot.network.models.dto.ReleaseDto
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultFranchisesRepository(
     private val releasesApi: ReleasesApi,
     private val franchisesApi: FranchisesApi

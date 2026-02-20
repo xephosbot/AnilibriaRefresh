@@ -16,9 +16,11 @@ import com.xbot.fixtures.data.releaseMocks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeFavoritesRepository : FavoritesRepository {
-    private val favorites = MutableStateFlow<List<Int>>(listOf(1, 2, 3))
+    private val favorites = MutableStateFlow(listOf(1, 2, 3))
 
     override suspend fun getFavoriteIds(): Either<DomainError, List<Int>> {
         return favorites.value.right()
