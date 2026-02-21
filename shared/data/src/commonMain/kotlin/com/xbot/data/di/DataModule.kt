@@ -1,7 +1,8 @@
 package com.xbot.data.di
 
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val dataModule = module {
-    includes(platformModule, dataSourceModule, repositoryModule)
-}
+@Module
+@ComponentScan("com.xbot.data")
+class DataModule

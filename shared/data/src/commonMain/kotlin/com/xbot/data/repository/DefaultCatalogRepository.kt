@@ -27,7 +27,9 @@ import com.xbot.domain.repository.CatalogRepository
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.api.CatalogApi
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultCatalogRepository(
     private val catalogApi: CatalogApi
 ) : CatalogRepository {

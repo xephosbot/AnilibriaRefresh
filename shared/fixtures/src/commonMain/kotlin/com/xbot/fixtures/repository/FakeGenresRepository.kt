@@ -9,7 +9,9 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.repository.GenresRepository
 import com.xbot.fixtures.data.genreMocks
 import com.xbot.fixtures.data.releaseMocks
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeGenresRepository : GenresRepository {
     override suspend fun getGenres(): Either<DomainError, List<Genre>> {
         return genreMocks.right()

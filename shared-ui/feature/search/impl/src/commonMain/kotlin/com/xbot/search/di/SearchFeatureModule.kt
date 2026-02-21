@@ -17,8 +17,8 @@ import com.xbot.search.navigation.navigateToSearchFilters
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -59,5 +59,5 @@ val searchFeatureModule = module {
             },
         )
     }
-    viewModelOf(::SearchViewModel)
+    viewModel<SearchViewModel>()
 }

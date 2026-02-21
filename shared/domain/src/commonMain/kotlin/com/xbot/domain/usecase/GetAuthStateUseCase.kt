@@ -7,7 +7,9 @@ import com.xbot.domain.utils.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Factory
 
+@Factory
 class GetAuthStateUseCase(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,

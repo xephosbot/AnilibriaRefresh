@@ -1,9 +1,8 @@
 package com.xbot.network.client
 
+import co.touchlab.kermit.Logger as KermitLogger
 import com.xbot.network.Constants
-import com.xbot.network.utils.NetworkReachability
 import com.xbot.network.utils.brotli
-import com.xbot.network.utils.createNetworkObserver
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
@@ -20,15 +19,15 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.logger.Logger
+import org.koin.core.annotation.Singleton
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 
 /**
  * Factory for creating configured HTTP client instances.
  */
+@Singleton
 internal fun createHttpClient(
-    sessionStorage: SessionStorage,
-    logger: Logger
+    sessionStorage: SessionStorage
 ): HttpClient = HttpClient {
     expectSuccess = true
 
@@ -64,7 +63,12 @@ internal fun createHttpClient(
     }
 
     Logging {
-        this.logger = logger.toKtorLogger()
+        this.logger = object : KtorLogger {
+            private val log = KermitLogger.withTag("Ktor")
+            override fun log(message: String) {
+                log.i { message }
+            }
+        }
         this.level = LogLevel.INFO
     }
 
@@ -83,8 +87,4 @@ internal fun createHttpClient(
             }
         }
     }
-}
-
-private fun Logger.toKtorLogger(): KtorLogger = object : KtorLogger {
-    override fun log(message: String) = this@toKtorLogger.info(message)
 }

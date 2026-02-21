@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 internal class AppearanceViewModel(
-    getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
+    private val getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
     private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
     private val updatePureBlackUseCase: UpdatePureBlackUseCase,

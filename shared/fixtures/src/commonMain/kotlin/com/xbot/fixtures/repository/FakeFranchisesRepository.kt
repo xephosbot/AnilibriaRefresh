@@ -7,7 +7,9 @@ import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
 import com.xbot.domain.repository.FranchisesRepository
 import com.xbot.fixtures.data.franchiseMocks
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeFranchisesRepository : FranchisesRepository {
     override suspend fun getFranchises(): Either<DomainError, List<Franchise>> {
         return franchiseMocks.right()

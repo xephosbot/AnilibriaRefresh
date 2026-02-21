@@ -13,7 +13,9 @@ import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.api.GenresApi
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DefaultGenresRepository(
     private val genresApi: GenresApi,
 ) : GenresRepository {

@@ -7,7 +7,9 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.repository.CatalogRepository
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.Factory
 
+@Factory
 class GetCatalogReleasesPagerUseCase(
     private val catalogRepository: CatalogRepository
 ) {

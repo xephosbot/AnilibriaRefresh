@@ -13,7 +13,9 @@ import com.xbot.network.Constants
 import io.ktor.client.HttpClient
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal fun createCoilImageLoader(
     httpClient: HttpClient,
     cacheDir: CoilCacheDir,

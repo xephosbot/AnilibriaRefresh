@@ -7,11 +7,13 @@ import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.dto.ProfileDto
 import io.ktor.client.*
 import io.ktor.client.request.*
+import org.koin.core.annotation.Singleton
 
 interface ProfileApi {
     suspend fun getProfile(): Either<NetworkError, ProfileDto>
 }
 
+@Singleton
 internal class DefaultProfileApi(private val client: HttpClient) : ProfileApi {
     override suspend fun getProfile(): Either<NetworkError, ProfileDto> = client.request {
         get("accounts/users/me/profile") {

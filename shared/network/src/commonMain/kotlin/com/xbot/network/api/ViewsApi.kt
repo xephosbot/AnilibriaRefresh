@@ -10,6 +10,7 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import org.koin.core.annotation.Singleton
 
 interface ViewsApi {
     suspend fun getTimecodes(): Either<NetworkError, List<TimecodeApi>>
@@ -23,6 +24,7 @@ interface ViewsApi {
     )
 }
 
+@Singleton
 internal class DefaultViewsApi(private val client: HttpClient) : ViewsApi {
     override suspend fun getTimecodes(): Either<NetworkError, List<TimecodeApi>> = client.request {
         get("accounts/users/me/views/timecodes") {

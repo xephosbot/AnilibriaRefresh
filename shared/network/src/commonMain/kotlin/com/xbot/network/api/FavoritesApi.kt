@@ -17,6 +17,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import org.koin.core.annotation.Singleton
 
 interface FavoritesApi {
     suspend fun getFavoriteIds(): Either<NetworkError, List<Int>>
@@ -39,6 +40,7 @@ interface FavoritesApi {
     suspend fun getFavoriteYears(): Either<NetworkError, List<Int>>
 }
 
+@Singleton
 internal class DefaultFavoritesApi(private val client: HttpClient) : FavoritesApi {
     override suspend fun getFavoriteIds(): Either<NetworkError, List<Int>> = client.request {
         get("accounts/users/me/favorites/ids") {

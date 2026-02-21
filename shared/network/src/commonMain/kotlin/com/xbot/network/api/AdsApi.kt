@@ -6,12 +6,14 @@ import com.xbot.network.client.request
 import com.xbot.network.models.dto.VastDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import org.koin.core.annotation.Singleton
 
 interface AdsApi {
     suspend fun getVasts(): Either<NetworkError, List<VastDto>>
     suspend fun getVastsChain(): Either<NetworkError, String>
 }
 
+@Singleton
 internal class DefaultAdsApi(private val client: HttpClient) : AdsApi {
     override suspend fun getVasts(): Either<NetworkError, List<VastDto>> = client.request {
         get("ads/vasts")

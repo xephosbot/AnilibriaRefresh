@@ -1,13 +1,35 @@
 package com.xbot.sharedapp.di
 
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.koin.KermitKoinLogger
+import com.xbot.favorite.di.favoriteFeatureModule
+import com.xbot.home.di.homeFeatureModule
+import com.xbot.login.di.loginFeatureModule
+import com.xbot.player.di.playerFeatureModule
+import com.xbot.preference.di.preferenceFeatureModule
+import com.xbot.search.di.searchFeatureModule
+import com.xbot.title.di.titleFeatureModule
 import org.koin.core.KoinApplication
-import org.koin.core.context.startKoin
+import org.koin.plugin.module.dsl.startKoin
 
 fun initKoin(
     config: (KoinApplication.() -> Unit)? = null
 ) {
-    startKoin {
+    startKoin<AnilibriaApp> {
+        kermitLogger()
         config?.invoke(this)
-        modules(appModule)
+        modules(
+            favoriteFeatureModule,
+            homeFeatureModule,
+            playerFeatureModule,
+            preferenceFeatureModule,
+            searchFeatureModule,
+            titleFeatureModule,
+            loginFeatureModule
+        )
     }
+}
+
+internal fun KoinApplication.kermitLogger() {
+    logger(KermitKoinLogger(Logger.withTag("koin")))
 }

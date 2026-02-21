@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.cocoapods)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -64,5 +65,8 @@ kotlin {
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
+        implementation(libs.koin.annotations)
+        implementation(libs.kermit)
+        implementation(libs.kermit.koin)
     }
 }

@@ -4,7 +4,9 @@ import com.xbot.domain.models.AppearanceSettings
 import com.xbot.domain.repository.AppearanceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import org.koin.core.annotation.Factory
 
+@Factory
 class GetAppearanceSettingsUseCase(
     private val repository: AppearanceRepository
 ) {

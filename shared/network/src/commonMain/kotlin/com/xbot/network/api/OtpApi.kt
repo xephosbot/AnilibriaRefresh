@@ -10,6 +10,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import org.koin.core.annotation.Singleton
 
 interface OtpApi {
     suspend fun getOtp(deviceId: String): Either<NetworkError, OtpResponse>
@@ -17,6 +18,7 @@ interface OtpApi {
     suspend fun loginWithOtp(code: Int, deviceId: String): Either<NetworkError, LoginResponse>
 }
 
+@Singleton
 internal class DefaultOtpApi(private val client: HttpClient) : OtpApi {
     override suspend fun getOtp(deviceId: String): Either<NetworkError, OtpResponse> = client.request {
         post("accounts/otp/get") {

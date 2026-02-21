@@ -19,8 +19,8 @@ import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -71,5 +71,5 @@ val homeFeatureModule = module {
             }
         )
     }
-    viewModelOf(::HomeViewModel)
+    viewModel<HomeViewModel>()
 }

@@ -15,7 +15,7 @@ dependencies {
     implementation(projects.sharedUi)
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlinx.coroutines.swing)
-    implementation(libs.koin.compose)
+    implementation(libs.koin.core)
     implementation(libs.slf4j)
 }
 

@@ -6,7 +6,9 @@ import com.xbot.domain.utils.DispatcherProvider
 import com.xbot.domain.utils.combinePartial
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import org.koin.core.annotation.Factory
 
+@Factory
 class GetCatalogFiltersUseCase(
     private val catalogRepository: CatalogRepository,
     private val dispatcherProvider: DispatcherProvider,

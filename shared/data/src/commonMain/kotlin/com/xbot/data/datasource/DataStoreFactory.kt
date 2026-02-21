@@ -4,12 +4,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import okio.Path
+import org.koin.core.annotation.Singleton
 import kotlin.jvm.JvmInline
 
-internal fun createDataStore(producePath: () -> Path): DataStore<Preferences> =
-    PreferenceDataStoreFactory.createWithPath(
-        produceFile = { producePath() }
-    )
+@Singleton
+internal fun createDataStore(
+    cacheDir: DataStoreDir,
+): DataStore<Preferences> = PreferenceDataStoreFactory.createWithPath(
+    produceFile = { cacheDir.path.resolve(dataStoreFileName) }
+)
 
 @JvmInline
 internal value class DataStoreDir(val path: Path)

@@ -59,6 +59,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
@@ -501,7 +502,7 @@ private fun Modifier.symmetricInsetsPadding(): Modifier {
 
 private fun VideoPlayerState.seekForward(amount: Long) {
     val durationSec = metadata.duration ?: 0
-    println("durationSec: $durationSec")
+    Logger.i { "durationSec: $durationSec" }
     if (durationSec > 0) {
         val delta = (amount.toFloat() / durationSec) * 1000f
         seekTo((sliderPos + delta).coerceIn(0f, 1000f))
@@ -510,7 +511,7 @@ private fun VideoPlayerState.seekForward(amount: Long) {
 
 private fun VideoPlayerState.seekBackward(amount: Long) {
     val durationSec = metadata.duration ?: 0
-    println("durationSec: $durationSec")
+    Logger.i { "durationSec: $durationSec" }
     if (durationSec > 0) {
         val delta = (amount.toFloat() / durationSec) * 1000f
         seekTo((sliderPos - delta).coerceIn(0f, 1000f))

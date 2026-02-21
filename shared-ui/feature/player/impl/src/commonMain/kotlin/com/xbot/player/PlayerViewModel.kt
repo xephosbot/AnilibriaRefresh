@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.Episode
 import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.player.navigation.PlayerRoute
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
@@ -26,9 +26,9 @@ import kotlin.time.Duration.Companion.seconds
 
 internal class PlayerViewModel(
     private val repository: ReleasesRepository,
-    private val snackbarManager: SnackbarManager,
     private val savedStateHandle: SavedStateHandle,
     private val route: PlayerRoute,
+    private val snackbarManager: SnackbarManager = SnackbarManager,
 ) : ViewModel() {
     private val releaseId = route.releaseId
     private val initialEpisodeOrdinal = route.episodeOrdinal

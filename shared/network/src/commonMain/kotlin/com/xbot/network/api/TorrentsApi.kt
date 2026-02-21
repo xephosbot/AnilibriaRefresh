@@ -8,6 +8,7 @@ import com.xbot.network.models.responses.PaginatedResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Singleton
 
 interface TorrentsApi {
     suspend fun getTorrents(page: Int, limit: Int): Either<NetworkError, PaginatedResponse<TorrentDto>>
@@ -18,6 +19,7 @@ interface TorrentsApi {
     suspend fun getReleaseTorrentsRss(releaseId: Int, pk: String? = null): Either<NetworkError, String>
 }
 
+@Singleton
 internal class DefaultTorrentsApi(private val client: HttpClient) : TorrentsApi {
     override suspend fun getTorrents(
         page: Int,

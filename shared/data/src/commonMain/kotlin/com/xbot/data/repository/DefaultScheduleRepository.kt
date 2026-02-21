@@ -9,17 +9,17 @@ import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.repository.ScheduleRepository
 import com.xbot.network.api.ReleasesApi
-import com.xbot.network.client.NetworkError
 import com.xbot.network.api.ScheduleApi
+import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.ScheduleDto
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.koin.core.annotation.Singleton
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@Singleton
 internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
     private val releasesApi: ReleasesApi,

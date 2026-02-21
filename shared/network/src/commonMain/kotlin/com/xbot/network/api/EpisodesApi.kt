@@ -7,12 +7,14 @@ import com.xbot.network.models.dto.EpisodeTimecodeDto
 import com.xbot.network.models.dto.EpisodeWithReleaseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import org.koin.core.annotation.Singleton
 
 interface EpisodesApi {
     suspend fun getEpisode(episodeId: Int): Either<NetworkError, EpisodeWithReleaseDto>
     suspend fun getEpisodeTimecode(releaseEpisodeId: String): Either<NetworkError, EpisodeTimecodeDto>
 }
 
+@Singleton
 internal class DefaultEpisodesApi(private val client: HttpClient) : EpisodesApi {
     override suspend fun getEpisode(episodeId: Int): Either<NetworkError, EpisodeWithReleaseDto> = client.request {
         get("anime/releases/episodes/${episodeId}")

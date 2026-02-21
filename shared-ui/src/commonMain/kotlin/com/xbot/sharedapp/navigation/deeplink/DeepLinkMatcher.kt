@@ -1,5 +1,6 @@
 package com.xbot.sharedapp.navigation.deeplink
 
+import co.touchlab.kermit.Logger
 import com.xbot.common.navigation.NavKey
 import kotlinx.serialization.KSerializer
 
@@ -37,7 +38,7 @@ internal class DeepLinkMatcher<T : NavKey>(
                     val parsedValue = try {
                         candidateSegment.typeParser.invoke(requestedSegment)
                     } catch (e: IllegalArgumentException) {
-                        println("Failed to parse path value:[$requestedSegment]. $e")
+                        Logger.e(e) { "Failed to parse path value:[$requestedSegment]." }
                         return null
                     }
                     args[candidateSegment.stringValue] = parsedValue
@@ -52,7 +53,7 @@ internal class DeepLinkMatcher<T : NavKey>(
             val queryParsedValue = try {
                 queryStringParser.invoke(value)
             } catch (e: IllegalArgumentException) {
-                println("Failed to parse query name:[$name] value:[$value]. $e")
+                Logger.e(e) { "Failed to parse query name:[$name] value:[$value]." }
                 return null
             }
             args[name] = queryParsedValue

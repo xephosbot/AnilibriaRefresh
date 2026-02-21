@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.usecase.GetReleaseDetailsUseCase
 import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.title.navigation.TitleRoute
@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.update
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class TitleViewModel(
     private val getReleaseDetailUseCase: GetReleaseDetailsUseCase,
-    private val snackbarManager: SnackbarManager,
     private val titleRoute: TitleRoute,
+    private val snackbarManager: SnackbarManager = SnackbarManager,
 ) : ViewModel() {
 
     private val refreshTrigger = MutableStateFlow(0)

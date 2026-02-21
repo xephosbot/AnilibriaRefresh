@@ -16,10 +16,11 @@ import com.xbot.fixtures.data.releaseMocks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FakeCollectionsRepository : CollectionsRepository {
-    private val collections = MutableStateFlow<Map<Int, CollectionType>>(
+    private val collections = MutableStateFlow(
         mapOf(
             1 to CollectionType.WATCHING,
             2 to CollectionType.PLANNED

@@ -32,8 +32,8 @@ import com.xbot.preference.team.TeamViewModel
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -127,8 +127,8 @@ val preferenceFeatureModule = module {
             }
         )
     }
-    viewModelOf(::HistoryViewModel)
-    viewModelOf(::TeamViewModel)
-    viewModelOf(::DonateViewModel)
-    viewModelOf(::AppearanceViewModel)
+    viewModel<HistoryViewModel>()
+    viewModel<TeamViewModel>()
+    viewModel<DonateViewModel>()
+    viewModel<AppearanceViewModel>()
 }

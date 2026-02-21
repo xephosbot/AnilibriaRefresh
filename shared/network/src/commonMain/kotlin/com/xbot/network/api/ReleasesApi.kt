@@ -10,6 +10,7 @@ import com.xbot.network.models.responses.PaginatedResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Singleton
 
 interface ReleasesApi {
     suspend fun getLatestReleases(limit: Int): Either<NetworkError, List<ReleaseDto>>
@@ -31,6 +32,7 @@ interface ReleasesApi {
     ): Either<NetworkError, List<EpisodeTimecodeDto>>
 }
 
+@Singleton
 internal class DefaultReleasesApi(private val client: HttpClient) : ReleasesApi {
     override suspend fun getLatestReleases(limit: Int): Either<NetworkError, List<ReleaseDto>> = client.request {
         get("anime/releases/latest") {

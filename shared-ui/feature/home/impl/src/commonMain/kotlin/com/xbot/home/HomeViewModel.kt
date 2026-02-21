@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.localization.localizedMessage
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
@@ -19,6 +18,7 @@ import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
 import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,17 +34,20 @@ import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class HomeViewModel(
-    getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
-    getAuthState: GetAuthStateUseCase,
+    private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
+    private val getAuthState: GetAuthStateUseCase,
     private val getReleasesFeed: GetReleasesFeedUseCase,
     private val getSortedScheduleWeekUseCase: GetSortedScheduleWeekUseCase,
-    private val snackbarManager: SnackbarManager,
     private val savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-    val releases: Flow<PagingData<Release>> = getCatalogReleasesPager()
-        .cachedIn(viewModelScope)
 
     private val refreshTrigger = MutableStateFlow(0)
+
+    val releases: Flow<PagingData<Release>> = refreshTrigger.flatMapLatest {
+        getCatalogReleasesPager()
+    }.cachedIn(viewModelScope)
+
     private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
 
     private val feedData = refreshTrigger.flatMapLatest {
