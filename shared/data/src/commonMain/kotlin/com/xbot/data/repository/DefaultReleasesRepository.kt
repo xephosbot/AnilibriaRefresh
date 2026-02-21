@@ -36,22 +36,18 @@ internal class DefaultReleasesRepository(
     override fun getReleasesList(
         ids: List<Int>?,
         aliases: List<String>?
-    ): PagingSource<Int, Release> {
-        return CommonPagingSource(
-            loadPage = { page, limit ->
-                val result = releasesApi.getReleasesList(
-                    ids = ids,
-                    aliases = aliases,
-                    page = page,
-                    limit = limit,
-                ).getOrElse { error ->
-                    throw error.toDomain()
-                }
-                CommonPagingSource.PaginatedResponse(
-                    items = result.data.map(ReleaseDto::toDomain),
-                    total = result.meta.pagination.total
-                )
-            }
+    ): PagingSource<Int, Release> = CommonPagingSource { page, limit ->
+        val result = releasesApi.getReleasesList(
+            ids = ids,
+            aliases = aliases,
+            page = page,
+            limit = limit,
+        ).getOrElse { error ->
+            throw error.toDomain()
+        }
+        CommonPagingSource.PaginatedResponse(
+            items = result.data.map(ReleaseDto::toDomain),
+            total = result.meta.pagination.total
         )
     }
 
