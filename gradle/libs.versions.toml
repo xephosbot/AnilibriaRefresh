@@ -9,7 +9,7 @@ android-desugar-jdk = "2.1.5"
 # Kotlin
 kotlin = "2.3.20-RC"
 ksp = "2.3.6"
-compose-multiplatform = "1.11.0-alpha02"
+compose-multiplatform = "1.11.0-alpha03"
 compose-material3 = "1.11.0-alpha03"
 compose-material3-adaptive = "1.3.0-alpha05"
 
