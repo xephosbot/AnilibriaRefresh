@@ -5,7 +5,9 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
@@ -70,12 +72,32 @@ private fun PlayerScreenContent(
     val player = rememberVideoPlayerState()
     val pipController = rememberPictureInPictureController(player)
 
-    LaunchedEffect(state.currentEpisode) {
-        state.currentEpisode?.let { episode ->
-            val uri = episode.hls1080 ?: episode.hls720 ?: episode.hls480 ?: ""
-            if (uri.isNotEmpty()) {
-                player.openUri(uri, InitialPlayerState.PLAY)
+    var pendingSeek by remember { mutableStateOf<Float?>(null) }
+    var previousEpisodeId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(state.currentEpisode, state.videoUri) {
+        val uri = state.videoUri
+        val currentEpisodeId = state.currentEpisode?.id
+
+        if (!uri.isNullOrEmpty()) {
+            val isQualityChange = previousEpisodeId == currentEpisodeId
+
+            val initialState = if (isQualityChange && player.hasMedia) {
+                pendingSeek = player.sliderPos
+                if (player.isPlaying) InitialPlayerState.PLAY else InitialPlayerState.PAUSE
+            } else {
+                InitialPlayerState.PLAY
             }
+
+            player.openUri(uri, initialState)
+            previousEpisodeId = currentEpisodeId
+        }
+    }
+
+    LaunchedEffect(player.isLoading) {
+        if (!player.isLoading && pendingSeek != null) {
+            player.seekTo(pendingSeek!!)
+            pendingSeek = null
         }
     }
 
@@ -89,8 +111,13 @@ private fun PlayerScreenContent(
                     title = state.currentEpisode?.name.orEmpty(),
                     episodes = state.episodes,
                     selectedEpisode = state.currentEpisode,
+                    selectedQuality = state.quality,
+                    availableQualities = state.availableQualities,
                     onEpisodeClick = {
                         onAction(PlayerScreenAction.OnEpisodeChange(it))
+                    },
+                    onQualityChange = {
+                        onAction(PlayerScreenAction.OnQualityChange(it))
                     },
                     buffering = {
                         ContainedLoadingIndicator()
@@ -125,7 +152,8 @@ private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenS
         PlayerScreenState(
             isLoading = false,
             episodes = episodeMocks,
-            currentEpisode = episodeMocks.first()
+            currentEpisode = episodeMocks.first(),
+            quality = VideoQuality.FHD,
         )
     )
 }

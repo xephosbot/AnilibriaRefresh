@@ -45,12 +45,29 @@ internal class PlayerViewModel(
     fun onAction(action: PlayerScreenAction) {
         when (action) {
             is PlayerScreenAction.OnEpisodeChange -> onEpisodeChange(action.episode)
+            is PlayerScreenAction.OnQualityChange -> onQualityChange(action.quality)
         }
     }
 
     private fun onEpisodeChange(episode: Episode) {
         savedStateHandle[EPISODE_ORDINAL_KEY] = episode.ordinal
-        _state.update { it.copy(currentEpisode = episode) }
+        _state.update {
+            val newAvailableQualities = episode.availableQualities
+            val newQuality = if (it.quality in newAvailableQualities) {
+                it.quality
+            } else {
+                newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
+            }
+
+            it.copy(
+                currentEpisode = episode,
+                quality = newQuality,
+            )
+        }
+    }
+
+    private fun onQualityChange(quality: VideoQuality) {
+        _state.update { it.copy(quality = quality) }
     }
 
     private fun fetchTitleDetails() {
@@ -65,13 +82,26 @@ internal class PlayerViewModel(
                     val episode = release.episodes.find { it?.ordinal == targetOrdinal }
                         ?: release.episodes.getOrNull(targetOrdinal.toInt()) // Fallback mostly for safety
                         ?: release.episodes.firstOrNull()
-                        
-                    _state.update {
-                        it.copy(
+
+                    _state.update { state ->
+                        state.copy(
                             isLoading = false,
-                            episodes = release.episodes,
-                            currentEpisode = episode
-                        )
+                            episodes = release.episodes
+                        ).let {
+                            if (episode != null) {
+                                val newAvailableQualities = episode.availableQualities
+                                val newQuality = if (it.quality in newAvailableQualities) {
+                                    it.quality
+                                } else {
+                                    newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
+                                }
+
+                                it.copy(
+                                    currentEpisode = episode,
+                                    quality = newQuality,
+                                )
+                            } else it
+                        }
                     }
                 }
                 is Either.Left -> showErrorMessage(result.value, ::fetchTitleDetails)
@@ -94,13 +124,42 @@ internal class PlayerViewModel(
     }
 }
 
+enum class VideoQuality(val title: String) {
+    SD("480p"),
+    HD("720p"),
+    FHD("1080p")
+}
+
 @Stable
 internal data class PlayerScreenState(
     val isLoading: Boolean = true,
     val episodes: List<Episode?> = emptyList(),
     val currentEpisode: Episode? = null,
-)
+    val quality: VideoQuality = VideoQuality.FHD,
+) {
+    val availableQualities: List<VideoQuality>
+        get() = currentEpisode?.availableQualities ?: emptyList()
+
+    val videoUri: String?
+        get() = currentEpisode?.getVideoUri(quality)
+}
 
 internal sealed interface PlayerScreenAction {
     data class OnEpisodeChange(val episode: Episode) : PlayerScreenAction
+    data class OnQualityChange(val quality: VideoQuality) : PlayerScreenAction
+}
+
+private val Episode.availableQualities: List<VideoQuality>
+    get() = buildList {
+        if (!hls480.isNullOrEmpty()) add(VideoQuality.SD)
+        if (!hls720.isNullOrEmpty()) add(VideoQuality.HD)
+        if (!hls1080.isNullOrEmpty()) add(VideoQuality.FHD)
+    }
+
+private fun Episode.getVideoUri(quality: VideoQuality): String? {
+    return when (quality) {
+        VideoQuality.SD -> hls480
+        VideoQuality.HD -> hls720
+        VideoQuality.FHD -> hls1080
+    }
 }

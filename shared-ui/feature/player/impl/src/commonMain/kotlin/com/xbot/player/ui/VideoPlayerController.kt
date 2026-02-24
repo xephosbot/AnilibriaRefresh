@@ -27,6 +27,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -56,6 +58,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -72,8 +75,10 @@ import com.xbot.designsystem.icons.Pause
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.icons.PlaylistPlay
 import com.xbot.designsystem.icons.Replay10
+import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.domain.models.Episode
+import com.xbot.player.VideoQuality
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -86,7 +91,10 @@ fun VideoPlayerController(
     title: String,
     episodes: List<Episode?>,
     selectedEpisode: Episode?,
+    selectedQuality: VideoQuality,
+    availableQualities: List<VideoQuality>,
     onEpisodeClick: (Episode) -> Unit,
+    onQualityChange: (VideoQuality) -> Unit,
     buffering: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit,
@@ -127,6 +135,9 @@ fun VideoPlayerController(
                     isVisible = isControllerVisible,
                     playerState = player,
                     title = title,
+                    selectedQuality = selectedQuality,
+                    availableQualities = availableQualities,
+                    onQualityChange = onQualityChange,
                     onClickBack = onClickBack,
                     onPlayPause = {
                         if (player.isPlaying) {
@@ -226,6 +237,9 @@ private fun ControllerOverlay(
     isVisible: Boolean,
     playerState: VideoPlayerState,
     title: String,
+    selectedQuality: VideoQuality,
+    availableQualities: List<VideoQuality>,
+    onQualityChange: (VideoQuality) -> Unit,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
     onSeekBack: () -> Unit,
@@ -243,6 +257,9 @@ private fun ControllerOverlay(
             AutoHidingController(
                 playerState = playerState,
                 title = title,
+                selectedQuality = selectedQuality,
+                availableQualities = availableQualities,
+                onQualityChange = onQualityChange,
                 onClickBack = onClickBack,
                 onPlayPause = onPlayPause,
                 onSeekBack = onSeekBack,
@@ -258,6 +275,9 @@ private fun ControllerOverlay(
 private fun AutoHidingController(
     playerState: VideoPlayerState,
     title: String,
+    selectedQuality: VideoQuality,
+    availableQualities: List<VideoQuality>,
+    onQualityChange: (VideoQuality) -> Unit,
     onClickBack: () -> Unit,
     onPlayPause: () -> Unit,
     onSeekBack: () -> Unit,
@@ -283,6 +303,9 @@ private fun AutoHidingController(
     ) {
         VideoPlayerTopBar(
             title = title,
+            selectedQuality = selectedQuality,
+            availableQualities = availableQualities,
+            onQualityChange = onQualityChange,
             onClickBack = onClickBack,
             onOpenPlaylist = onOpenPlaylist,
             modifier = Modifier.align(Alignment.TopCenter)
@@ -372,10 +395,15 @@ private fun TimelineControls(
 @Composable
 private fun VideoPlayerTopBar(
     title: String,
+    selectedQuality: VideoQuality,
+    availableQualities: List<VideoQuality>,
+    onQualityChange: (VideoQuality) -> Unit,
     onClickBack: () -> Unit,
     onOpenPlaylist: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isQualityMenuExpanded by remember { mutableStateOf(false) }
+
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = { Text(title) },
@@ -388,6 +416,35 @@ private fun VideoPlayerTopBar(
             }
         },
         actions = {
+            Box {
+                IconButton(onClick = { isQualityMenuExpanded = true }) {
+                    Icon(
+                        imageVector = AnilibriaIcons.Filled.Settings,
+                        contentDescription = "Quality Settings",
+                    )
+                }
+                DropdownMenu(
+                    expanded = isQualityMenuExpanded,
+                    onDismissRequest = { isQualityMenuExpanded = false }
+                ) {
+                    availableQualities.forEach { quality ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = quality.title,
+                                    fontWeight = if (selectedQuality == quality) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedQuality == quality) MaterialTheme.colorScheme.primary else Color.Unspecified
+                                )
+                            },
+                            onClick = {
+                                onQualityChange(quality)
+                                isQualityMenuExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
             IconButton(onClick = onOpenPlaylist) {
                 Icon(
                     imageVector = AnilibriaIcons.PlaylistPlay,
