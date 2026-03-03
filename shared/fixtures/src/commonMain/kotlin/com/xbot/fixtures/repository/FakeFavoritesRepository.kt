@@ -13,9 +13,7 @@ import com.xbot.domain.models.filters.FavoriteFilters
 import com.xbot.domain.repository.FavoritesRepository
 import com.xbot.fixtures.data.genreMocks
 import com.xbot.fixtures.data.releaseMocks
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -26,7 +24,7 @@ class FakeFavoritesRepository : FavoritesRepository {
         return favorites.value.right()
     }
 
-    override fun getFavoriteReleases(filters: FavoriteFilters): PagingSource<Int, Release> {
+    override fun getFavoriteReleases(filters: FavoriteFilters?): PagingSource<Int, Release> {
         return FakePagingSource(releaseMocks.filter { favorites.value.contains(it.id) })
     }
 
@@ -62,9 +60,5 @@ class FakeFavoritesRepository : FavoritesRepository {
 
     override suspend fun getFavoriteYears(): Either<DomainError, List<Int>> {
         return (2010..2024).toList().right()
-    }
-
-    override fun observeFavorites(): Flow<List<Int>> {
-        return favorites.asStateFlow()
     }
 }
