@@ -83,7 +83,11 @@ internal fun AnilibriaNavGraph(
                 rememberSaveableStateHolderNavEntryDecorator(),
                 rememberSharedViewModelStoreNavEntryDecorator(),
             ),
-            sceneStrategy = supportingPaneSceneStrategy then listDetailSceneStrategy then dialogStrategy,
+            sceneStrategies = listOf(
+                supportingPaneSceneStrategy,
+                listDetailSceneStrategy,
+                dialogStrategy
+            ),
             entryProvider = koinEntryProvider()
         )
     }
