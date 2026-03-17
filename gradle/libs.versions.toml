@@ -7,7 +7,7 @@ android-gradle-plugin = "9.1.0"
 android-desugar-jdk = "2.1.5"
 
 # Kotlin
-kotlin = "2.3.20-RC3"
+kotlin = "2.3.20"
 ksp = "2.3.6"
 #noinspection NewerVersionAvailable
 compose-multiplatform = "1.11.0-alpha03"
