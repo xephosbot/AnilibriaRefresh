@@ -56,3 +56,7 @@ kotlin {
         freeCompilerArgs.addAll("-Xcontext-parameters", "-Xexpect-actual-classes")
     }
 }
+
+koinCompiler {
+    compileSafety = false
+}

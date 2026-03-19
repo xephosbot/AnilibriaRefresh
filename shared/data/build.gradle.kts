@@ -45,3 +45,7 @@ kotlin {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
+
+koinCompiler {
+    compileSafety = false
+}

@@ -70,3 +70,7 @@ kotlin {
         implementation(libs.kermit.koin)
     }
 }
+
+koinCompiler {
+    compileSafety = false
+}

@@ -55,3 +55,7 @@ composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
     metricsDestination = layout.buildDirectory.dir("compose_compiler")
 }
+
+koinCompiler {
+    compileSafety = false
+}
