@@ -33,30 +33,29 @@ import org.koin.core.annotation.Singleton
 internal class DefaultCatalogRepository(
     private val catalogApi: CatalogApi
 ) : CatalogRepository {
-    override fun getCatalogReleases(search: String?, filters: CatalogFilters?): PagingSource<Int, Release> {
-        return CommonPagingSource(
-            loadPage = { page, limit ->
-                val result = catalogApi.getCatalogReleases(
-                    page = page,
-                    limit = limit,
-                    search = search,
-                    genres = filters?.genres?.map(Genre::id),
-                    types = filters?.types?.map(ReleaseType::toDto),
-                    seasons = filters?.seasons?.map(Season::toDto),
-                    fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
-                    toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
-                    sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
-                    ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
-                    publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
-                    productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).getOrElse { error ->
-                    throw error.toDomain()
-                }
-                CommonPagingSource.PaginatedResponse(
-                    items = result.data.map(ReleaseDto::toDomain),
-                    total = result.meta.pagination.total
-                )
-            }
+    override fun getCatalogReleases(
+        search: String?,
+        filters: CatalogFilters?
+    ): PagingSource<Int, Release> = CommonPagingSource { page, limit ->
+        val result = catalogApi.getCatalogReleases(
+            page = page,
+            limit = limit,
+            search = search,
+            genres = filters?.genres?.map(Genre::id).takeIf { it?.isNotEmpty() == true },
+            types = filters?.types?.map(ReleaseType::toDto).takeIf { it?.isNotEmpty() == true },
+            seasons = filters?.seasons?.map(Season::toDto).takeIf { it?.isNotEmpty() == true },
+            fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
+            toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
+            sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
+            ageRatings = filters?.ageRatings?.map(AgeRating::toDto).takeIf { it?.isNotEmpty() == true },
+            publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto).takeIf { it?.isNotEmpty() == true },
+            productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto).takeIf { it?.isNotEmpty() == true },
+        ).getOrElse { error ->
+            throw error.toDomain()
+        }
+        CommonPagingSource.PaginatedResponse(
+            items = result.data.map(ReleaseDto::toDomain),
+            total = result.meta.pagination.total
         )
     }
 

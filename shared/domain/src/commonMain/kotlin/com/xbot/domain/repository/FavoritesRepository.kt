@@ -9,11 +9,10 @@ import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.FavoriteFilters
-import kotlinx.coroutines.flow.Flow
 
 interface FavoritesRepository {
     suspend fun getFavoriteIds(): Either<DomainError, List<Int>>
-    fun getFavoriteReleases(filters: FavoriteFilters): PagingSource<Int, Release>
+    fun getFavoriteReleases(filters: FavoriteFilters? = null): PagingSource<Int, Release>
     suspend fun addToFavorites(releaseIds: List<Int>): Either<DomainError, Unit>
     suspend fun removeFromFavorites(releaseIds: List<Int>): Either<DomainError, Unit>
     suspend fun getFavoriteAgeRatings(): Either<DomainError, List<AgeRating>>
@@ -21,5 +20,4 @@ interface FavoritesRepository {
     suspend fun getFavoriteSortingTypes(): Either<DomainError, List<SortingType>>
     suspend fun getFavoriteReleaseTypes(): Either<DomainError, List<ReleaseType>>
     suspend fun getFavoriteYears(): Either<DomainError, List<Int>>
-    fun observeFavorites(): Flow<List<Int>>
 }
