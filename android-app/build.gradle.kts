@@ -66,7 +66,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.sharedUi)
+    implementation(projects.composeUi)
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)

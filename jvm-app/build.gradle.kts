@@ -12,7 +12,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(projects.sharedUi)
+    implementation(projects.composeUi)
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.koin.core)
