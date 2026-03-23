@@ -21,8 +21,8 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.domain)
-        implementation(projects.core.fixtures)
+        implementation(projects.core.domain.api)
+        implementation(projects.core.domain.testFixtures)
         implementation(libs.kotlinx.datetime)
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
