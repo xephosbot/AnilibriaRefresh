@@ -8,7 +8,11 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.shared.domain.fixtures"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt()) {
+                minorApiLevel = 1
+            }
+        }
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
     iosArm64()
@@ -21,9 +25,10 @@ kotlin {
     dependencies {
         implementation(projects.core.common)
         implementation(projects.core.domain.api)
+
+        implementation(libs.arrow.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.arrow.core)
     }
 
     compilerOptions {

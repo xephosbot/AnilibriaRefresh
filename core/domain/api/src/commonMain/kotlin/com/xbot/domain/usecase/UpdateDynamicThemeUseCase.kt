@@ -1,5 +1,5 @@
 package com.xbot.domain.usecase
 
 fun interface UpdateDynamicThemeUseCase {
-    suspend fun invoke(enabled: Boolean)
+    suspend operator fun invoke(enabled: Boolean)
 }

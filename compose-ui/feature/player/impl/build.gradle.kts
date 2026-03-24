@@ -10,8 +10,12 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.composeUi.feature.player.impl"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        namespace = "com.xbot.composeui.feature.player.impl"
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt()) {
+                minorApiLevel = 1
+            }
+        }
         minSdk = libs.versions.android.minsdk.get().toInt()
 
         androidResources {
@@ -26,25 +30,28 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        api(projects.composeUi.feature.player.api)
+
+        implementation(projects.composeUi.common)
+        implementation(projects.composeUi.designSystem)
+        implementation(projects.core.data.api)
         implementation(projects.core.domain.api)
         implementation(projects.core.domain.testFixtures)
-        implementation(projects.composeUi.designSystem)
-        implementation(projects.composeUi.common)
-        implementation(projects.composeUi.feature.player.api)
+
+        implementation(libs.arrow.core)
         implementation(libs.compose.foundation)
-        implementation(libs.navigation3.runtime)
-        implementation(libs.navigation3.ui)
-        implementation(libs.lifecycle.viewmodel.compose)
-        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.kermit)
+        implementation(libs.koin.annotations)
+        implementation(libs.koin.compose)
+        implementation(libs.koin.compose.navigation3)
+        implementation(libs.koin.compose.viewmodel)
+        implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.kotlinx.atomicfu)
-        implementation(libs.arrow.core)
-        implementation(libs.koin.compose)
-        implementation(libs.koin.compose.viewmodel)
-        implementation(libs.koin.compose.navigation3)
-        implementation(libs.koin.annotations)
-        implementation(libs.kermit)
+        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.lifecycle.viewmodel.compose)
+        implementation(libs.navigation3.runtime)
+        implementation(libs.navigation3.ui)
         implementation(libs.videoplayer.compose)
     }
 

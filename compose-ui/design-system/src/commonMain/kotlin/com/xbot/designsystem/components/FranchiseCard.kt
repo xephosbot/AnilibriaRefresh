@@ -49,9 +49,9 @@ import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.domain.fixtures.data.franchiseMocks
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
-import com.xbot.fixtures.data.franchiseMocks
 import com.xbot.localization.localizedName
 import com.xbot.resources.Res
 import com.xbot.resources.franchise_episodes_count

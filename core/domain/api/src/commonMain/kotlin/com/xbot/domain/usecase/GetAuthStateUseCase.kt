@@ -4,5 +4,5 @@ import com.xbot.domain.models.AuthState
 import kotlinx.coroutines.flow.Flow
 
 fun interface GetAuthStateUseCase {
-    fun invoke(): Flow<AuthState>
+    operator fun invoke(): Flow<AuthState>
 }

@@ -5,10 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import com.xbot.data.repository.ReleasesRepository
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.models.Episode
-import com.xbot.domain.repository.ReleasesRepository
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
 import com.xbot.player.navigation.PlayerRoute

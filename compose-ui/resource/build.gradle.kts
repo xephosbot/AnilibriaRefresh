@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.sharedui.resource"
+        namespace = "com.xbot.composeui.resource"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
 
@@ -23,10 +23,12 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.domain)
-        implementation(libs.kotlinx.datetime)
-        implementation(libs.compose.foundation)
         api(libs.compose.resources)
+
+        implementation(projects.core.domain.api)
+
+        implementation(libs.compose.foundation)
+        implementation(libs.kotlinx.datetime)
     }
 
     sourceSets {

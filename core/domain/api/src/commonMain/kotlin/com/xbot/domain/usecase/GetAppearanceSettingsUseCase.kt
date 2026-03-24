@@ -4,5 +4,5 @@ import com.xbot.domain.models.AppearanceSettings
 import kotlinx.coroutines.flow.Flow
 
 fun interface GetAppearanceSettingsUseCase {
-    fun invoke(): Flow<AppearanceSettings>
+    operator fun invoke(): Flow<AppearanceSettings>
 }

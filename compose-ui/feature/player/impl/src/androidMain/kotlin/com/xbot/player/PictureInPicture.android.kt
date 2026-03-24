@@ -31,7 +31,7 @@ import androidx.core.pip.PictureInPictureDelegate.Event
 import androidx.core.pip.PictureInPictureDelegate.OnPictureInPictureEventListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.xbot.sharedui.feature.player.impl.R
+import com.xbot.composeui.feature.player.impl.R
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.flow.combine
 

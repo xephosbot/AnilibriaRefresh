@@ -9,8 +9,12 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.sharedui.feature.common"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        namespace = "com.xbot.composeui.common"
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt()) {
+                minorApiLevel = 1
+            }
+        }
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
     iosArm64()
@@ -21,19 +25,20 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.domain)
         implementation(projects.composeUi.designSystem)
+        implementation(projects.core.domain.api)
+
+        implementation(libs.arrow.core)
         implementation(libs.compose.foundation)
-        implementation(libs.navigation3.runtime)
-        implementation(libs.navigation3.ui)
-        implementation(libs.lifecycle.viewmodel.compose)
-        implementation(libs.lifecycle.runtime.compose)
-        implementation(libs.lifecycle.viewmodel.navigation3)
+        implementation(libs.koin.compose)
+        implementation(libs.koin.compose.navigation3)
+        implementation(libs.koin.compose.viewmodel)
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.arrow.core)
-        implementation(libs.koin.compose)
-        implementation(libs.koin.compose.viewmodel)
-        implementation(libs.koin.compose.navigation3)
+        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.lifecycle.viewmodel.compose)
+        implementation(libs.lifecycle.viewmodel.navigation3)
+        implementation(libs.navigation3.runtime)
+        implementation(libs.navigation3.ui)
     }
 }

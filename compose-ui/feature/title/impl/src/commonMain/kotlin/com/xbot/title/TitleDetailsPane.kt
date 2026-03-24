@@ -57,7 +57,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.ChipGroup
@@ -83,22 +82,33 @@ import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.data.getReleaseDetailMock
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.fixtures.data.getReleaseDetailMock
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
+import com.xbot.resources.button_retry
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.label_episodes
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
+import com.xbot.title.state.TitleScreenAction
+import com.xbot.title.state.TitleScreenSideEffect
+import com.xbot.title.state.TitleScreenState
+import com.xbot.title.state.TitleViewModel
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -113,7 +123,20 @@ internal fun TitleDetailsPane(
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is TitleScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     TitleDetailsPaneContent(
         modifier = modifier,

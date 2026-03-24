@@ -9,7 +9,11 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.core.network.api"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt()) {
+                minorApiLevel = 1
+            }
+        }
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
     iosArm64()

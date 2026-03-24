@@ -66,12 +66,13 @@ android {
 }
 
 dependencies {
-    implementation(projects.composeUi)
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
+
+    implementation(projects.composeUi)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.interpolator)
-    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
+    implementation(libs.kotlinx.coroutines.android)
 }

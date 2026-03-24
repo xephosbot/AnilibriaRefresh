@@ -46,8 +46,8 @@ import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.domain.fixtures.data.episodeMocks
 import com.xbot.domain.models.Episode
-import com.xbot.fixtures.data.episodeMocks
 import com.xbot.localization.localizedName
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res

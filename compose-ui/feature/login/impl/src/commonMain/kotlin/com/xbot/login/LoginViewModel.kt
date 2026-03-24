@@ -5,8 +5,8 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import com.xbot.data.repository.AuthRepository
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.repository.AuthRepository
 import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.login_success_message

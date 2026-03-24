@@ -48,7 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
-    SingletonImageLoader.setSafe(koinInject())
+    //SingletonImageLoader.setSafe(koinInject())
 
     val appearanceSettings by viewModel.appearanceSettings.collectAsStateWithLifecycle()
 

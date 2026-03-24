@@ -8,7 +8,11 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.core.data.api"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt()) {
+                minorApiLevel = 1
+            }
+        }
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
     iosArm64()
@@ -20,10 +24,11 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.core.domain.api)
+
         implementation(libs.androidx.paging.core)
+        implementation(libs.arrow.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.arrow.core)
     }
 
     compilerOptions {

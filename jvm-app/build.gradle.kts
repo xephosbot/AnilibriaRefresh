@@ -13,9 +13,10 @@ kotlin {
 
 dependencies {
     implementation(projects.composeUi)
+
     implementation(compose.desktop.currentOs)
-    implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.koin.core)
+    implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.slf4j)
 }
 

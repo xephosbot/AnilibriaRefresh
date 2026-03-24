@@ -55,8 +55,8 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.union
+import com.xbot.domain.fixtures.data.releaseMocks
 import com.xbot.domain.models.Release
-import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters

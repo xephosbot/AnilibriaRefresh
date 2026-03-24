@@ -4,5 +4,5 @@ import com.xbot.domain.models.ScheduleWeek
 import kotlinx.coroutines.flow.Flow
 
 fun interface GetSortedScheduleWeekUseCase {
-    fun invoke(): Flow<ScheduleWeek>
+    operator fun invoke(): Flow<ScheduleWeek>
 }

@@ -9,13 +9,16 @@ android-desugar-jdk = "2.1.5"
 # Kotlin
 kotlin = "2.3.20"
 ksp = "2.3.6"
-#noinspection NewerVersionAvailable
+#noinspection GradleDependency,NewerVersionAvailable
 compose-multiplatform = "1.11.0-alpha03"
-#noinspection NewerVersionAvailable
+#noinspection GradleDependency,NewerVersionAvailable
 compose-material3 = "1.11.0-alpha03"
 compose-material3-adaptive = "1.3.0-alpha06"
 
 # AndroidX
+androidx-lifecycle = "2.10.0"
+#noinspection GradleDependency,NewerVersionAvailable
+androidx-compose = "1.11.0-alpha05"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-core-splashscreen = "1.2.0"
@@ -26,7 +29,7 @@ androidx-media3 = "1.9.3"
 androidx-paging = "3.5.0-alpha01"
 
 # Jetbrains
-lifecycle = "2.10.0-beta01"
+lifecycle = "2.10.0"
 navigation3-runtime = "1.1.0-beta01"
 navigation3-ui = "1.1.0-alpha04"
 kotlinx-atomicfu = "0.31.0"
@@ -49,12 +52,14 @@ materialKolor = "5.0.0-alpha07"
 shimmer = "1.3.3"
 sticky-headers = "0.1.0-alpha04"
 videoplayer = "0.8.7"
+orbit-mvi = "11.0.0"
 
 [libraries]
 # Android
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk" }
 
 # Compose
+compose-runtime-annotation = { group = "androidx.compose.runtime", name = "runtime-annotation", version.ref = "androidx-compose" }
 compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "compose-multiplatform" }
 compose-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose-multiplatform" }
 compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "compose-multiplatform" }
@@ -69,6 +74,7 @@ compose-material3-adaptive-navigation = { group = "org.jetbrains.compose.materia
 compose-material3-adaptive-navigation3 = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "compose-material3-adaptive" }
 
 # AndroidX
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-core-splashscreen" }
@@ -110,6 +116,7 @@ brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
+koin-core-viewmodel = { group = "io.insert-koin", name = "koin-core-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-navigation3 = { group = "io.insert-koin", name = "koin-compose-navigation3", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
@@ -128,6 +135,9 @@ materialKolor = { group = "com.materialkolor", name = "material-kolor", version.
 shimmer-compose = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 sticky-headers = { group = "me.gingerninja.lazy", name = "sticky-headers", version.ref = "sticky-headers" }
 videoplayer-compose = { group = "io.github.kdroidfilter", name = "composemediaplayer", version.ref = "videoplayer" }
+orbitmvi-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbit-mvi" }
+orbitmvi-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbit-mvi" }
+orbitmvi-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit-mvi" }
 
 # Kotlin Build Tools
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -137,6 +147,7 @@ kotlin-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-p
 # Android
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+android-lint = { id = "com.android.lint", version.ref = "android-gradle-plugin" }
 android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 
 # Kotlin
