@@ -11,11 +11,8 @@ import com.xbot.common.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.appearance.AppearancePane
-import com.xbot.preference.appearance.AppearanceViewModel
 import com.xbot.preference.donate.DonatePane
-import com.xbot.preference.donate.DonateViewModel
 import com.xbot.preference.history.HistoryPane
-import com.xbot.preference.history.HistoryViewModel
 import com.xbot.preference.language.LanguagePane
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
@@ -28,12 +25,10 @@ import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
 import com.xbot.preference.navigation.YouTubeRoute
 import com.xbot.preference.team.TeamPane
-import com.xbot.preference.team.TeamViewModel
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -127,8 +122,4 @@ val preferenceFeatureModule = module {
             }
         )
     }
-    viewModel<HistoryViewModel>()
-    viewModel<TeamViewModel>()
-    viewModel<DonateViewModel>()
-    viewModel<AppearanceViewModel>()
 }

@@ -1,12 +1,15 @@
 package com.xbot.title.state
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.usecase.GetReleaseDetailsUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -19,10 +22,13 @@ class TitleViewModel(
     private val releaseAliasOrId: String,
     private val initialRelease: Release? = null,
     private val getReleaseDetailUseCase: GetReleaseDetailsUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<TitleScreenState, TitleScreenSideEffect> {
 
     override val container: Container<TitleScreenState, TitleScreenSideEffect> = container(
         initialState = TitleScreenState(ReleaseDetailsExtended.create(initialRelease)),
+        savedStateHandle = savedStateHandle,
+        serializer = TitleScreenState.serializer(),
     ) {
         startLoadData()
     }
@@ -69,9 +75,10 @@ class TitleViewModel(
     }
 }
 
+@Serializable
 @Stable
 data class TitleScreenState(
-    val release: ReleaseDetailsExtended,
+    @Transient val release: ReleaseDetailsExtended = ReleaseDetailsExtended.create(),
 )
 
 @Stable

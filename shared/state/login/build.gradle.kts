@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -6,7 +5,9 @@ plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
+
 kotlin {
     android {
         namespace = "com.xbot.login.state"
@@ -37,6 +38,12 @@ kotlin {
         implementation(libs.koin.core.viewmodel)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.orbitmvi.viewmodel)
     }
 }
+
+koinCompiler {
+    compileSafety = false
+}
+

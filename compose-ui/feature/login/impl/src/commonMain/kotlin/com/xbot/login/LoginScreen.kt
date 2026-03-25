@@ -52,12 +52,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
+import com.xbot.login.state.LoginScreenAction
+import com.xbot.login.state.LoginScreenSideEffect
+import com.xbot.login.state.LoginScreenState
+import com.xbot.login.state.LoginViewModel
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -65,9 +71,12 @@ import com.xbot.resources.login_email_label
 import com.xbot.resources.login_forgot_password
 import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
+import com.xbot.resources.login_success_message
 import com.xbot.resources.login_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun LoginScreen(
@@ -76,21 +85,31 @@ internal fun LoginScreen(
     onBackClick: () -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(viewModel.effects) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                is LoginScreenEffect.NavigateBack -> onBackClick()
+    val state by viewModel.collectAsState()
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is LoginScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage()
+                )
             }
+            is LoginScreenSideEffect.LoginSuccess -> {
+                SnackbarManager.showMessage(
+                    title = UiText.Text(Res.string.login_success_message)
+                )
+            }
+            is LoginScreenSideEffect.NavigateBack -> onBackClick()
         }
     }
+
+    val usernameState = remember { TextFieldState() }
+    val passwordState = remember { TextFieldState() }
 
     LoginScreenContent(
         modifier = modifier,
         state = state,
-        usernameState = viewModel.usernameState,
-        passwordState = viewModel.passwordState,
+        usernameState = usernameState,
+        passwordState = passwordState,
         onAction = viewModel::onAction,
         onRegistrationClick = onRegistrationClick,
     )
@@ -226,7 +245,14 @@ internal fun LoginScreenContent(
                     }
 
                     Button(
-                        onClick = { onAction(LoginScreenAction.Login) },
+                        onClick = {
+                            onAction(
+                                LoginScreenAction.Login(
+                                    username = usernameState.text.toString(),
+                                    password = passwordState.text.toString()
+                                )
+                            )
+                        },
                         enabled = !state.isLoading
                     ) {
                         Text(stringResource(Res.string.login_sign_in))

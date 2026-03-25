@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.preference.state.HistoryViewModel
 import com.xbot.resources.Res
 import com.xbot.resources.preference_history_title
 import org.jetbrains.compose.resources.stringResource

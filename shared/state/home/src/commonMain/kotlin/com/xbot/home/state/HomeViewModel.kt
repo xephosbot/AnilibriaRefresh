@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -39,8 +41,8 @@ class HomeViewModel(
 
     override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
         initialState = HomeScreenState(),
-        //TODO: Make state serializable
-        //savedStateHandle = savedStateHandle,
+        savedStateHandle = savedStateHandle,
+        serializer = HomeScreenState.serializer(),
     ) {
         startLoadData()
     }
@@ -102,11 +104,12 @@ class HomeViewModel(
     }
 }
 
+@Serializable
 @Stable
 data class HomeScreenState(
-    val currentUser: User? = null,
-    val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
-    val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
+    @Transient val currentUser: User? = null,
+    @Transient val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
+    @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
     val currentBestType: BestType = BestType.Now,
 )
 
@@ -134,6 +137,7 @@ sealed interface HomeScreenAction {
     ) : HomeScreenAction
 }
 
+@Serializable
 @Stable
 enum class BestType {
     Now, AllTime

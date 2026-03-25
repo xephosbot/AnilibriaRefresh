@@ -1,11 +1,13 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.android.multiplatform.library)
+    alias(libs.plugins.android.lint)
+    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
+
 kotlin {
     android {
         namespace = "com.xbot.search.state"
@@ -29,6 +31,7 @@ kotlin {
 
         implementation(projects.core.domain.api)
 
+        implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
         implementation(libs.compose.runtime.annotation)
         implementation(libs.koin.annotations)
@@ -36,6 +39,11 @@ kotlin {
         implementation(libs.koin.core.viewmodel)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.orbitmvi.viewmodel)
     }
+}
+
+koinCompiler {
+    compileSafety = false
 }

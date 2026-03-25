@@ -1,4 +1,4 @@
-package com.xbot.preference.donate.state
+package com.xbot.preference.state
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

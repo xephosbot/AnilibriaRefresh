@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.koin.compiler)
 }
+
 kotlin {
     android {
         namespace = "com.xbot.preference.state"
@@ -39,3 +40,8 @@ kotlin {
         implementation(libs.orbitmvi.viewmodel)
     }
 }
+
+koinCompiler {
+    compileSafety = false
+}
+

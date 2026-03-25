@@ -32,8 +32,11 @@ kotlin {
         implementation(projects.core.data.impl)
         implementation(projects.core.domain.impl)
         implementation(projects.shared.state.home)
-        implementation(projects.shared.state.title)
+        implementation(projects.shared.state.login)
         implementation(projects.shared.state.player)
+        implementation(projects.shared.state.preference)
+        implementation(projects.shared.state.search)
+        implementation(projects.shared.state.title)
 
         implementation(libs.kermit)
         implementation(libs.kermit.koin)

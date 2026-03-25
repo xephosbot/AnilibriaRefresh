@@ -10,7 +10,6 @@ import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.common.serialization.polymorphic
 import com.xbot.search.SearchFilterPane
 import com.xbot.search.SearchResultPane
-import com.xbot.search.state.SearchViewModel
 import com.xbot.search.navigation.SearchFiltersRoute
 import com.xbot.search.navigation.SearchRoute
 import com.xbot.search.navigation.navigateToSearchFilters
@@ -18,7 +17,6 @@ import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -59,5 +57,4 @@ val searchFeatureModule = module {
             },
         )
     }
-    viewModel<SearchViewModel>()
 }

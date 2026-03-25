@@ -42,6 +42,8 @@ import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.AppearanceSettings
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.localization.stringRes
+import com.xbot.preference.state.AppearanceScreenAction
+import com.xbot.preference.state.AppearanceViewModel
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_dynamic_theme_description
 import com.xbot.resources.preference_appearance_dynamic_theme_title
@@ -54,6 +56,7 @@ import com.xbot.resources.preference_appearance_theme_title
 import com.xbot.resources.preference_appearance_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 internal fun AppearancePane(
@@ -61,7 +64,7 @@ internal fun AppearancePane(
     viewModel: AppearanceViewModel = koinViewModel(),
     onBackClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
 
     AppearanceScreenContent(
         modifier = modifier,

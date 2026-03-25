@@ -7,6 +7,8 @@ import arrow.core.Either
 import com.xbot.domain.models.Episode
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -24,6 +26,8 @@ class PlayerViewModel(
 
     override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
         initialState = PlayerScreenState(),
+        savedStateHandle = savedStateHandle,
+        serializer = PlayerScreenState.serializer(),
     ) {
         startLoadData()
     }
@@ -119,17 +123,19 @@ class PlayerViewModel(
     }
 }
 
+@Serializable
 enum class VideoQuality(val title: String) {
     SD("480p"),
     HD("720p"),
     FHD("1080p")
 }
 
+@Serializable
 @Stable
 data class PlayerScreenState(
-    val isLoading: Boolean = true,
-    val episodes: List<Episode?> = emptyList(),
-    val currentEpisode: Episode? = null,
+    @Transient val isLoading: Boolean = true,
+    @Transient val episodes: List<Episode?> = emptyList(),
+    @Transient val currentEpisode: Episode? = null,
     val quality: VideoQuality = VideoQuality.FHD,
 ) {
     val availableQualities: List<VideoQuality>

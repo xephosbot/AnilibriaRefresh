@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -37,6 +38,7 @@ kotlin {
         implementation(libs.koin.core.viewmodel)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.orbitmvi.viewmodel)
     }
 

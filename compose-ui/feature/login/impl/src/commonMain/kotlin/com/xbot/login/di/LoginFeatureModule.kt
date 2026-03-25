@@ -9,14 +9,12 @@ import com.xbot.common.navigation.NavKey
 import com.xbot.common.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.login.LoginScreen
-import com.xbot.login.LoginViewModel
 import com.xbot.login.navigation.LoginRoute
 import com.xbot.login.navigation.RegistrationRoute
 import com.xbot.login.navigation.navigateToRegistration
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(KoinExperimentalAPI::class)
@@ -44,5 +42,4 @@ val loginFeatureModule = module {
             }
         )
     }
-    viewModel<LoginViewModel>()
 }

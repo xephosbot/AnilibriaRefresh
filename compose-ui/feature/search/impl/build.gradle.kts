@@ -32,7 +32,7 @@ kotlin {
         implementation(projects.composeUi.designSystem)
         implementation(projects.composeUi.feature.title.api)
         implementation(projects.core.domain.api)
-            implementation(projects.shared.state.search)
+        implementation(projects.shared.state.search)
         implementation(projects.core.domain.testFixtures)
 
         implementation(libs.arrow.core)
