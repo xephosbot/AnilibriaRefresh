@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.shared"
+        namespace = "com.xbot.shared.state.player"
         compileSdk {
             version = release(libs.versions.android.compilesdk.get().toInt()) {
                 minorApiLevel = 1
@@ -28,22 +28,23 @@ kotlin {
         api(libs.androidx.lifecycle.viewmodel)
         api(libs.orbitmvi.core)
 
-        implementation(projects.core.network.impl)
-        implementation(projects.core.data.impl)
-        implementation(projects.core.domain.impl)
-        implementation(projects.shared.state.home)
-        implementation(projects.shared.state.title)
-        implementation(projects.shared.state.player)
+        implementation(projects.core.domain.api)
 
-        implementation(libs.kermit)
-        implementation(libs.kermit.koin)
+        implementation(libs.arrow.core)
+        implementation(libs.compose.runtime.annotation)
         implementation(libs.koin.annotations)
         implementation(libs.koin.core)
         implementation(libs.koin.core.viewmodel)
         implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.datetime)
+        implementation(libs.orbitmvi.viewmodel)
     }
 
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
+}
+
+koinCompiler {
+    compileSafety = false
 }

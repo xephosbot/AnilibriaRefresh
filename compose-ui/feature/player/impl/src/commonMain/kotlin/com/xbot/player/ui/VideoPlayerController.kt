@@ -62,7 +62,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Logger
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
@@ -78,7 +77,7 @@ import com.xbot.designsystem.icons.Replay10
 import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.domain.models.Episode
-import com.xbot.player.VideoQuality
+import com.xbot.player.state.VideoQuality
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -559,7 +558,6 @@ private fun Modifier.symmetricInsetsPadding(): Modifier {
 
 private fun VideoPlayerState.seekForward(amount: Long) {
     val durationSec = metadata.duration ?: 0
-    Logger.i { "durationSec: $durationSec" }
     if (durationSec > 0) {
         val delta = (amount.toFloat() / durationSec) * 1000f
         seekTo((sliderPos + delta).coerceIn(0f, 1000f))
@@ -568,7 +566,6 @@ private fun VideoPlayerState.seekForward(amount: Long) {
 
 private fun VideoPlayerState.seekBackward(amount: Long) {
     val durationSec = metadata.duration ?: 0
-    Logger.i { "durationSec: $durationSec" }
     if (durationSec > 0) {
         val delta = (amount.toFloat() / durationSec) * 1000f
         seekTo((sliderPos - delta).coerceIn(0f, 1000f))

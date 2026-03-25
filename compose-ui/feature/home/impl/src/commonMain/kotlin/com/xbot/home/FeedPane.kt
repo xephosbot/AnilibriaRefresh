@@ -233,6 +233,7 @@ private fun FeedPaneContent(
                     isRefreshing = isRefreshing,
                     state = pullToRefreshState,
                     onRefresh = {
+                        items.refresh()
                         onAction(HomeScreenAction.Refresh)
                     }
                 )

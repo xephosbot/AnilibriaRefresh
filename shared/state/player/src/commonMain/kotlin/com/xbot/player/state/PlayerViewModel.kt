@@ -1,89 +1,60 @@
-package com.xbot.player
+package com.xbot.player.state
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.xbot.data.repository.ReleasesRepository
-import com.xbot.designsystem.utils.MessageAction
-import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.models.Episode
-import com.xbot.localization.UiText
-import com.xbot.localization.localizedMessage
-import com.xbot.player.navigation.PlayerRoute
-import com.xbot.resources.Res
-import com.xbot.resources.button_retry
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
+import com.xbot.domain.usecase.GetReleaseUseCase
+import kotlinx.coroutines.Job
+import org.koin.core.annotation.KoinViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.viewmodel.container
 
-internal class PlayerViewModel(
-    private val repository: ReleasesRepository,
+@OptIn(OrbitExperimental::class)
+@KoinViewModel
+class PlayerViewModel(
+    private val releaseAliasOrId: String,
+    private val initialEpisodeOrdinal: Int,
+    private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle,
-    private val route: PlayerRoute,
-    private val snackbarManager: SnackbarManager = SnackbarManager,
-) : ViewModel() {
-    private val releaseId = route.releaseId
-    private val initialEpisodeOrdinal = route.episodeOrdinal
+) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
 
-    private val _state: MutableStateFlow<PlayerScreenState> = MutableStateFlow(PlayerScreenState())
-    val state: StateFlow<PlayerScreenState> = _state
-        .onStart { fetchTitleDetails() }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.seconds),
-            initialValue = _state.value
-        )
+    override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
+        initialState = PlayerScreenState(),
+    ) {
+        startLoadData()
+    }
 
     fun onAction(action: PlayerScreenAction) {
         when (action) {
+            is PlayerScreenAction.Refresh -> refresh()
             is PlayerScreenAction.OnEpisodeChange -> onEpisodeChange(action.episode)
             is PlayerScreenAction.OnQualityChange -> onQualityChange(action.quality)
+            is PlayerScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
         }
     }
 
-    private fun onEpisodeChange(episode: Episode) {
-        savedStateHandle[EPISODE_ORDINAL_KEY] = episode.ordinal
-        _state.update {
-            val newAvailableQualities = episode.availableQualities
-            val newQuality = if (it.quality in newAvailableQualities) {
-                it.quality
-            } else {
-                newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
-            }
+    private var loadDataJob: Job? = null
 
-            it.copy(
-                currentEpisode = episode,
-                quality = newQuality,
-            )
-        }
-    }
-
-    private fun onQualityChange(quality: VideoQuality) {
-        _state.update { it.copy(quality = quality) }
-    }
-
-    private fun fetchTitleDetails() {
-        viewModelScope.launch {
-            when (val result = repository.getRelease(releaseId.toString())) {
+    private fun startLoadData() {
+        loadDataJob?.cancel()
+        loadDataJob = intent {
+            reduce { state.copy(isLoading = true) }
+            when (val result = getReleaseUseCase(releaseAliasOrId)) {
                 is Either.Right -> {
                     val release = result.value
                     val savedOrdinal = savedStateHandle.get<Float>(EPISODE_ORDINAL_KEY)
                     val targetOrdinal = savedOrdinal ?: initialEpisodeOrdinal
-                    
+
                     // Find episode by ordinal, fallback to matching by index if ordinal not found, or first
                     val episode = release.episodes.find { it?.ordinal == targetOrdinal }
                         ?: release.episodes.getOrNull(targetOrdinal.toInt()) // Fallback mostly for safety
                         ?: release.episodes.firstOrNull()
 
-                    _state.update { state ->
+                    reduce {
                         state.copy(
                             isLoading = false,
                             episodes = release.episodes
@@ -104,19 +75,43 @@ internal class PlayerViewModel(
                         }
                     }
                 }
-                is Either.Left -> showErrorMessage(result.value, ::fetchTitleDetails)
+                is Either.Left -> {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(PlayerScreenSideEffect.ShowErrorMessage(result.value) {
+                        onAction(PlayerScreenAction.Refresh)
+                    })
+                }
             }
         }
     }
 
-    private fun showErrorMessage(error: Throwable, onConfirmAction: () -> Unit) {
-        snackbarManager.showMessage(
-            title = error.localizedMessage(),
-            action = MessageAction(
-                title = UiText.Text(Res.string.button_retry),
-                action = onConfirmAction,
-            ),
-        )
+    private fun refresh(): Job = intent {
+        startLoadData()
+    }
+
+    private fun onEpisodeChange(episode: Episode): Job = intent {
+        savedStateHandle[EPISODE_ORDINAL_KEY] = episode.ordinal
+        reduce {
+            val newAvailableQualities = episode.availableQualities
+            val newQuality = if (state.quality in newAvailableQualities) {
+                state.quality
+            } else {
+                newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
+            }
+
+            state.copy(
+                currentEpisode = episode,
+                quality = newQuality,
+            )
+        }
+    }
+
+    private fun onQualityChange(quality: VideoQuality): Job = intent {
+        reduce { state.copy(quality = quality) }
+    }
+
+    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
+        postSideEffect(PlayerScreenSideEffect.ShowErrorMessage(error, onRetry))
     }
 
     companion object {
@@ -131,7 +126,7 @@ enum class VideoQuality(val title: String) {
 }
 
 @Stable
-internal data class PlayerScreenState(
+data class PlayerScreenState(
     val isLoading: Boolean = true,
     val episodes: List<Episode?> = emptyList(),
     val currentEpisode: Episode? = null,
@@ -144,9 +139,31 @@ internal data class PlayerScreenState(
         get() = currentEpisode?.getVideoUri(quality)
 }
 
-internal sealed interface PlayerScreenAction {
+@Stable
+sealed interface PlayerScreenSideEffect {
+    @Stable
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onRetry: () -> Unit
+    ) : PlayerScreenSideEffect
+}
+
+@Stable
+sealed interface PlayerScreenAction {
+    @Stable
+    data object Refresh : PlayerScreenAction
+
+    @Stable
     data class OnEpisodeChange(val episode: Episode) : PlayerScreenAction
+
+    @Stable
     data class OnQualityChange(val quality: VideoQuality) : PlayerScreenAction
+
+    @Stable
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onRetry: () -> Unit,
+    ) : PlayerScreenAction
 }
 
 private val Episode.availableQualities: List<VideoQuality>

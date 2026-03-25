@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlayerRoute(
-    val releaseId: Int,
+    val aliasOrId: String,
     val episodeOrdinal: Int,
 ) : NavKey
 
 fun Navigator.navigateToPlayer(releaseId: Int, episodeOrdinal: Int) {
-    navigate(PlayerRoute(releaseId, episodeOrdinal))
+    navigate(PlayerRoute(releaseId.toString(), episodeOrdinal))
 }

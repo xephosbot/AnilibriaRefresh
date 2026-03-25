@@ -8,7 +8,8 @@
 
 - **Language**: Kotlin 2.3.0+
 - **UI Framework**: Compose Multiplatform (Material 3) 1.11.0
-- **Architecture**: Clean Architecture + MVI + Multi-Module
+- **State Management**: Orbit MVI
+- **Architecture**: Clean Architecture + Orbit MVI + Multi-Module
 - **DI**: Koin 4.2.0
   - **Networking**: Ktor Client 3.3.3
 - **Image Loading**: Coil 3.3.0
@@ -24,29 +25,40 @@
 - **`android-app/`**: Android application entry point.
 - **`jvm-app/`**: Desktop (JVM) application entry point.
 - **`ios-app/`**: iOS application (Xcode project) wrapping the shared UI.
-- **`shared/`**: Core business logic (Domain, Data, Network).
-- **`shared-ui/`**: Compose Multiplatform UI, features, and design system.
+- **`shared/`**: Shared ViewModels and state management.
+- **`core/`**: Core business logic (Domain, Data, Network).
+- **`compose-ui/`**: Compose Multiplatform UI, features, and design system.
 
 ### Module Hierarchy
 
-#### 1. Shared Core (`:shared`)
-- **`:shared:domain`**: Pure Kotlin. Entities, Use Cases, Repository Interfaces. No platform dependencies.
-- **`:shared:data`**: Repository implementations, Data Sources, DB, Settings.
-- **`:shared:network`**: Ktor client setup, DTOs, API definitions.
+#### 1. Core (`:core`)
+- **`:core:common`**: Common utilities and extensions.
+- **`:core:domain:api`**: Domain entities, use cases interfaces.
+- **`:core:domain:impl`**: Use case implementations.
+- **`:core:data:api`**: Repository interfaces.
+- **`:core:data:impl`**: Repository implementations, data sources.
+- **`:core:network:api`**: Network DTOs, API definitions.
+- **`:core:network:impl`**: Ktor client setup, network implementations.
 
-#### 2. Shared UI (`:shared-ui`)
-- **`:shared-ui:design-system`**: Reusable UI components, theming, icons.
-- **`:shared-ui:resource`**: Shared resources (Strings, Drawables, Fonts).
-- **`:shared-ui:common`**: Navigation utilities, common extensions.
-- **`:shared-ui:feature`**: Feature modules using **API/Impl** pattern.
+#### 2. Shared (`:shared`)
+- **`:shared`**: Shared ViewModels.
+- **`:shared:state:home`**: State management for home feature.
+- **`:shared:state:title`**: State management for title feature.
+- **`:shared:state:player`**: State management for player feature.
+
+#### 3. Compose UI (`:compose-ui`)
+- **`:compose-ui:common`**: Navigation utilities, common extensions.
+- **`:compose-ui:design-system`**: Reusable UI components, theming, icons.
+- **`:compose-ui:resource`**: Shared resources (Strings, Drawables, Fonts).
+- **`:compose-ui:feature`**: Feature modules using **API/Impl** pattern.
 
 ### Feature Module Pattern (API/Impl)
 To enforce separation of concerns and build performance, features are split:
 
 *   **`:feature:name:api`**: Contains Navigation Routes (`Route` classes/objects) and public interfaces.
-    *   *Dependencies*: `:shared-ui:common`
+    *   *Dependencies*: `:compose-ui:common`
 *   **`:feature:name:impl`**: Contains Screens, ViewModels, DI Modules, and internal logic.
-    *   *Dependencies*: `:feature:name:api`, `:shared:domain`, `:shared-ui:design-system`
+    *   *Dependencies*: `:feature:name:api`, `:core:domain:api`, `:compose-ui:design-system`
 
 **Available Features:**
 - `home` (Feed, Schedule)
@@ -55,6 +67,7 @@ To enforce separation of concerns and build performance, features are split:
 - `player` (Video Playback)
 - `favorite` (User Favorites)
 - `preference` (Settings)
+- `login` (User Authentication)
 
 ## Architecture & Code Style
 
@@ -105,8 +118,8 @@ FeedPane(
 #### Composables
 1.  **Stateful Screen (Root)**: Named `{Feature}Screen` or `{Feature}Pane`.
     *   Accepts `ViewModel` (via `koinViewModel()`).
-    *   Collects state (`collectAsStateWithLifecycle`).
-    *   Handles Navigation events.
+    *   Collects state (`collectAsState`).
+    *   Handles side effects (`collectSideEffect`).
     *   Passes data to Content composable.
 2.  **Stateless Content**: Named `{Feature}ScreenContent` or matches the root name but with explicit parameters.
     *   Accepts `state`, `onAction` lambda, and specific event callbacks.
@@ -121,7 +134,14 @@ fun FeedPane(
     viewModel: FeedViewModel = koinViewModel(),
     onReleaseClick: (Int) -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is FeedScreenSideEffect.NavigateToRelease -> {
+                // handle navigation
+            }
+        }
+    }
     FeedScreenContent(
         state = state,
         onAction = viewModel::onAction,
@@ -237,5 +257,5 @@ kotlin {
 
 - **Multiplatform Resources**: Use `Res` object from `compose-resources` for strings/images.
 - **Image Loading**: Use `PosterImage` component (wraps Coil).
-- **Design System**: Strict usage of `AnilibriaTheme` and components in `:shared-ui:design-system`.
+- **Design System**: Strict usage of `AnilibriaTheme` and components in `:compose-ui:design-system`.
 - **Error Handling**: `DomainError` sealed class in Domain layer. ViewModels map errors to UI messages.

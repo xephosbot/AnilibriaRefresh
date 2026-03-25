@@ -89,7 +89,7 @@ class HomeViewModel(
     }
 
     private fun refresh(): Job = intent {
-        pager.refresh()
+        //pager.refresh()
         startLoadData()
     }
 

@@ -5,8 +5,11 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.xbot.data.repository.AuthRepository
 import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.domain.models.AuthState
+import com.xbot.domain.usecase.GetAuthStateUseCase
+import com.xbot.domain.usecase.LoginUseCase
+import com.xbot.domain.usecase.LogoutUseCase
 import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.login_success_message
@@ -22,7 +25,9 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 internal class LoginViewModel(
-    private val authRepository: AuthRepository,
+    private val getAuthState: GetAuthStateUseCase,
+    private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
@@ -32,11 +37,11 @@ internal class LoginViewModel(
     private val _isLoading = MutableStateFlow(false)
     val state: StateFlow<LoginScreenState> = combine(
         _isLoading,
-        authRepository.authState
-    ) { isLoading, isAuthenticated ->
+        getAuthState()
+    ) { isLoading, authState ->
         LoginScreenState(
             isLoading = isLoading,
-            isSuccess = isAuthenticated,
+            isSuccess = authState is AuthState.Authenticated,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -51,7 +56,7 @@ internal class LoginViewModel(
         when (action) {
             is LoginScreenAction.Login -> login()
             is LoginScreenAction.Logout -> viewModelScope.launch {
-                authRepository.logout()
+                logoutUseCase()
             }
         }
     }
@@ -62,7 +67,7 @@ internal class LoginViewModel(
             val login = usernameState.text.toString()
             val password = passwordState.text.toString()
 
-            when (val result = authRepository.login(login, password)) {
+            when (val result = loginUseCase(login, password)) {
                 is Either.Left -> {
                     _isLoading.value = false
                     snackbarManager.showMessage(

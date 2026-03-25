@@ -8,14 +8,13 @@ import com.xbot.common.navigation.LocalNavigator
 import com.xbot.common.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
 import com.xbot.player.PlayerScreen
-import com.xbot.player.PlayerViewModel
 import com.xbot.player.navigation.PlayerRoute
+import com.xbot.player.state.PlayerViewModel
 import kotlinx.serialization.modules.subclass
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(KoinExperimentalAPI::class)
@@ -29,7 +28,7 @@ val playerFeatureModule = module {
         )
     ) { key ->
         val viewModel = koinViewModel<PlayerViewModel> {
-            parametersOf(key)
+            parametersOf(key.aliasOrId, key.episodeOrdinal)
         }
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
@@ -40,7 +39,6 @@ val playerFeatureModule = module {
             },
         )
     }
-    viewModel<PlayerViewModel>()
 }
 
 internal expect fun createFullscreenDialogProperties(): DialogProperties
