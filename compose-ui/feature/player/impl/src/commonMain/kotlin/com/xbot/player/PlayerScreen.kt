@@ -176,7 +176,7 @@ private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenS
         PlayerScreenState(
             isLoading = false,
             episodes = episodeMocks,
-            currentEpisode = episodeMocks.first(),
+            currentEpisodeOrdinal = episodeMocks.first().ordinal,
             quality = VideoQuality.FHD,
         )
     )

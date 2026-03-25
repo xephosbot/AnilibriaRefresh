@@ -50,33 +50,29 @@ class PlayerViewModel(
             when (val result = getReleaseUseCase(releaseAliasOrId)) {
                 is Either.Right -> {
                     val release = result.value
-                    val savedOrdinal = savedStateHandle.get<Float>(EPISODE_ORDINAL_KEY)
-                    val targetOrdinal = savedOrdinal ?: initialEpisodeOrdinal
+                    val restoredOrdinal = state.currentEpisodeOrdinal
 
-                    // Find episode by ordinal, fallback to matching by index if ordinal not found, or first
-                    val episode = release.episodes.find { it?.ordinal == targetOrdinal }
-                        ?: release.episodes.getOrNull(targetOrdinal.toInt()) // Fallback mostly for safety
-                        ?: release.episodes.firstOrNull()
+                    // If ordinal was restored by Orbit, find by ordinal; otherwise use initial index
+                    val episode = if (restoredOrdinal != null) {
+                        release.episodes.find { it?.ordinal == restoredOrdinal }
+                    } else {
+                        release.episodes.getOrNull(initialEpisodeOrdinal)
+                    } ?: release.episodes.firstOrNull()
 
                     reduce {
+                        val newAvailableQualities = episode?.availableQualities ?: emptyList()
+                        val newQuality = if (state.quality in newAvailableQualities) {
+                            state.quality
+                        } else {
+                            newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
+                        }
+
                         state.copy(
                             isLoading = false,
-                            episodes = release.episodes
-                        ).let {
-                            if (episode != null) {
-                                val newAvailableQualities = episode.availableQualities
-                                val newQuality = if (it.quality in newAvailableQualities) {
-                                    it.quality
-                                } else {
-                                    newAvailableQualities.lastOrNull() ?: VideoQuality.FHD
-                                }
-
-                                it.copy(
-                                    currentEpisode = episode,
-                                    quality = newQuality,
-                                )
-                            } else it
-                        }
+                            episodes = release.episodes,
+                            currentEpisodeOrdinal = episode?.ordinal,
+                            quality = newQuality,
+                        )
                     }
                 }
                 is Either.Left -> {
@@ -94,7 +90,6 @@ class PlayerViewModel(
     }
 
     private fun onEpisodeChange(episode: Episode): Job = intent {
-        savedStateHandle[EPISODE_ORDINAL_KEY] = episode.ordinal
         reduce {
             val newAvailableQualities = episode.availableQualities
             val newQuality = if (state.quality in newAvailableQualities) {
@@ -104,7 +99,7 @@ class PlayerViewModel(
             }
 
             state.copy(
-                currentEpisode = episode,
+                currentEpisodeOrdinal = episode.ordinal,
                 quality = newQuality,
             )
         }
@@ -116,10 +111,6 @@ class PlayerViewModel(
 
     private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
         postSideEffect(PlayerScreenSideEffect.ShowErrorMessage(error, onRetry))
-    }
-
-    companion object {
-        private const val EPISODE_ORDINAL_KEY = "episode_ordinal"
     }
 }
 
@@ -135,9 +126,14 @@ enum class VideoQuality(val title: String) {
 data class PlayerScreenState(
     @Transient val isLoading: Boolean = true,
     @Transient val episodes: List<Episode?> = emptyList(),
-    @Transient val currentEpisode: Episode? = null,
+    val currentEpisodeOrdinal: Float? = null,
     val quality: VideoQuality = VideoQuality.FHD,
 ) {
+    val currentEpisode: Episode?
+        get() = currentEpisodeOrdinal?.let { ordinal ->
+            episodes.find { it?.ordinal == ordinal }
+        }
+
     val availableQualities: List<VideoQuality>
         get() = currentEpisode?.availableQualities ?: emptyList()
 
