@@ -24,63 +24,71 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-internal class LoginViewModel(
+import org.koin.core.annotation.KoinViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+
+
+@OptIn(OrbitExperimental::class)
+@KoinViewModel
+class LoginViewModel(
     private val getAuthState: GetAuthStateUseCase,
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val snackbarManager: SnackbarManager,
-) : ViewModel() {
+) : ViewModel(), ContainerHost<LoginScreenState, LoginScreenEffect> {
 
     val usernameState = TextFieldState()
     val passwordState = TextFieldState()
 
-    private val _isLoading = MutableStateFlow(false)
-    val state: StateFlow<LoginScreenState> = combine(
-        _isLoading,
-        getAuthState()
-    ) { isLoading, authState ->
-        LoginScreenState(
-            isLoading = isLoading,
-            isSuccess = authState is AuthState.Authenticated,
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5.seconds),
-        initialValue = LoginScreenState()
-    )
+    override val container: Container<LoginScreenState, LoginScreenEffect> = container(
+        initialState = LoginScreenState(),
+    ) {
+        startObservingAuth()
+    }
 
-    private val _effects = Channel<LoginScreenEffect>()
-    val effects = _effects.receiveAsFlow()
+    private fun startObservingAuth() = intent {
+        getAuthState().collect { authState ->
+            reduce {
+                state.copy(
+                    isSuccess = authState is AuthState.Authenticated,
+                )
+            }
+        }
+    }
 
     fun onAction(action: LoginScreenAction) {
         when (action) {
             is LoginScreenAction.Login -> login()
-            is LoginScreenAction.Logout -> viewModelScope.launch {
+            is LoginScreenAction.Logout -> intent {
                 logoutUseCase()
             }
         }
     }
 
-    private fun login() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val login = usernameState.text.toString()
-            val password = passwordState.text.toString()
+    private fun login() = intent {
+        reduce { state.copy(isLoading = true) }
+        val loginText = usernameState.text.toString()
+        val passwordText = passwordState.text.toString()
 
-            when (val result = loginUseCase(login, password)) {
-                is Either.Left -> {
-                    _isLoading.value = false
-                    snackbarManager.showMessage(
-                        title = UiText.String(result.value.toString())
-                    )
-                }
-                is Either.Right -> {
-                    _isLoading.value = false
-                    snackbarManager.showMessage(
-                        title = UiText.Text(Res.string.login_success_message)
-                    )
-                    _effects.send(LoginScreenEffect.NavigateBack)
-                }
+        when (val result = loginUseCase(loginText, passwordText)) {
+            is Either.Left -> {
+                reduce { state.copy(isLoading = false) }
+                snackbarManager.showMessage(
+                    title = UiText.String(result.value.toString())
+                )
+            }
+            is Either.Right -> {
+                reduce { state.copy(isLoading = false) }
+                snackbarManager.showMessage(
+                    title = UiText.Text(Res.string.login_success_message)
+                )
+                postSideEffect(LoginScreenEffect.NavigateBack)
             }
         }
     }

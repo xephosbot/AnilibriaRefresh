@@ -32,6 +32,7 @@ kotlin {
         implementation(projects.composeUi.designSystem)
         implementation(projects.composeUi.feature.title.api)
         implementation(projects.core.domain.api)
+            implementation(projects.shared.state.search)
         implementation(projects.core.domain.testFixtures)
 
         implementation(libs.arrow.core)
@@ -43,6 +44,8 @@ kotlin {
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.orbitmvi.compose)
+
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.navigation3.runtime)
         implementation(libs.navigation3.ui)

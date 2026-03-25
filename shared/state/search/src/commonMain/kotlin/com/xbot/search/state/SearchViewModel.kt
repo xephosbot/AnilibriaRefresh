@@ -21,17 +21,12 @@ import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.domain.usecase.GetCatalogFiltersUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
-import com.xbot.localization.UiText
-import com.xbot.localization.localizedMessage
-import com.xbot.resources.Res
-import com.xbot.resources.button_retry
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -42,15 +37,20 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.viewmodel.container
 
-@OptIn(ExperimentalCoroutinesApi::class)
-internal class SearchViewModel(
+@OptIn(ExperimentalCoroutinesApi::class, OrbitExperimental::class)
+@KoinViewModel
+class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogFilters: GetCatalogFiltersUseCase,
     private val savedStateHandle: SavedStateHandle,
-    private val snackbarManager: SnackbarManager = SnackbarManager,
-) : ViewModel() {
+    private val snackbarManager: SnackbarManager,
+) : ViewModel(), ContainerHost<SearchFiltersState, Nothing> {
 
     private val refreshTrigger = MutableStateFlow(0)
 
@@ -58,6 +58,12 @@ internal class SearchViewModel(
 
     private val searchQuery: Flow<String> = snapshotFlow { searchFieldState.text.toString() }
         .onEach { savedStateHandle[QUERY_KEY] = it }
+
+    override val container: Container<SearchFiltersState, Nothing> = container(
+        initialState = SearchFiltersState(),
+    ) {
+        loadFilters()
+    }
 
     private val catalogFilters = refreshTrigger
         .flatMapLatest { getCatalogFilters().catch { showErrorMessage(it) { refresh() } } }
@@ -69,23 +75,18 @@ internal class SearchViewModel(
             initialValue = CatalogFilters.create()
         )
 
-    private val _selectedFilters = MutableStateFlow(SearchFiltersState())
-    val selectedFilters: StateFlow<SearchFiltersState> = _selectedFilters.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            availableFilters
-                .filter { it.years != IntRange.EMPTY }
-                .take(1)
-                .collect { filters ->
-                    _selectedFilters.update { it.copy(selectedYears = filters.years) }
-                }
-        }
+    private fun loadFilters() = intent {
+        availableFilters
+            .filter { it.years != IntRange.EMPTY }
+            .take(1)
+            .collect { filters ->
+                reduce { state.copy(selectedYears = filters.years) }
+            }
     }
 
     @OptIn(FlowPreview::class)
     val searchResult: Flow<PagingData<Release>> = combine(
-        searchQuery.debounce(500L), selectedFilters
+        searchQuery.debounce(500L), container.stateFlow
     ) { query, filters -> query to filters }
         .distinctUntilChanged()
         .flatMapLatest { (query, filters) ->
@@ -98,29 +99,29 @@ internal class SearchViewModel(
 
     fun onAction(action: SearchScreenAction) {
         when (action) {
-            is SearchScreenAction.ToggleGenre -> updateState {
-                it.copy(selectedGenres = it.selectedGenres.toggle(action.genre))
+            is SearchScreenAction.ToggleGenre -> intent {
+                reduce { state.copy(selectedGenres = state.selectedGenres.toggle(action.genre)) }
             }
-            is SearchScreenAction.ToggleProductionStatus -> updateState {
-                it.copy(selectedProductionStatuses = it.selectedProductionStatuses.toggle(action.productionStatus))
+            is SearchScreenAction.ToggleProductionStatus -> intent {
+                reduce { state.copy(selectedProductionStatuses = state.selectedProductionStatuses.toggle(action.productionStatus)) }
             }
-            is SearchScreenAction.TogglePublishStatus -> updateState {
-                it.copy(selectedPublishStatuses = it.selectedPublishStatuses.toggle(action.publishStatus))
+            is SearchScreenAction.TogglePublishStatus -> intent {
+                reduce { state.copy(selectedPublishStatuses = state.selectedPublishStatuses.toggle(action.publishStatus)) }
             }
-            is SearchScreenAction.ToggleReleaseType -> updateState {
-                it.copy(selectedReleaseTypes = it.selectedReleaseTypes.toggle(action.releaseType))
+            is SearchScreenAction.ToggleReleaseType -> intent {
+                reduce { state.copy(selectedReleaseTypes = state.selectedReleaseTypes.toggle(action.releaseType)) }
             }
-            is SearchScreenAction.ToggleSeason -> updateState {
-                it.copy(selectedSeasons = it.selectedSeasons.toggle(action.season))
+            is SearchScreenAction.ToggleSeason -> intent {
+                reduce { state.copy(selectedSeasons = state.selectedSeasons.toggle(action.season)) }
             }
-            is SearchScreenAction.UpdateSortingType -> updateState {
-                it.copy(selectedSortingType = action.sortingType)
+            is SearchScreenAction.UpdateSortingType -> intent {
+                reduce { state.copy(selectedSortingType = action.sortingType) }
             }
-            is SearchScreenAction.UpdateYearsRange -> updateState {
-                it.copy(selectedYears = action.years)
+            is SearchScreenAction.UpdateYearsRange -> intent {
+                reduce { state.copy(selectedYears = action.years) }
             }
-            is SearchScreenAction.ToggleAgeRating -> updateState {
-                it.copy(selectedAgeRatings = it.selectedAgeRatings.toggle(action.ageRating))
+            is SearchScreenAction.ToggleAgeRating -> intent {
+                reduce { state.copy(selectedAgeRatings = state.selectedAgeRatings.toggle(action.ageRating)) }
             }
             is SearchScreenAction.ShowErrorMessage -> {
                 showErrorMessage(action.error, action.onConfirmAction)
@@ -145,9 +146,6 @@ internal class SearchViewModel(
 
     private fun <T> Set<T>.toggle(item: T) = if (item in this) this - item else this + item
 
-    private fun updateState(block: (SearchFiltersState) -> SearchFiltersState) {
-        _selectedFilters.update { block(selectedFilters.value) }
-    }
 
     companion object {
         private const val QUERY_KEY = "query"
@@ -155,7 +153,7 @@ internal class SearchViewModel(
 }
 
 @Stable
-internal data class SearchFiltersState(
+data class SearchFiltersState(
     val loading: Boolean = true,
     val selectedGenres: Set<Genre> = emptySet(),
     val selectedReleaseTypes: Set<ReleaseType> = emptySet(),
@@ -189,7 +187,7 @@ internal fun CatalogFilters.isEmpty(): Boolean =
     productionStatuses.isEmpty()
 
 @Stable
-internal sealed interface SearchScreenAction {
+sealed interface SearchScreenAction {
     @Stable
     data class ToggleGenre(val genre: Genre) : SearchScreenAction
     @Stable

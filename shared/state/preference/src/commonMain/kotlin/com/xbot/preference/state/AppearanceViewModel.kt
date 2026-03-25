@@ -17,21 +17,36 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-internal class AppearanceViewModel(
+import org.koin.core.annotation.KoinViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
+
+@OptIn(OrbitExperimental::class)
+@KoinViewModel
+class AppearanceViewModel(
     private val getAppearanceSettingsUseCase: GetAppearanceSettingsUseCase,
     private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
     private val updatePureBlackUseCase: UpdatePureBlackUseCase,
     private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : ViewModel(), ContainerHost<AppearanceSettings, Nothing> {
 
-    val state: StateFlow<AppearanceSettings> = getAppearanceSettingsUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.seconds),
-            initialValue = AppearanceSettings()
-        )
+    override val container: Container<AppearanceSettings, Nothing> = container(
+        initialState = AppearanceSettings(),
+    ) {
+        startObservingAppearance()
+    }
+
+    private fun startObservingAppearance() = intent {
+        getAppearanceSettingsUseCase().collect { settings ->
+            reduce { settings }
+        }
+    }
 
     fun onAction(action: AppearanceScreenAction) {
         when (action) {
@@ -42,28 +57,20 @@ internal class AppearanceViewModel(
         }
     }
 
-    private fun onThemeOptionChange(option: ThemeOption) {
-        viewModelScope.launch {
-            updateThemeOptionUseCase(option)
-        }
+    private fun onThemeOptionChange(option: ThemeOption) = intent {
+        updateThemeOptionUseCase(option)
     }
 
-    private fun onDynamicThemeChange(enabled: Boolean) {
-        viewModelScope.launch {
-            updateDynamicThemeUseCase(enabled)
-        }
+    private fun onDynamicThemeChange(enabled: Boolean) = intent {
+        updateDynamicThemeUseCase(enabled)
     }
 
-    private fun onPureBlackChange(enabled: Boolean) {
-        viewModelScope.launch {
-            updatePureBlackUseCase(enabled)
-        }
+    private fun onPureBlackChange(enabled: Boolean) = intent {
+        updatePureBlackUseCase(enabled)
     }
 
-    private fun onExpressiveColorChange(enabled: Boolean) {
-        viewModelScope.launch {
-            updateExpressiveColorUseCase(enabled)
-        }
+    private fun onExpressiveColorChange(enabled: Boolean) = intent {
+        updateExpressiveColorUseCase(enabled)
     }
 }
 

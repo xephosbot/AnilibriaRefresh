@@ -10,7 +10,7 @@ import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.common.serialization.polymorphic
 import com.xbot.search.SearchFilterPane
 import com.xbot.search.SearchResultPane
-import com.xbot.search.SearchViewModel
+import com.xbot.search.state.SearchViewModel
 import com.xbot.search.navigation.SearchFiltersRoute
 import com.xbot.search.navigation.SearchRoute
 import com.xbot.search.navigation.navigateToSearchFilters

@@ -68,3 +68,9 @@ include(":compose-ui:feature:title:api")
 include(":compose-ui:feature:title:impl")
 include(":compose-ui:feature:login:api")
 include(":compose-ui:feature:login:impl")
+
+include(":shared:state:search")
+
+include(":shared:state:preference")
+
+include(":shared:state:login")
