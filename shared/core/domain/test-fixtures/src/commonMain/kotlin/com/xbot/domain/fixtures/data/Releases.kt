@@ -11,6 +11,7 @@ import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
+import io.nlopez.asyncresult.Success
 import kotlinx.datetime.DayOfWeek
 
 val releaseMocks = listOf(
@@ -84,7 +85,7 @@ val releaseMocks = listOf(
 fun getReleaseDetailMock(id: Int): ReleaseDetailsExtended {
     val release = releaseMocks.find { it.id == id } ?: releaseMocks.first()
     return ReleaseDetailsExtended(
-        details = ReleaseDetails(
+        details = Success(ReleaseDetails(
             release = release,
             season = Season.SPRING,
             isOngoing = true,
@@ -103,7 +104,7 @@ fun getReleaseDetailMock(id: Int): ReleaseDetailsExtended {
                 ReleaseMember("4", MemberRole.TRANSLATING, "Arta", null)
             ),
             episodes = episodeMocks,
-        ),
-        relatedReleases = releaseMocks.filter { it.id != release.id }.take(3)
+        )),
+        relatedReleases = Success(releaseMocks.filter { it.id != release.id }.take(3))
     )
 }

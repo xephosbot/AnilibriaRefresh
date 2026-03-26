@@ -39,7 +39,7 @@ internal class DefaultGetReleasesFeedUseCase(
 
                 catalogRepository.getCatalogReleases(
                     search = null,
-                    filters = CatalogFilters.create(
+                    filters = CatalogFilters(
                         seasons = listOf(currentSeason),
                         years = currentYear.let { it..it },
                         sortingTypes = listOf(SortingType.RATING_DESC)
@@ -51,7 +51,7 @@ internal class DefaultGetReleasesFeedUseCase(
         {
             catalogRepository.getCatalogReleases(
                 search = null,
-                filters = CatalogFilters.create(sortingTypes = listOf(SortingType.RATING_DESC)),
+                filters = CatalogFilters(sortingTypes = listOf(SortingType.RATING_DESC)),
                 limit = 10
             )
         },

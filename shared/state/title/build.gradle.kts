@@ -32,6 +32,7 @@ kotlin {
         implementation(projects.shared.core.domain.api)
 
         implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
         implementation(libs.compose.runtime.annotation)
         implementation(libs.koin.annotations)
         implementation(libs.koin.core)

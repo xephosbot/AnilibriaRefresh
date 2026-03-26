@@ -4,6 +4,8 @@ import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Loading
 import kotlinx.datetime.DayOfWeek
 
 data class Release(
@@ -33,30 +35,6 @@ data class ReleaseDetails(
 )
 
 data class ReleaseDetailsExtended(
-    val details: ReleaseDetails,
-    val relatedReleases: List<Release?>
-) {
-    companion object {
-        const val PLACEHOLDER_COUNT = 10
-        private fun <T> emptyPlaceholderList(): List<T?> = List(PLACEHOLDER_COUNT) { null }
-
-        fun create(
-            release: Release? = null,
-            details: ReleaseDetails? = null,
-            relatedReleases: List<Release?>? = null
-        ) = ReleaseDetailsExtended(
-            details = details ?: ReleaseDetails(
-                release = release,
-                season = null,
-                isOngoing = null,
-                publishDay = null,
-                notification = null,
-                availabilityStatus = null,
-                genres = emptyPlaceholderList(),
-                releaseMembers = emptyPlaceholderList(),
-                episodes = emptyPlaceholderList()
-            ),
-            relatedReleases = relatedReleases ?: emptyPlaceholderList()
-        )
-    }
-}
+    val details: AsyncResult<ReleaseDetails> = Loading,
+    val relatedReleases: AsyncResult<List<Release>> = Loading,
+)

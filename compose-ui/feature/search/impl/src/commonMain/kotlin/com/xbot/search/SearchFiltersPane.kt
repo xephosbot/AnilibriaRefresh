@@ -518,7 +518,7 @@ private class SearchScreenStateProvider : PreviewParameterProvider<SearchScreenS
     override val values = sequenceOf(
         SearchScreenState(),
         SearchScreenState(
-            availableFilters = CatalogFilters.create(
+            availableFilters = CatalogFilters(
                 genres = genreMocks,
                 types = ReleaseType.entries,
                 publishStatuses = PublishStatus.entries,

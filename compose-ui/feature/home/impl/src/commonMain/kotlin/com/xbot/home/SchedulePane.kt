@@ -239,19 +239,19 @@ private fun SchedulePanePreview(
 }
 
 private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
+    @OptIn(ExperimentalTime::class)
     override val values = sequenceOf(
         HomeScreenState(
-            scheduleWeek = ScheduleWeek.create(
-                startDate = Clock.System.now()
-                    .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                scheduleWeek = mapOf(
-                    Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()).date.dayOfWeek to scheduleMocks
-                )
+            scheduleWeek = ScheduleWeek(
+                days = run {
+                    val today = Clock.System.now()
+                        .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                    mapOf(today to scheduleMocks)
+                }
             )
         ),
         HomeScreenState(
-            scheduleWeek = ScheduleWeek.create()
+            scheduleWeek = ScheduleWeek()
         )
     )
 }

@@ -31,6 +31,7 @@ kotlin {
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
         implementation(libs.arrow.coroutines)
+        implementation(libs.asyncresult)
         implementation(libs.koin.annotations)
         implementation(libs.koin.core)
         implementation(libs.kotlinx.atomicfu)

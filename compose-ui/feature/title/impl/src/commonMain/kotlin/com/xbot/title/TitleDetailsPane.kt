@@ -89,6 +89,7 @@ import com.xbot.domain.fixtures.data.getReleaseDetailMock
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.models.enums.AvailabilityStatus
+import io.nlopez.asyncresult.getOrNull
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
@@ -241,7 +242,7 @@ private fun TitleDetailsPaneContent(
                     ) {
                         WatchButton(
                             onClick = {
-                                state.release.details.release?.let { onPlayClick(it.id, 0) }
+                                state.release.details.getOrNull()?.release?.let { onPlayClick(it.id, 0) }
                             }
                         )
                     }
@@ -289,7 +290,7 @@ private fun TitleDetails(
             LargeReleaseCard(
                 modifier = Modifier.verticalParallax(gridState),
                 contentModifier = Modifier.animateContentSize(),
-                release = state.release.details.release,
+                release = state.release.details.getOrNull()?.release,
                 contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
                 overscrollEffect = overscrollEffect,
             ) {
@@ -312,7 +313,7 @@ private fun TitleDetails(
                 if (!isSinglePane && state.isWatchButtonVisible) {
                     WatchButton(
                         onClick = {
-                            state.release.details.release?.let { onPlayClick(it.id, 0) }
+                            state.release.details.getOrNull()?.release?.let { onPlayClick(it.id, 0) }
                         }
                     )
                 }
@@ -397,7 +398,7 @@ private fun TitleDetails(
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             itemsIndexed(state.episodes) { index, episode ->
-                val release = state.release.details.release
+                val release = state.release.details.getOrNull()?.release
                 EpisodeListItem(
                     modifier = Modifier.section(
                         index = index,
@@ -475,37 +476,33 @@ private fun TitleDetailsPanePreview(
 private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenState> {
     override val values = sequenceOf(
         TitleScreenState(
-            release = ReleaseDetailsExtended.create(
-                release = getReleaseDetailMock(1).details.release
+            release = ReleaseDetailsExtended(
+                details = getReleaseDetailMock(1).details
             )
         ),
         TitleScreenState(
-            release = ReleaseDetailsExtended.create(
-                release = getReleaseDetailMock(1).details.release,
-                details = getReleaseDetailMock(1).details,
-                relatedReleases = emptyList()
-            )
+            release = getReleaseDetailMock(1)
         )
     )
 }
 
 private val TitleScreenState.isWatchButtonVisible: Boolean
-    get() = release.details.episodes.firstOrNull() != null
+    get() = release.details.getOrNull()?.episodes?.firstOrNull() != null
 
 private val TitleScreenState.blockedStatus: AvailabilityStatus?
-    get() = release.details.availabilityStatus.takeIf { it != AvailabilityStatus.Available }
+    get() = release.details.getOrNull()?.availabilityStatus?.takeIf { it != AvailabilityStatus.Available }
 
 private val TitleScreenState.notification: String?
-    get() = release.details.notification
+    get() = release.details.getOrNull()?.notification
 
 private val TitleScreenState.genres
-    get() = release.details.genres
+    get() = release.details.getOrNull()?.genres ?: emptyList()
 
 private val TitleScreenState.releaseMembers
-    get() = release.details.releaseMembers
+    get() = release.details.getOrNull()?.releaseMembers ?: emptyList()
 
 private val TitleScreenState.relatedReleases
-    get() = release.relatedReleases
+    get() = release.relatedReleases.getOrNull() ?: emptyList()
 
 private val TitleScreenState.episodes
-    get() = release.details.episodes
+    get() = release.details.getOrNull()?.episodes ?: emptyList()

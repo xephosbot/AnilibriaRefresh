@@ -4,8 +4,11 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.usecase.GetReleaseDetailsUseCase
+import io.nlopez.asyncresult.Success
+import io.nlopez.asyncresult.getOrNull
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.serialization.Serializable
@@ -26,7 +29,25 @@ class TitleViewModel(
 ) : ViewModel(), ContainerHost<TitleScreenState, TitleScreenSideEffect> {
 
     override val container: Container<TitleScreenState, TitleScreenSideEffect> = container(
-        initialState = TitleScreenState(ReleaseDetailsExtended.create(initialRelease)),
+        initialState = TitleScreenState(
+            release = if (initialRelease != null) {
+                ReleaseDetailsExtended(
+                    details = Success(ReleaseDetails(
+                        release = initialRelease,
+                        season = null,
+                        isOngoing = null,
+                        publishDay = null,
+                        notification = null,
+                        availabilityStatus = null,
+                        genres = emptyList(),
+                        releaseMembers = emptyList(),
+                        episodes = emptyList()
+                    ))
+                )
+            } else {
+                ReleaseDetailsExtended()
+            }
+        ),
         savedStateHandle = savedStateHandle,
         serializer = TitleScreenState.serializer(),
     ) {
@@ -54,12 +75,15 @@ class TitleViewModel(
                     })
                 }
                 .collect { titleDetails ->
-                    val release = titleDetails.details.release ?: initialRelease
-                    val newDetails = titleDetails.details.copy(release = release)
+                    val details = titleDetails.details.getOrNull()
+                    val release = details?.release ?: initialRelease
+                    val newDetails = details?.copy(release = release)
 
                     reduce {
                         state.copy(
-                            release = titleDetails.copy(details = newDetails)
+                            release = titleDetails.copy(
+                                details = if (newDetails != null) Success(newDetails) else titleDetails.details
+                            )
                         )
                     }
                 }
@@ -78,7 +102,7 @@ class TitleViewModel(
 @Serializable
 @Stable
 data class TitleScreenState(
-    @Transient val release: ReleaseDetailsExtended = ReleaseDetailsExtended.create(),
+    @Transient val release: ReleaseDetailsExtended = ReleaseDetailsExtended(),
 )
 
 @Stable

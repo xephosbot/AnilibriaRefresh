@@ -628,10 +628,10 @@ private const val PLACEHOLDER_COUNT = 10
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create()
+            releasesFeed = ReleasesFeed()
         ),
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create(
+            releasesFeed = ReleasesFeed(
                 recommendedReleases = Success(releaseMocks),
                 scheduleNow = Success(scheduleMocks),
                 bestNow = Success(releaseMocks),

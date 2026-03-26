@@ -19,7 +19,7 @@ internal class DefaultGetReleaseDetailsUseCase(
         { releasesRepository.getRelease(aliasOrId) },
         { franchisesRepository.getFranchiseReleases(aliasOrId) }
     ) { details, relatedReleases ->
-        ReleaseDetailsExtended.create(
+        ReleaseDetailsExtended(
             details = details,
             relatedReleases = relatedReleases
         )

@@ -108,8 +108,8 @@ class HomeViewModel(
 @Stable
 data class HomeScreenState(
     @Transient val currentUser: User? = null,
-    @Transient val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
-    @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
+    @Transient val releasesFeed: ReleasesFeed = ReleasesFeed(),
+    @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek(),
     val currentBestType: BestType = BestType.Now,
 )
 

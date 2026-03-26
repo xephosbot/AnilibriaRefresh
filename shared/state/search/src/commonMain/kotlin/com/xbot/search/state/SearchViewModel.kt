@@ -146,7 +146,7 @@ class SearchViewModel(
 @Stable
 data class SearchScreenState(
     val query: String = "",
-    @Transient val availableFilters: CatalogFilters = CatalogFilters.create(),
+    @Transient val availableFilters: CatalogFilters = CatalogFilters(),
     val selectedGenres: Set<Genre> = emptySet(),
     val selectedReleaseTypes: Set<ReleaseType> = emptySet(),
     val selectedPublishStatuses: Set<PublishStatus> = emptySet(),

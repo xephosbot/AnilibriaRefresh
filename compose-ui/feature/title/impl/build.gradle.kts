@@ -36,6 +36,7 @@ kotlin {
         implementation(projects.shared.state.title)
 
         implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
         implementation(libs.compose.foundation)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.navigation3)

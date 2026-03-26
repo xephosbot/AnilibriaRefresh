@@ -27,6 +27,7 @@ kotlin {
         implementation(projects.shared.core.domain.api)
 
         implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
     }
