@@ -7,7 +7,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.core.data.fixtures"
+        namespace = "com.xbot.shared.domain.fixtures"
         compileSdk {
             version = release(libs.versions.android.compilesdk.get().toInt()) {
                 minorApiLevel = 1
@@ -23,20 +23,12 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.data.api)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.common)
+        implementation(projects.shared.core.domain.api)
 
-        implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
     }
 
     compilerOptions {

@@ -31,8 +31,8 @@ kotlin {
         implementation(projects.composeUi.common)
         implementation(projects.composeUi.designSystem)
         implementation(projects.composeUi.feature.player.api)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
         implementation(projects.shared.state.title)
 
         implementation(libs.arrow.core)

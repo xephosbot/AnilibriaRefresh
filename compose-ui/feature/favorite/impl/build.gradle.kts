@@ -30,8 +30,8 @@ kotlin {
 
         implementation(projects.composeUi.common)
         implementation(projects.composeUi.designSystem)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
 
         implementation(libs.arrow.core)
         implementation(libs.compose.foundation)

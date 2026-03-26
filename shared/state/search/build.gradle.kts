@@ -29,7 +29,7 @@ kotlin {
         api(libs.androidx.lifecycle.viewmodel)
         api(libs.orbitmvi.core)
 
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
 
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)

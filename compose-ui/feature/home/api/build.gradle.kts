@@ -28,7 +28,7 @@ kotlin {
     dependencies {
         implementation(projects.composeUi.common)
         implementation(projects.composeUi.designSystem)
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
 
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.navigation3.runtime)

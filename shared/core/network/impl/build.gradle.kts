@@ -25,7 +25,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.network.api)
+        implementation(projects.shared.core.network.api)
 
         implementation(libs.arrow.core)
         implementation(libs.kermit)

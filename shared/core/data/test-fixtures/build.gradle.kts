@@ -3,12 +3,11 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
     android {
-        namespace = "com.xbot.shared.data.impl"
+        namespace = "com.xbot.core.data.fixtures"
         compileSdk {
             version = release(libs.versions.android.compilesdk.get().toInt()) {
                 minorApiLevel = 1
@@ -24,16 +23,12 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.data.api)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.network.api)
+        implementation(projects.shared.core.data.api)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
 
-        implementation(libs.androidx.datastore.core)
-        implementation(libs.androidx.datastore.preferences)
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
-        implementation(libs.koin.annotations)
-        implementation(libs.koin.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
     }
@@ -47,8 +42,4 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
-}
-
-koinCompiler {
-    compileSafety = false
 }
