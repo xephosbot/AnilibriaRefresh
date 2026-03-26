@@ -3,8 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.multiplatform.library)
-    alias(libs.plugins.android.lint)
-    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -25,28 +23,9 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        api(projects.shared.di)
+        api(projects.shared.core.domain.api)
         api(libs.androidx.lifecycle.viewmodel)
         api(libs.orbitmvi.core)
-
-        implementation(projects.shared.core.network.impl)
-        implementation(projects.shared.core.data.impl)
-        implementation(projects.shared.core.domain.impl)
-        implementation(projects.shared.state.home)
-        implementation(projects.shared.state.login)
-        implementation(projects.shared.state.player)
-        implementation(projects.shared.state.preference)
-        implementation(projects.shared.state.search)
-        implementation(projects.shared.state.title)
-
-        implementation(libs.kermit)
-        implementation(libs.kermit.koin)
-        implementation(libs.koin.annotations)
-        implementation(libs.koin.core)
-        implementation(libs.koin.core.viewmodel)
-        implementation(libs.kotlinx.coroutines.core)
-    }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
