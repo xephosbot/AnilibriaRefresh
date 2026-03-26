@@ -11,7 +11,7 @@ interface ReleasesRepository {
     suspend fun getLatestReleases(limit: Int): Either<DomainError, List<Release>>
     suspend fun getRandomReleases(limit: Int): Either<DomainError, List<Release>>
     fun getReleasesList(ids: List<Int>? = null, aliases: List<String>? = null): PagingSource<Int, Release>
-    suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetails>
+    suspend fun getRelease(aliasOrId: String): Either<DomainError, Pair<Release, ReleaseDetails>>
     suspend fun getReleaseMembers(aliasOrId: String): Either<DomainError, List<ReleaseMember>>
     suspend fun searchReleases(query: String): Either<DomainError, List<Release>>
 }

@@ -5,6 +5,7 @@ import com.xbot.common.combinePartial
 import com.xbot.data.repository.FranchisesRepository
 import com.xbot.data.repository.ReleasesRepository
 import com.xbot.domain.models.ReleaseDetailsExtended
+import io.nlopez.asyncresult.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import org.koin.core.annotation.Factory
@@ -18,9 +19,10 @@ internal class DefaultGetReleaseDetailsUseCase(
     override fun invoke(aliasOrId: String): Flow<ReleaseDetailsExtended> = combinePartial(
         { releasesRepository.getRelease(aliasOrId) },
         { franchisesRepository.getFranchiseReleases(aliasOrId) }
-    ) { details, relatedReleases ->
+    ) { releaseAndDetails, relatedReleases ->
         ReleaseDetailsExtended(
-            details = details,
+            release = releaseAndDetails.map { it.first },
+            details = releaseAndDetails.map { it.second },
             relatedReleases = relatedReleases
         )
     }.flowOn(dispatcherProvider.io)

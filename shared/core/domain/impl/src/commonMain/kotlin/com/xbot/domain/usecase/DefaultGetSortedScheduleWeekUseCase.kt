@@ -4,6 +4,9 @@ import com.xbot.common.DispatcherProvider
 import com.xbot.common.combinePartial
 import com.xbot.data.repository.ScheduleRepository
 import com.xbot.domain.models.ScheduleWeek
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Loading
+import io.nlopez.asyncresult.Success
 import io.nlopez.asyncresult.getOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -27,12 +30,14 @@ internal class DefaultGetSortedScheduleWeekUseCase(
             ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val scheduleMap = scheduleWeekResult.getOrNull()
 
+        val days = (0..6).associate { offset ->
+            val date = baseDate.plus(offset, DateTimeUnit.DAY)
+            val schedules = scheduleMap?.get(date.dayOfWeek) ?: emptyList()
+            date to schedules
+        }
+
         ScheduleWeek(
-            days = (0..6).associate { offset ->
-                val date = baseDate.plus(offset, DateTimeUnit.DAY)
-                val schedules = scheduleMap?.get(date.dayOfWeek) ?: listOf(null, null)
-                date to schedules
-            }
+            days = if (scheduleMap != null) Success(days) else Loading
         )
     }.flowOn(dispatcherProvider.io)
 }

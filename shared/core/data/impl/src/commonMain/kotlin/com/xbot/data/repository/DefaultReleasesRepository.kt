@@ -54,10 +54,10 @@ internal class DefaultReleasesRepository(
         )
     }
 
-    override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetails> = releasesApi
+    override suspend fun getRelease(aliasOrId: String): Either<DomainError, Pair<Release, ReleaseDetails>> = releasesApi
         .getRelease(aliasOrId)
         .mapLeft(NetworkError::toDomain)
-        .map(ReleaseDto::toReleaseDetails)
+        .map { dto -> dto.toDomain() to dto.toReleaseDetails() }
 
     override suspend fun getReleaseMembers(aliasOrId: String): Either<DomainError, List<ReleaseMember>> = releasesApi
         .getReleaseMembers(aliasOrId)

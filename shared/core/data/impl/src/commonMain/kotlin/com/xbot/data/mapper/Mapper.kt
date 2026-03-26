@@ -71,7 +71,6 @@ internal fun ReleaseDto.toDomain() = Release(
 )
 
 internal fun ReleaseDto.toReleaseDetails() = ReleaseDetails(
-    release = this.toDomain(),
     season = season?.toDomain(),
     isOngoing = isOngoing,
     publishDay = publishDay!!.toDayOfWeek(),
