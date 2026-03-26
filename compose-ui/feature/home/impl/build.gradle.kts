@@ -33,8 +33,8 @@ kotlin {
         implementation(projects.composeUi.feature.login.api)
         implementation(projects.composeUi.feature.player.api)
         implementation(projects.composeUi.feature.title.api)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
         implementation(projects.shared.state.home)
 
         implementation(libs.compose.foundation)

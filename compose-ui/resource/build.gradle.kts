@@ -25,7 +25,7 @@ kotlin {
     dependencies {
         api(libs.compose.resources)
 
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
 
         implementation(libs.compose.foundation)
         implementation(libs.kotlinx.datetime)

@@ -26,7 +26,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.composeUi.designSystem)
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
 
         implementation(libs.arrow.core)
         implementation(libs.compose.foundation)

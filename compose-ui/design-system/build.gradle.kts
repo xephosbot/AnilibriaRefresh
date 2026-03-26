@@ -42,8 +42,8 @@ kotlin {
         api(libs.shimmer.compose)
         api(libs.sticky.headers)
 
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
 
         implementation(libs.compose.foundation)
         implementation(libs.compose.ui)

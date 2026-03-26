@@ -24,9 +24,9 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.common)
-        implementation(projects.core.data.api)
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.common)
+        implementation(projects.shared.core.data.api)
+        implementation(projects.shared.core.domain.api)
 
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)

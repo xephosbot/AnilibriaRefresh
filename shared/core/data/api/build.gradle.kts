@@ -7,7 +7,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.shared.domain.fixtures"
+        namespace = "com.xbot.core.data.api"
         compileSdk {
             version = release(libs.versions.android.compilesdk.get().toInt()) {
                 minorApiLevel = 1
@@ -23,9 +23,9 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.core.common)
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
 
+        implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)

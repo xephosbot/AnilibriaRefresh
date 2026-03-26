@@ -34,9 +34,9 @@ kotlin {
 
         implementation(projects.composeUi.common)
         implementation(projects.composeUi.designSystem)
-        implementation(projects.core.data.api)
-        implementation(projects.core.domain.api)
-        implementation(projects.core.domain.testFixtures)
+        implementation(projects.shared.core.data.api)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
         implementation(projects.shared.state.player)
 
         implementation(libs.compose.foundation)

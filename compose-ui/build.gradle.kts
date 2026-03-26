@@ -57,7 +57,7 @@ kotlin {
         implementation(projects.composeUi.feature.search.impl)
         implementation(projects.composeUi.feature.title.api)
         implementation(projects.composeUi.feature.title.impl)
-        implementation(projects.core.domain.api)
+        implementation(projects.shared.core.domain.api)
         implementation(projects.shared)
 
         implementation(libs.compose.foundation)

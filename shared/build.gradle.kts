@@ -28,9 +28,9 @@ kotlin {
         api(libs.androidx.lifecycle.viewmodel)
         api(libs.orbitmvi.core)
 
-        implementation(projects.core.network.impl)
-        implementation(projects.core.data.impl)
-        implementation(projects.core.domain.impl)
+        implementation(projects.shared.core.network.impl)
+        implementation(projects.shared.core.data.impl)
+        implementation(projects.shared.core.domain.impl)
         implementation(projects.shared.state.home)
         implementation(projects.shared.state.login)
         implementation(projects.shared.state.player)
