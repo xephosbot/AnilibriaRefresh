@@ -45,6 +45,7 @@ koin-plugin = "0.4.1"
 kermit = "2.1.0"
 coil = "3.4.0"
 arrow = "2.2.2.1"
+asyncresult = "0.1.14"
 eygraber-uri = "0.0.21"
 androidcontextprovider = "1.0.1"
 material-motion-compose = "2.0.1"
@@ -127,6 +128,8 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
+asyncresult = { group = "io.nlopez.asyncresult", name = "asyncresult", version.ref = "asyncresult" }
+asyncresult-either = { group = "io.nlopez.asyncresult", name = "asyncresult-either", version.ref = "asyncresult" }
 eygraber-uri = { group = "com.eygraber", name = "uri-kmp", version.ref = "eygraber-uri" }
 androidcontextprovider = { group = "io.github.kdroidfilter", name = "androidcontextprovider", version.ref = "androidcontextprovider" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.17" }

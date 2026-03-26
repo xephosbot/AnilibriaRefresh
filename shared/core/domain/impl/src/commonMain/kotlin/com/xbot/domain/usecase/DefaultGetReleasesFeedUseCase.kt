@@ -65,7 +65,7 @@ internal class DefaultGetReleasesFeedUseCase(
         },
         { genresRepository.getRandomGenres(10) }
     ) { recommendedReleases, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
-        ReleasesFeed.create(
+        ReleasesFeed(
             recommendedReleases = recommendedReleases,
             scheduleNow = scheduleNow,
             bestNow = bestNow,

@@ -1,32 +1,31 @@
 package com.xbot.domain.models
 
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Loading
+
 data class ReleasesFeed(
-    val recommendedReleases: List<Release?>,
-    val scheduleNow: List<Schedule?>,
-    val bestNow: List<Release?>,
-    val bestAllTime: List<Release?>,
-    val recommendedFranchises: List<Franchise?>,
-    val genres: List<Genre?>,
+    val recommendedReleases: AsyncResult<List<Release>>,
+    val scheduleNow: AsyncResult<List<Schedule>>,
+    val bestNow: AsyncResult<List<Release>>,
+    val bestAllTime: AsyncResult<List<Release>>,
+    val recommendedFranchises: AsyncResult<List<Franchise>>,
+    val genres: AsyncResult<List<Genre>>,
 ) {
     companion object {
-        const val PLACEHOLDER_COUNT = 10
-
-        private fun <T> emptyPlaceholderList(): List<T?> = List(PLACEHOLDER_COUNT) { null }
-
         fun create(
-            recommendedReleases: List<Release?>? = null,
-            scheduleNow: List<Schedule?>? = null,
-            bestNow: List<Release?>? = null,
-            bestAllTime: List<Release?>? = null,
-            recommendedFranchises: List<Franchise?>? = null,
-            genres: List<Genre?>? = null,
+            recommendedReleases: AsyncResult<List<Release>> = Loading,
+            scheduleNow: AsyncResult<List<Schedule>> = Loading,
+            bestNow: AsyncResult<List<Release>> = Loading,
+            bestAllTime: AsyncResult<List<Release>> = Loading,
+            recommendedFranchises: AsyncResult<List<Franchise>> = Loading,
+            genres: AsyncResult<List<Genre>> = Loading,
         ) = ReleasesFeed(
-            recommendedReleases = recommendedReleases ?: emptyPlaceholderList(),
-            scheduleNow = scheduleNow ?: emptyPlaceholderList(),
-            bestNow = bestNow ?: emptyPlaceholderList(),
-            bestAllTime = bestAllTime ?: emptyPlaceholderList(),
-            recommendedFranchises = recommendedFranchises ?: emptyPlaceholderList(),
-            genres = genres ?: emptyPlaceholderList(),
+            recommendedReleases = recommendedReleases,
+            scheduleNow = scheduleNow,
+            bestNow = bestNow,
+            bestAllTime = bestAllTime,
+            recommendedFranchises = recommendedFranchises,
+            genres = genres,
         )
     }
 }

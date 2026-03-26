@@ -24,6 +24,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
+        implementation(libs.asyncresult.either)
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.coroutines.core)
     }

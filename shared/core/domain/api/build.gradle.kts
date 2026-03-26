@@ -25,6 +25,7 @@ kotlin {
     dependencies {
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
     }

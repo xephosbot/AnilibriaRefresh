@@ -37,6 +37,8 @@ kotlin {
         implementation(projects.shared.core.domain.testFixtures)
         implementation(projects.shared.state.home)
 
+        implementation(libs.asyncresult)
+
         implementation(libs.compose.foundation)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.navigation3)

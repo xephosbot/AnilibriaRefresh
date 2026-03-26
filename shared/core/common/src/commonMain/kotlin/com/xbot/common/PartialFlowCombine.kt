@@ -3,6 +3,10 @@
 package com.xbot.common
 
 import arrow.core.Either
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Error
+import io.nlopez.asyncresult.Loading
+import io.nlopez.asyncresult.Success
 import kotlinx.atomicfu.AtomicArray
 import kotlinx.atomicfu.atomicArrayOfNulls
 import kotlinx.coroutines.coroutineScope
@@ -17,13 +21,13 @@ import kotlinx.coroutines.sync.withPermit
 inline fun <E, T1, T2, R> combinePartial(
     crossinline fetcher1: suspend () -> Either<E, T1>,
     crossinline fetcher2: suspend () -> Either<E, T2>,
-    crossinline combine: (T1?, T2?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value)
     )
 }
 
@@ -31,14 +35,14 @@ inline fun <E, T1, T2, T3, R> combinePartial(
     crossinline fetcher1: suspend () -> Either<E, T1>,
     crossinline fetcher2: suspend () -> Either<E, T2>,
     crossinline fetcher3: suspend () -> Either<E, T3>,
-    crossinline combine: (T1?, T2?, T3?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value)
     )
 }
 
@@ -47,15 +51,15 @@ inline fun <E, T1, T2, T3, T4, R> combinePartial(
     crossinline fetcher2: suspend () -> Either<E, T2>,
     crossinline fetcher3: suspend () -> Either<E, T3>,
     crossinline fetcher4: suspend () -> Either<E, T4>,
-    crossinline combine: (T1?, T2?, T3?, T4?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>, AsyncResult<T4>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value),
-        unwrapEither(results[3].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value),
+        wrapAsAsyncResult(results[3].value)
     )
 }
 
@@ -65,16 +69,16 @@ inline fun <E, T1, T2, T3, T4, T5, R> combinePartial(
     crossinline fetcher3: suspend () -> Either<E, T3>,
     crossinline fetcher4: suspend () -> Either<E, T4>,
     crossinline fetcher5: suspend () -> Either<E, T5>,
-    crossinline combine: (T1?, T2?, T3?, T4?, T5?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>, AsyncResult<T4>, AsyncResult<T5>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value),
-        unwrapEither(results[3].value),
-        unwrapEither(results[4].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value),
+        wrapAsAsyncResult(results[3].value),
+        wrapAsAsyncResult(results[4].value)
     )
 }
 
@@ -85,17 +89,17 @@ inline fun <E, T1, T2, T3, T4, T5, T6, R> combinePartial(
     crossinline fetcher4: suspend () -> Either<E, T4>,
     crossinline fetcher5: suspend () -> Either<E, T5>,
     crossinline fetcher6: suspend () -> Either<E, T6>,
-    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>, AsyncResult<T4>, AsyncResult<T5>, AsyncResult<T6>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value),
-        unwrapEither(results[3].value),
-        unwrapEither(results[4].value),
-        unwrapEither(results[5].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value),
+        wrapAsAsyncResult(results[3].value),
+        wrapAsAsyncResult(results[4].value),
+        wrapAsAsyncResult(results[5].value)
     )
 }
 
@@ -107,18 +111,18 @@ inline fun <E, T1, T2, T3, T4, T5, T6, T7, R> combinePartial(
     crossinline fetcher5: suspend () -> Either<E, T5>,
     crossinline fetcher6: suspend () -> Either<E, T6>,
     crossinline fetcher7: suspend () -> Either<E, T7>,
-    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>, AsyncResult<T4>, AsyncResult<T5>, AsyncResult<T6>, AsyncResult<T7>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() }, { fetcher7() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value),
-        unwrapEither(results[3].value),
-        unwrapEither(results[4].value),
-        unwrapEither(results[5].value),
-        unwrapEither(results[6].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value),
+        wrapAsAsyncResult(results[3].value),
+        wrapAsAsyncResult(results[4].value),
+        wrapAsAsyncResult(results[5].value),
+        wrapAsAsyncResult(results[6].value)
     )
 }
 
@@ -131,19 +135,19 @@ inline fun <E, T1, T2, T3, T4, T5, T6, T7, T8, R> combinePartial(
     crossinline fetcher6: suspend () -> Either<E, T6>,
     crossinline fetcher7: suspend () -> Either<E, T7>,
     crossinline fetcher8: suspend () -> Either<E, T8>,
-    crossinline combine: (T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?) -> R
+    crossinline combine: (AsyncResult<T1>, AsyncResult<T2>, AsyncResult<T3>, AsyncResult<T4>, AsyncResult<T5>, AsyncResult<T6>, AsyncResult<T7>, AsyncResult<T8>) -> R
 ): Flow<R> = combinePartialInternal(
     fetchers = arrayListOf({ fetcher1() }, { fetcher2() }, { fetcher3() }, { fetcher4() }, { fetcher5() }, { fetcher6() }, { fetcher7() }, { fetcher8() })
 ) { results ->
     combine(
-        unwrapEither(results[0].value),
-        unwrapEither(results[1].value),
-        unwrapEither(results[2].value),
-        unwrapEither(results[3].value),
-        unwrapEither(results[4].value),
-        unwrapEither(results[5].value),
-        unwrapEither(results[6].value),
-        unwrapEither(results[7].value)
+        wrapAsAsyncResult(results[0].value),
+        wrapAsAsyncResult(results[1].value),
+        wrapAsAsyncResult(results[2].value),
+        wrapAsAsyncResult(results[3].value),
+        wrapAsAsyncResult(results[4].value),
+        wrapAsAsyncResult(results[5].value),
+        wrapAsAsyncResult(results[6].value),
+        wrapAsAsyncResult(results[7].value)
     )
 }
 
@@ -174,14 +178,17 @@ internal inline fun <R> combinePartialInternal(
 }
 
 @PublishedApi
-internal fun <T> unwrapEither(result: Any?): T? {
+internal fun <T> wrapAsAsyncResult(result: Any?): AsyncResult<T> {
     return when (result) {
         is Either<*, *> -> result.fold(
             ifLeft = { error ->
-                throw (error as? Throwable) ?: IllegalStateException(error.toString())
+                when (error) {
+                    is Throwable -> Error(throwable = error)
+                    else -> Error(metadata = error)
+                }
             },
-            ifRight = { value -> value as? T }
+            ifRight = { value -> Success(value as T) }
         )
-        else -> null
+        else -> Loading
     }
 }
