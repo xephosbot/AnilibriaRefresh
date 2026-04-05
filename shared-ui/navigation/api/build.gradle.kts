@@ -21,11 +21,11 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        api(projects.sharedUi.resource)
+        api(libs.compose.resources)
         api(libs.navigation3.runtime)
         api(libs.lifecycle.viewmodel.compose)
         api(libs.lifecycle.viewmodel.navigation3)
-        implementation(libs.compose.foundation)
-        implementation(libs.kotlinx.serialization.core)
+        implementation(libs.compose.runtime)
+        implementation(libs.compose.ui)
     }
 }

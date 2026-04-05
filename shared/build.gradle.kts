@@ -20,10 +20,15 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.shared.common)
-        api(projects.shared.network.api)
-        api(projects.shared.domain.api)
-        implementation(projects.shared.network.impl)
-        implementation(projects.shared.domain.impl)
-        implementation(projects.shared.data.impl)
+        api(projects.shared.core.domain.api)
+        api(projects.shared.state.home)
+        api(projects.shared.state.login)
+        api(projects.shared.state.player)
+        api(projects.shared.state.preference)
+        api(projects.shared.state.search)
+        api(projects.shared.state.title)
+        implementation(projects.shared.core.network.impl)
+        implementation(projects.shared.core.domain.impl)
+        implementation(projects.shared.core.data.impl)
     }
 }

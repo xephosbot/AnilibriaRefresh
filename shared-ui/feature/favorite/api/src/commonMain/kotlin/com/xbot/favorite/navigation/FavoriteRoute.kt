@@ -1,7 +1,7 @@
 package com.xbot.favorite.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.xbot.common.navigation.TopLevelNavKey
+import com.xbot.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.resources.Res

@@ -22,10 +22,10 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.sharedUi.resource)
-        implementation(projects.shared.domain.api)
+        implementation(projects.shared.core.domain.api)
+        implementation(libs.compose.runtime)
+        implementation(libs.compose.ui)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.compose.foundation)
-        api(libs.compose.resources)
     }
 
     sourceSets {

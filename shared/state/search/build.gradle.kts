@@ -19,9 +19,10 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        api(projects.shared.domain.api)
+        api(projects.shared.core.domain.api)
+        api(libs.lifecycle.viewmodel)
+        api(libs.lifecycle.viewmodel.savedstate)
         implementation(projects.shared.common)
-        implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)

@@ -4,10 +4,10 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
-import com.xbot.common.navigation.ExternalUriNavKey
-import com.xbot.common.navigation.LocalNavigator
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.replace
+import com.xbot.navigation.ExternalUriNavKey
+import com.xbot.navigation.LocalNavigator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.preference.PreferenceListPane
 import com.xbot.preference.appearance.AppearancePane

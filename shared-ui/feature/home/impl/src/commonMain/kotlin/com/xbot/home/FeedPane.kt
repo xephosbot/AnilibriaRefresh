@@ -103,12 +103,12 @@ import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.franchiseMocks
+import com.xbot.domain.fixtures.genreMocks
+import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
-import com.xbot.fixtures.data.franchiseMocks
-import com.xbot.fixtures.data.genreMocks
-import com.xbot.fixtures.data.releaseMocks
-import com.xbot.fixtures.data.scheduleMocks
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2

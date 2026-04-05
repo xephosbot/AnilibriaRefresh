@@ -22,6 +22,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.sharedUi.navigation.api)
+        implementation(libs.compose.foundation)
         implementation(libs.lifecycle.runtime.compose)
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.koin.core)

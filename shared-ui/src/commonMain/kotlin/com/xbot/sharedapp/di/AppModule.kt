@@ -2,7 +2,7 @@
 
 package com.xbot.sharedapp.di
 
-import com.xbot.common.navigation.NavKey
+import com.xbot.navigation.NavKey
 import com.xbot.common.serialization.PolymorphicSerializerConfig
 import com.xbot.data.di.DataModule
 import com.xbot.designsystem.utils.SnackbarManager

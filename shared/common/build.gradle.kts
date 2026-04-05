@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -23,15 +22,9 @@ kotlin {
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.arrow.core)
-        implementation(libs.koin.core)
-        implementation(libs.koin.annotations)
     }
 
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
-}
-
-koinCompiler {
-    compileSafety = false
 }

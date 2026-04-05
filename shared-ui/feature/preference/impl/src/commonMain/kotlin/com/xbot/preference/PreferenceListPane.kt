@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.common.navigation.ExternalUriNavKey
+import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons

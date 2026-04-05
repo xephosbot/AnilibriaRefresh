@@ -24,8 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.SingletonImageLoader
-import com.xbot.common.navigation.LocalNavigator
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Search
@@ -33,12 +31,13 @@ import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
+import com.xbot.navigation.LocalNavigator
+import com.xbot.navigation.TopLevelRoutes
+import com.xbot.navigation.rememberNavigator
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
-import com.xbot.sharedapp.navigation.TopLevelRoutes
-import com.xbot.sharedapp.navigation.rememberNavigator
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,7 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
-    SingletonImageLoader.setSafe(koinInject())
+    //SingletonImageLoader.setSafe(koinInject())
 
     val appearanceSettings by viewModel.appearanceSettings.collectAsStateWithLifecycle()
 

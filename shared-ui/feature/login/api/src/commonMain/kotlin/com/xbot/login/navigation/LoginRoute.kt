@@ -1,8 +1,8 @@
 package com.xbot.login.navigation
 
-import com.xbot.common.navigation.ExternalUriNavKey
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.Navigator
+import com.xbot.navigation.ExternalUriNavKey
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.Navigator
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 

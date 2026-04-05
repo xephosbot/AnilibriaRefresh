@@ -42,6 +42,7 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.domain.fixtures.genreMocks
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -50,7 +51,6 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogFilters
-import com.xbot.fixtures.data.genreMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.description_filter_age_ratings

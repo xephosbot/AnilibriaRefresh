@@ -7,9 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.fixtures.data.episodeMocks
+import com.xbot.domain.fixtures.episodeMocks
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState

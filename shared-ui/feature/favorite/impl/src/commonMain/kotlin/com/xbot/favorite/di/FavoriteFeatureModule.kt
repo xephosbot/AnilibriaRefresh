@@ -1,6 +1,6 @@
 package com.xbot.favorite.di
 
-import com.xbot.common.navigation.NavKey
+import com.xbot.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
 import com.xbot.favorite.FavoriteScreen
 import com.xbot.favorite.navigation.FavoriteRoute

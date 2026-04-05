@@ -39,7 +39,7 @@ class HomeViewModel(
     private val refreshTrigger = MutableStateFlow(0)
 
     val releases: Flow<PagingData<Release>> = refreshTrigger.flatMapLatest {
-        getCatalogReleasesPager()
+        getCatalogReleasesPager(null, null).flow
     }.cachedIn(viewModelScope)
 
     private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)

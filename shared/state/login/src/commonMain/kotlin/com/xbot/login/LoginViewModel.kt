@@ -3,7 +3,10 @@ package com.xbot.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.xbot.domain.repository.AuthRepository
+import com.xbot.domain.models.AuthState
+import com.xbot.domain.usecase.GetAuthStateUseCase
+import com.xbot.domain.usecase.LoginUseCase
+import com.xbot.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +19,9 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class LoginViewModel(
-    private val authRepository: AuthRepository,
+    private val getAuthState: GetAuthStateUseCase,
+    private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
 
     private val _username = MutableStateFlow("")
@@ -28,11 +33,11 @@ class LoginViewModel(
     private val _isLoading = MutableStateFlow(false)
     val state: StateFlow<LoginScreenState> = combine(
         _isLoading,
-        authRepository.authState
-    ) { isLoading, isAuthenticated ->
+        getAuthState()
+    ) { isLoading, authState ->
         LoginScreenState(
             isLoading = isLoading,
-            isSuccess = isAuthenticated,
+            isSuccess = authState is AuthState.Authenticated,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -49,7 +54,7 @@ class LoginViewModel(
             is LoginScreenAction.PasswordChanged -> _password.value = action.text
             is LoginScreenAction.Login -> login()
             is LoginScreenAction.Logout -> viewModelScope.launch {
-                authRepository.logout()
+                logoutUseCase()
             }
         }
     }
@@ -57,7 +62,7 @@ class LoginViewModel(
     private fun login() {
         viewModelScope.launch {
             _isLoading.value = true
-            when (val result = authRepository.login(_username.value, _password.value)) {
+            when (val result = loginUseCase(_username.value, _password.value)) {
                 is Either.Left -> {
                     _isLoading.value = false
                     _effects.send(LoginScreenEffect.ShowError(result.value.toString()))

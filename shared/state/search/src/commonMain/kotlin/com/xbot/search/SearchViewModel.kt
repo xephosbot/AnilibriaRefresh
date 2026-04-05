@@ -84,7 +84,7 @@ class SearchViewModel(
             getCatalogReleasesPager(
                 search = query,
                 filters = filters.toCatalogFilters().takeIf { !it.isEmpty() }
-            )
+            ).flow
         }
         .cachedIn(viewModelScope)
 

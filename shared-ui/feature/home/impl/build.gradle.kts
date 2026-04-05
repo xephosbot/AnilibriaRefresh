@@ -23,7 +23,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared.state.home)
-        implementation(projects.shared.domain.testFixtures)
+        implementation(projects.shared.core.domain.testFixtures)
         implementation(projects.sharedUi.designSystem)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.feature.home.api)
@@ -31,7 +31,7 @@ kotlin {
         implementation(projects.sharedUi.feature.title.api)
         implementation(projects.sharedUi.feature.login.api)
         implementation(libs.compose.foundation)
-        implementation(libs.navigation3.runtime)
+        implementation(libs.compose.preview)
         implementation(libs.navigation3.ui)
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)

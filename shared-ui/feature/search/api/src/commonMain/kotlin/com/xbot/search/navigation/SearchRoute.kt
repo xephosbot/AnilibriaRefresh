@@ -1,7 +1,7 @@
 package com.xbot.search.navigation
 
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.Navigator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable

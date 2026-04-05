@@ -4,9 +4,9 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
-import com.xbot.common.navigation.LocalNavigator
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.SharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.LocalNavigator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.common.serialization.polymorphic
 import com.xbot.search.SearchFilterPane
 import com.xbot.search.SearchResultPane

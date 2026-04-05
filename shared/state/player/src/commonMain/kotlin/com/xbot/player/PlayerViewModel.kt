@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.xbot.domain.models.Episode
-import com.xbot.domain.repository.ReleasesRepository
+import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class PlayerViewModel(
-    private val repository: ReleasesRepository,
+    private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle,
     private val releaseId: Int,
     private val initialEpisodeOrdinal: Int,
@@ -67,7 +67,7 @@ class PlayerViewModel(
 
     private fun fetchTitleDetails() {
         viewModelScope.launch {
-            when (val result = repository.getRelease(releaseId.toString())) {
+            when (val result = getReleaseUseCase(releaseId.toString())) {
                 is Either.Right -> {
                     val release = result.value
                     val savedOrdinal = savedStateHandle.get<Float>(EPISODE_ORDINAL_KEY)

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
@@ -19,9 +21,10 @@ kotlin {
 
     jvmToolchain(21)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(libs.compose.foundation)
         api(libs.compose.resources)
+        implementation(libs.compose.runtime)
     }
 }
 

@@ -84,10 +84,10 @@ import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.getReleaseDetailMock
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.fixtures.data.getReleaseDetailMock
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
