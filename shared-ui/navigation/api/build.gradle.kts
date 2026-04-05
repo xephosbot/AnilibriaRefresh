@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.sharedui.feature.common"
+        namespace = "com.xbot.sharedui.navigation.api"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
@@ -21,9 +21,11 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        api(projects.sharedUi.navigation.api)
-        implementation(libs.lifecycle.runtime.compose)
+        api(projects.sharedUi.resource)
+        api(libs.navigation3.runtime)
+        api(libs.lifecycle.viewmodel.compose)
+        api(libs.lifecycle.viewmodel.navigation3)
+        implementation(libs.compose.foundation)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.koin.core)
     }
 }
