@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
+// Thin wrapper — re-exports network:api + network:impl
+// TODO (Phase 6): Remove Coil files from this module, then delete this wrapper module
 kotlin {
     android {
         namespace = "com.xbot.shared.network"
@@ -21,35 +23,14 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(libs.ktor.client.core)
-        implementation(libs.ktor.client.content.negotiation)
-        implementation(libs.ktor.client.encoding)
-        implementation(libs.ktor.client.logging)
-        implementation(libs.ktor.client.auth)
-        implementation(libs.ktor.serialization.kotlinx.json)
-        implementation(libs.kotlinx.atomicfu)
-        implementation(libs.kotlinx.serialization.json)
-        implementation(libs.arrow.core)
-        implementation(libs.koin.core)
-        implementation(libs.koin.annotations)
-        implementation(libs.kermit)
+        api(projects.shared.network.api)
+        api(projects.shared.network.impl)
+        // Coil files still live in src/ of this module until Phase 6
         implementation(libs.coil.core)
         implementation(libs.coil.network.ktor)
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.brotli.dec)
-            implementation(libs.androidcontextprovider)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.cio)
-            implementation(libs.brotli.dec)
-        }
+        implementation(libs.ktor.client.core)
+        implementation(libs.koin.core)
+        implementation(libs.koin.annotations)
     }
 
     compilerOptions {

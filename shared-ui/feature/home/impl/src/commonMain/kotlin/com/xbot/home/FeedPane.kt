@@ -178,8 +178,8 @@ private fun FeedPaneContent(
     val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
-    val onShowErrorMessage: (Throwable) -> Unit = { error ->
-        onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
+    val onShowErrorMessage: (Throwable) -> Unit = { _ ->
+        items.retry()
     }
 
     LaunchedEffect(items) {
@@ -210,7 +210,7 @@ private fun FeedPaneContent(
                     state = pullToRefreshState,
                     onRefresh = {
                         items.refresh()
-                        onAction(HomeScreenAction.Refresh)
+                        items.retry()
                     }
                 )
                 .shimmerUpdater(shimmer),

@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -27,7 +24,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,14 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -57,7 +53,9 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
+import com.xbot.localization.UiText
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -65,8 +63,10 @@ import com.xbot.resources.login_email_label
 import com.xbot.resources.login_forgot_password
 import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
+import com.xbot.resources.login_success_message
 import com.xbot.resources.login_title
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -77,11 +77,20 @@ internal fun LoginScreen(
     onRegistrationClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val username by viewModel.username.collectAsStateWithLifecycle()
+    val password by viewModel.password.collectAsStateWithLifecycle()
+    val snackbarManager = koinInject<SnackbarManager>()
 
     LaunchedEffect(viewModel.effects) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is LoginScreenEffect.NavigateBack -> onBackClick()
+                is LoginScreenEffect.LoginSuccess -> snackbarManager.showMessage(
+                    title = UiText.Text(Res.string.login_success_message)
+                )
+                is LoginScreenEffect.ShowError -> snackbarManager.showMessage(
+                    title = UiText.String(effect.message)
+                )
             }
         }
     }
@@ -89,8 +98,8 @@ internal fun LoginScreen(
     LoginScreenContent(
         modifier = modifier,
         state = state,
-        usernameState = viewModel.usernameState,
-        passwordState = viewModel.passwordState,
+        username = username,
+        password = password,
         onAction = viewModel::onAction,
         onRegistrationClick = onRegistrationClick,
     )
@@ -101,12 +110,11 @@ internal fun LoginScreen(
 internal fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginScreenState,
-    usernameState: TextFieldState,
-    passwordState: TextFieldState,
+    username: String,
+    password: String,
     onAction: (LoginScreenAction) -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -158,7 +166,8 @@ internal fun LoginScreenContent(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextField(
-                    state = usernameState,
+                    value = username,
+                    onValueChange = { onAction(LoginScreenAction.UsernameChanged(it)) },
                     label = { Text(stringResource(Res.string.login_email_label)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -170,23 +179,21 @@ internal fun LoginScreenContent(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
-                    onKeyboardAction = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                    lineLimits = TextFieldLineLimits.SingleLine,
+                    singleLine = true,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                var isPasswordObfuscated by remember { mutableStateOf(false) }
+                var isPasswordVisible by remember { mutableStateOf(false) }
 
-                OutlinedSecureTextField(
-                    state = passwordState,
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { onAction(LoginScreenAction.PasswordChanged(it)) },
                     label = { Text(stringResource(Res.string.login_password_label)) },
                     trailingIcon = {
-                        IconButton(onClick = { isPasswordObfuscated = !isPasswordObfuscated }) {
+                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
-                                imageVector = if (isPasswordObfuscated) AnilibriaIcons.Outlined.Favorite else AnilibriaIcons.Filled.Favorite,
+                                imageVector = if (isPasswordVisible) AnilibriaIcons.Outlined.Favorite else AnilibriaIcons.Filled.Favorite,
                                 contentDescription = null
                             )
                         }
@@ -197,10 +204,8 @@ internal fun LoginScreenContent(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
-                    onKeyboardAction = {
-                        focusManager.clearFocus()
-                    },
-                    textObfuscationMode = if (isPasswordObfuscated) TextObfuscationMode.Visible else TextObfuscationMode.Hidden
+                    visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    singleLine = true,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -245,8 +250,8 @@ private fun LoginScreenPreview(
     AnilibriaPreview {
         LoginScreenContent(
             state = state,
-            usernameState = remember { TextFieldState() },
-            passwordState = remember { TextFieldState() },
+            username = "",
+            password = "",
             onAction = {},
             onRegistrationClick = {}
         )

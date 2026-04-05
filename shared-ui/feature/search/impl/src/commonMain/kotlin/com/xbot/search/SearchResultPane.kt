@@ -76,12 +76,21 @@ internal fun SearchResultPane(
 ) {
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
+    val queryValue by viewModel.query.collectAsStateWithLifecycle()
+
+    val searchFieldState = remember { TextFieldState(queryValue) }
+
+    LaunchedEffect(searchFieldState) {
+        snapshotFlow { searchFieldState.text.toString() }.collect { text ->
+            viewModel.onAction(SearchScreenAction.QueryChanged(text))
+        }
+    }
 
     SearchResultPaneContent(
         modifier = modifier,
         searchResult = searchResult,
         selectedFilters = selectedFilters,
-        searchFieldState = viewModel.searchFieldState,
+        searchFieldState = searchFieldState,
         onAction = viewModel::onAction,
         onBackClick = onBackClick,
         onFiltersClick = onFiltersClick,
@@ -100,13 +109,8 @@ private fun SearchResultPaneContent(
     onFiltersClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
-    val showErrorMessage: (Throwable) -> Unit = { error ->
-        onAction(
-            SearchScreenAction.ShowErrorMessage(
-                error = error,
-                onConfirmAction = { searchResult.retry() }
-            )
-        )
+    val showErrorMessage: (Throwable) -> Unit = { _ ->
+        searchResult.retry()
     }
 
     LaunchedEffect(searchResult) {

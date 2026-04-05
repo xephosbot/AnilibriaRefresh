@@ -38,6 +38,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared)
+        implementation(projects.shared.network.impl)
+        implementation(projects.shared.data.impl)
         implementation(projects.sharedUi.designSystem)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.feature.favorite.api)

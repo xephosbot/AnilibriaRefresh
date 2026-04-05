@@ -20,17 +20,13 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        // Thin wrapper — re-exports data:impl
+        // TODO (Phase 6): Remove CoilCacheDirProvider files, then delete this wrapper module
+        api(projects.shared.data.impl)
         implementation(projects.shared.network)
-        implementation(projects.shared.domain)
-        implementation(projects.shared.fixtures)
-        implementation(libs.androidx.datastore.core)
-        implementation(libs.androidx.datastore.preferences)
-        implementation(libs.androidx.paging.core)
-        implementation(libs.kotlinx.coroutines.core)
-        implementation(libs.kotlinx.datetime)
-        implementation(libs.ktor.client.core)
-        implementation(libs.ktor.client.auth)
-        implementation(libs.arrow.core)
+        // CoilCacheDirProvider files still live in src/ of this module until Phase 6
+        implementation(libs.coil.core)
+        implementation(libs.coil.network.ktor)
         implementation(libs.koin.core)
         implementation(libs.koin.annotations)
     }

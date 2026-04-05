@@ -23,7 +23,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
+        implementation(projects.shared.domain.api)
         implementation(libs.kotlinx.datetime)
         implementation(libs.compose.foundation)
         api(libs.compose.resources)

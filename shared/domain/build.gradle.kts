@@ -3,9 +3,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.koin.compiler)
 }
 
+// Thin wrapper — re-exports domain:api + domain:impl
+// Will be removed once all consumers migrate to :shared:domain:api directly
 kotlin {
     android {
         namespace = "com.xbot.shared.domain"
@@ -20,21 +21,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(libs.androidx.paging.core)
-        implementation(libs.kotlinx.coroutines.core)
-        implementation(libs.kotlinx.datetime)
-        implementation(libs.kotlinx.atomicfu)
-        implementation(libs.arrow.core)
-        implementation(libs.arrow.coroutines)
-        implementation(libs.koin.core)
-        implementation(libs.koin.annotations)
+        api(projects.shared.domain.api)
+        api(projects.shared.domain.impl)
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
-}
-
-koinCompiler {
-    compileSafety = false
 }

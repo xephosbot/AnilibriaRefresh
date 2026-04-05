@@ -1,0 +1,41 @@
+package com.xbot.network.api
+
+import arrow.core.Either
+import com.xbot.network.client.NetworkError
+import com.xbot.network.client.request
+import com.xbot.network.client.requiresAuth
+import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import com.xbot.network.models.dto.*
+import com.xbot.network.models.enums.*
+import com.xbot.network.models.responses.*
+import org.koin.core.annotation.Singleton
+
+@Singleton
+internal class DefaultFranchisesApi(private val client: HttpClient) : FranchisesApi {
+    override suspend fun getFranchises(): Either<NetworkError, List<FranchiseDto>> = client.request {
+        get("anime/franchises")
+    }
+
+    override suspend fun getFranchise(franchiseId: String): Either<NetworkError, FranchiseDto> = client.request {
+        get("anime/franchises/${franchiseId}")
+    }
+
+    override suspend fun getFranchisesRandom(limit: Int): Either<NetworkError, List<FranchiseDto>> = client.request {
+        get("anime/franchises/random") {
+            parameter("limit", limit)
+        }
+    }
+
+    override suspend fun getFranchisesByRelease(releaseId: Int): Either<NetworkError, List<FranchiseDto>> = client.request {
+        get("anime/franchises/release/${releaseId}")
+    }
+
+}

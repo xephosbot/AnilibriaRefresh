@@ -22,7 +22,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
+        implementation(projects.shared.domain.api)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.designSystem)
         implementation(libs.kotlinx.serialization.core)

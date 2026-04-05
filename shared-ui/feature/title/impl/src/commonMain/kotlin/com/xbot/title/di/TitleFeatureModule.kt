@@ -26,7 +26,7 @@ val titleFeatureModule = module {
     }
     navigation<TitleRoute> { key ->
         val viewModel = koinViewModel<TitleViewModel> {
-            parametersOf(key)
+            parametersOf(key.aliasOrId, key.release)
         }
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
