@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
@@ -7,11 +9,9 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.xbot.sharedui.resource"
+        namespace = "com.xbot.sharedui.formatters"
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
-
-        androidResources.enable = true
     }
     iosArm64()
     iosSimulatorArm64()
@@ -19,14 +19,18 @@ kotlin {
 
     jvmToolchain(21)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        api(projects.sharedUi.resource)
+        implementation(projects.shared.domain.api)
+        implementation(libs.kotlinx.datetime)
         implementation(libs.compose.foundation)
         api(libs.compose.resources)
     }
-}
 
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "com.xbot.resources"
-    generateResClass = auto
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.appcompat)
+        }
+    }
 }

@@ -27,7 +27,7 @@ kotlin {
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
         implementation(libs.materialKolor)
-        api(projects.sharedUi.resource)
+        api(projects.sharedUi.formatters)
         api(libs.compose.preview)
         api(libs.compose.material3)
         api(libs.compose.material3.adaptive.navigation.suite)
