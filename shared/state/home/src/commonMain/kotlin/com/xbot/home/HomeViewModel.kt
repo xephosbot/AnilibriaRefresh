@@ -3,6 +3,7 @@ package com.xbot.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.domain.models.AuthState
@@ -14,102 +15,138 @@ import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
 import com.xbot.domain.usecase.GetReleasesFeedUseCase
 import com.xbot.domain.usecase.GetSortedScheduleWeekUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Error
+import io.nlopez.asyncresult.Loading
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getAuthState: GetAuthStateUseCase,
     private val getReleasesFeed: GetReleasesFeedUseCase,
     private val getSortedScheduleWeekUseCase: GetSortedScheduleWeekUseCase,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
-    private val refreshTrigger = MutableStateFlow(0)
+    override val container: Container<HomeScreenState, HomeScreenSideEffect> =
+        container(
+            initialState = HomeScreenState(),
+            savedStateHandle = savedStateHandle,
+            serializer = HomeScreenState.serializer(),
+        ) {
+            startLoadData()
+        }
 
-    val releases: Flow<PagingData<Release>> = refreshTrigger.flatMapLatest {
-        getCatalogReleasesPager(null, null).flow
-    }.cachedIn(viewModelScope)
+    private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 
-    private val bestType = savedStateHandle.getStateFlow(BEST_TYPE_KEY, BestType.Now)
+    // TODO: After Paging 3.5.0 use asState() and move inside state
+    val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
-    private val _sideEffects = Channel<HomeScreenSideEffect>(Channel.BUFFERED)
-    val sideEffects = _sideEffects.receiveAsFlow()
+    private var loadDataJob: Job? = null
 
-    private val feedData = refreshTrigger.flatMapLatest {
-        getReleasesFeed().catch { _sideEffects.trySend(HomeScreenSideEffect.ShowError(it) { refresh() }) }
+    private fun startLoadData() {
+        loadDataJob?.cancel()
+        loadDataJob = intent {
+            combine(
+                getAuthState(),
+                getReleasesFeed(),
+                getSortedScheduleWeekUseCase(),
+            ) { auth, feed, schedule ->
+                val safeFeed = feed.catch { error ->
+                    postSideEffect(
+                        HomeScreenSideEffect.ShowErrorMessage(error.throwable!!) { onAction(HomeScreenAction.Refresh) }
+                    )
+                }
+
+                reduce {
+                    state.copy(
+                        currentUser = (auth as? AuthState.Authenticated)?.user,
+                        releasesFeed = safeFeed,
+                        scheduleWeek = schedule,
+                    )
+                }
+            }.catch { error ->
+                postSideEffect(
+                    HomeScreenSideEffect.ShowErrorMessage(error) { onAction(HomeScreenAction.Refresh) }
+                )
+            }.collect {}
+        }
     }
-
-    private val scheduleData = refreshTrigger.flatMapLatest {
-        getSortedScheduleWeekUseCase().catch { _sideEffects.trySend(HomeScreenSideEffect.ShowError(it) { refresh() }) }
-    }
-
-    val state: StateFlow<HomeScreenState> =
-        combine(getAuthState(), feedData, scheduleData, bestType) { authState, feed, schedule, currentBestType ->
-            val user = when (authState) {
-                is AuthState.Authenticated -> authState.user
-                is AuthState.Unauthenticated -> null
-            }
-
-            HomeScreenState(
-                currentUser = user,
-                releasesFeed = feed,
-                scheduleWeek = schedule,
-                currentBestType = currentBestType,
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = HomeScreenState()
-        )
 
     fun onAction(action: HomeScreenAction) {
         when (action) {
             is HomeScreenAction.Refresh -> refresh()
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
+            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
         }
     }
 
-    private fun refresh() {
-        refreshTrigger.update { it + 1 }
+    private fun refresh(): Job = intent { startLoadData() }
+
+    private fun updateBestType(bestType: BestType): Job = intent {
+        reduce { state.copy(currentBestType = bestType) }
     }
 
-    private fun updateBestType(bestType: BestType) {
-        savedStateHandle[BEST_TYPE_KEY] = bestType
+    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
+        postSideEffect(HomeScreenSideEffect.ShowErrorMessage(error, onRetry))
     }
 
-    companion object {
-        private const val BEST_TYPE_KEY = "best_type"
+    private inline fun <T> AsyncResult<T>.errorToLoading(
+        onError: (Error) -> Unit = {}
+    ): AsyncResult<T> = when (this) {
+        is Error -> {
+            onError(this)
+            Loading
+        }
+        else -> this
+    }
+
+    private inline fun ReleasesFeed.catch(
+        onError: (Error) -> Unit = {}
+    ): ReleasesFeed {
+        return copy(
+            recommendedReleases = recommendedReleases.errorToLoading(),
+            scheduleNow = scheduleNow.errorToLoading(),
+            bestNow = bestNow.errorToLoading(),
+            bestAllTime = bestAllTime.errorToLoading(),
+            recommendedFranchises = recommendedFranchises.errorToLoading(),
+            genres = genres.errorToLoading(),
+        )
     }
 }
 
+@Serializable
 data class HomeScreenState(
-    val currentUser: User? = null,
-    val releasesFeed: ReleasesFeed = ReleasesFeed.create(),
-    val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
+    @Transient val currentUser: User? = null,
+    @Transient val releasesFeed: ReleasesFeed = ReleasesFeed(),
+    @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek.create(),
     val currentBestType: BestType = BestType.Now,
 )
 
 sealed interface HomeScreenAction {
     data object Refresh : HomeScreenAction
     data class UpdateBestType(val bestType: BestType) : HomeScreenAction
+    //TODO: Remove after Paging 3.5.0 use asState()
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onRetry: () -> Unit,
+    ) : HomeScreenAction
 }
 
 sealed interface HomeScreenSideEffect {
-    data class ShowError(val error: Throwable, val retryAction: () -> Unit) : HomeScreenSideEffect
+    data class ShowErrorMessage(
+        val error: Throwable,
+        val onRetry: () -> Unit,
+    ) : HomeScreenSideEffect
 }
 
-enum class BestType {
-    Now, AllTime
-}
+@Serializable
+enum class BestType { Now, AllTime }

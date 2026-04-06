@@ -22,6 +22,7 @@ kotlin {
         api(projects.shared.core.domain.api)
         api(libs.lifecycle.viewmodel)
         api(libs.lifecycle.viewmodel.savedstate)
+        api(libs.orbitmvi.core)
         implementation(projects.shared.common)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.arrow.core)

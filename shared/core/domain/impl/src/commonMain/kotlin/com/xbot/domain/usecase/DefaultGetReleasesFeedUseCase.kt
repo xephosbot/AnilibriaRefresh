@@ -5,7 +5,7 @@ import arrow.core.raise.either
 import arrow.fx.coroutines.parMap
 import arrow.fx.coroutines.parZip
 import com.xbot.common.DispatcherProvider
-import com.xbot.common.combinePartial
+import com.xbot.common.combinePartial3
 import com.xbot.data.repository.CatalogRepository
 import com.xbot.data.repository.FranchisesRepository
 import com.xbot.data.repository.GenresRepository
@@ -27,7 +27,7 @@ internal class DefaultGetReleasesFeedUseCase(
     private val genresRepository: GenresRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) : GetReleasesFeedUseCase {
-    override fun invoke(): Flow<ReleasesFeed> = combinePartial(
+    override fun invoke(): Flow<ReleasesFeed> = combinePartial2(
         { releasesRepository.getRandomReleases(10) },
         { scheduleRepository.getScheduleNow() },
         {
@@ -65,7 +65,7 @@ internal class DefaultGetReleasesFeedUseCase(
         },
         { genresRepository.getRandomGenres(10) }
     ) { recommendedReleases, scheduleNow, bestNow, bestAllTime, recommendedFranchises, genres ->
-        ReleasesFeed.create(
+        ReleasesFeed(
             recommendedReleases = recommendedReleases,
             scheduleNow = scheduleNow,
             bestNow = bestNow,

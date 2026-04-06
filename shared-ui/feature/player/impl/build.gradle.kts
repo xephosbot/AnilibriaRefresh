@@ -40,6 +40,7 @@ kotlin {
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.arrow.core)
+        implementation(libs.orbitmvi.compose)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)

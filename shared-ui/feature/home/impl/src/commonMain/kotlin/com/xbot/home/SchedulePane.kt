@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
@@ -44,18 +43,25 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.theme.asPaddingValues
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ScheduleWeek
 import com.xbot.localization.DayOfWeekStyle
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
+import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -72,7 +78,21 @@ internal fun SchedulePane(
     onReleaseClick: (Release) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is HomeScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     SchedulePaneContent(
         modifier = modifier,

@@ -1,32 +1,13 @@
 package com.xbot.domain.models
 
+import io.nlopez.asyncresult.AsyncResult
+import io.nlopez.asyncresult.Loading
+
 data class ReleasesFeed(
-    val recommendedReleases: List<Release?>,
-    val scheduleNow: List<Schedule?>,
-    val bestNow: List<Release?>,
-    val bestAllTime: List<Release?>,
-    val recommendedFranchises: List<Franchise?>,
-    val genres: List<Genre?>,
-) {
-    companion object {
-        const val PLACEHOLDER_COUNT = 10
-
-        private fun <T> emptyPlaceholderList(): List<T?> = List(PLACEHOLDER_COUNT) { null }
-
-        fun create(
-            recommendedReleases: List<Release?>? = null,
-            scheduleNow: List<Schedule?>? = null,
-            bestNow: List<Release?>? = null,
-            bestAllTime: List<Release?>? = null,
-            recommendedFranchises: List<Franchise?>? = null,
-            genres: List<Genre?>? = null,
-        ) = ReleasesFeed(
-            recommendedReleases = recommendedReleases ?: emptyPlaceholderList(),
-            scheduleNow = scheduleNow ?: emptyPlaceholderList(),
-            bestNow = bestNow ?: emptyPlaceholderList(),
-            bestAllTime = bestAllTime ?: emptyPlaceholderList(),
-            recommendedFranchises = recommendedFranchises ?: emptyPlaceholderList(),
-            genres = genres ?: emptyPlaceholderList(),
-        )
-    }
-}
+    val recommendedReleases: AsyncResult<List<Release>> = Loading,
+    val scheduleNow: AsyncResult<List<Schedule>> = Loading,
+    val bestNow: AsyncResult<List<Release>> = Loading,
+    val bestAllTime: AsyncResult<List<Release>> = Loading,
+    val recommendedFranchises: AsyncResult<List<Franchise>> = Loading,
+    val genres: AsyncResult<List<Genre>> = Loading,
+)

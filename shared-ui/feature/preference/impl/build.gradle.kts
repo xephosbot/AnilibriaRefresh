@@ -35,6 +35,7 @@ kotlin {
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.arrow.core)
+        implementation(libs.orbitmvi.compose)
         implementation(libs.koin.compose)
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)

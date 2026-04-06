@@ -19,9 +19,10 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        implementation(libs.arrow.core)
+        implementation(libs.asyncresult)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.atomicfu)
-        implementation(libs.arrow.core)
     }
 
     compilerOptions {

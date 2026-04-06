@@ -60,7 +60,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -102,6 +101,8 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.fixtures.genreMocks
@@ -109,10 +110,13 @@ import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleasesFeed
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
 import com.xbot.resources.badge_3
+import com.xbot.resources.button_retry
 import com.xbot.resources.button_watch
 import com.xbot.resources.label_best
 import com.xbot.resources.label_best_all_time
@@ -127,6 +131,8 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.time.ExperimentalTime
 
 @OptIn(
@@ -144,7 +150,21 @@ internal fun FeedPane(
     onProfileClick: () -> Unit,
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is HomeScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     FeedPaneContent(
         modifier = modifier,
@@ -178,8 +198,8 @@ private fun FeedPaneContent(
     val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
-    val onShowErrorMessage: (Throwable) -> Unit = { _ ->
-        items.retry()
+    val onShowErrorMessage: (Throwable) -> Unit = { error ->
+        onAction(HomeScreenAction.ShowErrorMessage(error) { items.retry() })
     }
 
     LaunchedEffect(items) {
@@ -210,7 +230,7 @@ private fun FeedPaneContent(
                     state = pullToRefreshState,
                     onRefresh = {
                         items.refresh()
-                        items.retry()
+                        onAction(HomeScreenAction.Refresh)
                     }
                 )
                 .shimmerUpdater(shimmer),

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -22,8 +23,11 @@ kotlin {
         api(projects.shared.core.domain.api)
         api(libs.lifecycle.viewmodel)
         api(libs.lifecycle.viewmodel.savedstate)
+        api(libs.orbitmvi.core)
+        api(libs.orbitmvi.viewmodel)
         implementation(projects.shared.common)
         implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.androidx.paging.core)
     }
 }
