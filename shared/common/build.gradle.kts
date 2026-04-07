@@ -20,7 +20,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(libs.arrow.core)
-        implementation(libs.asyncresult)
+        implementation(libs.orbitmvi.core)
+        implementation(libs.lifecycle.viewmodel)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.atomicfu)
     }

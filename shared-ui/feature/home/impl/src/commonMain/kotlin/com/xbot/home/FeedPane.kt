@@ -66,6 +66,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
@@ -109,7 +111,6 @@ import com.xbot.domain.fixtures.genreMocks
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleasesFeed
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
@@ -329,7 +330,7 @@ private fun ReleaseFeed(
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.size }
+    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.getOrElse { List(10) { null } }.size }
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
@@ -344,7 +345,7 @@ private fun ReleaseFeed(
         contentPadding = contentPadding.only(WindowInsetsSides.Bottom)
     ) {
         horizontalPagerItems(
-            items = releasesFeed.recommendedReleases,
+            items = releasesFeed.recommendedReleases.getOrElse { List(10) { null } },
             state = pagerState,
             isAutoScrollActive = activeMenuReleaseId == null,
         ) { page, release ->
@@ -417,7 +418,7 @@ private fun ReleaseFeed(
             onClick = onScheduleClick,
         )
         horizontalSnappableItems(
-            items = releasesFeed.scheduleNow,
+            items = releasesFeed.scheduleNow.getOrElse { List(10) { null } },
             //key = { schedule -> schedule?.release?.id },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
@@ -467,7 +468,7 @@ private fun ReleaseFeed(
             )
         }
         horizontalItemsIndexed(
-            items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
+            items = if (currentBestType == BestType.Now) releasesFeed.bestNow.getOrElse { List(10) { null } } else releasesFeed.bestAllTime.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { index, release ->
             SmallReleaseCard(
@@ -492,7 +493,7 @@ private fun ReleaseFeed(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalSnappableItems(
-            items = releasesFeed.recommendedFranchises,
+            items = releasesFeed.recommendedFranchises.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
         ) { franchise ->
@@ -507,7 +508,7 @@ private fun ReleaseFeed(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalItems(
-            items = releasesFeed.genres,
+            items = releasesFeed.genres.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { genre ->
             GenreItem(
@@ -609,16 +610,16 @@ private fun FeedPanePreview(
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create()
+            releasesFeed = ReleasesFeed()
         ),
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create(
-                recommendedReleases = releaseMocks,
-                scheduleNow = scheduleMocks,
-                bestNow = releaseMocks,
-                bestAllTime = releaseMocks,
-                recommendedFranchises = franchiseMocks,
-                genres = genreMocks
+            releasesFeed = ReleasesFeed(
+                recommendedReleases = AsyncResult.Success(releaseMocks),
+                scheduleNow = AsyncResult.Success(scheduleMocks),
+                bestNow = AsyncResult.Success(releaseMocks),
+                bestAllTime = AsyncResult.Success(releaseMocks),
+                recommendedFranchises = AsyncResult.Success(franchiseMocks),
+                genres = AsyncResult.Success(genreMocks)
             )
         )
     )

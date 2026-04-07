@@ -33,6 +33,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.LazyColumnWithStickyHeader
 import com.xbot.designsystem.components.MediumReleaseCard
@@ -47,7 +49,6 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ScheduleWeek
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
@@ -55,8 +56,10 @@ import com.xbot.localization.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -165,7 +168,14 @@ private fun ScheduleContent(
 
     ProvideShimmer(shimmer) {
         LazyColumnWithStickyHeader(
-            items = scheduleWeek.days,
+            items = scheduleWeek.days.getOrElse {
+                val baseDate =
+                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+                (0..6).associate { offset ->
+                    val date = baseDate.plus(offset, DateTimeUnit.DAY)
+                    date to listOf(null, null)
+                }
+            },
             modifier = modifier.shimmerUpdater(shimmer),
             contentPadding = contentPadding + LocalMargins.current.asPaddingValues(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -239,15 +249,21 @@ private fun SchedulePanePreview(
 private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            scheduleWeek = ScheduleWeek.create(
-                startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                scheduleWeek = mapOf(
-                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.dayOfWeek to scheduleMocks
+            scheduleWeek = ScheduleWeek(
+                days = AsyncResult.Success(
+                    run {
+                        val baseDate =
+                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        (0..6).associate { offset ->
+                            val date = baseDate.plus(offset, DateTimeUnit.DAY)
+                            date to scheduleMocks
+                        }
+                    }
                 )
             )
         ),
         HomeScreenState(
-            scheduleWeek = ScheduleWeek.create()
+            scheduleWeek = ScheduleWeek()
         )
     )
 }

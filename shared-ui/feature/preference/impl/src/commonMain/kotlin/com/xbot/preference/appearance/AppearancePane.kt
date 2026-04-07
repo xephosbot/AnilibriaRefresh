@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.ExperimentalPill
 import com.xbot.designsystem.components.PreferenceItem
@@ -39,7 +38,6 @@ import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.domain.models.AppearanceSettings
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
@@ -54,6 +52,7 @@ import com.xbot.resources.preference_appearance_theme_title
 import com.xbot.resources.preference_appearance_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 internal fun AppearancePane(
@@ -61,7 +60,7 @@ internal fun AppearancePane(
     viewModel: AppearanceViewModel = koinViewModel(),
     onBackClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
 
     AppearanceScreenContent(
         modifier = modifier,
@@ -75,7 +74,7 @@ internal fun AppearancePane(
 @Composable
 private fun AppearanceScreenContent(
     modifier: Modifier = Modifier,
-    state: AppearanceSettings,
+    state: AppearanceScreenState,
     onAction: (AppearanceScreenAction) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -178,7 +177,7 @@ private fun AppearanceScreenContent(
 @Composable
 private fun AppearancePanePreview() {
     AnilibriaPreview {
-        var state by remember { mutableStateOf(AppearanceSettings()) }
+        var state by remember { mutableStateOf(AppearanceScreenState()) }
 
         AppearanceScreenContent(
             state = state,

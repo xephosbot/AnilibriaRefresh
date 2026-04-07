@@ -20,7 +20,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(libs.arrow.core)
-        api(libs.asyncresult)
+        implementation(projects.shared.common)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
         implementation(libs.androidx.paging.core)

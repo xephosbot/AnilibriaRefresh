@@ -28,4 +28,8 @@ kotlin {
         implementation(libs.androidx.paging.core)
         implementation(libs.arrow.core)
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }

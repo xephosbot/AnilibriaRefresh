@@ -27,7 +27,12 @@ kotlin {
         api(libs.orbitmvi.viewmodel)
         implementation(projects.shared.common)
         implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
         implementation(libs.androidx.paging.core)
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }

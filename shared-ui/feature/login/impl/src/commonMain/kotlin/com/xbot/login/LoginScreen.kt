@@ -14,6 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -24,6 +28,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,8 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -56,6 +63,7 @@ import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
 import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -68,6 +76,8 @@ import com.xbot.resources.login_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun LoginScreen(
@@ -76,30 +86,34 @@ internal fun LoginScreen(
     onBackClick: () -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val username by viewModel.username.collectAsStateWithLifecycle()
-    val password by viewModel.password.collectAsStateWithLifecycle()
-    val snackbarManager = koinInject<SnackbarManager>()
+    val state by viewModel.collectAsState()
 
-    LaunchedEffect(viewModel.effects) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                is LoginScreenEffect.NavigateBack -> onBackClick()
-                is LoginScreenEffect.LoginSuccess -> snackbarManager.showMessage(
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is LoginScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage()
+                )
+            }
+            is LoginScreenSideEffect.LoginSuccess -> {
+                SnackbarManager.showMessage(
                     title = UiText.Text(Res.string.login_success_message)
                 )
-                is LoginScreenEffect.ShowError -> snackbarManager.showMessage(
-                    title = UiText.String(effect.message)
-                )
+            }
+            is LoginScreenSideEffect.NavigateBack -> {
+                onBackClick()
             }
         }
     }
 
+    val usernameState = rememberTextFieldState()
+    val passwordState = rememberTextFieldState()
+
     LoginScreenContent(
         modifier = modifier,
         state = state,
-        username = username,
-        password = password,
+        usernameState = usernameState,
+        passwordState = passwordState,
         onAction = viewModel::onAction,
         onRegistrationClick = onRegistrationClick,
     )
@@ -110,11 +124,12 @@ internal fun LoginScreen(
 internal fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginScreenState,
-    username: String,
-    password: String,
+    usernameState: TextFieldState,
+    passwordState: TextFieldState,
     onAction: (LoginScreenAction) -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -166,8 +181,7 @@ internal fun LoginScreenContent(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextField(
-                    value = username,
-                    onValueChange = { onAction(LoginScreenAction.UsernameChanged(it)) },
+                    state = usernameState,
                     label = { Text(stringResource(Res.string.login_email_label)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -179,21 +193,23 @@ internal fun LoginScreenContent(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
-                    singleLine = true,
+                    onKeyboardAction = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                    lineLimits = TextFieldLineLimits.SingleLine,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                var isPasswordVisible by remember { mutableStateOf(false) }
+                var isPasswordObfuscated by remember { mutableStateOf(false) }
 
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { onAction(LoginScreenAction.PasswordChanged(it)) },
+                OutlinedSecureTextField(
+                    state = passwordState,
                     label = { Text(stringResource(Res.string.login_password_label)) },
                     trailingIcon = {
-                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        IconButton(onClick = { isPasswordObfuscated = !isPasswordObfuscated }) {
                             Icon(
-                                imageVector = if (isPasswordVisible) AnilibriaIcons.Outlined.Favorite else AnilibriaIcons.Filled.Favorite,
+                                imageVector = if (isPasswordObfuscated) AnilibriaIcons.Outlined.Favorite else AnilibriaIcons.Filled.Favorite,
                                 contentDescription = null
                             )
                         }
@@ -204,8 +220,10 @@ internal fun LoginScreenContent(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
-                    visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    singleLine = true,
+                    onKeyboardAction = {
+                        focusManager.clearFocus()
+                    },
+                    textObfuscationMode = if (isPasswordObfuscated) TextObfuscationMode.Visible else TextObfuscationMode.Hidden
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -231,7 +249,14 @@ internal fun LoginScreenContent(
                     }
 
                     Button(
-                        onClick = { onAction(LoginScreenAction.Login) },
+                        onClick = {
+                            onAction(
+                                LoginScreenAction.Login(
+                                    username = usernameState.text.toString(),
+                                    password = passwordState.text.toString()
+                                )
+                            )
+                        },
                         enabled = !state.isLoading
                     ) {
                         Text(stringResource(Res.string.login_sign_in))
@@ -250,8 +275,8 @@ private fun LoginScreenPreview(
     AnilibriaPreview {
         LoginScreenContent(
             state = state,
-            username = "",
-            password = "",
+            usernameState = rememberTextFieldState(),
+            passwordState = rememberTextFieldState(),
             onAction = {},
             onRegistrationClick = {}
         )
