@@ -5,7 +5,7 @@ import com.xbot.data.repository.CatalogRepository
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -15,7 +15,7 @@ internal class DefaultGetBestReleasesForAllTimeUseCase(
     override suspend fun invoke(): Either<DomainError, List<Release>> {
         return catalogRepository.getCatalogReleases(
             search = null,
-            filters = CatalogFilters.create(sortingTypes = listOf(SortingType.RATING_DESC)),
+            filters = CatalogQuery(sortingTypes = listOf(SortingType.RATING_DESC)),
             limit = 10
         )
     }

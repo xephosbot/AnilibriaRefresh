@@ -15,16 +15,16 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 
 class FakeCatalogRepository : CatalogRepository {
-    override fun getCatalogReleases(search: String?, filters: CatalogFilters?): PagingSource<Int, Release> {
+    override fun getCatalogReleases(search: String?, filters: CatalogQuery?): PagingSource<Int, Release> {
         return FakePagingSource(releaseMocks)
     }
 
     override suspend fun getCatalogReleases(
         search: String?,
-        filters: CatalogFilters?,
+        filters: CatalogQuery?,
         limit: Int
     ): Either<DomainError, List<Release>> {
         return releaseMocks.take(limit).right()

@@ -40,26 +40,25 @@ class HomeViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
+    override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
+        initialState = HomeScreenState(),
+        savedStateHandle = savedStateHandle,
+        serializer = HomeScreenState.serializer(),
+    ) {
+        loadBestReleasesInCurrentSeason()
+        loadBestReleasesForAllTime()
+        loadRecommendedFranchises()
+        loadRecommendedReleases()
+        loadRecommendedGenres()
+        loadScheduleForToday()
+        loadScheduleWeek()
+        loadAuthState()
+    }
+
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 
     // TODO: After Paging 3.5.0 use asState() and move inside state
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
-
-    override val container: Container<HomeScreenState, HomeScreenSideEffect> =
-        container(
-            initialState = HomeScreenState(),
-            savedStateHandle = savedStateHandle,
-            serializer = HomeScreenState.serializer(),
-        ) {
-            loadBestReleasesInCurrentSeason()
-            loadBestReleasesForAllTime()
-            loadRecommendedFranchises()
-            loadRecommendedReleases()
-            loadRecommendedGenres()
-            loadScheduleForToday()
-            loadScheduleWeek()
-            loadAuthState()
-        }
 
     private fun loadBestReleasesInCurrentSeason(): Job = intent {
         asyncLoad(

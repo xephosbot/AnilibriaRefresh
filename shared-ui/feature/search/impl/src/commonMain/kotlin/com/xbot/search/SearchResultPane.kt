@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -65,6 +64,7 @@ import com.xbot.resources.search_bar_placeholder
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 internal fun SearchResultPane(
@@ -74,23 +74,13 @@ internal fun SearchResultPane(
     onFiltersClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
+    val state by viewModel.collectAsState()
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
-    val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
-    val queryValue by viewModel.query.collectAsStateWithLifecycle()
-
-    val searchFieldState = remember { TextFieldState(queryValue) }
-
-    LaunchedEffect(searchFieldState) {
-        snapshotFlow { searchFieldState.text.toString() }.collect { text ->
-            viewModel.onAction(SearchScreenAction.QueryChanged(text))
-        }
-    }
 
     SearchResultPaneContent(
         modifier = modifier,
+        state = state,
         searchResult = searchResult,
-        selectedFilters = selectedFilters,
-        searchFieldState = searchFieldState,
         onAction = viewModel::onAction,
         onBackClick = onBackClick,
         onFiltersClick = onFiltersClick,
@@ -101,14 +91,21 @@ internal fun SearchResultPane(
 @Composable
 private fun SearchResultPaneContent(
     modifier: Modifier = Modifier,
+    state: SearchScreenState,
     searchResult: LazyPagingItems<Release>,
-    selectedFilters: SearchFiltersState,
-    searchFieldState: TextFieldState,
     onAction: (SearchScreenAction) -> Unit,
     onBackClick: () -> Unit,
     onFiltersClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
+    val searchFieldState = rememberTextFieldState(state.query)
+
+    LaunchedEffect(searchFieldState) {
+        snapshotFlow { searchFieldState.text.toString() }.collect { text ->
+            onAction(SearchScreenAction.QueryChanged(text))
+        }
+    }
+
     val showErrorMessage: (Throwable) -> Unit = { _ ->
         searchResult.retry()
     }
@@ -169,16 +166,9 @@ private fun SearchResultPaneContent(
                     },
                 )
 
-                val hasFilters = selectedFilters.selectedGenres.isNotEmpty() ||
-                        selectedFilters.selectedReleaseTypes.isNotEmpty() ||
-                        selectedFilters.selectedPublishStatuses.isNotEmpty() ||
-                        selectedFilters.selectedProductionStatuses.isNotEmpty() ||
-                        selectedFilters.selectedSeasons.isNotEmpty() ||
-                        selectedFilters.selectedAgeRatings.isNotEmpty()
-
-                if (hasFilters) {
+                if (state.filters.hasActiveFilters) {
                     ChipGroup {
-                        selectedFilters.selectedGenres.forEach { genre ->
+                        state.filters.selectedGenres.forEach { genre ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.ToggleGenre(genre)) },
                                 label = { Text(genre.name) },
@@ -190,7 +180,7 @@ private fun SearchResultPaneContent(
                                 }
                             )
                         }
-                        selectedFilters.selectedReleaseTypes.forEach { type ->
+                        state.filters.selectedReleaseTypes.forEach { type ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.ToggleReleaseType(type)) },
                                 label = { Text(stringResource(type.stringRes)) },
@@ -202,7 +192,7 @@ private fun SearchResultPaneContent(
                                 }
                             )
                         }
-                        selectedFilters.selectedPublishStatuses.forEach { status ->
+                        state.filters.selectedPublishStatuses.forEach { status ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.TogglePublishStatus(status)) },
                                 label = { Text(stringResource(status.stringRes)) },
@@ -214,7 +204,7 @@ private fun SearchResultPaneContent(
                                 }
                             )
                         }
-                        selectedFilters.selectedProductionStatuses.forEach { status ->
+                        state.filters.selectedProductionStatuses.forEach { status ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.ToggleProductionStatus(status)) },
                                 label = { Text(stringResource(status.stringRes)) },
@@ -226,7 +216,7 @@ private fun SearchResultPaneContent(
                                 }
                             )
                         }
-                        selectedFilters.selectedSeasons.forEach { season ->
+                        state.filters.selectedSeasons.forEach { season ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.ToggleSeason(season)) },
                                 label = { Text(stringResource(season.stringRes)) },
@@ -238,7 +228,7 @@ private fun SearchResultPaneContent(
                                 }
                             )
                         }
-                        selectedFilters.selectedAgeRatings.forEach { rating ->
+                        state.filters.selectedAgeRatings.forEach { rating ->
                             AssistChip(
                                 onClick = { onAction(SearchScreenAction.ToggleAgeRating(rating)) },
                                 label = { Text(stringResource(rating.stringRes)) },
@@ -312,12 +302,10 @@ private fun SearchResultContent(
 private fun SearchResultPanePreview() {
     AnilibriaPreview {
         val searchResult = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
-        val searchFieldState = remember { TextFieldState() }
 
         SearchResultPaneContent(
             searchResult = searchResult,
-            selectedFilters = SearchFiltersState(),
-            searchFieldState = searchFieldState,
+            state = SearchScreenState(),
             onAction = {},
             onBackClick = {},
             onFiltersClick = {},

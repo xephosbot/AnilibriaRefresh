@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.xbot.data.repository.CatalogRepository
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -13,7 +13,7 @@ internal class DefaultGetCatalogReleasesPagerUseCase(
 ) : GetCatalogReleasesPagerUseCase {
     override fun invoke(
         search: String?,
-        filters: CatalogFilters?
+        filters: CatalogQuery?
     ): Pager<Int, Release> = Pager(
         config = PagingConfig(
             pageSize = PAGE_SIZE,

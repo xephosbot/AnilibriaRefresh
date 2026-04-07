@@ -11,11 +11,11 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 
 interface CatalogRepository {
-    fun getCatalogReleases(search: String? = null, filters: CatalogFilters? = null): PagingSource<Int, Release>
-    suspend fun getCatalogReleases(search: String? = null, filters: CatalogFilters? = null, limit: Int): Either<DomainError, List<Release>>
+    fun getCatalogReleases(search: String? = null, filters: CatalogQuery? = null): PagingSource<Int, Release>
+    suspend fun getCatalogReleases(search: String? = null, filters: CatalogQuery? = null, limit: Int): Either<DomainError, List<Release>>
     suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRating>>
     suspend fun getCatalogGenres(): Either<DomainError, List<Genre>>
     suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatus>>

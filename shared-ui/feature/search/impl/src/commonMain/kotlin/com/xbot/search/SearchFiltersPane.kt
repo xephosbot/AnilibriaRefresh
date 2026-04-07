@@ -31,7 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.MultiChoiceChipGroup
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.RangeSlider
@@ -50,7 +51,6 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.description_filter_age_ratings
@@ -71,6 +71,7 @@ import com.xbot.resources.label_sorting_types
 import com.xbot.resources.label_years
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 import kotlin.math.roundToInt
 
 @Composable
@@ -80,13 +81,11 @@ internal fun SearchFilterPane(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
 ) {
-    val availableFilters by viewModel.availableFilters.collectAsStateWithLifecycle()
-    val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
 
     SearchFilterPaneContent(
         modifier = modifier,
-        availableFilters = availableFilters,
-        selectedFilters = selectedFilters,
+        state = state,
         showBackButton = showBackButton,
         onAction = viewModel::onAction,
         onBackClick = onBackClick
@@ -97,8 +96,7 @@ internal fun SearchFilterPane(
 @Composable
 private fun SearchFilterPaneContent(
     modifier: Modifier = Modifier,
-    availableFilters: CatalogFilters,
-    selectedFilters: SearchFiltersState,
+    state: SearchScreenState,
     showBackButton: Boolean,
     onAction: (SearchScreenAction) -> Unit,
     onBackClick: () -> Unit,
@@ -130,43 +128,43 @@ private fun SearchFilterPaneContent(
         FiltersScreenContent(
             modifier = modifier,
             contentPadding = innerPadding,
-            sortingTypes = availableFilters.sortingTypes,
-            selectedSortingType = selectedFilters.selectedSortingType,
+            sortingTypes = state.sortingTypes.getOrElse { emptyList() },
+            selectedSortingType = state.filters.selectedSortingType,
             onSortingTypeClick = {
                 onAction(SearchScreenAction.UpdateSortingType(it))
             },
-            genres = availableFilters.genres,
-            selectedGenres = selectedFilters.selectedGenres.toList(),
+            genres = state.genres.getOrElse { emptyList() },
+            selectedGenres = state.filters.selectedGenres.toList(),
             onGenreClick = {
                 onAction(SearchScreenAction.ToggleGenre(it))
             },
-            releaseTypes = availableFilters.types,
-            selectedReleaseTypes = selectedFilters.selectedReleaseTypes.toList(),
+            releaseTypes = state.releaseTypes.getOrElse { emptyList() },
+            selectedReleaseTypes = state.filters.selectedReleaseTypes.toList(),
             onReleaseTypeClick = {
                 onAction(SearchScreenAction.ToggleReleaseType(it))
             },
-            publishStatuses = availableFilters.publishStatuses,
-            selectedPublishStatuses = selectedFilters.selectedPublishStatuses.toList(),
+            publishStatuses = state.publishStatuses.getOrElse { emptyList() },
+            selectedPublishStatuses = state.filters.selectedPublishStatuses.toList(),
             onPublishStatusClick = {
                 onAction(SearchScreenAction.TogglePublishStatus(it))
             },
-            productionStatuses = availableFilters.productionStatuses,
-            selectedProductionStatuses = selectedFilters.selectedProductionStatuses.toList(),
+            productionStatuses = state.productionStatuses.getOrElse { emptyList() },
+            selectedProductionStatuses = state.filters.selectedProductionStatuses.toList(),
             onProductionStatusClick = {
                 onAction(SearchScreenAction.ToggleProductionStatus(it))
             },
-            seasons = availableFilters.seasons,
-            selectedSeasons = selectedFilters.selectedSeasons.toList(),
+            seasons = state.seasons.getOrElse { emptyList() },
+            selectedSeasons = state.filters.selectedSeasons.toList(),
             onSeasonClick = {
                 onAction(SearchScreenAction.ToggleSeason(it))
             },
-            years = availableFilters.years,
-            selectedYears = selectedFilters.selectedYears,
+            years = state.years.getOrElse { IntRange.EMPTY },
+            selectedYears = state.filters.selectedYears,
             onYearsRangeChange = {
                 onAction(SearchScreenAction.UpdateYearsRange(it))
             },
-            ageRatings = availableFilters.ageRatings,
-            selectedAgeRatings = selectedFilters.selectedAgeRatings.toList(),
+            ageRatings = state.ageRatings.getOrElse { emptyList() },
+            selectedAgeRatings = state.filters.selectedAgeRatings.toList(),
             onAgeRatingClick = {
                 onAction(SearchScreenAction.ToggleAgeRating(it))
             }
@@ -502,12 +500,11 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
 @Preview
 @Composable
 private fun SearchFilterPanePreview(
-    @PreviewParameter(SearchFiltersStateProvider::class) state: Pair<CatalogFilters, SearchFiltersState>
+    @PreviewParameter(SearchFiltersStateProvider::class) state: SearchScreenState
 ) {
     AnilibriaPreview {
         SearchFilterPaneContent(
-            availableFilters = state.first,
-            selectedFilters = state.second,
+            state = state,
             showBackButton = true,
             onAction = {},
             onBackClick = {},
@@ -515,21 +512,22 @@ private fun SearchFilterPanePreview(
     }
 }
 
-private class SearchFiltersStateProvider : PreviewParameterProvider<Pair<CatalogFilters, SearchFiltersState>> {
+private class SearchFiltersStateProvider : PreviewParameterProvider<SearchScreenState> {
     override val values = sequenceOf(
-        CatalogFilters.create() to SearchFiltersState(),
-        CatalogFilters.create(
-            genres = genreMocks,
-            types = ReleaseType.entries,
-            publishStatuses = PublishStatus.entries,
-            productionStatuses = ProductionStatus.entries,
-            sortingTypes = SortingType.entries,
-            seasons = Season.entries,
-            ageRatings = AgeRating.entries,
-            years = 1990..2024
-        ) to SearchFiltersState(
-            selectedYears = 2000..2020,
-            selectedGenres = setOf(genreMocks.first())
+        SearchScreenState(),
+        SearchScreenState(
+            filters = SearchFiltersState(
+                selectedYears = 2000..2020,
+                selectedGenres = setOf(genreMocks.first())
+            ),
+            genres = AsyncResult.Success(genreMocks),
+            releaseTypes = AsyncResult.Success(ReleaseType.entries),
+            publishStatuses = AsyncResult.Success(PublishStatus.entries),
+            productionStatuses = AsyncResult.Success(ProductionStatus.entries),
+            sortingTypes = AsyncResult.Success(SortingType.entries),
+            seasons = AsyncResult.Success(Season.entries),
+            ageRatings = AsyncResult.Success(AgeRating.entries),
+            years = AsyncResult.Success(1990..2024)
         )
     )
 }

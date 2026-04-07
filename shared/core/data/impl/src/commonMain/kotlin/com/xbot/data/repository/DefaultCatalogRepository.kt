@@ -15,7 +15,7 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 import com.xbot.network.api.CatalogApi
 import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.GenreDto
@@ -32,7 +32,7 @@ import org.koin.core.annotation.Singleton
 internal class DefaultCatalogRepository(
     private val catalogApi: CatalogApi
 ) : CatalogRepository {
-    override fun getCatalogReleases(search: String?, filters: CatalogFilters?): PagingSource<Int, Release> {
+    override fun getCatalogReleases(search: String?, filters: CatalogQuery?): PagingSource<Int, Release> {
         return CommonPagingSource(
             loadPage = { page, limit ->
                 val result = catalogApi.getCatalogReleases(
@@ -61,7 +61,7 @@ internal class DefaultCatalogRepository(
 
     override suspend fun getCatalogReleases(
         search: String?,
-        filters: CatalogFilters?,
+        filters: CatalogQuery?,
         limit: Int
     ): Either<DomainError, List<Release>> = catalogApi
         .getCatalogReleases(

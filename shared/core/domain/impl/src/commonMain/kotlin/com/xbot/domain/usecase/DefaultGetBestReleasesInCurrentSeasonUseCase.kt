@@ -9,7 +9,7 @@ import com.xbot.data.repository.ScheduleRepository
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.domain.models.filters.CatalogFilters
+import com.xbot.domain.models.filters.CatalogQuery
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -25,7 +25,7 @@ internal class DefaultGetBestReleasesInCurrentSeasonUseCase(
 
         catalogRepository.getCatalogReleases(
             search = null,
-            filters = CatalogFilters.create(
+            filters = CatalogQuery(
                 seasons = listOf(currentSeason),
                 years = currentYear.let { it..it },
                 sortingTypes = listOf(SortingType.RATING_DESC)
