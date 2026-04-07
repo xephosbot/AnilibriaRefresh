@@ -37,15 +37,25 @@ class LoginViewModel(
 
     fun onAction(action: LoginScreenAction) {
         when (action) {
-            is LoginScreenAction.Login -> login(action.username, action.password)
+            is LoginScreenAction.UpdateUsername -> onUsernameChanged(action.username)
+            is LoginScreenAction.UpdatePassword -> onPasswordChanged(action.password)
+            is LoginScreenAction.Login -> login()
             is LoginScreenAction.Logout -> logout()
         }
     }
 
-    private fun login(username: String, password: String) = intent {
+    private fun onUsernameChanged(username: String) = intent {
+        reduce { state.copy(username = username) }
+    }
+
+    private fun onPasswordChanged(password: String) = intent {
+        reduce { state.copy(password = password) }
+    }
+
+    private fun login() = intent {
         reduce { state.copy(isLoading = true) }
 
-        loginUseCase(username, password).fold(
+        loginUseCase(state.username, state.password).fold(
             ifLeft = {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(LoginScreenSideEffect.ShowErrorMessage(it))

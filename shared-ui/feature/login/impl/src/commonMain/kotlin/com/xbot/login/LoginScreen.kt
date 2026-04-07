@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
@@ -38,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
@@ -49,13 +49,10 @@ import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
@@ -73,8 +70,8 @@ import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
 import com.xbot.resources.login_success_message
 import com.xbot.resources.login_title
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -106,14 +103,9 @@ internal fun LoginScreen(
         }
     }
 
-    val usernameState = rememberTextFieldState()
-    val passwordState = rememberTextFieldState()
-
     LoginScreenContent(
         modifier = modifier,
         state = state,
-        usernameState = usernameState,
-        passwordState = passwordState,
         onAction = viewModel::onAction,
         onRegistrationClick = onRegistrationClick,
     )
@@ -124,11 +116,24 @@ internal fun LoginScreen(
 internal fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginScreenState,
-    usernameState: TextFieldState,
-    passwordState: TextFieldState,
     onAction: (LoginScreenAction) -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
+    val usernameState = rememberTextFieldState(state.username)
+    val passwordState = rememberTextFieldState(state.password)
+
+    LaunchedEffect(usernameState) {
+        snapshotFlow { usernameState.text.toString() }.collectLatest {
+            onAction(LoginScreenAction.UpdateUsername(it))
+        }
+    }
+
+    LaunchedEffect(passwordState) {
+        snapshotFlow { passwordState.text.toString() }.collectLatest {
+            onAction(LoginScreenAction.UpdatePassword(it))
+        }
+    }
+
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
@@ -249,14 +254,7 @@ internal fun LoginScreenContent(
                     }
 
                     Button(
-                        onClick = {
-                            onAction(
-                                LoginScreenAction.Login(
-                                    username = usernameState.text.toString(),
-                                    password = passwordState.text.toString()
-                                )
-                            )
-                        },
+                        onClick = { onAction(LoginScreenAction.Login) },
                         enabled = !state.isLoading
                     ) {
                         Text(stringResource(Res.string.login_sign_in))
@@ -275,8 +273,6 @@ private fun LoginScreenPreview(
     AnilibriaPreview {
         LoginScreenContent(
             state = state,
-            usernameState = rememberTextFieldState(),
-            passwordState = rememberTextFieldState(),
             onAction = {},
             onRegistrationClick = {}
         )

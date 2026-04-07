@@ -49,7 +49,7 @@ internal fun AnilibriaApp(
 ) {
     //SingletonImageLoader.setSafe(koinInject())
 
-    val appearanceSettings by viewModel.appearanceSettings.collectAsStateWithLifecycle()
+    val appThemeState by viewModel.state.collectAsStateWithLifecycle()
 
     val navigator = rememberNavigator(
         startRoute = HomeRoute,
@@ -61,7 +61,7 @@ internal fun AnilibriaApp(
         }
     )
 
-    val darkTheme = when (appearanceSettings.themeOption) {
+    val darkTheme = when (appThemeState.themeOption) {
         ThemeOption.System -> isSystemInDarkTheme()
         ThemeOption.Dark -> true
         ThemeOption.Light -> false
@@ -71,9 +71,9 @@ internal fun AnilibriaApp(
         ProvideAppLocale {
             AnilibriaTheme(
                 darkTheme = darkTheme,
-                dynamicColor = appearanceSettings.isDynamicTheme,
-                amoled = appearanceSettings.isPureBlack,
-                expressiveColor = appearanceSettings.isExpressiveColor
+                dynamicColor = appThemeState.isDynamicTheme,
+                amoled = appThemeState.isPureBlack,
+                expressiveColor = appThemeState.isExpressiveColor
             ) {
                 val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
                 val navSuiteType =

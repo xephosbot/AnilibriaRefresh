@@ -10,7 +10,6 @@ import com.xbot.domain.usecase.UpdateDynamicThemeUseCase
 import com.xbot.domain.usecase.UpdateExpressiveColorUseCase
 import com.xbot.domain.usecase.UpdatePureBlackUseCase
 import com.xbot.domain.usecase.UpdateThemeOptionUseCase
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -40,15 +39,15 @@ class AppearanceViewModel(
             getPureBlackUseCase(),
             getExpressiveColorUseCase()
         ) { themeOption, isDynamicTheme, isPureBlack, isExpressiveColor ->
-            reduce {
-                state.copy(
-                    themeOption = themeOption,
-                    isDynamicTheme = isDynamicTheme,
-                    isPureBlack = isPureBlack,
-                    isExpressiveColor = isExpressiveColor
-                )
-            }
-        }.collect()
+            AppearanceScreenState(
+                themeOption = themeOption,
+                isDynamicTheme = isDynamicTheme,
+                isPureBlack = isPureBlack,
+                isExpressiveColor = isExpressiveColor
+            )
+        }.collect { newState ->
+            reduce { newState }
+        }
     }
 
     fun onAction(action: AppearanceScreenAction) {
