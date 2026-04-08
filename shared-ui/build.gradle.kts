@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.cocoapods)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.koin.compiler)
@@ -20,20 +19,6 @@ kotlin {
     jvm()
 
     jvmToolchain(21)
-
-    cocoapods {
-        version = "1.0"
-        summary = "Shared UI module with CMP for AnilibriaRefresh app"
-        homepage = "https://github.com/xephosbot/AnilibriaRefresh"
-
-        name = "SharedUI"
-        podfile = project.file("../ios-app/Podfile")
-
-        framework {
-            baseName = "SharedUI"
-            isStatic = true
-        }
-    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
