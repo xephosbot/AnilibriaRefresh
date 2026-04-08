@@ -4,23 +4,21 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrategy
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
-import com.xbot.navigation.LocalNavigator
-import com.xbot.navigation.NavKey
-import com.xbot.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.common.serialization.polymorphic
 import com.xbot.home.FeedPane
-import com.xbot.home.HomeViewModel
 import com.xbot.home.SchedulePane
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
 import com.xbot.home.navigation.navigateToSchedule
 import com.xbot.login.navigation.navigateToLogin
+import com.xbot.navigation.LocalNavigator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.SharedViewModelStoreNavEntryDecorator
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -71,5 +69,4 @@ val homeFeatureModule = module {
             }
         )
     }
-    viewModel<HomeViewModel>()
 }

@@ -3,9 +3,9 @@ package com.xbot.title.di
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
+import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
-import com.xbot.common.serialization.polymorphic
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.TitleDetailsPane
 import com.xbot.title.TitleViewModel
@@ -16,7 +16,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, KoinExperimentalAPI::class)
@@ -47,5 +46,4 @@ val titleFeatureModule = module {
             },
         )
     }
-    viewModel<TitleViewModel>()
 }

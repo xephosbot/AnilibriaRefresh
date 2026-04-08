@@ -35,7 +35,7 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
     KoinExperimentalAPI::class
 )
 @Composable
-fun AnilibriaNavGraph(
+internal fun AnilibriaNavGraph(
     modifier: Modifier = Modifier,
     navigator: Navigator,
 ) {

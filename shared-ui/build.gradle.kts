@@ -37,13 +37,11 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.core.network.impl)
-        implementation(projects.shared.core.data.impl)
-        implementation(projects.shared.core.domain.impl)
-        implementation(projects.sharedUi.navigation.impl)
-        implementation(projects.sharedUi.designSystem)
+        implementation(projects.shared.di)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.resource)
+        implementation(projects.sharedUi.designSystem)
+        implementation(projects.sharedUi.navigation.impl)
         implementation(projects.sharedUi.feature.favorite.impl)
         implementation(projects.sharedUi.feature.home.api)
         implementation(projects.sharedUi.feature.home.impl)
@@ -61,8 +59,6 @@ kotlin {
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
-        implementation(libs.kermit)
-        implementation(libs.kermit.koin)
     }
 }
 

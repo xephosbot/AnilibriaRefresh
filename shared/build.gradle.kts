@@ -19,6 +19,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
+        api(projects.shared.di)
         api(projects.shared.common)
         api(projects.shared.core.domain.api)
         api(projects.shared.state.home)
@@ -27,8 +28,5 @@ kotlin {
         api(projects.shared.state.preference)
         api(projects.shared.state.search)
         api(projects.shared.state.title)
-        implementation(projects.shared.core.network.impl)
-        implementation(projects.shared.core.domain.impl)
-        implementation(projects.shared.core.data.impl)
     }
 }
