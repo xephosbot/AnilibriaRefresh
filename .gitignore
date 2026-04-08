@@ -30,3 +30,6 @@ android-app/keystore.properties
 
 # Ignore macOS-specific files
 .DS_Store
+
+# Ignore Claude Code directory
+.claude

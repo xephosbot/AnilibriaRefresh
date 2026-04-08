@@ -3,7 +3,7 @@ package com.xbot.common
 sealed interface AsyncResult<out E, out T> {
     data class Success<out T>(val data: T) : AsyncResult<Nothing, T>
     data class Error<out E>(val error: E) : AsyncResult<E, Nothing>
-    object Loading : AsyncResult<Nothing, Nothing>
+    data object Loading : AsyncResult<Nothing, Nothing>
 }
 
 fun <T> AsyncResult<*, T>.getOrElse(default: () -> T): T = (this as? AsyncResult.Success<T>)?.data ?: default()

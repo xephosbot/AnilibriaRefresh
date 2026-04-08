@@ -160,7 +160,7 @@ class HomeViewModel(
         }
     }
 
-    private fun refresh() = intent {
+    private fun refresh() {
         loadBestReleasesInCurrentSeason()
         loadBestReleasesForAllTime()
         loadRecommendedFranchises()
