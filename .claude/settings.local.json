@@ -1,38 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(./gradlew :shared:domain:api:tasks --quiet)",
-      "Bash(./gradlew :shared:domain:api:compileKotlinJvm :shared:domain:impl:compileKotlinJvm :shared:network:api:compileKotlinJvm :shared:network:impl:compileKotlinJvm :shared:data:impl:compileKotlinJvm :shared:common:compileKotlinJvm)",
-      "Bash(git add:*)",
-      "Bash(git rm:*)",
-      "Bash(./gradlew :shared:network:api:compileKotlinJvm :shared:common:compileKotlinJvm)",
-      "Bash(grep -l \"class Default\" /Users/xephosbot/AndroidStudioProjects/AnilibriaRefresh/.claude/worktrees/charming-chandrasekhar/shared/network/api/src/commonMain/kotlin/com/xbot/network/api/*.kt)",
-      "Bash(./gradlew :shared:network:api:compileKotlinJvm)",
-      "Bash(./gradlew :shared:network:impl:compileKotlinJvm)",
-      "Bash(xargs cat:*)",
-      "Bash(__NEW_LINE_4791ca498173527c__ IMPL_BASE=\"shared/network/impl/src/commonMain/kotlin/com/xbot/network\")",
-      "Bash(API_BASE=\"shared/network/api/src/commonMain/kotlin/com/xbot/network\")",
-      "Bash(__NEW_LINE_4791ca498173527c__ cp:*)",
-      "Bash(rm \"$API_BASE/Constants.kt\")",
-      "Bash(./gradlew :shared:domain:api:compileKotlinJvm :shared:domain:impl:compileKotlinJvm :shared:data:impl:compileKotlinJvm :shared:common:compileKotlinJvm)",
-      "Bash(./gradlew :shared:domain:impl:compileKotlinJvm)",
-      "Bash(./gradlew :shared:data:impl:compileKotlinJvm)",
-      "Bash(rm -f /Users/xephosbot/AndroidStudioProjects/AnilibriaRefresh/.git/worktrees/charming-chandrasekhar/index.lock)",
-      "Bash(git -C /Users/xephosbot/AndroidStudioProjects/AnilibriaRefresh/.claude/worktrees/charming-chandrasekhar add shared/network/api/src/commonMain/kotlin/com/xbot/network/Constants.kt)",
-      "Bash(./gradlew :shared:domain:impl:compileKotlinJvm :shared:data:impl:compileKotlinJvm)",
-      "Bash(./gradlew :shared:compileKotlinJvm)",
-      "Bash(./gradlew :shared-ui:compileKotlinJvm)",
-      "Bash(__NEW_LINE_560f1da893932d4a__ IMPL_UC=\"shared/domain/impl/src/commonMain/kotlin/com/xbot/domain/usecase\")",
-      "Bash(rm -f \"$IMPL_UC\"/*.kt)",
-      "Bash(rmdir \"$IMPL_UC\")",
-      "Bash(./gradlew :shared:domain:api:compileKotlinJvm)",
-      "Bash(/dev/null cat:*)",
-      "Bash(./gradlew jvmJar)",
-      "Bash(__NEW_LINE_563f15f9d9119bf6__ for:*)",
-      "Bash(do)",
-      "Bash(mkdir -p \"shared/state/$mod/src/commonMain/kotlin\")",
-      "Bash(done)",
-      "Bash(/Users/xephosbot/AndroidStudioProjects/AnilibriaRefresh/.claude/worktrees/charming-chandrasekhar/shared/state/home/build.gradle.kts:*)"
-    ]
+    "allow": []
   }
 }
