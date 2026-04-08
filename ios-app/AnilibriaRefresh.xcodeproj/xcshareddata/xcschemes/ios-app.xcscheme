@@ -8,7 +8,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
-               BuildableName = "ios-app.app"
+               BuildableName = "Anilibria Refresh.app"
                BlueprintName = "AnilibriaRefresh"
                ReferencedContainer = "container:AnilibriaRefresh.xcodeproj">
             </BuildableReference>
@@ -23,7 +23,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
-            BuildableName = "ios-app.app"
+            BuildableName = "Anilibria Refresh.app"
             BlueprintName = "AnilibriaRefresh"
             ReferencedContainer = "container:AnilibriaRefresh.xcodeproj">
          </BuildableReference>

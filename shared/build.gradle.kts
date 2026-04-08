@@ -11,8 +11,26 @@ kotlin {
         compileSdk = libs.versions.android.compilesdk.get().toInt()
         minSdk = libs.versions.android.minsdk.get().toInt()
     }
-    iosArm64()
-    iosSimulatorArm64()
+
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "Shared"
+            isStatic = true
+            export(projects.shared.di)
+            export(projects.shared.common)
+            export(projects.shared.core.domain.api)
+            export(projects.shared.state.home)
+            export(projects.shared.state.login)
+            export(projects.shared.state.player)
+            export(projects.shared.state.preference)
+            export(projects.shared.state.search)
+            export(projects.shared.state.title)
+        }
+    }
+
     jvm()
 
     jvmToolchain(21)

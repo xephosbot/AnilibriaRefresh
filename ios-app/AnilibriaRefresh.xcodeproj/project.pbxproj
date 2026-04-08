@@ -13,7 +13,7 @@
 
 /* Begin PBXFileReference section */
 		279A48D438C7058F3D04C50C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = Info.plist; path = src/Info.plist; sourceTree = "<group>"; };
-		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anilibria Refresh.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF3566122EC8883F00EE2F35 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		CF8DEA462F1E9B3400221689 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,15 +66,7 @@
 				279A476559D7F8A9A59270EB /* Products */,
 				279A48D438C7058F3D04C50C /* Info.plist */,
 				279A4173E53941889080E058 /* src */,
-				791897AF17EE8F87746B839E /* Pods */,
 			);
-			sourceTree = "<group>";
-		};
-		791897AF17EE8F87746B839E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,6 +76,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 279A47406B83584AB5793740 /* Build configuration list for PBXNativeTarget "AnilibriaRefresh" */;
 			buildPhases = (
+				85ED1C399AA9F6BA834591C3 /* Compile Kotlin Framework */,
 				279A43B18AA0A099487C206B /* Sources */,
 				279A4654FFF9A512EBE4ED79 /* Frameworks */,
 				279A4C70E55B02F4D1E9206D /* Resources */,
@@ -139,6 +132,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		85ED1C399AA9F6BA834591C3 /* Compile Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode -i\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		279A43B18AA0A099487C206B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -176,8 +190,8 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
-				PRODUCT_MODULE_NAME = app;
-				PRODUCT_NAME = "ios-app";
+				PRODUCT_MODULE_NAME = AnilibriaRefresh;
+				PRODUCT_NAME = "Anilibria Refresh";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -285,8 +299,8 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
-				PRODUCT_MODULE_NAME = app;
-				PRODUCT_NAME = "ios-app";
+				PRODUCT_MODULE_NAME = AnilibriaRefresh;
+				PRODUCT_NAME = "Anilibria Refresh";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1 2";
