@@ -9,6 +9,7 @@ android-desugar-jdk = "2.1.5"
 # Kotlin
 kotlin = "2.3.20"
 ksp = "2.3.6"
+skie = "0.10.11"
 #noinspection NewerVersionAvailable
 compose-multiplatform = "1.11.0-alpha03"
 #noinspection NewerVersionAvailable
@@ -151,6 +152,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
 
 # Compose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -28,6 +29,8 @@ kotlin {
             export(projects.shared.state.preference)
             export(projects.shared.state.search)
             export(projects.shared.state.title)
+            export(libs.lifecycle.viewmodel)
+            export(libs.koin.core)
         }
     }
 
@@ -46,5 +49,7 @@ kotlin {
         api(projects.shared.state.preference)
         api(projects.shared.state.search)
         api(projects.shared.state.title)
+        api(libs.lifecycle.viewmodel)
+        api(libs.koin.core)
     }
 }
