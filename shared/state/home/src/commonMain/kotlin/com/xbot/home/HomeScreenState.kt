@@ -11,6 +11,13 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
+/**
+ * UI state for the Home screen.
+ *
+ * Only [currentBestType] survives process death (serialized via SavedStateHandle).
+ * The three [Transient] fields are re-loaded from the network on restoration, which avoids
+ * persisting potentially stale or large data structures across process death.
+ */
 @Serializable
 data class HomeScreenState(
     @Transient val currentUser: User? = null,

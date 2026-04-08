@@ -28,7 +28,7 @@ val playerFeatureModule = module {
         )
     ) { key ->
         val viewModel = koinViewModel<PlayerViewModel> {
-            parametersOf(key.releaseId, key.episodeOrdinal)
+            parametersOf(key.releaseId.toString(), key.episodeOrdinal)
         }
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current

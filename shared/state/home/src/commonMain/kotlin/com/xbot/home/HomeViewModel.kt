@@ -57,7 +57,7 @@ class HomeViewModel(
 
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 
-    // TODO: After Paging 3.5.0 use asState() and move inside state
+    // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
     private fun loadBestReleasesInCurrentSeason(): Job = intent {

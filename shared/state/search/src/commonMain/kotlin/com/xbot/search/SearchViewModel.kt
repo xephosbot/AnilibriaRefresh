@@ -68,7 +68,7 @@ class SearchViewModel(
         loadYears()
     }
 
-    //TODO: After Paging 3.5.0 released we can use asState extension and move list to SearchScreenState
+    // TODO: Move inside SearchScreenState once Paging 3.5.0 stable ships asState()
     @OptIn(FlowPreview::class)
     val searchResult: Flow<PagingData<Release>> = combine(
         container.stateFlow.map { it.query }.distinctUntilChanged().debounce(500L),

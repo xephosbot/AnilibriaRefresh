@@ -14,7 +14,7 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class PlayerViewModel(
-    private val releaseId: Int,
+    private val releaseId: String,
     private val initialEpisodeOrdinal: Int,
     private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle,
@@ -30,7 +30,7 @@ class PlayerViewModel(
 
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
-            request = { getReleaseUseCase(releaseId.toString()) },
+            request = { getReleaseUseCase(releaseId) },
             reducer = {
                 val result = it.consumeError { error ->
                     showErrorMessage(error) { loadTitleDetails() }
