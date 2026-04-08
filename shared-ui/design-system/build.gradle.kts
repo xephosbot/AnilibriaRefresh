@@ -21,13 +21,13 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
-        implementation(projects.shared.fixtures)
+        implementation(projects.shared.core.domain.api)
+        implementation(projects.shared.core.domain.testFixtures)
         implementation(libs.kotlinx.datetime)
         implementation(libs.compose.ui)
         implementation(libs.compose.foundation)
         implementation(libs.materialKolor)
-        api(projects.sharedUi.resource)
+        api(projects.sharedUi.formatters)
         api(libs.compose.preview)
         api(libs.compose.material3)
         api(libs.compose.material3.adaptive.navigation.suite)

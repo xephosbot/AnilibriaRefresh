@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ReleaseType
-import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.episode_abbreviation

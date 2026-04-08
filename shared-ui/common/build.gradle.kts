@@ -21,19 +21,10 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
-        implementation(projects.sharedUi.designSystem)
+        api(projects.sharedUi.navigation.api)
         implementation(libs.compose.foundation)
-        implementation(libs.navigation3.runtime)
-        implementation(libs.navigation3.ui)
-        implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)
-        implementation(libs.lifecycle.viewmodel.navigation3)
-        implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.arrow.core)
-        implementation(libs.koin.compose)
-        implementation(libs.koin.compose.viewmodel)
-        implementation(libs.koin.compose.navigation3)
+        implementation(libs.koin.core)
     }
 }

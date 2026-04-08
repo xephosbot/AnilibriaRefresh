@@ -40,8 +40,8 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
-import com.xbot.fixtures.data.releaseMocks
 import com.xbot.localization.localizedName
 
 @Composable

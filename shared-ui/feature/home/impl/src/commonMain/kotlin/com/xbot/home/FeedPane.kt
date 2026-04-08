@@ -60,13 +60,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
@@ -102,17 +103,21 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.franchiseMocks
+import com.xbot.domain.fixtures.genreMocks
+import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleasesFeed
-import com.xbot.fixtures.data.franchiseMocks
-import com.xbot.fixtures.data.genreMocks
-import com.xbot.fixtures.data.releaseMocks
-import com.xbot.fixtures.data.scheduleMocks
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
 import com.xbot.resources.badge_3
+import com.xbot.resources.button_retry
 import com.xbot.resources.button_watch
 import com.xbot.resources.label_best
 import com.xbot.resources.label_best_all_time
@@ -127,6 +132,8 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.time.ExperimentalTime
 
 @OptIn(
@@ -144,7 +151,21 @@ internal fun FeedPane(
     onProfileClick: () -> Unit,
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is HomeScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     FeedPaneContent(
         modifier = modifier,
@@ -309,7 +330,7 @@ private fun ReleaseFeed(
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.size }
+    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.getOrElse { List(10) { null } }.size }
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
@@ -324,7 +345,7 @@ private fun ReleaseFeed(
         contentPadding = contentPadding.only(WindowInsetsSides.Bottom)
     ) {
         horizontalPagerItems(
-            items = releasesFeed.recommendedReleases,
+            items = releasesFeed.recommendedReleases.getOrElse { List(10) { null } },
             state = pagerState,
             isAutoScrollActive = activeMenuReleaseId == null,
         ) { page, release ->
@@ -397,7 +418,7 @@ private fun ReleaseFeed(
             onClick = onScheduleClick,
         )
         horizontalSnappableItems(
-            items = releasesFeed.scheduleNow,
+            items = releasesFeed.scheduleNow.getOrElse { List(10) { null } },
             //key = { schedule -> schedule?.release?.id },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
@@ -447,7 +468,7 @@ private fun ReleaseFeed(
             )
         }
         horizontalItemsIndexed(
-            items = if (currentBestType == BestType.Now) releasesFeed.bestNow else releasesFeed.bestAllTime,
+            items = if (currentBestType == BestType.Now) releasesFeed.bestNow.getOrElse { List(10) { null } } else releasesFeed.bestAllTime.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { index, release ->
             SmallReleaseCard(
@@ -472,7 +493,7 @@ private fun ReleaseFeed(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalSnappableItems(
-            items = releasesFeed.recommendedFranchises,
+            items = releasesFeed.recommendedFranchises.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             itemSpacing = 16.dp,
         ) { franchise ->
@@ -487,7 +508,7 @@ private fun ReleaseFeed(
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         )
         horizontalItems(
-            items = releasesFeed.genres,
+            items = releasesFeed.genres.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
         ) { genre ->
             GenreItem(
@@ -589,16 +610,16 @@ private fun FeedPanePreview(
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {
     override val values = sequenceOf(
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create()
+            releasesFeed = ReleasesFeed()
         ),
         HomeScreenState(
-            releasesFeed = ReleasesFeed.create(
-                recommendedReleases = releaseMocks,
-                scheduleNow = scheduleMocks,
-                bestNow = releaseMocks,
-                bestAllTime = releaseMocks,
-                recommendedFranchises = franchiseMocks,
-                genres = genreMocks
+            releasesFeed = ReleasesFeed(
+                recommendedReleases = AsyncResult.Success(releaseMocks),
+                scheduleNow = AsyncResult.Success(scheduleMocks),
+                bestNow = AsyncResult.Success(releaseMocks),
+                bestAllTime = AsyncResult.Success(releaseMocks),
+                recommendedFranchises = AsyncResult.Success(franchiseMocks),
+                genres = AsyncResult.Success(genreMocks)
             )
         )
     )

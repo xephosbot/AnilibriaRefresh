@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.Navigator
-import com.xbot.common.navigation.rememberSharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.Navigator
+import com.xbot.navigation.rememberSharedViewModelStoreNavEntryDecorator
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI

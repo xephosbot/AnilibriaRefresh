@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -37,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
@@ -52,12 +53,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
@@ -65,9 +68,13 @@ import com.xbot.resources.login_email_label
 import com.xbot.resources.login_forgot_password
 import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
+import com.xbot.resources.login_success_message
 import com.xbot.resources.login_title
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun LoginScreen(
@@ -76,12 +83,22 @@ internal fun LoginScreen(
     onBackClick: () -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
 
-    LaunchedEffect(viewModel.effects) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                is LoginScreenEffect.NavigateBack -> onBackClick()
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is LoginScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage()
+                )
+            }
+            is LoginScreenSideEffect.LoginSuccess -> {
+                SnackbarManager.showMessage(
+                    title = UiText.Text(Res.string.login_success_message)
+                )
+            }
+            is LoginScreenSideEffect.NavigateBack -> {
+                onBackClick()
             }
         }
     }
@@ -89,8 +106,6 @@ internal fun LoginScreen(
     LoginScreenContent(
         modifier = modifier,
         state = state,
-        usernameState = viewModel.usernameState,
-        passwordState = viewModel.passwordState,
         onAction = viewModel::onAction,
         onRegistrationClick = onRegistrationClick,
     )
@@ -101,11 +116,24 @@ internal fun LoginScreen(
 internal fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginScreenState,
-    usernameState: TextFieldState,
-    passwordState: TextFieldState,
     onAction: (LoginScreenAction) -> Unit,
     onRegistrationClick: () -> Unit,
 ) {
+    val usernameState = rememberTextFieldState(state.username)
+    val passwordState = rememberTextFieldState(state.password)
+
+    LaunchedEffect(usernameState) {
+        snapshotFlow { usernameState.text.toString() }.collectLatest {
+            onAction(LoginScreenAction.UpdateUsername(it))
+        }
+    }
+
+    LaunchedEffect(passwordState) {
+        snapshotFlow { passwordState.text.toString() }.collectLatest {
+            onAction(LoginScreenAction.UpdatePassword(it))
+        }
+    }
+
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
@@ -245,8 +273,6 @@ private fun LoginScreenPreview(
     AnilibriaPreview {
         LoginScreenContent(
             state = state,
-            usernameState = remember { TextFieldState() },
-            passwordState = remember { TextFieldState() },
             onAction = {},
             onRegistrationClick = {}
         )

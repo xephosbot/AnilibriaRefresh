@@ -4,19 +4,17 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.scene.DialogSceneStrategy
 import com.xbot.common.lifecycle.dropUnlessResumed
-import com.xbot.common.navigation.LocalNavigator
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.replace
 import com.xbot.common.serialization.polymorphic
 import com.xbot.login.LoginScreen
-import com.xbot.login.LoginViewModel
 import com.xbot.login.navigation.LoginRoute
 import com.xbot.login.navigation.RegistrationRoute
 import com.xbot.login.navigation.navigateToRegistration
+import com.xbot.navigation.LocalNavigator
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.replace
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(KoinExperimentalAPI::class)
@@ -44,5 +42,4 @@ val loginFeatureModule = module {
             }
         )
     }
-    viewModel<LoginViewModel>()
 }

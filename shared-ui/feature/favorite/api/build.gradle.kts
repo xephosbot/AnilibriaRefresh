@@ -22,10 +22,9 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
-        implementation(projects.sharedUi.common)
+        api(projects.shared.core.domain.api)
+        api(projects.sharedUi.navigation.api)
         implementation(projects.sharedUi.designSystem)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.navigation3.runtime)
     }
 }

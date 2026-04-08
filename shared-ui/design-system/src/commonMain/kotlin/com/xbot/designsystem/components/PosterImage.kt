@@ -16,14 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.useExistingImageAsPlaceholder
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.valentinilk.shimmer.shimmer
-import com.xbot.resources.*
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.domain.models.Poster
+import com.xbot.resources.Res
+import com.xbot.resources.placeholder_default
 import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun PosterImage(
     poster: Poster?,
@@ -41,7 +48,12 @@ fun PosterImage(
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = poster?.src,
+            model = ImageRequest.Builder(LocalPlatformContext.current)
+                .data(poster?.src)
+                .placeholderMemoryCacheKey(poster?.src)
+                .crossfade(true)
+                .useExistingImageAsPlaceholder(true)
+                .build(),
             placeholder = rememberAsyncImagePainter(poster?.thumbnail),
             error = placeholder ?: painterResource(Res.drawable.placeholder_default),
             contentDescription = contentDescription,

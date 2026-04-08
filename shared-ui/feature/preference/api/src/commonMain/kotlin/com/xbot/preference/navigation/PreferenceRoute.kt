@@ -1,9 +1,9 @@
 package com.xbot.preference.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.xbot.common.navigation.ExternalUriNavKey
-import com.xbot.common.navigation.NavKey
-import com.xbot.common.navigation.TopLevelNavKey
+import com.xbot.navigation.ExternalUriNavKey
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.icons.Star

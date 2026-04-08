@@ -1,7 +1,6 @@
 package com.xbot.sharedapp.di
 
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.koin.KermitKoinLogger
+import com.xbot.di.startKoin
 import com.xbot.favorite.di.favoriteFeatureModule
 import com.xbot.home.di.homeFeatureModule
 import com.xbot.login.di.loginFeatureModule
@@ -10,15 +9,14 @@ import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
 import com.xbot.title.di.titleFeatureModule
 import org.koin.core.KoinApplication
-import org.koin.plugin.module.dsl.startKoin
 
 fun initKoin(
     config: (KoinApplication.() -> Unit)? = null
 ) {
-    startKoin<AnilibriaApp> {
-        kermitLogger()
+    startKoin {
         config?.invoke(this)
         modules(
+            appModule,
             favoriteFeatureModule,
             homeFeatureModule,
             playerFeatureModule,
@@ -28,8 +26,4 @@ fun initKoin(
             loginFeatureModule
         )
     }
-}
-
-internal fun KoinApplication.kermitLogger() {
-    logger(KermitKoinLogger(Logger.withTag("koin")))
 }

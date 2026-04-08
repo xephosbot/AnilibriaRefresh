@@ -57,9 +57,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
@@ -83,14 +84,19 @@ import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.getReleaseDetailMock
+import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
-import com.xbot.domain.models.ReleaseDetailsExtended
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.fixtures.data.getReleaseDetailMock
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
+import com.xbot.resources.button_retry
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.label_episodes
 import com.xbot.resources.label_members
@@ -99,6 +105,8 @@ import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -113,7 +121,21 @@ internal fun TitleDetailsPane(
     onPlayClick: (Int, Int) -> Unit,
     onReleaseClick: (Release) -> Unit,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is TitleScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     TitleDetailsPaneContent(
         modifier = modifier,
@@ -218,7 +240,9 @@ private fun TitleDetailsPaneContent(
                     ) {
                         WatchButton(
                             onClick = {
-                                state.release.details.release?.let { onPlayClick(it.id, 0) }
+                                state.initialRelease?.let { release ->
+                                    onPlayClick(release.id, 0)
+                                }
                             }
                         )
                     }
@@ -266,17 +290,17 @@ private fun TitleDetails(
             LargeReleaseCard(
                 modifier = Modifier.verticalParallax(gridState),
                 contentModifier = Modifier.animateContentSize(),
-                release = state.release.details.release,
+                release = state.initialRelease,
                 contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
                 overscrollEffect = overscrollEffect,
             ) {
                 AnimatedVisibility(
-                    visible = state.genres.isNotEmpty(),
+                    visible = (state.details.getOrElse { null }?.genres ?: emptyList()).isNotEmpty(),
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
                     ChipGroup(
-                        items = state.genres,
+                        items = state.details.getOrElse { null }?.genres ?: emptyList(),
                         maxLines = 1,
                         contentPadding = PaddingValues(0.dp)
                     ) { genre ->
@@ -289,7 +313,9 @@ private fun TitleDetails(
                 if (!isSinglePane && state.isWatchButtonVisible) {
                     WatchButton(
                         onClick = {
-                            state.release.details.release?.let { onPlayClick(it.id, 0) }
+                            state.initialRelease?.let { release ->
+                                onPlayClick(release.id, 0)
+                            }
                         }
                     )
                 }
@@ -298,7 +324,7 @@ private fun TitleDetails(
 
         row {
             AnimatedVisibility(
-                visible = state.blockedStatus != null,
+                visible = state.details.getOrElse { null }?.availabilityStatus != null && state.details.getOrElse { null }?.availabilityStatus != AvailabilityStatus.Available,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
@@ -308,7 +334,7 @@ private fun TitleDetails(
                         modifier = Modifier.padding(horizontal = horizontalMargin),
                     ) {
                         Text(
-                            text = when (state.blockedStatus) {
+                            text = when (state.details.getOrElse { null }?.availabilityStatus) {
                                 AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
                                 AvailabilityStatus.CopyrightBlocked -> stringResource(Res.string.alert_blocked_copyright)
                                 else -> ""
@@ -321,7 +347,7 @@ private fun TitleDetails(
 
         row {
             AnimatedVisibility(
-                visible = state.notification != null,
+                visible = state.details.getOrElse { null }?.notification != null,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
@@ -330,19 +356,19 @@ private fun TitleDetails(
                     NotificationCard(
                         modifier = Modifier.padding(horizontal = horizontalMargin),
                     ) {
-                        Text(text = state.notification.orEmpty())
+                        Text(text = state.details.getOrElse { null }?.notification.orEmpty())
                     }
                 }
             }
         }
 
-        if (state.releaseMembers.isNotEmpty()) {
+        if (state.details.getOrElse { null }?.releaseMembers?.isNotEmpty() == true) {
             header(
                 title = { Text(text = stringResource(Res.string.label_members)) },
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             horizontalItems(
-                items = state.releaseMembers,
+                items = state.details.getOrElse { null }?.releaseMembers ?: emptyList(),
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             ) { member ->
                 MemberItem(
@@ -352,13 +378,13 @@ private fun TitleDetails(
             }
         }
 
-        if (state.relatedReleases.isNotEmpty()) {
+        if (state.relatedReleases.getOrElse { emptyList() }.isNotEmpty()) {
             header(
                 title = { Text(text = stringResource(Res.string.label_related_releases)) },
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
             horizontalItems(
-                items = state.relatedReleases,
+                items = state.relatedReleases.getOrElse { emptyList() },
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             ) { release ->
                 SmallReleaseCard(
@@ -368,17 +394,16 @@ private fun TitleDetails(
             }
         }
 
-        if (state.episodes.isNotEmpty()) {
+        if ((state.details.getOrElse { null }?.episodes ?: emptyList()).isNotEmpty()) {
             header(
                 title = { Text(text = stringResource(Res.string.label_episodes)) },
                 contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
             )
-            itemsIndexed(state.episodes) { index, episode ->
-                val release = state.release.details.release
+            itemsIndexed(state.details.getOrElse { null }?.episodes ?: emptyList()) { index, episode ->
                 EpisodeListItem(
                     modifier = Modifier.section(
                         index = index,
-                        itemsCount = state.episodes.size,
+                        itemsCount = (state.details.getOrElse { null }?.episodes ?: emptyList()).size,
                         columnsCount = columnsCount.value,
                         sectionSpacing = SectionDefaults.spacing(
                             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
@@ -386,7 +411,7 @@ private fun TitleDetails(
                     ),
                     episode = episode,
                     onClick = {
-                        if (release != null) {
+                        state.initialRelease?.let { release ->
                             onPlayClick(release.id, index)
                         }
                     }
@@ -451,38 +476,11 @@ private fun TitleDetailsPanePreview(
 
 private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenState> {
     override val values = sequenceOf(
+        TitleScreenState(),
         TitleScreenState(
-            release = ReleaseDetailsExtended.create(
-                release = getReleaseDetailMock(1).details.release
-            )
-        ),
-        TitleScreenState(
-            release = ReleaseDetailsExtended.create(
-                release = getReleaseDetailMock(1).details.release,
-                details = getReleaseDetailMock(1).details,
-                relatedReleases = emptyList()
-            )
+            initialRelease = getReleaseDetailMock(1).release,
+            details = AsyncResult.Success(getReleaseDetailMock(1)),
+            relatedReleases = AsyncResult.Success(releaseMocks),
         )
     )
 }
-
-private val TitleScreenState.isWatchButtonVisible: Boolean
-    get() = release.details.episodes.firstOrNull() != null
-
-private val TitleScreenState.blockedStatus: AvailabilityStatus?
-    get() = release.details.availabilityStatus.takeIf { it != AvailabilityStatus.Available }
-
-private val TitleScreenState.notification: String?
-    get() = release.details.notification
-
-private val TitleScreenState.genres
-    get() = release.details.genres
-
-private val TitleScreenState.releaseMembers
-    get() = release.details.releaseMembers
-
-private val TitleScreenState.relatedReleases
-    get() = release.relatedReleases
-
-private val TitleScreenState.episodes
-    get() = release.details.episodes

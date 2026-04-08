@@ -1,6 +1,0 @@
-platform :ios
-
-target 'AnilibriaRefresh' do
-    use_frameworks!
-    pod 'SharedUI', :path => '../shared-ui'
-end

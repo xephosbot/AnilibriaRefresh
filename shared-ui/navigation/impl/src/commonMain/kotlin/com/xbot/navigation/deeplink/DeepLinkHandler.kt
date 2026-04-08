@@ -1,0 +1,59 @@
+package com.xbot.navigation.deeplink
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalUriHandler
+import com.eygraber.uri.Uri
+import com.xbot.navigation.NavKey
+import com.xbot.login.navigation.LoginRoute
+import com.xbot.title.navigation.TitleRoute
+
+@Composable
+fun DeepLinkListener(onDeepLink: (NavKey) -> Unit) {
+    val uriHandler = LocalUriHandler.current
+    val currentOnDeepLink by rememberUpdatedState(onDeepLink)
+
+    DisposableEffect(Unit) {
+        ExternalUriHandler.listener = { uri ->
+            val navKey = parseDeepLink(uri)
+            if (navKey != null) {
+                currentOnDeepLink(navKey)
+            } else {
+                uriHandler.openUri(uri)
+            }
+        }
+
+        onDispose {
+            ExternalUriHandler.listener = null
+        }
+    }
+}
+
+internal val deepLinkPatterns = listOf(
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("https://aniliberty.top/anime/releases/release/{aliasOrId}")),
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("https://anilibria.top/anime/releases/release/{aliasOrId}")),
+    DeepLinkPattern(TitleRoute.serializer(), Uri.parse("anilibria://release/{aliasOrId}")),
+    DeepLinkPattern(LoginRoute.serializer(), Uri.parse("anilibria://login")),
+)
+
+internal fun parseDeepLink(uri: String): NavKey? {
+    val url = try { Uri.parse(uri) } catch (e: Exception) { return null }
+    val request = DeepLinkRequest(url)
+
+    return deepLinkPatterns.firstNotNullOfOrNull { pattern ->
+        checkMatch(request, pattern)
+    }?.let { match ->
+        try {
+            match.serializer.deserialize(KeyDecoder(match.args))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+}
+
+private fun <T : NavKey> checkMatch(request: DeepLinkRequest, pattern: DeepLinkPattern<T>): DeepLinkMatchResult<T>? {
+    return DeepLinkMatcher(request, pattern).match()
+}

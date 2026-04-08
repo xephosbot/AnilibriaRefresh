@@ -7,25 +7,34 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.retain.RetainedEffect
 import androidx.compose.runtime.retain.retain
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.xbot.common.AsyncResult
+import com.xbot.common.getOrElse
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.fixtures.data.episodeMocks
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.domain.fixtures.episodeMocks
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
+import com.xbot.resources.Res
+import com.xbot.resources.button_retry
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
 import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun PlayerScreen(
@@ -33,7 +42,21 @@ internal fun PlayerScreen(
     viewModel: PlayerViewModel = koinViewModel(),
     onBackClick: () -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is PlayerScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     SystemBarsEffect()
 
@@ -109,7 +132,7 @@ private fun PlayerScreenContent(
                 VideoPlayerController(
                     player = player,
                     title = state.currentEpisode?.name.orEmpty(),
-                    episodes = state.episodes,
+                    episodes = state.episodes.getOrElse { emptyList() },
                     selectedEpisode = state.currentEpisode,
                     selectedQuality = state.quality,
                     availableQualities = state.availableQualities,
@@ -146,12 +169,9 @@ private fun PlayerScreenPreview(
 
 private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenState> {
     override val values = sequenceOf(
+        PlayerScreenState(),
         PlayerScreenState(
-            isLoading = true
-        ),
-        PlayerScreenState(
-            isLoading = false,
-            episodes = episodeMocks,
+            episodes = AsyncResult.Success(episodeMocks),
             currentEpisode = episodeMocks.first(),
             quality = VideoQuality.FHD,
         )

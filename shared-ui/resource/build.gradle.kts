@@ -23,16 +23,8 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.domain)
-        implementation(libs.kotlinx.datetime)
-        implementation(libs.compose.foundation)
         api(libs.compose.resources)
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.appcompat)
-        }
+        implementation(libs.compose.runtime)
     }
 }
 
