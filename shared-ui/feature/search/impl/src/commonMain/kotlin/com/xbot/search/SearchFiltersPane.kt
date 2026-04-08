@@ -43,6 +43,8 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.genreMocks
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
@@ -51,8 +53,11 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
+import com.xbot.resources.button_retry
 import com.xbot.resources.description_filter_age_ratings
 import com.xbot.resources.description_filter_genres
 import com.xbot.resources.description_filter_production_statuses
@@ -72,6 +77,7 @@ import com.xbot.resources.label_years
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.math.roundToInt
 
 @Composable
@@ -82,6 +88,20 @@ internal fun SearchFilterPane(
     onBackClick: () -> Unit,
 ) {
     val state by viewModel.collectAsState()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SearchScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     SearchFilterPaneContent(
         modifier = modifier,

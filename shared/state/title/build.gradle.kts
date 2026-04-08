@@ -27,6 +27,7 @@ kotlin {
         api(libs.orbitmvi.viewmodel)
         implementation(projects.shared.common)
         implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.serialization.core)
         implementation(libs.arrow.core)
     }
 

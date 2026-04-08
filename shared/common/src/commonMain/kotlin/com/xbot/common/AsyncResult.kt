@@ -8,6 +8,14 @@ sealed interface AsyncResult<out E, out T> {
 
 fun <T> AsyncResult<*, T>.getOrElse(default: () -> T): T = (this as? AsyncResult.Success<T>)?.data ?: default()
 
+fun <T> AsyncResult<*, T>.getOrNull(): T? = (this as? AsyncResult.Success<T>)?.data
+
+fun <E, T, R> AsyncResult<E, T>.map(transform: (T) -> R): AsyncResult<E, R> = when (this) {
+    is AsyncResult.Success -> AsyncResult.Success(transform(data))
+    is AsyncResult.Error -> this
+    is AsyncResult.Loading -> this
+}
+
 fun <E, T> AsyncResult<E, T>.consumeError(onError: (E) -> Unit): AsyncResult<E, T> = when (this) {
     is AsyncResult.Error -> { onError(error); AsyncResult.Loading }
     else -> this
