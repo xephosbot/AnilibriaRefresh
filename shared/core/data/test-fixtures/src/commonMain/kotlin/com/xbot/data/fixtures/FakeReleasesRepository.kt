@@ -28,10 +28,10 @@ class FakeReleasesRepository : ReleasesRepository {
     override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetails> {
         val id = aliasOrId.toIntOrNull()
         return if (id != null) {
-            getReleaseDetailMock(id).details.right()
+            getReleaseDetailMock(id).right()
         } else {
             // Return first or error, let's return first for convenience
-            getReleaseDetailMock(releaseMocks.first().id).details.right()
+            getReleaseDetailMock(releaseMocks.first().id).right()
         }
     }
 

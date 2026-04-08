@@ -53,18 +53,24 @@ import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.MessageAction
+import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
+import com.xbot.localization.UiText
+import com.xbot.localization.localizedMessage
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters
+import com.xbot.resources.button_retry
 import com.xbot.resources.label_search_results
 import com.xbot.resources.search_bar_placeholder
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun SearchResultPane(
@@ -76,6 +82,20 @@ internal fun SearchResultPane(
 ) {
     val state by viewModel.collectAsState()
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SearchScreenSideEffect.ShowErrorMessage -> {
+                SnackbarManager.showMessage(
+                    title = sideEffect.error.localizedMessage(),
+                    action = MessageAction(
+                        title = UiText.Text(Res.string.button_retry),
+                        action = sideEffect.onRetry,
+                    )
+                )
+            }
+        }
+    }
 
     SearchResultPaneContent(
         modifier = modifier,
