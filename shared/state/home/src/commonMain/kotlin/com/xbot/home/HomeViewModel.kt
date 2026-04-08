@@ -57,6 +57,8 @@ class HomeViewModel(
 
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 
+    private var authStateJob: Job? = null
+
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
@@ -144,10 +146,13 @@ class HomeViewModel(
         )
     }
 
-    private fun loadAuthState(): Job = intent {
-        getAuthState().collect { authState ->
-            reduce {
-                state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
+    private fun loadAuthState() {
+        authStateJob?.cancel()
+        authStateJob = intent {
+            getAuthState().collect { authState ->
+                reduce {
+                    state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
+                }
             }
         }
     }
