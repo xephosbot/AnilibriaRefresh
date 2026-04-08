@@ -24,6 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.network.DeDupeConcurrentRequestStrategy
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Search
@@ -37,17 +42,34 @@ import com.xbot.navigation.rememberNavigator
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
 import com.xbot.search.navigation.navigateToSearch
+import com.xbot.sharedapp.coil.ImageUrlInterceptor
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
+import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalCoilApi::class)
 @Composable
 internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
-    //SingletonImageLoader.setSafe(koinInject())
+    val httpClient = koinInject<HttpClient>()
+    remember(httpClient) {
+        SingletonImageLoader.setSafe { context ->
+            ImageLoader.Builder(context)
+                .components {
+                    add(
+                        KtorNetworkFetcherFactory(
+                            httpClient = httpClient,
+                            concurrentRequestStrategy = DeDupeConcurrentRequestStrategy(),
+                        )
+                    )
+                    add(ImageUrlInterceptor())
+                }
+                .build()
+        }
+    }
 
     val appThemeState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -77,7 +99,9 @@ internal fun AnilibriaApp(
             ) {
                 val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
                 val navSuiteType =
-                    NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
+                    NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                        currentWindowAdaptiveInfo()
+                    )
 
                 val currentDestination = navigator.currentDestination
                 val currentTopLevelDestination = navigator.currentTopLevelDestination

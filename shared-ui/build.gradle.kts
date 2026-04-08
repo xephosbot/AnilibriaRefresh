@@ -23,6 +23,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         implementation(projects.shared.di)
+        implementation(projects.shared.core.network.api)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.resource)
         implementation(projects.sharedUi.designSystem)
@@ -36,6 +37,8 @@ kotlin {
         implementation(projects.sharedUi.feature.search.impl)
         implementation(projects.sharedUi.feature.title.impl)
         implementation(projects.sharedUi.feature.login.impl)
+        implementation(libs.coil.core)
+        implementation(libs.coil.network.ktor)
         implementation(libs.compose.foundation)
         implementation(libs.lifecycle.viewmodel.compose)
         implementation(libs.lifecycle.runtime.compose)
