@@ -20,7 +20,7 @@ class IosViewModelStoreOwner: ObservableObject, ViewModelStoreOwner {
     func viewModel<T: ViewModel>(
         key: String? = nil,
         extras: CreationExtras? = nil,
-        parameters: (() -> ParametersHolder)? = nil
+        parameters: ParametersDefinition? = nil
     ) -> T {
         do {
             return try viewModelStore.resolveViewModel(
@@ -34,7 +34,7 @@ class IosViewModelStoreOwner: ObservableObject, ViewModelStoreOwner {
             fatalError("Failed to create ViewModel of type \(T.self)")
         }
     }
-    
+
     /// This can be called from outside when using the `ViewModelStoreOwnerProvider`
     func clear() {
         viewModelStore.clear()
