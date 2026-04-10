@@ -38,7 +38,7 @@ kotlinx-serialization = "1.10.0"
 # Libraries
 ktor = "3.4.2"
 brotli = "0.1.2"
-koin = "4.2.0"
+koin = "4.2.1"
 koin-plugin = "0.6.2"
 kermit = "2.1.0"
 coil = "3.4.0"
