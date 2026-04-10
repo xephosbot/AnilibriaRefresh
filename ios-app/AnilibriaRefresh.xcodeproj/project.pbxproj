@@ -9,13 +9,18 @@
 /* Begin PBXBuildFile section */
 		CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF3566122EC8883F00EE2F35 /* AppIcon.icon */; };
 		CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF8DEA462F1E9B3400221689 /* Assets.xcassets */; };
+		CFCD10462F87E9B0008CAE7A /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = CFCD10452F87E9B0008CAE7A /* Shimmer */; };
+		CFF36A342F88E02B008331FD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFF36A292F88E02B008331FD /* Launch Screen.storyboard */; };
+		CFF36A382F88E6BE008331FD /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CFF36A372F88E6BE008331FD /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		279A48D438C7058F3D04C50C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = Info.plist; path = src/Info.plist; sourceTree = "<group>"; };
-		279A4E4B21B0E55FFAD967CA /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anilibria Refresh.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		279A4E4B21B0E55FFAD967CA /* Anilibria Refresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anilibria Refresh.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF3566122EC8883F00EE2F35 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		CF8DEA462F1E9B3400221689 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CFF36A292F88E02B008331FD /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		CFF36A372F88E6BE008331FD /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -44,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFCD10462F87E9B0008CAE7A /* Shimmer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +59,7 @@
 		279A476559D7F8A9A59270EB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				279A4E4B21B0E55FFAD967CA /* ios-app.app */,
+				279A4E4B21B0E55FFAD967CA /* Anilibria Refresh.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,6 +71,8 @@
 				CF3566122EC8883F00EE2F35 /* AppIcon.icon */,
 				279A476559D7F8A9A59270EB /* Products */,
 				279A48D438C7058F3D04C50C /* Info.plist */,
+				CFF36A292F88E02B008331FD /* Launch Screen.storyboard */,
+				CFF36A372F88E6BE008331FD /* Localizable.xcstrings */,
 				279A4173E53941889080E058 /* src */,
 			);
 			sourceTree = "<group>";
@@ -90,7 +98,7 @@
 			);
 			name = AnilibriaRefresh;
 			productName = app;
-			productReference = 279A4E4B21B0E55FFAD967CA /* ios-app.app */;
+			productReference = 279A4E4B21B0E55FFAD967CA /* Anilibria Refresh.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -110,6 +118,9 @@
 				Base,
 			);
 			mainGroup = 279A4C149BE22C4B16DC69BE;
+			packageReferences = (
+				CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 279A476559D7F8A9A59270EB /* Products */;
 			projectDirPath = "";
@@ -127,6 +138,8 @@
 			files = (
 				CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */,
 				CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */,
+				CFF36A382F88E6BE008331FD /* Localizable.xcstrings in Resources */,
+				CFF36A342F88E02B008331FD /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,7 +185,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = ZUVRAN9VZ9;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
 				ENABLE_USER_SELECTED_FILES = "$(inherited)";
@@ -235,6 +248,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Debug;
 		};
@@ -273,6 +287,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Release;
 		};
@@ -329,6 +344,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CFCD10452F87E9B0008CAE7A /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 279A4D3C956DE91CE7B94022 /* Project object */;
 }

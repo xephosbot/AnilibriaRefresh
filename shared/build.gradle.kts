@@ -29,7 +29,9 @@ kotlin {
             export(projects.shared.state.preference)
             export(projects.shared.state.search)
             export(projects.shared.state.title)
+            export(libs.lifecycle.runtime)
             export(libs.lifecycle.viewmodel)
+            export(libs.lifecycle.viewmodel.savedstate)
             export(libs.koin.core)
         }
     }
@@ -49,7 +51,9 @@ kotlin {
         api(projects.shared.state.preference)
         api(projects.shared.state.search)
         api(projects.shared.state.title)
+        api(libs.lifecycle.runtime)
         api(libs.lifecycle.viewmodel)
+        api(libs.lifecycle.viewmodel.savedstate)
         api(libs.koin.core)
     }
 }

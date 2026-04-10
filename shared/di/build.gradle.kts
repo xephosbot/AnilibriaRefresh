@@ -31,6 +31,8 @@ kotlin {
         implementation(projects.shared.state.title)
         implementation(libs.koin.core)
         implementation(libs.koin.core.viewmodel)
+        implementation(libs.lifecycle.runtime)
+        implementation(libs.lifecycle.viewmodel.savedstate)
         implementation(libs.koin.annotations)
         implementation(libs.kermit)
         implementation(libs.kermit.koin)

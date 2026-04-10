@@ -7,6 +7,8 @@ import Shared
 
 struct ViewModelStoreOwnerProvider<Content: View>: View {
     @StateObject private var viewModelStoreOwner = IosViewModelStoreOwner()
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var isAppeared = false
 
     private let content: Content
 
@@ -18,8 +20,17 @@ struct ViewModelStoreOwnerProvider<Content: View>: View {
     var body: some View {
         content
             .environmentObject(viewModelStoreOwner)
+            .onAppear {
+                isAppeared = true
+                viewModelStoreOwner.onAppear(scenePhase: scenePhase)
+            }
             .onDisappear {
-                viewModelStoreOwner.clear()
+                isAppeared = false
+                viewModelStoreOwner.onDisappear()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                guard isAppeared else { return }
+                viewModelStoreOwner.onScenePhaseChanged(newPhase)
             }
     }
 }
