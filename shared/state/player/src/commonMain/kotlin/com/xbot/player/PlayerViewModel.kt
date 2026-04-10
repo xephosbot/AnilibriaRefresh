@@ -3,7 +3,6 @@ package com.xbot.player
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.xbot.common.asyncLoad
-import com.xbot.common.consumeError
 import com.xbot.common.getOrNull
 import com.xbot.common.map
 import com.xbot.domain.models.Episode
@@ -31,11 +30,9 @@ class PlayerViewModel(
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
             request = { getReleaseUseCase(releaseId) },
-            reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadTitleDetails() }
-                }
-                val episode = result.map { release ->
+            onError = { error -> showErrorMessage(error) { loadTitleDetails() } },
+            reducer = { details ->
+                val episode = details.map { release ->
                     release.episodes.find { it.ordinal == initialEpisodeOrdinal.toFloat() }
                         ?: release.episodes.getOrNull(initialEpisodeOrdinal)
                         ?: release.episodes.firstOrNull()
@@ -49,7 +46,7 @@ class PlayerViewModel(
                 }
 
                 copy(
-                    episodes = result.map { it.episodes },
+                    episodes = details.map { it.episodes },
                     currentEpisode = episode,
                     quality = newQuality
                 )

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.common.asyncLoad
-import com.xbot.common.consumeError
 import com.xbot.common.getOrElse
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -86,9 +85,9 @@ class SearchViewModel(
     private fun loadGenres(): Job = intent {
         asyncLoad(
             request = { getCatalogGenres() },
+            onError = { error -> showErrorMessage(error) { loadGenres() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadGenres() } }
-                copy(genres = result)
+                copy(genres = it)
             }
         )
     }
@@ -97,9 +96,9 @@ class SearchViewModel(
     private fun loadReleaseTypes(): Job = intent {
         asyncLoad(
             request = { getCatalogReleaseTypes() },
+            onError = { error -> showErrorMessage(error) { loadReleaseTypes() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadReleaseTypes() } }
-                copy(releaseTypes = result)
+                copy(releaseTypes = it)
             }
         )
     }
@@ -108,9 +107,9 @@ class SearchViewModel(
     private fun loadPublishStatuses(): Job = intent {
         asyncLoad(
             request = { getCatalogPublishStatuses() },
+            onError = { error -> showErrorMessage(error) { loadPublishStatuses() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadPublishStatuses() } }
-                copy(publishStatuses = result)
+                copy(publishStatuses = it)
             }
         )
     }
@@ -119,9 +118,9 @@ class SearchViewModel(
     private fun loadProductionStatuses(): Job = intent {
         asyncLoad(
             request = { getCatalogProductionStatuses() },
+            onError = { error -> showErrorMessage(error) { loadProductionStatuses() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadProductionStatuses() } }
-                copy(productionStatuses = result)
+                copy(productionStatuses = it)
             }
         )
     }
@@ -130,9 +129,9 @@ class SearchViewModel(
     private fun loadSortingTypes(): Job = intent {
         asyncLoad(
             request = { getCatalogSortingTypes() },
+            onError = { error -> showErrorMessage(error) { loadSortingTypes() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadSortingTypes() } }
-                copy(sortingTypes = result)
+                copy(sortingTypes = it)
             }
         )
     }
@@ -141,9 +140,9 @@ class SearchViewModel(
     private fun loadSeasons(): Job = intent {
         asyncLoad(
             request = { getCatalogSeasons() },
+            onError = { error -> showErrorMessage(error) { loadSeasons() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadSeasons() } }
-                copy(seasons = result)
+                copy(seasons = it)
             }
         )
     }
@@ -152,9 +151,9 @@ class SearchViewModel(
     private fun loadAgeRatings(): Job = intent {
         asyncLoad(
             request = { getCatalogAgeRatings() },
+            onError = { error -> showErrorMessage(error) { loadAgeRatings() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadAgeRatings() } }
-                copy(ageRatings = result)
+                copy(ageRatings = it)
             }
         )
     }
@@ -163,11 +162,11 @@ class SearchViewModel(
     private fun loadYears(): Job = intent {
         asyncLoad(
             request = { getCatalogYears() },
+            onError = { error -> showErrorMessage(error) { loadYears() } },
             reducer = {
-                val result = it.consumeError { error -> showErrorMessage(error) { loadYears() } }
                 copy(
-                    years = result,
-                    filters = state.filters.copy(selectedYears = result.getOrElse { IntRange.EMPTY })
+                    years = it,
+                    filters = state.filters.copy(selectedYears = it.getOrElse { IntRange.EMPTY })
                 )
             }
         )

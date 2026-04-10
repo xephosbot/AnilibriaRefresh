@@ -2,8 +2,7 @@ package com.xbot.title
 
 import androidx.lifecycle.ViewModel
 import com.xbot.common.asyncLoad
-import com.xbot.common.consumeError
-import com.xbot.common.getOrElse
+import com.xbot.common.getOrNull
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetFranchiseReleasesUseCase
 import com.xbot.domain.usecase.GetReleaseUseCase
@@ -29,13 +28,11 @@ class TitleViewModel(
     private fun loadDetails(): Job = intent {
         asyncLoad(
             request = { getRelease(aliasOrId) },
+            onError = { error -> showError(error) { loadDetails() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showError(error) { loadDetails() }
-                }
                 copy(
-                    initialRelease = result.getOrElse { null }?.release ?: initialRelease,
-                    details = result
+                    initialRelease = it.getOrNull()?.release ?: initialRelease,
+                    details = it
                 )
             }
         )
@@ -44,11 +41,9 @@ class TitleViewModel(
     private fun loadRelatedReleases(): Job = intent {
         asyncLoad(
             request = { getFranchiseReleases(aliasOrId) },
+            onError = { error -> showError(error) { loadRelatedReleases() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showError(error) { loadRelatedReleases() }
-                }
-                copy(relatedReleases = result)
+                copy(relatedReleases = it)
             }
         )
     }

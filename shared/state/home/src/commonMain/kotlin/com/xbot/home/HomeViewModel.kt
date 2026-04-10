@@ -7,7 +7,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.common.asyncLoad
-import com.xbot.common.consumeError
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetAuthStateUseCase
@@ -65,11 +64,9 @@ class HomeViewModel(
     private fun loadBestReleasesInCurrentSeason(): Job = intent {
         asyncLoad(
             request = { getBestReleasesInCurrentSeason() },
+            onError = { error -> showErrorMessage(error) { loadBestReleasesInCurrentSeason() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadBestReleasesInCurrentSeason() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(bestNow = result))
+                copy(releasesFeed = state.releasesFeed.copy(bestNow = it))
             }
         )
     }
@@ -77,11 +74,9 @@ class HomeViewModel(
     private fun loadBestReleasesForAllTime(): Job = intent {
         asyncLoad(
             request = { getBestReleasesForAllTime() },
+            onError = { error -> showErrorMessage(error) { loadBestReleasesForAllTime() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadBestReleasesForAllTime() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(bestAllTime = result))
+                copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it))
             }
         )
     }
@@ -89,11 +84,9 @@ class HomeViewModel(
     private fun loadRecommendedFranchises(): Job = intent {
         asyncLoad(
             request = { getRecommendedFranchisesUseCase() },
+            onError = { error -> showErrorMessage(error) { loadRecommendedFranchises() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadRecommendedFranchises() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = result))
+                copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it))
             }
         )
     }
@@ -101,11 +94,9 @@ class HomeViewModel(
     private fun loadRecommendedReleases(): Job = intent {
         asyncLoad(
             request = { getRecommendedReleases() },
+            onError = { error -> showErrorMessage(error) { loadRecommendedReleases() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadRecommendedReleases() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = result))
+                copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it))
             }
         )
     }
@@ -113,11 +104,9 @@ class HomeViewModel(
     private fun loadRecommendedGenres(): Job = intent {
         asyncLoad(
             request = { getRecommendedGenres() },
+            onError = { error -> showErrorMessage(error) { loadRecommendedGenres() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadRecommendedGenres() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(genres = result))
+                copy(releasesFeed = state.releasesFeed.copy(genres = it))
             }
         )
     }
@@ -125,11 +114,9 @@ class HomeViewModel(
     private fun loadScheduleForToday(): Job = intent {
         asyncLoad(
             request = { getScheduleForToday() },
+            onError = { error -> showErrorMessage(error) { loadScheduleForToday() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadScheduleForToday() }
-                }
-                copy(releasesFeed = state.releasesFeed.copy(scheduleNow = result))
+                copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it))
             }
         )
     }
@@ -137,11 +124,9 @@ class HomeViewModel(
     private fun loadScheduleWeek(): Job = intent {
         asyncLoad(
             request = { getScheduleWeek() },
+            onError = { error -> showErrorMessage(error) { loadScheduleWeek() } },
             reducer = {
-                val result = it.consumeError { error ->
-                    showErrorMessage(error) { loadScheduleWeek() }
-                }
-                copy(scheduleWeek = state.scheduleWeek.copy(days = result))
+                copy(scheduleWeek = state.scheduleWeek.copy(days = it))
             }
         )
     }
