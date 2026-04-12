@@ -18,9 +18,5 @@ sealed interface SearchScreenAction {
     data class UpdateSortingType(val sortingType: SortingType) : SearchScreenAction
     data class UpdateYearsRange(val years: IntRange) : SearchScreenAction
     data class ToggleAgeRating(val ageRating: AgeRating) : SearchScreenAction
-    data class ShowErrorMessage(
-        val error: Throwable,
-        val onRetry: () -> Unit,
-    ) : SearchScreenAction
     data object Refresh : SearchScreenAction
 }

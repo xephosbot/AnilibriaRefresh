@@ -1,7 +1,7 @@
 package com.xbot.search
 
 sealed interface SearchScreenSideEffect {
-    data class ShowErrorMessage(
+    data class ShowLoadError(
         val error: Throwable,
         val onRetry: () -> Unit,
     ) : SearchScreenSideEffect

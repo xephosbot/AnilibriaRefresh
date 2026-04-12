@@ -46,7 +46,7 @@ internal fun PlayerScreen(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is PlayerScreenSideEffect.ShowErrorMessage -> {
+            is PlayerScreenSideEffect.ShowLoadError -> {
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(

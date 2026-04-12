@@ -155,7 +155,7 @@ internal fun FeedPane(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is HomeScreenSideEffect.ShowErrorMessage -> {
+            is HomeScreenSideEffect.ShowLoadError -> {
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(

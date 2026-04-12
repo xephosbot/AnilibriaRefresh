@@ -91,7 +91,7 @@ internal fun SearchFilterPane(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is SearchScreenSideEffect.ShowErrorMessage -> {
+            is SearchScreenSideEffect.ShowLoadError -> {
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(

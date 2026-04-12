@@ -125,7 +125,7 @@ internal fun TitleDetailsPane(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is TitleScreenSideEffect.ShowErrorMessage -> {
+            is TitleScreenSideEffect.ShowLoadError -> {
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(

@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.xbot.common.LoadableField
 import com.xbot.common.asyncLoad
+import com.xbot.common.firstError
+import com.xbot.common.refreshAll
+import com.xbot.common.retryErrors
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetAuthStateUseCase
@@ -23,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.syntax.Syntax
 import org.orbitmvi.orbit.viewmodel.container
 
 @OptIn(OrbitExperimental::class)
@@ -39,18 +44,28 @@ class HomeViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
+    private val loadableFields: List<LoadableField<HomeScreenState>> = listOf(
+        LoadableField(selector = { it.releasesFeed.bestNow }, load = ::loadBestReleasesInCurrentSeason),
+        LoadableField(selector = { it.releasesFeed.bestAllTime }, load = ::loadBestReleasesForAllTime),
+        LoadableField(selector = { it.releasesFeed.recommendedFranchises }, load = ::loadRecommendedFranchises),
+        LoadableField(selector = { it.releasesFeed.recommendedReleases }, load = ::loadRecommendedReleases),
+        LoadableField(selector = { it.releasesFeed.genres }, load = ::loadRecommendedGenres),
+        LoadableField(selector = { it.releasesFeed.scheduleNow }, load = ::loadScheduleForToday),
+        LoadableField(selector = { it.scheduleWeek.days }, load = ::loadScheduleWeek),
+    )
+
+    private val onLoadError: suspend Syntax<HomeScreenState, HomeScreenSideEffect>.() -> Unit = {
+        loadableFields.firstError(state)?.let { error ->
+            postSideEffect(HomeScreenSideEffect.ShowLoadError(error = error, onRetry = { retry() }))
+        }
+    }
+
     override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
         initialState = HomeScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = HomeScreenState.serializer(),
     ) {
-        loadBestReleasesInCurrentSeason()
-        loadBestReleasesForAllTime()
-        loadRecommendedFranchises()
-        loadRecommendedReleases()
-        loadRecommendedGenres()
-        loadScheduleForToday()
-        loadScheduleWeek()
+        refreshAll(loadableFields, onBatchFailure = onLoadError)
         loadAuthState()
     }
 
@@ -64,70 +79,49 @@ class HomeViewModel(
     private fun loadBestReleasesInCurrentSeason(): Job = intent {
         asyncLoad(
             request = { getBestReleasesInCurrentSeason() },
-            onError = { error -> showErrorMessage(error) { loadBestReleasesInCurrentSeason() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(bestNow = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(bestNow = it)) }
         )
     }
 
     private fun loadBestReleasesForAllTime(): Job = intent {
         asyncLoad(
             request = { getBestReleasesForAllTime() },
-            onError = { error -> showErrorMessage(error) { loadBestReleasesForAllTime() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it)) }
         )
     }
 
     private fun loadRecommendedFranchises(): Job = intent {
         asyncLoad(
             request = { getRecommendedFranchisesUseCase() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedFranchises() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it)) }
         )
     }
 
     private fun loadRecommendedReleases(): Job = intent {
         asyncLoad(
             request = { getRecommendedReleases() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedReleases() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it)) }
         )
     }
 
     private fun loadRecommendedGenres(): Job = intent {
         asyncLoad(
             request = { getRecommendedGenres() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedGenres() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(genres = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(genres = it)) }
         )
     }
 
     private fun loadScheduleForToday(): Job = intent {
         asyncLoad(
             request = { getScheduleForToday() },
-            onError = { error -> showErrorMessage(error) { loadScheduleForToday() } },
-            reducer = {
-                copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it))
-            }
+            reducer = { copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it)) }
         )
     }
 
     private fun loadScheduleWeek(): Job = intent {
         asyncLoad(
             request = { getScheduleWeek() },
-            onError = { error -> showErrorMessage(error) { loadScheduleWeek() } },
-            reducer = {
-                copy(scheduleWeek = state.scheduleWeek.copy(days = it))
-            }
+            reducer = { copy(scheduleWeek = state.scheduleWeek.copy(days = it)) }
         )
     }
 
@@ -146,18 +140,16 @@ class HomeViewModel(
         when (action) {
             is HomeScreenAction.Refresh -> refresh()
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
-            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
+            is HomeScreenAction.ShowErrorMessage -> showPagingError(action.error, action.onRetry)
         }
     }
 
-    private fun refresh() {
-        loadBestReleasesInCurrentSeason()
-        loadBestReleasesForAllTime()
-        loadRecommendedFranchises()
-        loadRecommendedReleases()
-        loadRecommendedGenres()
-        loadScheduleForToday()
-        loadScheduleWeek()
+    private fun retry(): Job = intent {
+        retryErrors(loadableFields, onBatchFailure = onLoadError)
+    }
+
+    private fun refresh(): Job = intent {
+        refreshAll(loadableFields, onBatchFailure = onLoadError)
         loadAuthState()
     }
 
@@ -165,7 +157,7 @@ class HomeViewModel(
         reduce { state.copy(currentBestType = bestType) }
     }
 
-    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
-        postSideEffect(HomeScreenSideEffect.ShowErrorMessage(error, onRetry))
+    private fun showPagingError(error: Throwable, onRetry: () -> Unit): Job = intent {
+        postSideEffect(HomeScreenSideEffect.ShowLoadError(error = error, onRetry = onRetry))
     }
 }

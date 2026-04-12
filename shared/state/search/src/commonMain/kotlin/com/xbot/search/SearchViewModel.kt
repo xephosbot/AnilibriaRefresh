@@ -5,8 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.xbot.common.LoadableField
 import com.xbot.common.asyncLoad
+import com.xbot.common.firstError
 import com.xbot.common.getOrElse
+import com.xbot.common.refreshAll
+import com.xbot.common.retryErrors
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -36,9 +40,10 @@ import kotlinx.coroutines.flow.map
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.syntax.Syntax
 import org.orbitmvi.orbit.viewmodel.container
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, OrbitExperimental::class)
 class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogAgeRatings: GetCatalogAgeRatingsUseCase,
@@ -52,19 +57,29 @@ class SearchViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<SearchScreenState, SearchScreenSideEffect> {
 
+    private val loadableFields: List<LoadableField<SearchScreenState>> = listOf(
+        LoadableField(selector = { it.genres }, load = ::loadGenres),
+        LoadableField(selector = { it.releaseTypes }, load = ::loadReleaseTypes),
+        LoadableField(selector = { it.publishStatuses }, load = ::loadPublishStatuses),
+        LoadableField(selector = { it.productionStatuses }, load = ::loadProductionStatuses),
+        LoadableField(selector = { it.sortingTypes }, load = ::loadSortingTypes),
+        LoadableField(selector = { it.seasons }, load = ::loadSeasons),
+        LoadableField(selector = { it.ageRatings }, load = ::loadAgeRatings),
+        LoadableField(selector = { it.years }, load = ::loadYears),
+    )
+
+    private val onLoadError: suspend Syntax<SearchScreenState, SearchScreenSideEffect>.() -> Unit = {
+        loadableFields.firstError(state)?.let { error ->
+            postSideEffect(SearchScreenSideEffect.ShowLoadError(error = error, onRetry = { retry() }))
+        }
+    }
+
     override val container: Container<SearchScreenState, SearchScreenSideEffect> = container(
         initialState = SearchScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = SearchScreenState.serializer()
     ) {
-        loadGenres()
-        loadReleaseTypes()
-        loadPublishStatuses()
-        loadProductionStatuses()
-        loadSortingTypes()
-        loadSeasons()
-        loadAgeRatings()
-        loadYears()
+        refreshAll(loadableFields, onBatchFailure = onLoadError)
     }
 
     // TODO: Move inside SearchScreenState once Paging 3.5.0 stable ships asState()
@@ -81,88 +96,58 @@ class SearchViewModel(
         ).flow
     }.cachedIn(viewModelScope)
 
-    @OptIn(OrbitExperimental::class)
     private fun loadGenres(): Job = intent {
         asyncLoad(
             request = { getCatalogGenres() },
-            onError = { error -> showErrorMessage(error) { loadGenres() } },
-            reducer = {
-                copy(genres = it)
-            }
+            reducer = { copy(genres = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadReleaseTypes(): Job = intent {
         asyncLoad(
             request = { getCatalogReleaseTypes() },
-            onError = { error -> showErrorMessage(error) { loadReleaseTypes() } },
-            reducer = {
-                copy(releaseTypes = it)
-            }
+            reducer = { copy(releaseTypes = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadPublishStatuses(): Job = intent {
         asyncLoad(
             request = { getCatalogPublishStatuses() },
-            onError = { error -> showErrorMessage(error) { loadPublishStatuses() } },
-            reducer = {
-                copy(publishStatuses = it)
-            }
+            reducer = { copy(publishStatuses = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadProductionStatuses(): Job = intent {
         asyncLoad(
             request = { getCatalogProductionStatuses() },
-            onError = { error -> showErrorMessage(error) { loadProductionStatuses() } },
-            reducer = {
-                copy(productionStatuses = it)
-            }
+            reducer = { copy(productionStatuses = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadSortingTypes(): Job = intent {
         asyncLoad(
             request = { getCatalogSortingTypes() },
-            onError = { error -> showErrorMessage(error) { loadSortingTypes() } },
-            reducer = {
-                copy(sortingTypes = it)
-            }
+            reducer = { copy(sortingTypes = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadSeasons(): Job = intent {
         asyncLoad(
             request = { getCatalogSeasons() },
-            onError = { error -> showErrorMessage(error) { loadSeasons() } },
-            reducer = {
-                copy(seasons = it)
-            }
+            reducer = { copy(seasons = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadAgeRatings(): Job = intent {
         asyncLoad(
             request = { getCatalogAgeRatings() },
-            onError = { error -> showErrorMessage(error) { loadAgeRatings() } },
-            reducer = {
-                copy(ageRatings = it)
-            }
+            reducer = { copy(ageRatings = it) }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
     private fun loadYears(): Job = intent {
         asyncLoad(
             request = { getCatalogYears() },
-            onError = { error -> showErrorMessage(error) { loadYears() } },
             reducer = {
                 copy(
                     years = it,
@@ -183,9 +168,16 @@ class SearchViewModel(
             is SearchScreenAction.UpdateSortingType -> updateSortingType(action.sortingType)
             is SearchScreenAction.UpdateYearsRange -> updateYearsRange(action.years)
             is SearchScreenAction.ToggleAgeRating -> toggleAgeRating(action.ageRating)
-            is SearchScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
             is SearchScreenAction.Refresh -> refresh()
         }
+    }
+
+    private fun retry(): Job = intent {
+        retryErrors(loadableFields, onBatchFailure = onLoadError)
+    }
+
+    private fun refresh(): Job = intent {
+        refreshAll(loadableFields, onBatchFailure = onLoadError)
     }
 
     private fun updateQuery(query: String) = intent {
@@ -222,21 +214,6 @@ class SearchViewModel(
 
     private fun toggleAgeRating(ageRating: AgeRating) = intent {
         reduce { state.copy(filters = state.filters.copy(selectedAgeRatings = state.filters.selectedAgeRatings.toggle(ageRating))) }
-    }
-
-    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit) = intent {
-        postSideEffect(SearchScreenSideEffect.ShowErrorMessage(error, onRetry))
-    }
-
-    private fun refresh() {
-        loadGenres()
-        loadReleaseTypes()
-        loadPublishStatuses()
-        loadProductionStatuses()
-        loadSortingTypes()
-        loadSeasons()
-        loadAgeRatings()
-        loadYears()
     }
 
     private fun <T> Set<T>.toggle(item: T) = if (item in this) this - item else this + item

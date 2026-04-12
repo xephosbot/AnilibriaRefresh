@@ -2,6 +2,7 @@ package com.xbot.player
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.xbot.common.AsyncResult
 import com.xbot.common.asyncLoad
 import com.xbot.common.getOrNull
 import com.xbot.common.map
@@ -30,7 +31,6 @@ class PlayerViewModel(
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
             request = { getReleaseUseCase(releaseId) },
-            onError = { error -> showErrorMessage(error) { loadTitleDetails() } },
             reducer = { details ->
                 val episode = details.map { release ->
                     release.episodes.find { it.ordinal == initialEpisodeOrdinal.toFloat() }
@@ -52,6 +52,11 @@ class PlayerViewModel(
                 )
             }
         )
+
+        val error = (state.episodes as? AsyncResult.Error)?.error
+        if (error is Throwable) {
+            postSideEffect(PlayerScreenSideEffect.ShowLoadError(error = error, onRetry = { retry() }))
+        }
     }
 
     fun onAction(action: PlayerScreenAction) {
@@ -59,6 +64,10 @@ class PlayerViewModel(
             is PlayerScreenAction.OnEpisodeChange -> onEpisodeChange(action.episode)
             is PlayerScreenAction.OnQualityChange -> onQualityChange(action.quality)
         }
+    }
+
+    private fun retry() {
+        loadTitleDetails()
     }
 
     private fun onEpisodeChange(episode: Episode) = intent {
@@ -81,9 +90,5 @@ class PlayerViewModel(
         reduce {
             state.copy(quality = quality)
         }
-    }
-
-    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
-        postSideEffect(PlayerScreenSideEffect.ShowErrorMessage(error, onRetry))
     }
 }
