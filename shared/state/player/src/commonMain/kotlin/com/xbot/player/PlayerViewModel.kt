@@ -2,17 +2,23 @@ package com.xbot.player
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.xbot.common.AsyncResult
+import com.xbot.common.LoadableField
 import com.xbot.common.asyncLoad
+import com.xbot.common.firstError
 import com.xbot.common.getOrNull
 import com.xbot.common.map
+import com.xbot.common.refreshAll
+import com.xbot.common.retryErrors
 import com.xbot.domain.models.Episode
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.syntax.Syntax
 import org.orbitmvi.orbit.viewmodel.container
 
+@OptIn(OrbitExperimental::class)
 class PlayerViewModel(
     private val releaseId: String,
     private val initialEpisodeOrdinal: Int,
@@ -20,12 +26,22 @@ class PlayerViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
 
+    private val loadableFields: List<LoadableField<PlayerScreenState>> = listOf(
+        LoadableField(selector = { it.episodes }, load = ::loadTitleDetails),
+    )
+
+    private val onLoadError: suspend Syntax<PlayerScreenState, PlayerScreenSideEffect>.() -> Unit = {
+        loadableFields.firstError(state)?.let { error ->
+            postSideEffect(PlayerScreenSideEffect.ShowLoadError(error = error, onRetry = { retry() }))
+        }
+    }
+
     override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
         initialState = PlayerScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = PlayerScreenState.serializer(),
     ) {
-        loadTitleDetails()
+        refreshAll(loadableFields, onBatchFailure = onLoadError)
     }
 
     private fun loadTitleDetails(): Job = intent {
@@ -52,11 +68,6 @@ class PlayerViewModel(
                 )
             }
         )
-
-        val error = (state.episodes as? AsyncResult.Error)?.error
-        if (error is Throwable) {
-            postSideEffect(PlayerScreenSideEffect.ShowLoadError(error = error, onRetry = { retry() }))
-        }
     }
 
     fun onAction(action: PlayerScreenAction) {
@@ -66,8 +77,8 @@ class PlayerViewModel(
         }
     }
 
-    private fun retry() {
-        loadTitleDetails()
+    private fun retry(): Job = intent {
+        retryErrors(loadableFields, onBatchFailure = onLoadError)
     }
 
     private fun onEpisodeChange(episode: Episode) = intent {

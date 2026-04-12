@@ -20,7 +20,11 @@ fun <S : Any> List<LoadableField<S>>.allSucceeded(state: S): Boolean =
 
 fun <S : Any> List<LoadableField<S>>.firstError(state: S): Throwable? =
     firstNotNullOfOrNull { field ->
-        (field.selector(state) as? AsyncResult.Error<*>)?.error as? Throwable
+        when (val error = (field.selector(state) as? AsyncResult.Error<*>)?.error) {
+            is Throwable -> error
+            null -> null
+            else -> RuntimeException("Unexpected error type: $error")
+        }
     }
 
 suspend fun <S : Any, SE : Any> Syntax<S, SE>.retryErrors(
