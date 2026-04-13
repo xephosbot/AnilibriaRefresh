@@ -1,5 +1,4 @@
 import java.util.Properties
-import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,9 +6,11 @@ plugins {
 }
 
 val keystorePropertiesFile = project.file("keystore.properties")
-
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        load(keystorePropertiesFile.reader())
+    }
+}
 
 android {
     compileSdk = libs.versions.android.compilesdk.get().toInt()
@@ -28,11 +29,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias") as String
+                keyPassword = keystoreProperties.getProperty("keyPassword") as String
+                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                storePassword = keystoreProperties.getProperty("storePassword") as String
+            }
         }
     }
 
@@ -44,7 +47,9 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 // Default file with automatically generated optimization rules.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
