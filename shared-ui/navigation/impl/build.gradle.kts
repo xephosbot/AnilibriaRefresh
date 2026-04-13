@@ -25,6 +25,7 @@ kotlin {
         implementation(projects.sharedUi.feature.home.api)
         implementation(projects.sharedUi.feature.favorite.api)
         implementation(projects.sharedUi.feature.preference.api)
+        implementation(projects.sharedUi.feature.search.api)
         implementation(projects.sharedUi.feature.login.api)
         implementation(projects.sharedUi.feature.title.api)
         implementation(libs.navigation3.ui)

@@ -4,8 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -13,8 +11,8 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaul
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.Icon
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
-import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -30,18 +28,13 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.network.DeDupeConcurrentRequestStrategy
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
-import com.xbot.designsystem.icons.AnilibriaIcons
-import com.xbot.designsystem.icons.Search
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
-import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.TopLevelRoutes
 import com.xbot.navigation.rememberNavigator
-import com.xbot.resources.Res
-import com.xbot.resources.fab_search
-import com.xbot.search.navigation.navigateToSearch
+import com.xbot.navigation.LocalNavigator
 import com.xbot.sharedapp.coil.ImageUrlInterceptor
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import io.ktor.client.HttpClient
@@ -106,28 +99,6 @@ internal fun AnilibriaApp(
                 val currentDestination = navigator.currentDestination
                 val currentTopLevelDestination = navigator.currentTopLevelDestination
 
-                val fabModifier = if (
-                    navSuiteType == NavigationSuiteType.ShortNavigationBarMedium ||
-                    navSuiteType == NavigationSuiteType.ShortNavigationBarCompact
-                ) {
-                    Modifier.animateFloatingActionButton(
-                        visible = currentDestination == currentTopLevelDestination,
-                        alignment = Alignment.Center
-                    )
-                } else {
-                    Modifier
-                }
-
-                val fab = @Composable {
-                    SearchFloatingActionButton(
-                        expanded = navSuiteType == NavigationSuiteType.WideNavigationRailExpanded,
-                        showOnlyIcon = navSuiteType == NavigationSuiteType.ShortNavigationBarMedium,
-                        modifier = fabModifier,
-                        onClick = { navigator.navigateToSearch() }
-                    )
-                }
-                val fabMovable = remember(fab) { movableContentOf(fab) }
-
                 NavigationSuiteScaffold(
                     navigationItems = {
                         TopLevelRoutes.forEach { destination ->
@@ -147,7 +118,6 @@ internal fun AnilibriaApp(
                             )
                         }
                     },
-                    primaryActionContent = fabMovable,
                     navigationSuiteType = navSuiteType,
                     navigationSuiteColors = NavigationSuiteDefaults.colors(
                         shortNavigationBarContainerColor = MaterialTheme.colorScheme.surface,
@@ -161,28 +131,4 @@ internal fun AnilibriaApp(
             }
         }
     }
-}
-
-@Composable
-private fun SearchFloatingActionButton(
-    expanded: Boolean,
-    showOnlyIcon: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    val startPadding = if (showOnlyIcon) 0.dp else 20.dp
-    ExtendedFloatingActionButton(
-        modifier = Modifier
-            .padding(start = startPadding)
-            .then(modifier),
-        onClick = onClick,
-        expanded = expanded,
-        icon = {
-            Icon(
-                imageVector = AnilibriaIcons.Search,
-                contentDescription = null
-            )
-        },
-        text = { Text(stringResource(Res.string.fab_search)) }
-    )
 }
