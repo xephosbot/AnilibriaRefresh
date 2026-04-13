@@ -33,7 +33,6 @@ kotlin {
         implementation(projects.sharedUi.feature.home.impl)
         implementation(projects.sharedUi.feature.player.impl)
         implementation(projects.sharedUi.feature.preference.impl)
-        implementation(projects.sharedUi.feature.search.api)
         implementation(projects.sharedUi.feature.search.impl)
         implementation(projects.sharedUi.feature.title.impl)
         implementation(projects.sharedUi.feature.login.impl)
