@@ -1,9 +1,9 @@
 [versions]
 # Android
 android-minsdk = "24"
-android-targetsdk = "36"
-android-compilesdk = "36"
-android-gradle-plugin = "9.1.0"
+android-targetsdk = "37"
+android-compilesdk = "37"
+android-gradle-plugin = "9.1.1"
 android-desugar-jdk = "2.1.5"
 
 # Kotlin
