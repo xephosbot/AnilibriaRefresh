@@ -54,13 +54,6 @@ import com.xbot.localization.localizedName
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
 import org.jetbrains.compose.resources.stringResource
-import kotlin.Float
-import kotlin.OptIn
-import kotlin.Unit
-import kotlin.collections.joinToString
-import kotlin.collections.minusAssign
-import kotlin.compareTo
-import kotlin.let
 
 @Composable
 fun LargeReleaseCard(
