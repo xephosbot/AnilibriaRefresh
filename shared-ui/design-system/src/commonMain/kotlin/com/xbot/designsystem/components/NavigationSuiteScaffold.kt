@@ -140,7 +140,7 @@ internal fun NavigationSuiteScaffoldLayout(
 
         // Find the navigation suite composable
         val navigationPlaceable = navigationSuiteMeasurable.first().measure(looseConstraints)
-        val primaryActionContentPlaceable = primaryActionContentMeasurable.first().measure(looseConstraints)
+        val primaryActionContentPlaceable = primaryActionContentMeasurable.firstOrNull()?.measure(looseConstraints)
 
         val isNavigationBar = layoutType.isNavigationBar
 
@@ -195,13 +195,13 @@ internal fun NavigationSuiteScaffoldLayout(
                     } else if (
                         primaryActionContentHorizontalAlignment == Alignment.CenterHorizontally
                     ) {
-                        (layoutWidth - primaryActionContentPlaceable.width) / 2
+                        (layoutWidth - (primaryActionContentPlaceable?.width ?: 0)) / 2
                     } else {
                         layoutWidth -
-                                primaryActionContentPlaceable.width -
+                                (primaryActionContentPlaceable?.width ?: 0) -
                                 PrimaryActionContentPadding.roundToPx()
                     }
-                primaryActionContentPlaceable.placeRelative(
+                primaryActionContentPlaceable?.placeRelative(
                     positionX,
                     layoutHeight -
                             primaryActionContentPlaceable.height -
