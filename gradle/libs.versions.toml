@@ -13,7 +13,7 @@ skie = "0.10.11"
 #noinspection NewerVersionAvailable
 compose-multiplatform = "1.11.0-beta02"
 #noinspection NewerVersionAvailable
-compose-material3 = "1.11.0-alpha03"
+compose-material3 = "1.11.0-alpha06"
 compose-material3-adaptive = "1.3.0-alpha06"
 
 # AndroidX
