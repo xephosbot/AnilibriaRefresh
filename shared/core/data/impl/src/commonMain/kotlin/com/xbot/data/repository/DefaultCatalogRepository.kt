@@ -2,7 +2,6 @@ package com.xbot.data.repository
 
 import androidx.paging.PagingSource
 import arrow.core.Either
-import arrow.core.getOrElse
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
 import com.xbot.data.mapper.toDto
@@ -17,7 +16,6 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogQuery
 import com.xbot.network.api.CatalogApi
-import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.enums.AgeRatingDto
@@ -35,7 +33,7 @@ internal class DefaultCatalogRepository(
     override fun getCatalogReleases(search: String?, filters: CatalogQuery?): PagingSource<Int, Release> {
         return CommonPagingSource(
             loadPage = { page, limit ->
-                val result = catalogApi.getCatalogReleases(
+                catalogApi.getCatalogReleases(
                     page = page,
                     limit = limit,
                     search = search,
@@ -48,13 +46,12 @@ internal class DefaultCatalogRepository(
                     ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
                     publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
                     productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).getOrElse { error ->
-                    throw error.toDomain()
+                ).map { result ->
+                    CommonPagingSource.PaginatedResponse(
+                        items = result.data.map(ReleaseDto::toDomain),
+                        total = result.meta.pagination.total,
+                    )
                 }
-                CommonPagingSource.PaginatedResponse(
-                    items = result.data.map(ReleaseDto::toDomain),
-                    total = result.meta.pagination.total
-                )
             }
         )
     }
@@ -78,48 +75,39 @@ internal class DefaultCatalogRepository(
             publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
             productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
         )
-        .mapLeft(NetworkError::toDomain)
         .map { it.data.map(ReleaseDto::toDomain) }
 
     override suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRating>> = catalogApi
         .getCatalogAgeRatings()
-        .mapLeft(NetworkError::toDomain)
         .map { it.map(AgeRatingDto::toDomain) }
 
     override suspend fun getCatalogGenres(): Either<DomainError, List<Genre>> = catalogApi
         .getCatalogGenres()
-        .mapLeft(NetworkError::toDomain)
         .map { it.map(GenreDto::toDomain) }
 
     override suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatus>> =
         catalogApi
             .getCatalogProductionStatuses()
-            .mapLeft(NetworkError::toDomain)
             .map { it.map(ProductionStatusDto::toDomain) }
 
     override suspend fun getCatalogPublishStatuses(): Either<DomainError, List<PublishStatus>> =
         catalogApi
             .getCatalogPublishStatuses()
-            .mapLeft(NetworkError::toDomain)
             .map { it.map(PublishStatusDto::toDomain) }
 
     override suspend fun getCatalogSeasons(): Either<DomainError, List<Season>> = catalogApi
         .getCatalogSeasons()
-        .mapLeft(NetworkError::toDomain)
         .map { it.map(SeasonDto::toDomain) }
 
     override suspend fun getCatalogSortingTypes(): Either<DomainError, List<SortingType>> = catalogApi
         .getCatalogSortingTypes()
-        .mapLeft(NetworkError::toDomain)
         .map { it.map(SortingTypeDto::toDomain) }
 
     override suspend fun getCatalogReleaseTypes(): Either<DomainError, List<ReleaseType>> = catalogApi
         .getCatalogReleaseTypes()
-        .mapLeft(NetworkError::toDomain)
         .map { it.map(ReleaseTypeDto::toDomain) }
 
     override suspend fun getCatalogYears(): Either<DomainError, IntRange> = catalogApi
         .getCatalogYears()
-        .mapLeft(NetworkError::toDomain)
         .map { years -> years.first()..years.last() }
 }

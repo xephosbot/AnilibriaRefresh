@@ -65,6 +65,8 @@
     <string name="error_serialization">Ошибка обработки данных: %1$s</string>
     <string name="error_http">Ошибка сервера (%1$d)</string>
     <string name="error_unknown">Неизвестная ошибка %1$s по причине %2$s: %3$s</string>
+    <string name="error_timeout">Превышено время ожидания</string>
+    <string name="error_no_connection">Нет подключения к интернету</string>
 
     <!-- Типы релизов -->
     <string name="release_type_tv">ТВ</string>

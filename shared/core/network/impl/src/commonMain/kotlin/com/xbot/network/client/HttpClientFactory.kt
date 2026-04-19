@@ -6,6 +6,7 @@ import com.xbot.network.utils.brotli
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.compression.ContentEncoding
@@ -44,6 +45,12 @@ internal fun createHttpClient(
             ignoreUnknownKeys = true
             coerceInputValues = true
         })
+    }
+
+    install(HttpTimeout) {
+        requestTimeoutMillis = 10_000
+        connectTimeoutMillis = 5_000
+        socketTimeoutMillis = 10_000
     }
 
     Auth {

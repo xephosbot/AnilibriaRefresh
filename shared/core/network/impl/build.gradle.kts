@@ -31,6 +31,7 @@ kotlin {
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
+        implementation(libs.arrow.resilience)
         implementation(libs.koin.core)
         implementation(libs.koin.annotations)
         implementation(libs.kermit)

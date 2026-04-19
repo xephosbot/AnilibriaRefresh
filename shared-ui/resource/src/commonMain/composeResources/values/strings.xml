@@ -65,6 +65,8 @@
     <string name="error_serialization">Data processing error: %1$s</string>
     <string name="error_http">Server error (%1$d)</string>
     <string name="error_unknown">Unknown error %1$s caused by %2$s: %3$s</string>
+    <string name="error_timeout">Request timed out</string>
+    <string name="error_no_connection">You\'re offline</string>
 
     <!-- Типы релизов -->
     <string name="release_type_tv">TV</string>

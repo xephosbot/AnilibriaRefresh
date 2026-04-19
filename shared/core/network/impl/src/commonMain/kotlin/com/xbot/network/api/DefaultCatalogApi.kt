@@ -1,8 +1,8 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.network.client.NetworkError
-import com.xbot.network.client.request
+import com.xbot.domain.models.DomainError
+import com.xbot.network.client.ResilientHttpRequester
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.enums.AgeRatingDto
@@ -12,13 +12,12 @@ import com.xbot.network.models.enums.ReleaseTypeDto
 import com.xbot.network.models.enums.SeasonDto
 import com.xbot.network.models.enums.SortingTypeDto
 import com.xbot.network.models.responses.PaginatedResponse
-import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultCatalogApi(private val client: HttpClient) : CatalogApi {
+internal class DefaultCatalogApi(private val requester: ResilientHttpRequester) : CatalogApi {
     override suspend fun getCatalogReleases(
         page: Int,
         limit: Int,
@@ -32,7 +31,7 @@ internal class DefaultCatalogApi(private val client: HttpClient) : CatalogApi {
         ageRatings: List<AgeRatingDto>?,
         publishStatuses: List<PublishStatusDto>?,
         productionStatuses: List<ProductionStatusDto>?
-    ): Either<NetworkError, PaginatedResponse<ReleaseDto>> = client.request {
+    ): Either<DomainError, PaginatedResponse<ReleaseDto>> = requester.request {
         get("anime/catalog/releases") {
             parameter("page", page)
             parameter("limit", limit)
@@ -49,35 +48,35 @@ internal class DefaultCatalogApi(private val client: HttpClient) : CatalogApi {
         }
     }
 
-    override suspend fun getCatalogAgeRatings(): Either<NetworkError, List<AgeRatingDto>> = client.request {
+    override suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRatingDto>> = requester.request {
         get("anime/catalog/references/age-ratings")
     }
 
-    override suspend fun getCatalogGenres(): Either<NetworkError, List<GenreDto>> = client.request {
+    override suspend fun getCatalogGenres(): Either<DomainError, List<GenreDto>> = requester.request {
         get("anime/catalog/references/genres")
     }
 
-    override suspend fun getCatalogProductionStatuses(): Either<NetworkError, List<ProductionStatusDto>> = client.request {
+    override suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatusDto>> = requester.request {
         get("anime/catalog/references/production-statuses")
     }
 
-    override suspend fun getCatalogPublishStatuses(): Either<NetworkError, List<PublishStatusDto>> = client.request {
+    override suspend fun getCatalogPublishStatuses(): Either<DomainError, List<PublishStatusDto>> = requester.request {
         get("anime/catalog/references/publish-statuses")
     }
 
-    override suspend fun getCatalogSeasons(): Either<NetworkError, List<SeasonDto>> = client.request {
+    override suspend fun getCatalogSeasons(): Either<DomainError, List<SeasonDto>> = requester.request {
         get("anime/catalog/references/seasons")
     }
 
-    override suspend fun getCatalogSortingTypes(): Either<NetworkError, List<SortingTypeDto>> = client.request {
+    override suspend fun getCatalogSortingTypes(): Either<DomainError, List<SortingTypeDto>> = requester.request {
         get("anime/catalog/references/sorting")
     }
 
-    override suspend fun getCatalogReleaseTypes(): Either<NetworkError, List<ReleaseTypeDto>> = client.request {
+    override suspend fun getCatalogReleaseTypes(): Either<DomainError, List<ReleaseTypeDto>> = requester.request {
         get("anime/catalog/references/types")
     }
 
-    override suspend fun getCatalogYears(): Either<NetworkError, List<Int>> = client.request {
+    override suspend fun getCatalogYears(): Either<DomainError, List<Int>> = requester.request {
         get("anime/catalog/references/years")
     }
 }

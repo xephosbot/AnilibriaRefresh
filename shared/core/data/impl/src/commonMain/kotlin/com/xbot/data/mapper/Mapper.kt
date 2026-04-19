@@ -13,7 +13,6 @@ import com.xbot.domain.models.ScheduleType
 import com.xbot.domain.models.User
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.network.Constants
-import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.EpisodeDto
 import com.xbot.network.models.dto.FranchiseDto
 import com.xbot.network.models.dto.GenreDto
@@ -195,10 +194,3 @@ internal fun FranchiseDto.toDomain() = Franchise(
     },
     franchiseReleases = franchiseReleases?.map { it.release.toDomain() },
 )
-
-internal fun NetworkError.toDomain(): DomainError = when (this) {
-    is NetworkError.HttpError -> DomainError.HttpError(this.code, this.message)
-    is NetworkError.ConnectionError -> DomainError.ConnectionError(this.cause)
-    is NetworkError.SerializationError -> DomainError.SerializationError(this.cause)
-    is NetworkError.UnknownError -> DomainError.UnknownError(this.cause)
-}

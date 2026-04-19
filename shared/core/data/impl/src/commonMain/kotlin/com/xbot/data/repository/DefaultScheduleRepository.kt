@@ -9,7 +9,6 @@ import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.network.api.ReleasesApi
 import com.xbot.network.api.ScheduleApi
-import com.xbot.network.client.NetworkError
 import com.xbot.network.models.dto.ScheduleDto
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -25,12 +24,10 @@ internal class DefaultScheduleRepository(
 ) : ScheduleRepository {
     override suspend fun getScheduleNow(): Either<DomainError, List<Schedule>> = scheduleApi
         .getScheduleNow()
-        .mapLeft(NetworkError::toDomain)
         .map { schedule -> schedule["today"]?.mapNotNull(ScheduleDto::toDomain) ?: emptyList() }
 
     override suspend fun getScheduleWeek(): Either<DomainError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
         .getScheduleWeek()
-        .mapLeft(NetworkError::toDomain)
         .map { schedule ->
             schedule
                 .groupBy(
@@ -53,7 +50,6 @@ internal class DefaultScheduleRepository(
 
     override suspend fun getCurrentSeason(): Either<DomainError, Season> = releasesApi
         .getLatestReleases(10)
-        .mapLeft(NetworkError::toDomain)
         .map { releases ->
             releases
                 .map { it.season?.toDomain() }
@@ -65,7 +61,6 @@ internal class DefaultScheduleRepository(
 
     override suspend fun getCurrentYear(): Either<DomainError, Int> = releasesApi
         .getLatestReleases(10)
-        .mapLeft(NetworkError::toDomain)
         .map { releases ->
             releases
                 .map { it.year }

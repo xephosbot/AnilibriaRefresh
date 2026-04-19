@@ -7,7 +7,6 @@ import com.xbot.data.mapper.toDto
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.enums.SocialType
 import com.xbot.network.api.AuthApi
-import com.xbot.network.client.NetworkError
 import com.xbot.network.client.SessionStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,7 +23,6 @@ internal class DefaultAuthRepository(
 
     override suspend fun login(login: String, password: String): Either<DomainError, Unit> = either {
         val response = authApi.login(login, password)
-            .mapLeft(NetworkError::toDomain)
             .bind()
 
         response.token?.let { tokenStorage.saveToken(it) }
@@ -32,7 +30,6 @@ internal class DefaultAuthRepository(
 
     override suspend fun logout(): Either<DomainError, Unit> = either {
         val result = authApi.logout()
-            .mapLeft(NetworkError::toDomain)
         
         tokenStorage.clearToken()
         
@@ -41,11 +38,9 @@ internal class DefaultAuthRepository(
 
     override suspend fun socialLogin(provider: SocialType): Either<DomainError, Unit> = either {
         val state = authApi.socialLogin(provider.toDto())
-            .mapLeft(NetworkError::toDomain)
             .bind().state
 
         val response = authApi.socialAuthenticate(state)
-            .mapLeft(NetworkError::toDomain)
             .bind()
 
         response.token?.let { tokenStorage.saveToken(it) }
@@ -53,7 +48,6 @@ internal class DefaultAuthRepository(
 
     override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = authApi
         .forgotPassword(email)
-        .mapLeft(NetworkError::toDomain)
 
     override suspend fun resetPassword(
         token: String,
@@ -61,5 +55,4 @@ internal class DefaultAuthRepository(
         passwordConfirmation: String
     ): Either<DomainError, Unit> = authApi
         .resetPassword(token, password, passwordConfirmation)
-        .mapLeft(NetworkError::toDomain)
 }
