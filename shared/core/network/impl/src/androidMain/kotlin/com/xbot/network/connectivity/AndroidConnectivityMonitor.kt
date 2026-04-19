@@ -119,15 +119,37 @@ internal class AndroidConnectivityMonitor(
 
     // Seed the state before the callback fires at least once. The callback will then
     // take over and the set becomes the source of truth.
-    private fun readInitialState(): ConnectivityState {
+    //
+    // NOTE: this runs during property initialization — *before* the init block's
+    // try/catch. A thrown SecurityException (missing ACCESS_NETWORK_STATE) or a
+    // RuntimeException from the system service would therefore crash class
+    // construction, making the app unusable before our init block's logging can
+    // diagnose the cause. Catch both here and fall back to `Available` — treating
+    // "we can't tell" as "assume online" is the less-bad UX than freezing every
+    // `isOnline()` check to `false` (which would make the app appear permanently
+    // offline). The root cause is still surfaced via Kermit for troubleshooting.
+    private fun readInitialState(): ConnectivityState = try {
         val active = connectivityManager.activeNetwork ?: return ConnectivityState.Unavailable
         val capabilities = connectivityManager.getNetworkCapabilities(active)
             ?: return ConnectivityState.Unavailable
-        return if (capabilities.isValidated()) {
+        if (capabilities.isValidated()) {
             ConnectivityState.Available
         } else {
             ConnectivityState.Unavailable
         }
+    } catch (e: SecurityException) {
+        Logger.e(e) {
+            "Failed to read initial connectivity state — ACCESS_NETWORK_STATE permission " +
+                "likely missing from the manifest. Falling back to 'Available' so requests " +
+                "are not universally short-circuited as offline."
+        }
+        ConnectivityState.Available
+    } catch (e: RuntimeException) {
+        Logger.e(e) {
+            "Unexpected failure reading initial connectivity state — " +
+                "falling back to 'Available'."
+        }
+        ConnectivityState.Available
     }
 
     private fun NetworkCapabilities.isValidated(): Boolean =
