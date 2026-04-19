@@ -15,10 +15,15 @@ import org.koin.core.annotation.Singleton
  *
  * Combines three resilience layers:
  *
- * 1. **Connectivity pre-flight** — if [connectivity] reports offline, we short-circuit
- *    with [DomainError.NoConnection] before touching the wire. Different UX copy and
- *    recovery path than [DomainError.ConnectionError] (which comes from a failed
- *    socket).
+ * 1. **Per-attempt connectivity gate** — every retry tick checks
+ *    [ConnectivityMonitor.isOnline] first; if offline we short-circuit with
+ *    [DomainError.NoConnection] before touching the wire. Doing the check per-attempt
+ *    (not just once before the loop) means a connection dropped mid-backoff surfaces
+ *    as NoConnection on the very next tick, rather than burning the remaining retry
+ *    budget on doomed [DomainError.ConnectionError]s. NoConnection is non-retryable,
+ *    so the Schedule exits cleanly on first offline tick. Distinct from
+ *    [DomainError.ConnectionError] (which comes from a socket that actually attempted
+ *    a connection) — different UX copy, different recovery path.
  * 2. **Per-attempt timeout** — bounded by the [io.ktor.client.plugins.HttpTimeout]
  *    plugin installed on the underlying [client]; hung sockets surface as
  *    [DomainError.Timeout].
@@ -40,8 +45,11 @@ internal class ResilientHttpRequester(
      */
     suspend inline fun <reified T> request(
         noinline block: suspend HttpClient.() -> HttpResponse,
-    ): Either<DomainError, T> {
-        if (!connectivity.isOnline()) return DomainError.NoConnection.left()
-        return schedule.retryEither { client.singleAttempt<T>(block) }
+    ): Either<DomainError, T> = schedule.retryEither {
+        if (!connectivity.isOnline()) {
+            DomainError.NoConnection.left()
+        } else {
+            client.singleAttempt<T>(block)
+        }
     }
 }
