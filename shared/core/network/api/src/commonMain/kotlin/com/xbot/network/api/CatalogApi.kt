@@ -1,7 +1,7 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.network.client.NetworkError
+import com.xbot.domain.models.DomainError
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.enums.AgeRatingDto
@@ -26,13 +26,13 @@ interface CatalogApi {
         ageRatings: List<AgeRatingDto>? = null,
         publishStatuses: List<PublishStatusDto>? = null,
         productionStatuses: List<ProductionStatusDto>? = null,
-    ): Either<NetworkError, PaginatedResponse<ReleaseDto>>
-    suspend fun getCatalogAgeRatings(): Either<NetworkError, List<AgeRatingDto>>
-    suspend fun getCatalogGenres(): Either<NetworkError, List<GenreDto>>
-    suspend fun getCatalogProductionStatuses(): Either<NetworkError, List<ProductionStatusDto>>
-    suspend fun getCatalogPublishStatuses(): Either<NetworkError, List<PublishStatusDto>>
-    suspend fun getCatalogSeasons(): Either<NetworkError, List<SeasonDto>>
-    suspend fun getCatalogSortingTypes(): Either<NetworkError, List<SortingTypeDto>>
-    suspend fun getCatalogReleaseTypes(): Either<NetworkError, List<ReleaseTypeDto>>
-    suspend fun getCatalogYears(): Either<NetworkError, List<Int>>
+    ): Either<DomainError, PaginatedResponse<ReleaseDto>>
+    suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRatingDto>>
+    suspend fun getCatalogGenres(): Either<DomainError, List<GenreDto>>
+    suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatusDto>>
+    suspend fun getCatalogPublishStatuses(): Either<DomainError, List<PublishStatusDto>>
+    suspend fun getCatalogSeasons(): Either<DomainError, List<SeasonDto>>
+    suspend fun getCatalogSortingTypes(): Either<DomainError, List<SortingTypeDto>>
+    suspend fun getCatalogReleaseTypes(): Either<DomainError, List<ReleaseTypeDto>>
+    suspend fun getCatalogYears(): Either<DomainError, List<Int>>
 }
