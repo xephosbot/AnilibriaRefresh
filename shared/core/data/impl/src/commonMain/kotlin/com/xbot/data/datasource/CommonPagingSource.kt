@@ -25,10 +25,24 @@ import kotlin.math.max
  * a nullable field, bad enum parse, etc.) would otherwise escape this `fold`. Wrap
  * the body so non-cancellation throws become `LoadResult.Error`, and rethrow
  * `CancellationException` explicitly so structured concurrency still works.
+ *
+ * **Page-size coupling contract:** [pageSize] MUST equal the `PagingConfig.pageSize`
+ * of the enclosing [androidx.paging.Pager]. The key arithmetic relies on the
+ * invariant that `loadSize` is always a multiple of [pageSize] — if the `Pager`
+ * uses a different pageSize, `itemsBefore` (`pageIndex * pageSize`) and the server
+ * offset `(page-1) * loadSize` drift apart and you get gaps or duplicate items.
+ * The `init` block asserts `pageSize > 0`; call-site alignment is documented, not
+ * statically enforceable.
  */
 internal class CommonPagingSource<T : Any>(
+    private val pageSize: Int = DEFAULT_PAGE_SIZE,
     private val loadPage: suspend (page: Int, limit: Int) -> Either<DomainError, PaginatedResponse<T>>,
 ) : PagingSource<Int, T>() {
+
+    init {
+        require(pageSize > 0) { "pageSize must be > 0, got $pageSize" }
+    }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val pageIndex = params.key ?: FIRST_PAGE_INDEX
         val loadSize = params.loadSize
@@ -38,18 +52,17 @@ internal class CommonPagingSource<T : Any>(
                 ifRight = { page ->
                     val newCount = page.items.size
                     val total = page.total
-                    val itemsBefore = pageIndex * NETWORK_PAGE_SIZE
+                    val itemsBefore = pageIndex * pageSize
                     val itemsAfter = max(total - (itemsBefore + newCount), 0)
 
                     val prevKey = if (pageIndex == FIRST_PAGE_INDEX) null else pageIndex - 1
-                    // `loadSize / NETWORK_PAGE_SIZE` goes to 0 if the Pager is configured
-                    // with a pageSize smaller than NETWORK_PAGE_SIZE — then nextKey would
-                    // stay equal to pageIndex and the source would loop forever requesting
-                    // the same page. `coerceAtLeast(1)` guarantees forward progress.
+                    // Guard against a Pager misconfigured with `loadSize < pageSize`
+                    // (would divide to 0 and loop on the same page). With the contract
+                    // honoured this just evaluates to `loadSize / pageSize`.
                     val nextKey = if (itemsAfter == 0) {
                         null
                     } else {
-                        pageIndex + (loadSize / NETWORK_PAGE_SIZE).coerceAtLeast(1)
+                        pageIndex + (loadSize / pageSize).coerceAtLeast(1)
                     }
 
                     LoadResult.Page(
@@ -70,8 +83,7 @@ internal class CommonPagingSource<T : Any>(
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
-        val pageIndex = anchorPosition / NETWORK_PAGE_SIZE
-        return pageIndex
+        return anchorPosition / pageSize
     }
 
     override val jumpingSupported: Boolean = true
@@ -82,7 +94,8 @@ internal class CommonPagingSource<T : Any>(
     )
 
     companion object {
-        const val NETWORK_PAGE_SIZE = 20
+        /** Default page size used when callers don't override. Matches the API's canonical page window. */
+        const val DEFAULT_PAGE_SIZE = 20
         private const val FIRST_PAGE_INDEX = 0
     }
 }
