@@ -1,9 +1,6 @@
 package com.xbot.network.client
 
 import arrow.resilience.Schedule
-import arrow.resilience.and
-import arrow.resilience.doWhile
-import arrow.resilience.jittered
 import com.xbot.domain.models.DomainError
 import kotlin.time.Duration.Companion.milliseconds
 import org.koin.core.annotation.Singleton

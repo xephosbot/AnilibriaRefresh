@@ -39,7 +39,7 @@ internal class ResilientHttpRequester(
      * is expressed as [Either.Left] of the matching [DomainError] variant. No throw.
      */
     suspend inline fun <reified T> request(
-        noinline block: HttpClient.() -> HttpResponse,
+        noinline block: suspend HttpClient.() -> HttpResponse,
     ): Either<DomainError, T> {
         if (!connectivity.isOnline()) return DomainError.NoConnection.left()
         return schedule.retryEither { client.singleAttempt<T>(block) }

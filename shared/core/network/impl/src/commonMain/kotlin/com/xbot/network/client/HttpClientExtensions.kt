@@ -32,7 +32,7 @@ expect class UnknownHostException : Exception
  * correctly through the retry loop above.
  */
 internal suspend inline fun <reified T> HttpClient.singleAttempt(
-    noinline block: HttpClient.() -> HttpResponse,
+    noinline block: suspend HttpClient.() -> HttpResponse,
 ): Either<DomainError, T> = try {
     val response = block()
     response.body<T>().right()
