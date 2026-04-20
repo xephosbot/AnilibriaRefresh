@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.skie)
+    alias(libs.plugins.kotzilla)
 }
 
 kotlin {
@@ -56,4 +57,8 @@ kotlin {
         api(libs.lifecycle.viewmodel.savedstate)
         api(libs.koin.core)
     }
+}
+
+kotzilla {
+    versionName = "1.0.0"
 }

@@ -8,6 +8,7 @@ import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
 import com.xbot.title.di.titleFeatureModule
+import io.kotzilla.generated.monitoring
 import org.koin.core.KoinApplication
 
 fun initKoin(
@@ -15,6 +16,7 @@ fun initKoin(
 ) {
     startKoin {
         config?.invoke(this)
+        monitoring
         modules(
             appModule,
             favoriteFeatureModule,

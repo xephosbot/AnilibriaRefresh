@@ -4,6 +4,7 @@ import Shared
 @main
 struct iosApp: App {
     init() {
+        doInitKotzillaConfig()
         StartKoinKt.startKoin()
     }
 

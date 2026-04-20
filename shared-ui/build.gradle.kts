@@ -22,7 +22,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        implementation(projects.shared.di)
+        implementation(projects.shared)
         implementation(projects.shared.core.network.api)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.resource)
