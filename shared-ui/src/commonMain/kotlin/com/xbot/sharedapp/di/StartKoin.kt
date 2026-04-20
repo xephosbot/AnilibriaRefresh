@@ -16,7 +16,7 @@ fun initKoin(
 ) {
     startKoin {
         config?.invoke(this)
-        monitoring
+        monitoring()
         modules(
             appModule,
             favoriteFeatureModule,
