@@ -33,3 +33,5 @@ android-app/keystore.properties
 
 # Ignore Claude Code directory
 .claude
+
+/shared/kotzilla.json

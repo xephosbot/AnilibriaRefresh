@@ -1,6 +1,7 @@
 package com.xbot.sharedapp.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -66,29 +67,32 @@ internal fun AnilibriaNavGraph(
     CompositionLocalProvider(
         LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1)
     ) {
-        NavDisplay(
-            backStack = navigator.backStack,
-            modifier = modifier.fillMaxSize(),
-            onBack = { navigator.navigateBack() },
-            transitionSpec = {
-                materialFadeThroughIn() togetherWith materialFadeThroughOut()
-            },
-            popTransitionSpec = {
-                materialFadeThroughIn() togetherWith materialFadeThroughOut()
-            },
-            predictivePopTransitionSpec = {
-                materialFadeThroughIn() togetherWith materialFadeThroughOut()
-            },
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberSharedViewModelStoreNavEntryDecorator(),
-            ),
-            sceneStrategies = listOf(
-                supportingPaneSceneStrategy,
-                listDetailSceneStrategy,
-                dialogStrategy
-            ),
-            entryProvider = koinEntryProvider()
-        )
+        SharedTransitionLayout {
+            NavDisplay(
+                backStack = navigator.backStack,
+                modifier = modifier.fillMaxSize(),
+                onBack = { navigator.navigateBack() },
+                sharedTransitionScope = this,
+                transitionSpec = {
+                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
+                },
+                popTransitionSpec = {
+                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
+                },
+                predictivePopTransitionSpec = {
+                    materialFadeThroughIn() togetherWith materialFadeThroughOut()
+                },
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberSharedViewModelStoreNavEntryDecorator(),
+                ),
+                sceneStrategies = listOf(
+                    supportingPaneSceneStrategy,
+                    listDetailSceneStrategy,
+                    dialogStrategy
+                ),
+                entryProvider = koinEntryProvider()
+            )
+        }
     }
 }
