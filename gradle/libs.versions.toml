@@ -47,7 +47,7 @@ material-motion-compose = "2.0.1"
 materialKolor = "5.0.0-alpha07"
 shimmer = "1.5.0-beta02"
 sticky-headers = "0.1.0-alpha04"
-videoplayer = "0.9.0"
+videoplayer = "0.10.0"
 orbit-mvi = "11.0.0"
 
 [libraries]
