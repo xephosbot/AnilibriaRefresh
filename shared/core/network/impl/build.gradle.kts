@@ -22,6 +22,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.shared.core.network.api)
+        implementation(projects.shared.common)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.encoding)
@@ -39,6 +40,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.androidx.annotation)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.brotli.dec)
         }
