@@ -36,7 +36,7 @@ kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.11.0"
 
 # Libraries
-ktor = "3.4.2"
+ktor = "3.4.3"
 brotli = "0.1.2"
 koin = "4.2.1"
 koin-plugin = "1.0.0-RC1"
