@@ -8,20 +8,22 @@ import com.xbot.common.map
 import com.xbot.domain.models.Episode
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
+@KoinViewModel
 class PlayerViewModel(
     private val releaseId: String,
     private val initialEpisodeOrdinal: Int,
     private val getReleaseUseCase: GetReleaseUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
 
     override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
         initialState = PlayerScreenState(),
-        savedStateHandle = savedStateHandle,
+        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = PlayerScreenState.serializer(),
     ) {
         loadTitleDetails()

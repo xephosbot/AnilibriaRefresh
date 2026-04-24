@@ -11,10 +11,12 @@ import com.xbot.domain.usecase.UpdateExpressiveColorUseCase
 import com.xbot.domain.usecase.UpdatePureBlackUseCase
 import com.xbot.domain.usecase.UpdateThemeOptionUseCase
 import kotlinx.coroutines.flow.combine
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
+@KoinViewModel
 class AppearanceViewModel(
     private val getThemeOptionUseCase: GetThemeOptionUseCase,
     private val getDynamicThemeUseCase: GetDynamicThemeUseCase,

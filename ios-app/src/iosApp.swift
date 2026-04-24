@@ -4,8 +4,7 @@ import Shared
 @main
 struct iosApp: App {
     init() {
-        doInitKotzillaConfig()
-        StartKoinKt.startKoin()
+        KoinKt.initKoin()
     }
 
     var body: some Scene {

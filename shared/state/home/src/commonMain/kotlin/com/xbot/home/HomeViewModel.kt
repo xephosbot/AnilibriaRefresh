@@ -20,12 +20,14 @@ import com.xbot.domain.usecase.GetScheduleForTodayUseCase
 import com.xbot.domain.usecase.GetScheduleWeekUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
 import org.orbitmvi.orbit.viewmodel.container
 
 @OptIn(OrbitExperimental::class)
+@KoinViewModel
 class HomeViewModel(
     getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getAuthState: GetAuthStateUseCase,
@@ -36,12 +38,12 @@ class HomeViewModel(
     private val getRecommendedGenres: GetRecommendedGenresUseCase,
     private val getScheduleForToday: GetScheduleForTodayUseCase,
     private val getScheduleWeek: GetScheduleWeekUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
     override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
         initialState = HomeScreenState(),
-        savedStateHandle = savedStateHandle,
+        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = HomeScreenState.serializer(),
     ) {
         loadBestReleasesInCurrentSeason()

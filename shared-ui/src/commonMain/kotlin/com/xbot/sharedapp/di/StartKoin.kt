@@ -1,6 +1,5 @@
 package com.xbot.sharedapp.di
 
-import com.xbot.di.startKoin
 import com.xbot.favorite.di.favoriteFeatureModule
 import com.xbot.home.di.homeFeatureModule
 import com.xbot.login.di.loginFeatureModule
@@ -8,24 +7,27 @@ import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
 import com.xbot.title.di.titleFeatureModule
-import io.kotzilla.generated.monitoring
-import org.koin.core.KoinApplication
+import org.koin.dsl.KoinConfiguration
+import org.koin.dsl.includes
+import org.koin.dsl.koinConfiguration
+import org.koin.plugin.module.dsl.koinConfiguration
+import com.xbot.shared.di.initKoin as initCoreKoin
 
 fun initKoin(
-    config: (KoinApplication.() -> Unit)? = null
+    config: KoinConfiguration? = null
 ) {
-    startKoin {
-        config?.invoke(this)
-        monitoring()
-        modules(
-            appModule,
-            favoriteFeatureModule,
-            homeFeatureModule,
-            playerFeatureModule,
-            preferenceFeatureModule,
-            searchFeatureModule,
-            titleFeatureModule,
-            loginFeatureModule
-        )
-    }
+    initCoreKoin(
+        config = koinConfiguration {
+            includes(config, koinConfiguration<AnilibriaApp>())
+            modules(
+                favoriteFeatureModule,
+                homeFeatureModule,
+                playerFeatureModule,
+                preferenceFeatureModule,
+                searchFeatureModule,
+                titleFeatureModule,
+                loginFeatureModule
+            )
+        }
+    )
 }

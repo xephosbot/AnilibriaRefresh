@@ -6,20 +6,22 @@ import com.xbot.domain.models.AuthState
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.LoginUseCase
 import com.xbot.domain.usecase.LogoutUseCase
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
+@KoinViewModel
 class LoginViewModel(
     private val getAuthState: GetAuthStateUseCase,
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<LoginScreenState, LoginScreenSideEffect> {
 
     override val container: Container<LoginScreenState, LoginScreenSideEffect> = container(
         initialState = LoginScreenState(),
-        savedStateHandle = savedStateHandle,
+        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = LoginScreenState.serializer(),
     ) {
         startObservingAuth()

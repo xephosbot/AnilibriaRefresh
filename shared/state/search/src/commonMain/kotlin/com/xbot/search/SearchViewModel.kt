@@ -33,12 +33,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
 import org.orbitmvi.orbit.viewmodel.container
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@KoinViewModel
 class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
     private val getCatalogAgeRatings: GetCatalogAgeRatingsUseCase,
@@ -49,12 +51,12 @@ class SearchViewModel(
     private val getCatalogSeasons: GetCatalogSeasonsUseCase,
     private val getCatalogSortingTypes: GetCatalogSortingTypesUseCase,
     private val getCatalogYears: GetCatalogYearsUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<SearchScreenState, SearchScreenSideEffect> {
 
     override val container: Container<SearchScreenState, SearchScreenSideEffect> = container(
         initialState = SearchScreenState(),
-        savedStateHandle = savedStateHandle,
+        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = SearchScreenState.serializer()
     ) {
         loadGenres()

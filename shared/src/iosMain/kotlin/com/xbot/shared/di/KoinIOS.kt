@@ -1,4 +1,4 @@
-package com.xbot.di
+package com.xbot.shared.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore

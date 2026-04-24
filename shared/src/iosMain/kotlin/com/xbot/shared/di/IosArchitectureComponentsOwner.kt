@@ -1,4 +1,4 @@
-package com.xbot.di
+package com.xbot.shared.di
 
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.Lifecycle
@@ -19,20 +19,6 @@ import androidx.savedstate.SavedStateRegistryOwner
 
 /**
  * A full-featured architecture components owner for iOS/Swift usage.
- *
- * Implements [ViewModelStoreOwner], [SavedStateRegistryOwner], [LifecycleOwner],
- * and [HasDefaultViewModelProviderFactory] so that Koin's `defaultExtras` picks up
- * the [SAVED_STATE_REGISTRY_OWNER_KEY] required by `SavedStateHandle`-dependent ViewModels.
- *
- * ## Lifecycle mapping (JetBrains docs)
- *
- * | iOS event                              | Call       | State transition       |
- * |----------------------------------------|------------|------------------------|
- * | `viewWillAppear` / `willEnterForeground` | [onStart]  | CREATED → STARTED      |
- * | `didBecomeActive`                      | [onResume] | STARTED → RESUMED      |
- * | `willResignActive`                     | [onStop]   | RESUMED → STARTED      |
- * | `viewDidDisappear` / `didEnterBackground` | [onStop] | STARTED → CREATED      |
- * | `viewControllerDidLeaveWindowHierarchy` | [clear]   | CREATED → DESTROYED    |
  */
 class IosArchitectureComponentsOwner :
     LifecycleOwner,
@@ -64,32 +50,20 @@ class IosArchitectureComponentsOwner :
         lifecycle.currentState = Lifecycle.State.CREATED
     }
 
-    /** CREATED → STARTED. Call on `viewWillAppear` / `willEnterForeground`. */
     fun onStart() {
         lifecycle.currentState = Lifecycle.State.STARTED
     }
 
-    /** STARTED → RESUMED. Call on `didBecomeActive`. */
     fun onResume() {
         lifecycle.currentState = Lifecycle.State.RESUMED
     }
 
-    /**
-     * Moves lifecycle down to [targetState].
-     * Call on `willResignActive` (→ STARTED) or `viewDidDisappear` / `didEnterBackground` (→ CREATED).
-     *
-     * [LifecycleRegistry] dispatches intermediate events automatically,
-     * e.g. RESUMED → CREATED dispatches ON_PAUSE then ON_STOP.
-     */
     fun onStop(targetState: Lifecycle.State = Lifecycle.State.CREATED) {
         lifecycle.currentState = targetState
     }
 
-    /** CREATED → DESTROYED. Clears the [ViewModelStore]. */
     fun clear() {
         lifecycle.currentState = Lifecycle.State.DESTROYED
         viewModelStore.clear()
     }
 }
-
-

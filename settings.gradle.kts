@@ -38,7 +38,6 @@ plugins {
 include(":android-app")
 include(":jvm-app")
 include(":shared")
-include(":shared:di")
 include(":shared:common")
 include(":shared:core:network:api")
 include(":shared:core:network:impl")

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.skie)
     alias(libs.plugins.kotzilla)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -21,7 +22,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-            export(projects.shared.di)
             export(projects.shared.common)
             export(projects.shared.core.domain.api)
             export(projects.shared.state.home)
@@ -33,6 +33,7 @@ kotlin {
             export(libs.lifecycle.runtime)
             export(libs.lifecycle.viewmodel)
             export(libs.lifecycle.viewmodel.savedstate)
+            export(libs.androidx.savedstate)
             export(libs.koin.core)
         }
     }
@@ -43,9 +44,11 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        api(projects.shared.di)
         api(projects.shared.common)
         api(projects.shared.core.domain.api)
+        api(projects.shared.core.network.impl)
+        api(projects.shared.core.domain.impl)
+        api(projects.shared.core.data.impl)
         api(projects.shared.state.home)
         api(projects.shared.state.login)
         api(projects.shared.state.player)
@@ -55,10 +58,19 @@ kotlin {
         api(libs.lifecycle.runtime)
         api(libs.lifecycle.viewmodel)
         api(libs.lifecycle.viewmodel.savedstate)
+        api(libs.androidx.savedstate)
         api(libs.koin.core)
+        api(libs.koin.core.viewmodel)
+        api(libs.koin.annotations)
+        api(libs.kermit)
+        api(libs.kermit.koin)
     }
 }
 
 kotzilla {
     versionName = "1.0.0"
+}
+
+koinCompiler {
+    compileSafety = false
 }

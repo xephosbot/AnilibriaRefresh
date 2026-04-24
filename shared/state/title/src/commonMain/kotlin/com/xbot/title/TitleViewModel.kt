@@ -7,10 +7,12 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetFranchiseReleasesUseCase
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
+import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
+@KoinViewModel
 class TitleViewModel(
     private val aliasOrId: String,
     private val initialRelease: Release? = null,
