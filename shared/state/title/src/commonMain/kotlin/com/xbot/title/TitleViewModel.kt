@@ -8,14 +8,15 @@ import com.xbot.domain.usecase.GetFranchiseReleasesUseCase
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 @KoinViewModel
 class TitleViewModel(
-    private val aliasOrId: String,
-    private val initialRelease: Release? = null,
+    @Provided private val aliasOrId: String,
+    @Provided private val initialRelease: Release? = null,
     private val getRelease: GetReleaseUseCase,
     private val getFranchiseReleases: GetFranchiseReleasesUseCase,
 ) : ViewModel(), ContainerHost<TitleScreenState, TitleScreenSideEffect> {

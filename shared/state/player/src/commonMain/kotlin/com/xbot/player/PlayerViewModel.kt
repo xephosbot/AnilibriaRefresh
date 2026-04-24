@@ -9,14 +9,15 @@ import com.xbot.domain.models.Episode
 import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 @KoinViewModel
 class PlayerViewModel(
-    private val releaseId: String,
-    private val initialEpisodeOrdinal: Int,
+    @Provided private val releaseId: String,
+    @Provided private val initialEpisodeOrdinal: Int,
     private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
