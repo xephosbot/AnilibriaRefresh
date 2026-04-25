@@ -1,6 +1,7 @@
 package com.xbot.sharedapp.di
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.xbot.common.serialization.PolymorphicSerializerConfig
 import com.xbot.navigation.NavKey
 import kotlinx.serialization.modules.SerializersModule
@@ -23,5 +24,5 @@ private fun Scope.getNavSerializersModule(): SerializersModule {
 @OptIn(KoinInternalApi::class)
 @Composable
 internal fun koinNavSerializersModule(scope : Scope = LocalKoinScopeContext.current.getValue()): SerializersModule {
-    return scope.getNavSerializersModule()
+    return remember(scope) { scope.getNavSerializersModule() }
 }
