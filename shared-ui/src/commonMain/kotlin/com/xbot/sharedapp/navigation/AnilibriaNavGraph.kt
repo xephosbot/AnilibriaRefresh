@@ -5,7 +5,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.AdaptStrategy
 import androidx.compose.material3.adaptive.layout.DockedEdge
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldDefaults
@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
+import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
 import com.xbot.navigation.rememberSharedViewModelStoreNavEntryDecorator
-import com.xbot.designsystem.utils.LocalIsSinglePane
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 import soup.compose.material.motion.animation.materialFadeThroughIn
@@ -41,7 +41,7 @@ internal fun AnilibriaNavGraph(
     navigator: Navigator,
 ) {
     val dragToResizeState = rememberDragToResizeState(dockedEdge = DockedEdge.Bottom)
-    val scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
+    val scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
         .copy(
             horizontalPartitionSpacerSize = 0.dp,
             verticalPartitionSpacerSize = 0.dp
