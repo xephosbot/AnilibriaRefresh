@@ -1,6 +1,5 @@
 package com.xbot.data.mapper
 
-import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
@@ -12,7 +11,6 @@ import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.ScheduleType
 import com.xbot.domain.models.User
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.network.Constants
 import com.xbot.network.models.dto.EpisodeDto
 import com.xbot.network.models.dto.FranchiseDto
 import com.xbot.network.models.dto.GenreDto
@@ -39,8 +37,8 @@ internal fun GenreDto.toDomain() = Genre(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     }
 )
@@ -63,8 +61,8 @@ internal fun ReleaseDto.toDomain() = Release(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     }
 )
@@ -98,8 +96,8 @@ internal fun EpisodeDto.toDomain() = Episode(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     },
     hls480 = hls480,
@@ -123,8 +121,8 @@ internal fun ReleaseMemberDto.toDomain() = ReleaseMember(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     }
 )
@@ -142,8 +140,8 @@ internal fun ProfileDto.toDomain() = User(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     },
     isBanned = isBanned,
@@ -188,8 +186,8 @@ internal fun FranchiseDto.toDomain() = Franchise(
         if (src == null) return@let null
 
         Poster(
-            src = src.let(Constants::withImageUrl),
-            thumbnail = thumbnail?.let(Constants::withImageUrl),
+            src = src,
+            thumbnail = thumbnail,
         )
     },
     franchiseReleases = franchiseReleases?.map { it.release.toDomain() },

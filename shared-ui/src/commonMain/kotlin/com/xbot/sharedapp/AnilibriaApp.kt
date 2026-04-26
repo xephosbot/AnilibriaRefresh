@@ -14,11 +14,10 @@ import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
-import coil3.SingletonImageLoader
 import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.DeDupeConcurrentRequestStrategy
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
@@ -29,7 +28,8 @@ import com.xbot.localization.ProvideAppLocale
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.TopLevelRoutes
 import com.xbot.navigation.rememberNavigator
-import com.xbot.sharedapp.coil.ImageUrlInterceptor
+import com.xbot.network.utils.ImageUrlProvider
+import com.xbot.sharedapp.coil.ImageUrlMapper
 import com.xbot.sharedapp.di.koinNavSerializersModule
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import io.ktor.client.HttpClient
@@ -43,20 +43,19 @@ internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
     val httpClient = koinInject<HttpClient>()
-    remember(httpClient) {
-        SingletonImageLoader.setSafe { context ->
-            ImageLoader.Builder(context)
-                .components {
-                    add(
-                        KtorNetworkFetcherFactory(
-                            httpClient = httpClient,
-                            concurrentRequestStrategy = DeDupeConcurrentRequestStrategy(),
-                        )
+    val imageUrlProvider = koinInject<ImageUrlProvider>()
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .components {
+                add(
+                    KtorNetworkFetcherFactory(
+                        httpClient = httpClient,
+                        concurrentRequestStrategy = DeDupeConcurrentRequestStrategy(),
                     )
-                    add(ImageUrlInterceptor())
-                }
-                .build()
-        }
+                )
+                add(ImageUrlMapper(imageUrlProvider))
+            }
+            .build()
     }
 
     val appThemeState by viewModel.state.collectAsStateWithLifecycle()
