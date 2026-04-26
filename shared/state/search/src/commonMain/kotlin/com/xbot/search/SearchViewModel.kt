@@ -27,19 +27,21 @@ import com.xbot.domain.usecase.GetCatalogYearsUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
 import org.orbitmvi.orbit.viewmodel.container
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, OrbitExperimental::class)
 @KoinViewModel
 class SearchViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
@@ -59,14 +61,16 @@ class SearchViewModel(
         savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = SearchScreenState.serializer()
     ) {
-        loadGenres()
-        loadReleaseTypes()
-        loadPublishStatuses()
-        loadProductionStatuses()
-        loadSortingTypes()
-        loadSeasons()
-        loadAgeRatings()
-        loadYears()
+        coroutineScope {
+            launch { loadGenres() }
+            launch { loadReleaseTypes() }
+            launch { loadPublishStatuses() }
+            launch { loadProductionStatuses() }
+            launch { loadSortingTypes() }
+            launch { loadSeasons() }
+            launch { loadAgeRatings() }
+            launch { loadYears() }
+        }
     }
 
     // TODO: Move inside SearchScreenState once Paging 3.5.0 stable ships asState()
@@ -83,88 +87,80 @@ class SearchViewModel(
         ).flow
     }.cachedIn(viewModelScope)
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadGenres(): Job = intent {
+    private suspend fun loadGenres() = subIntent {
         asyncLoad(
             request = { getCatalogGenres() },
-            onError = { error -> showErrorMessage(error) { loadGenres() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(genres = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadReleaseTypes(): Job = intent {
+    private suspend fun loadReleaseTypes() = subIntent {
         asyncLoad(
             request = { getCatalogReleaseTypes() },
-            onError = { error -> showErrorMessage(error) { loadReleaseTypes() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releaseTypes = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadPublishStatuses(): Job = intent {
+    private suspend fun loadPublishStatuses() = subIntent {
         asyncLoad(
             request = { getCatalogPublishStatuses() },
-            onError = { error -> showErrorMessage(error) { loadPublishStatuses() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(publishStatuses = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadProductionStatuses(): Job = intent {
+    private suspend fun loadProductionStatuses() = subIntent {
         asyncLoad(
             request = { getCatalogProductionStatuses() },
-            onError = { error -> showErrorMessage(error) { loadProductionStatuses() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(productionStatuses = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadSortingTypes(): Job = intent {
+    private suspend fun loadSortingTypes() = subIntent {
         asyncLoad(
             request = { getCatalogSortingTypes() },
-            onError = { error -> showErrorMessage(error) { loadSortingTypes() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(sortingTypes = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadSeasons(): Job = intent {
+    private suspend fun loadSeasons() = subIntent {
         asyncLoad(
             request = { getCatalogSeasons() },
-            onError = { error -> showErrorMessage(error) { loadSeasons() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(seasons = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadAgeRatings(): Job = intent {
+    private suspend fun loadAgeRatings() = subIntent {
         asyncLoad(
             request = { getCatalogAgeRatings() },
-            onError = { error -> showErrorMessage(error) { loadAgeRatings() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(ageRatings = it)
             }
         )
     }
 
-    @OptIn(OrbitExperimental::class)
-    private fun loadYears(): Job = intent {
+    private suspend fun loadYears() = subIntent {
         asyncLoad(
             request = { getCatalogYears() },
-            onError = { error -> showErrorMessage(error) { loadYears() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(
                     years = it,
@@ -230,15 +226,17 @@ class SearchViewModel(
         postSideEffect(SearchScreenSideEffect.ShowErrorMessage(error, onRetry))
     }
 
-    private fun refresh() {
-        loadGenres()
-        loadReleaseTypes()
-        loadPublishStatuses()
-        loadProductionStatuses()
-        loadSortingTypes()
-        loadSeasons()
-        loadAgeRatings()
-        loadYears()
+    private fun refresh(): Job = intent {
+        coroutineScope {
+            launch { loadGenres() }
+            launch { loadReleaseTypes() }
+            launch { loadPublishStatuses() }
+            launch { loadProductionStatuses() }
+            launch { loadSortingTypes() }
+            launch { loadSeasons() }
+            launch { loadAgeRatings() }
+            launch { loadYears() }
+        }
     }
 
     private fun <T> Set<T>.toggle(item: T) = if (item in this) this - item else this + item

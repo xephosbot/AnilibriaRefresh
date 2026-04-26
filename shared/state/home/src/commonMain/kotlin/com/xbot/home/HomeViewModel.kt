@@ -19,7 +19,9 @@ import com.xbot.domain.usecase.GetRecommendedReleasesUseCase
 import com.xbot.domain.usecase.GetScheduleForTodayUseCase
 import com.xbot.domain.usecase.GetScheduleWeekUseCase
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -46,100 +48,97 @@ class HomeViewModel(
         savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = HomeScreenState.serializer(),
     ) {
-        loadBestReleasesInCurrentSeason()
-        loadBestReleasesForAllTime()
-        loadRecommendedFranchises()
-        loadRecommendedReleases()
-        loadRecommendedGenres()
-        loadScheduleForToday()
-        loadScheduleWeek()
-        loadAuthState()
+        coroutineScope {
+            launch { loadBestReleasesInCurrentSeason() }
+            launch { loadBestReleasesForAllTime() }
+            launch { loadRecommendedFranchises() }
+            launch { loadRecommendedReleases() }
+            launch { loadRecommendedGenres() }
+            launch { loadScheduleForToday() }
+            launch { loadScheduleWeek() }
+            launch { loadAuthState() }
+        }
     }
 
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 
-    private var authStateJob: Job? = null
-
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
-    private fun loadBestReleasesInCurrentSeason(): Job = intent {
+    private suspend fun loadBestReleasesInCurrentSeason() = subIntent {
         asyncLoad(
             request = { getBestReleasesInCurrentSeason() },
-            onError = { error -> showErrorMessage(error) { loadBestReleasesInCurrentSeason() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestNow = it))
             }
         )
     }
 
-    private fun loadBestReleasesForAllTime(): Job = intent {
+    private suspend fun loadBestReleasesForAllTime() = subIntent {
         asyncLoad(
             request = { getBestReleasesForAllTime() },
-            onError = { error -> showErrorMessage(error) { loadBestReleasesForAllTime() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it))
             }
         )
     }
 
-    private fun loadRecommendedFranchises(): Job = intent {
+    private suspend fun loadRecommendedFranchises() = subIntent {
         asyncLoad(
             request = { getRecommendedFranchisesUseCase() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedFranchises() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it))
             }
         )
     }
 
-    private fun loadRecommendedReleases(): Job = intent {
+    private suspend fun loadRecommendedReleases() = subIntent {
         asyncLoad(
             request = { getRecommendedReleases() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedReleases() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it))
             }
         )
     }
 
-    private fun loadRecommendedGenres(): Job = intent {
+    private suspend fun loadRecommendedGenres() = subIntent {
         asyncLoad(
             request = { getRecommendedGenres() },
-            onError = { error -> showErrorMessage(error) { loadRecommendedGenres() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(genres = it))
             }
         )
     }
 
-    private fun loadScheduleForToday(): Job = intent {
+    private suspend fun loadScheduleForToday() = subIntent {
         asyncLoad(
             request = { getScheduleForToday() },
-            onError = { error -> showErrorMessage(error) { loadScheduleForToday() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it))
             }
         )
     }
 
-    private fun loadScheduleWeek(): Job = intent {
+    private suspend fun loadScheduleWeek() = subIntent {
         asyncLoad(
             request = { getScheduleWeek() },
-            onError = { error -> showErrorMessage(error) { loadScheduleWeek() } },
+            onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(scheduleWeek = state.scheduleWeek.copy(days = it))
             }
         )
     }
 
-    private fun loadAuthState() {
-        authStateJob?.cancel()
-        authStateJob = intent {
-            getAuthState().collect { authState ->
-                reduce {
-                    state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
-                }
+    private suspend fun loadAuthState() = subIntent {
+        getAuthState().collect { authState ->
+            reduce {
+                state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
             }
         }
     }
@@ -152,15 +151,17 @@ class HomeViewModel(
         }
     }
 
-    private fun refresh() {
-        loadBestReleasesInCurrentSeason()
-        loadBestReleasesForAllTime()
-        loadRecommendedFranchises()
-        loadRecommendedReleases()
-        loadRecommendedGenres()
-        loadScheduleForToday()
-        loadScheduleWeek()
-        loadAuthState()
+    private fun refresh(): Job = intent {
+        coroutineScope {
+            launch { loadBestReleasesInCurrentSeason() }
+            launch { loadBestReleasesForAllTime() }
+            launch { loadRecommendedFranchises() }
+            launch { loadRecommendedReleases() }
+            launch { loadRecommendedGenres() }
+            launch { loadScheduleForToday() }
+            launch { loadScheduleWeek() }
+            launch { loadAuthState() }
+        }
     }
 
     private fun updateBestType(bestType: BestType): Job = intent {
