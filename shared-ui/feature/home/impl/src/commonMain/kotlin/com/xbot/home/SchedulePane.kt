@@ -47,7 +47,7 @@ import com.xbot.designsystem.theme.asPaddingValues
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.fixtures.scheduleMocks
+import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.models.Release
 import com.xbot.localization.DayOfWeekStyle
 import com.xbot.localization.UiText
@@ -256,7 +256,7 @@ private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenS
                             Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
                         (0..6).associate { offset ->
                             val date = baseDate.plus(offset, DateTimeUnit.DAY)
-                            date to scheduleMocks
+                            date to ScheduleFixtures.all
                         }
                     }
                 )

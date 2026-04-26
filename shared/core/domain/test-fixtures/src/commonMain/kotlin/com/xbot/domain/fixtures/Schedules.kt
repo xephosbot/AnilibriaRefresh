@@ -1,19 +1,37 @@
 package com.xbot.domain.fixtures
 
+import com.xbot.domain.models.Release
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.ScheduleType
 
-val scheduleMocks = listOf(
-    Schedule(
-        release = releaseMocks[0],
-        type = ScheduleType.Released(episodeMocks[0])
-    ),
-    Schedule(
-        release = releaseMocks[1],
-        type = ScheduleType.Upcoming(12f)
-    ),
-    Schedule(
-        release = releaseMocks[2],
-        type = ScheduleType.Released(episodeMocks[1])
-    )
+fun createSchedule(
+    release: Release = createRelease(),
+    type: ScheduleType = ScheduleType.Released(createEpisode())
+) = Schedule(
+    release = release,
+    type = type
 )
+
+object ScheduleFixtures {
+    val released = createSchedule(
+        release = ReleaseFixtures.frieren,
+        type = ScheduleType.Released(EpisodeFixtures.episode1)
+    )
+
+    val upcoming = createSchedule(
+        release = ReleaseFixtures.oshiNoKo,
+        type = ScheduleType.Upcoming(12f)
+    )
+
+    val anotherReleased = createSchedule(
+        release = ReleaseFixtures.jujutsuKaisen,
+        type = ScheduleType.Released(EpisodeFixtures.episode2)
+    )
+
+    val all = listOf(released, upcoming, anotherReleased)
+
+    fun list(count: Int = 3) = all.take(count)
+}
+
+@Deprecated("Use ScheduleFixtures.all", ReplaceWith("ScheduleFixtures.all"))
+val scheduleMocks = ScheduleFixtures.all

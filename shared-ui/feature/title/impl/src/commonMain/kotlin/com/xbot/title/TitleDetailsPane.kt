@@ -87,8 +87,8 @@ import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
-import com.xbot.domain.fixtures.getReleaseDetailMock
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.ReleaseFixtures
+import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.localization.UiText
@@ -478,9 +478,9 @@ private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenSta
     override val values = sequenceOf(
         TitleScreenState(),
         TitleScreenState(
-            initialRelease = getReleaseDetailMock(1).release,
-            details = AsyncResult.Success(getReleaseDetailMock(1)),
-            relatedReleases = AsyncResult.Success(releaseMocks),
+            initialRelease = ReleaseFixtures.frieren,
+            details = AsyncResult.Success(createReleaseDetails(release = ReleaseFixtures.frieren)),
+            relatedReleases = AsyncResult.Success(ReleaseFixtures.all),
         )
     )
 }

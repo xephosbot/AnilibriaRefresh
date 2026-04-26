@@ -106,10 +106,10 @@ import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.GenreFixtures
+import com.xbot.domain.fixtures.ReleaseFixtures
+import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
-import com.xbot.domain.fixtures.genreMocks
-import com.xbot.domain.fixtures.releaseMocks
-import com.xbot.domain.fixtures.scheduleMocks
 import com.xbot.domain.models.Release
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
@@ -593,7 +593,7 @@ private fun FeedPanePreview(
     @PreviewParameter(FeedScreenStateProvider::class) state: HomeScreenState
 ) {
     AnilibriaPreview {
-        val items = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
+        val items = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()
 
         FeedPaneContent(
             state = state,
@@ -614,12 +614,12 @@ private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState
         ),
         HomeScreenState(
             releasesFeed = ReleasesFeed(
-                recommendedReleases = AsyncResult.Success(releaseMocks),
-                scheduleNow = AsyncResult.Success(scheduleMocks),
-                bestNow = AsyncResult.Success(releaseMocks),
-                bestAllTime = AsyncResult.Success(releaseMocks),
+                recommendedReleases = AsyncResult.Success(ReleaseFixtures.list(10)),
+                scheduleNow = AsyncResult.Success(ScheduleFixtures.list(5)),
+                bestNow = AsyncResult.Success(ReleaseFixtures.list(5)),
+                bestAllTime = AsyncResult.Success(ReleaseFixtures.list(5)),
                 recommendedFranchises = AsyncResult.Success(franchiseMocks),
-                genres = AsyncResult.Success(genreMocks)
+                genres = AsyncResult.Success(GenreFixtures.list(5))
             )
         )
     )
