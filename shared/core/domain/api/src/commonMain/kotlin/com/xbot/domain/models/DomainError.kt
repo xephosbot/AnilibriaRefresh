@@ -8,7 +8,7 @@ sealed class DomainError(
     data class SerializationError(override val cause: Throwable) : DomainError(cause.message, cause)
     data class ConnectionError(override val cause: Throwable) : DomainError(cause.message, cause)
     data class Timeout(override val cause: Throwable?) : DomainError("Request timed out", cause)
-    data object NoConnection : DomainError("No network available")
+    class NoConnection : DomainError("No network available")
     data class UnknownError(override val cause: Throwable) : DomainError(cause.message, cause)
 
     /**
@@ -21,6 +21,6 @@ sealed class DomainError(
         get() = when (this) {
             is ConnectionError, is Timeout -> true
             is HttpError -> code in 500..599 || code == 429 || code == 408
-            is SerializationError, is UnknownError, NoConnection -> false
+            is SerializationError, is UnknownError, is NoConnection -> false
         }
 }

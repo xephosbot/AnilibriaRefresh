@@ -14,7 +14,7 @@ fun Throwable.localizedMessage(): UiText {
         is DomainError.HttpError -> UiText.Text(Res.string.error_http, this.code)
         is DomainError.ConnectionError -> UiText.Text(Res.string.error_connection)
         is DomainError.Timeout -> UiText.Text(Res.string.error_timeout)
-        DomainError.NoConnection -> UiText.Text(Res.string.error_no_connection)
+        DomainError.NoConnection() -> UiText.Text(Res.string.error_no_connection)
         is DomainError.SerializationError -> {
             val message = findRecursiveMessage(this) ?: "Empty message"
             UiText.Text(Res.string.error_serialization, message)

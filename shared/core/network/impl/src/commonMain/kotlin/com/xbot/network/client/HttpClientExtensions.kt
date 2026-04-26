@@ -1,9 +1,8 @@
 package com.xbot.network.client
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import arrow.core.raise.Raise
 import com.xbot.domain.models.DomainError
+import com.xbot.network.plugins.NoConnectionException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpRequestTimeoutException
@@ -31,24 +30,25 @@ expect class UnknownHostException : Exception
  * `CancellationException` is always rethrown so coroutine cancellation propagates
  * correctly through the retry loop above.
  */
+context(raise: Raise<DomainError>)
 internal suspend inline fun <reified T> HttpClient.singleAttempt(
     noinline block: suspend HttpClient.() -> HttpResponse,
-): Either<DomainError, T> = try {
+): T = try {
     val response = block()
-    response.body<T>().right()
+    response.body<T>()
 } catch (e: CancellationException) {
     throw e
-} catch (e: HttpRequestTimeoutException) {
-    DomainError.Timeout(e).left()
-} catch (e: ResponseException) {
-    DomainError.HttpError(e.response.status.value, e.response.bodyAsText()).left()
 } catch (e: Throwable) {
-    val networkError = when (e) {
-        is UnknownHostException, is UnresolvedAddressException, is IOException -> DomainError.ConnectionError(e)
-        is SerializationException, is JsonConvertException -> DomainError.SerializationError(e)
-        else -> DomainError.UnknownError(e)
-    }
-    networkError.left()
+    raise.raise(e.toDomainError())
+}
+
+internal suspend fun Throwable.toDomainError(): DomainError = when (this) {
+    is NoConnectionException -> DomainError.NoConnection()
+    is HttpRequestTimeoutException -> DomainError.Timeout(this)
+    is ResponseException -> DomainError.HttpError(response.status.value, response.bodyAsText())
+    is UnknownHostException, is UnresolvedAddressException, is IOException -> DomainError.ConnectionError(this)
+    is SerializationException, is JsonConvertException -> DomainError.SerializationError(this)
+    else -> DomainError.UnknownError(this)
 }
 
 internal val AuthenticatedRequest = AttributeKey<Unit>("AuthenticatedRequest")

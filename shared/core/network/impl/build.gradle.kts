@@ -36,20 +36,27 @@ kotlin {
         implementation(libs.koin.core)
         implementation(libs.koin.annotations)
         implementation(libs.kermit)
+        implementation(libs.connectivity.core)
     }
 
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.annotation)
             implementation(libs.ktor.client.okhttp)
-            implementation(libs.brotli.dec)
+            implementation(libs.connectivity.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.connectivity.apple)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
-            implementation(libs.brotli.dec)
+            implementation(libs.connectivity.http)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
         }
     }
 

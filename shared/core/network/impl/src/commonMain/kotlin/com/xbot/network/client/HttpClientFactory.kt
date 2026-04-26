@@ -1,8 +1,8 @@
 package com.xbot.network.client
 
-import co.touchlab.kermit.Logger as KermitLogger
 import com.xbot.network.Constants
-import com.xbot.network.utils.brotli
+import com.xbot.network.plugins.ConnectivityGate
+import dev.jordond.connectivity.Connectivity
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
@@ -21,14 +21,24 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
+import co.touchlab.kermit.Logger as KermitLogger
 import io.ktor.client.plugins.logging.Logger as KtorLogger
+
+@Singleton
+internal fun provideJson(): Json = Json {
+    isLenient = true
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+}
 
 /**
  * Factory for creating configured HTTP client instances.
  */
 @Singleton
 internal fun createHttpClient(
-    sessionStorage: SessionStorage
+    connectivity: Connectivity,
+    sessionStorage: SessionStorage,
+    json: Json,
 ): HttpClient = HttpClient {
     expectSuccess = true
 
@@ -38,13 +48,12 @@ internal fun createHttpClient(
         accept(ContentType.Application.Json)
     }
 
+    install(ConnectivityGate) {
+        this.connectivity = connectivity
+    }
+
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-        })
+        json(json)
     }
 
     install(HttpTimeout) {
@@ -81,7 +90,6 @@ internal fun createHttpClient(
 
     ContentEncoding {
         gzip()
-        brotli()
     }
 
     HttpResponseValidator {

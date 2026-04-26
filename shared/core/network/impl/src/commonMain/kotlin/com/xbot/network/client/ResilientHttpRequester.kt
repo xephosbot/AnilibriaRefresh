@@ -1,11 +1,9 @@
 package com.xbot.network.client
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.resilience.Schedule
-import arrow.resilience.retryEither
+import arrow.resilience.retryRaise
 import com.xbot.domain.models.DomainError
-import com.xbot.network.connectivity.ConnectivityMonitor
 import io.ktor.client.HttpClient
 import io.ktor.client.statement.HttpResponse
 import org.koin.core.annotation.Singleton
@@ -16,8 +14,8 @@ import org.koin.core.annotation.Singleton
  * Combines three resilience layers:
  *
  * 1. **Per-attempt connectivity gate** — every retry tick checks
- *    [ConnectivityMonitor.isOnline] first; if offline we short-circuit with
- *    [DomainError.NoConnection] before touching the wire. Doing the check per-attempt
+ *    connectivity status via [com.xbot.network.plugins.ConnectivityGate] Ktor plugin; if offline we short-circuit
+ *    with [DomainError.NoConnection] before touching the wire. Doing the check per-attempt
  *    (not just once before the loop) means a connection dropped mid-backoff surfaces
  *    as NoConnection on the very next tick, rather than burning the remaining retry
  *    budget on doomed [DomainError.ConnectionError]s. NoConnection is non-retryable,
@@ -34,7 +32,6 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ResilientHttpRequester(
     private val client: HttpClient,
-    private val connectivity: ConnectivityMonitor,
     private val schedule: Schedule<DomainError, *>,
 ) {
     /**
@@ -45,11 +42,7 @@ internal class ResilientHttpRequester(
      */
     suspend inline fun <reified T> request(
         noinline block: suspend HttpClient.() -> HttpResponse,
-    ): Either<DomainError, T> = schedule.retryEither {
-        if (!connectivity.isOnline()) {
-            DomainError.NoConnection.left()
-        } else {
-            client.singleAttempt<T>(block)
-        }
+    ): Either<DomainError, T> = schedule.retryRaise {
+        client.singleAttempt<T>(block)
     }
 }
