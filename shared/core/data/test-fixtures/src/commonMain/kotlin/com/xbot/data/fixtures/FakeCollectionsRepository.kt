@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import arrow.core.Either
 import arrow.core.right
 import com.xbot.data.repository.CollectionsRepository
-import com.xbot.domain.fixtures.genreMocks
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.GenreFixtures
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -30,7 +30,7 @@ class FakeCollectionsRepository : CollectionsRepository {
     }
 
     override fun getCollectionReleases(filters: CollectionFilters): PagingSource<Int, Release> {
-        return FakePagingSource(releaseMocks)
+        return FakePagingSource(ReleaseFixtures.all)
     }
 
     override suspend fun addToCollections(collections: Map<Int, CollectionType>): Either<DomainError, Unit> {
@@ -52,7 +52,7 @@ class FakeCollectionsRepository : CollectionsRepository {
     }
 
     override suspend fun getCollectionGenres(): Either<DomainError, List<Genre>> {
-        return genreMocks.right()
+        return GenreFixtures.all.right()
     }
 
     override suspend fun getCollectionReleaseTypes(): Either<DomainError, List<ReleaseType>> {

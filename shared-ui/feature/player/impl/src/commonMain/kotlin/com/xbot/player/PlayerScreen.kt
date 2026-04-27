@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.fixtures.episodeMocks
+import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
 import com.xbot.player.ui.VideoPlayerController
@@ -171,8 +171,8 @@ private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenS
     override val values = sequenceOf(
         PlayerScreenState(),
         PlayerScreenState(
-            episodes = AsyncResult.Success(episodeMocks),
-            currentEpisode = episodeMocks.first(),
+            episodes = AsyncResult.Success(EpisodeFixtures.all),
+            currentEpisode = EpisodeFixtures.all.first(),
             quality = VideoQuality.FHD,
         )
     )

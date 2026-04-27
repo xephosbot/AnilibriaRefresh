@@ -41,7 +41,7 @@ import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
 
@@ -335,7 +335,7 @@ private const val DescriptionAlpha = 0.8f
 @Composable
 private fun ReleaseListItemPreview() {
     ReleaseListItem(
-        release = releaseMocks.first()
+        release = ReleaseFixtures.all.first()
     )
 }
 

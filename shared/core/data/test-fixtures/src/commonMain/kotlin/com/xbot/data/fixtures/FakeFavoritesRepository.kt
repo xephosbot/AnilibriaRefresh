@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import arrow.core.Either
 import arrow.core.right
 import com.xbot.data.repository.FavoritesRepository
-import com.xbot.domain.fixtures.genreMocks
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.GenreFixtures
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -25,7 +25,7 @@ class FakeFavoritesRepository : FavoritesRepository {
     }
 
     override fun getFavoriteReleases(filters: FavoriteFilters): PagingSource<Int, Release> {
-        return FakePagingSource(releaseMocks.filter { favorites.value.contains(it.id) })
+        return FakePagingSource(ReleaseFixtures.all.filter { favorites.value.contains(it.id) })
     }
 
     override suspend fun addToFavorites(releaseIds: List<Int>): Either<DomainError, Unit> {
@@ -47,7 +47,7 @@ class FakeFavoritesRepository : FavoritesRepository {
     }
 
     override suspend fun getFavoriteGenres(): Either<DomainError, List<Genre>> {
-        return genreMocks.right()
+        return GenreFixtures.all.right()
     }
 
     override suspend fun getFavoriteSortingTypes(): Either<DomainError, List<SortingType>> {

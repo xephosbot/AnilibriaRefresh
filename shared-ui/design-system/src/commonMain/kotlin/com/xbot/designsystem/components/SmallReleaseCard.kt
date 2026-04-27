@@ -35,7 +35,7 @@ import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
 
@@ -132,7 +132,7 @@ private fun SmallReleaseCardPlaceholder(
 @Composable
 private fun SmallReleaseCardPreview() {
     SmallReleaseCard(
-        release = releaseMocks[1],
+        release = ReleaseFixtures.all[1],
         onClick = {
             // Handle the click event here
         }

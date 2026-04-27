@@ -49,7 +49,7 @@ import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.LocalMargins
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
 import com.xbot.resources.Res
@@ -221,7 +221,7 @@ private fun LargeReleaseCardPlaceholder(
 @Composable
 private fun LargeReleaseCardPreview() {
     LargeReleaseCard(
-        release = releaseMocks[3],
+        release = ReleaseFixtures.all[3],
     ) {
         MediumSplitButton(
             onLeadingClick = {

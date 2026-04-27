@@ -46,7 +46,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.domain.fixtures.genreMocks
+import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
@@ -538,9 +538,9 @@ private class SearchFiltersStateProvider : PreviewParameterProvider<SearchScreen
         SearchScreenState(
             filters = SearchFiltersState(
                 selectedYears = 2000..2020,
-                selectedGenres = setOf(genreMocks.first())
+                selectedGenres = setOf(GenreFixtures.all.first())
             ),
-            genres = AsyncResult.Success(genreMocks),
+            genres = AsyncResult.Success(GenreFixtures.all),
             releaseTypes = AsyncResult.Success(ReleaseType.entries),
             publishStatuses = AsyncResult.Success(PublishStatus.entries),
             productionStatuses = AsyncResult.Success(ProductionStatus.entries),

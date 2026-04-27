@@ -70,6 +70,3 @@ private fun createReleaseEpisode(id: String, ordinal: Float) = createEpisode(
     englishName = "English Name $id",
     ordinal = ordinal
 )
-
-@Deprecated("Use EpisodeFixtures.all", ReplaceWith("EpisodeFixtures.all"))
-val episodeMocks = EpisodeFixtures.all

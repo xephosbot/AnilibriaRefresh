@@ -26,6 +26,3 @@ object GenreFixtures {
 
     fun list(count: Int = 5) = all.take(count)
 }
-
-@Deprecated("Use GenreFixtures.all", ReplaceWith("GenreFixtures.all"))
-val genreMocks = GenreFixtures.all

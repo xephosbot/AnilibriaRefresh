@@ -47,7 +47,7 @@ import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.domain.fixtures.episodeMocks
+import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
 import com.xbot.localization.localizedName
 import com.xbot.localization.toLocalizedString
@@ -282,7 +282,7 @@ data class EpisodeListItemColors(
 @Composable
 private fun EpisodeListItemPreview() {
     EpisodeListItem(
-        episode = episodeMocks.first(),
+        episode = EpisodeFixtures.all.first(),
         selected = false,
         onClick = {
 

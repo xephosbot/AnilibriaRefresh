@@ -32,6 +32,3 @@ object ScheduleFixtures {
 
     fun list(count: Int = 3) = all.take(count)
 }
-
-@Deprecated("Use ScheduleFixtures.all", ReplaceWith("ScheduleFixtures.all"))
-val scheduleMocks = ScheduleFixtures.all

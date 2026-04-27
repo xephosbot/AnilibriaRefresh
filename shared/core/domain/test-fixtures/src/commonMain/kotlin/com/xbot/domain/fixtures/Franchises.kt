@@ -16,7 +16,7 @@ val franchiseMocks = listOf(
         totalDuration = "288 hours",
         totalDurationInSeconds = 1036800,
         poster = Poster("https://example.com/naruto.jpg", null),
-        franchiseReleases = releaseMocks.take(2)
+        franchiseReleases = ReleaseFixtures.all.take(2)
     ),
     Franchise(
         id = "2",
@@ -30,6 +30,6 @@ val franchiseMocks = listOf(
         totalDuration = "35 hours",
         totalDurationInSeconds = 126720,
         poster = Poster("https://example.com/aot.jpg", null),
-        franchiseReleases = releaseMocks.takeLast(2)
+        franchiseReleases = ReleaseFixtures.all.takeLast(2)
     )
 )

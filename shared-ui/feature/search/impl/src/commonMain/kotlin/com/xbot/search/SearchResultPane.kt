@@ -57,7 +57,7 @@ import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.localization.UiText
 import com.xbot.localization.localizedMessage
@@ -322,7 +322,7 @@ private fun SearchResultContent(
 @PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SearchResultPanePreview() {
-    val searchResult = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
+    val searchResult = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()
 
     SearchResultPaneContent(
         searchResult = searchResult,

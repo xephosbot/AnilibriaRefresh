@@ -56,7 +56,7 @@ fun createReleaseDetails(
         ReleaseMember("3", MemberRole.TIMING, "Mimal", null),
         ReleaseMember("4", MemberRole.TRANSLATING, "Arta", null)
     ),
-    episodes: List<com.xbot.domain.models.Episode> = episodeMocks
+    episodes: List<com.xbot.domain.models.Episode> = EpisodeFixtures.all
 ) = ReleaseDetails(
     release = release,
     season = season,
@@ -128,13 +128,4 @@ object ReleaseFixtures {
     val all = listOf(frieren, oshiNoKo, jujutsuKaisen, mushokuTensei, soloLeveling)
 
     fun list(count: Int = 5) = all.take(count)
-}
-
-@Deprecated("Use ReleaseFixtures.all", ReplaceWith("ReleaseFixtures.all"))
-val releaseMocks = ReleaseFixtures.all
-
-@Deprecated("Use createReleaseDetails", ReplaceWith("createReleaseDetails(id = id)"))
-fun getReleaseDetailMock(id: Int): ReleaseDetails {
-    val release = ReleaseFixtures.all.find { it.id == id } ?: ReleaseFixtures.frieren
-    return createReleaseDetails(release = release)
 }

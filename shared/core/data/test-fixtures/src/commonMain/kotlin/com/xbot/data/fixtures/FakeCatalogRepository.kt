@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import arrow.core.Either
 import arrow.core.right
 import com.xbot.data.repository.CatalogRepository
-import com.xbot.domain.fixtures.genreMocks
-import com.xbot.domain.fixtures.releaseMocks
+import com.xbot.domain.fixtures.GenreFixtures
+import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -19,7 +19,7 @@ import com.xbot.domain.models.filters.CatalogQuery
 
 class FakeCatalogRepository : CatalogRepository {
     override fun getCatalogReleases(search: String?, filters: CatalogQuery?): PagingSource<Int, Release> {
-        return FakePagingSource(releaseMocks)
+        return FakePagingSource(ReleaseFixtures.all)
     }
 
     override suspend fun getCatalogReleases(
@@ -27,7 +27,7 @@ class FakeCatalogRepository : CatalogRepository {
         filters: CatalogQuery?,
         limit: Int
     ): Either<DomainError, List<Release>> {
-        return releaseMocks.take(limit).right()
+        return ReleaseFixtures.all.take(limit).right()
     }
 
     override suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRating>> {
@@ -35,7 +35,7 @@ class FakeCatalogRepository : CatalogRepository {
     }
 
     override suspend fun getCatalogGenres(): Either<DomainError, List<Genre>> {
-        return genreMocks.right()
+        return GenreFixtures.all.right()
     }
 
     override suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatus>> {
