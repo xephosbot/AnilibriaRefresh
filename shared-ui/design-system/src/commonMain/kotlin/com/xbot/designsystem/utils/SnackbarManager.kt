@@ -1,7 +1,7 @@
 package com.xbot.designsystem.utils
 
 import androidx.compose.runtime.Stable
-import com.xbot.localization.UiText
+import com.xbot.localization.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,12 +12,12 @@ import kotlin.uuid.Uuid
 @Stable
 data class Message(
     val id: Long,
-    val title: UiText,
+    val title: StringResource,
     val action: MessageAction? = null,
 )
 
 data class MessageAction(
-    val title: UiText,
+    val title: StringResource,
     val action: () -> Unit = {},
 )
 
@@ -26,7 +26,7 @@ object SnackbarManager {
     private val _messages: MutableStateFlow<List<Message>> = MutableStateFlow(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 
-    fun showMessage(title: UiText, action: MessageAction? = null) {
+    fun showMessage(title: StringResource, action: MessageAction? = null) {
         val message = Message(
             id = Uuid.random().toLongs { mostSignificantBits, _ -> mostSignificantBits },
             title = title,

@@ -1,7 +1,14 @@
 package com.xbot.localization
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.intl.Locale
 import kotlin.time.Duration
+
+@Composable
+fun Duration.toLocalizedString(): String {
+    val locale = Locale(LocalAppLanguage.current)
+    return toLocalizedString(locale)
+}
 
 fun Duration.toLocalizedString(locale: Locale = Locale.current): String {
     return toComponents { hours, minutes, seconds, _ ->

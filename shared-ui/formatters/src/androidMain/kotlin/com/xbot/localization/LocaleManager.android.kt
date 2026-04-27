@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
-actual object LocalAppLocaleIso {
+actual object LocalAppLanguage {
     actual val current: String
         @Composable get() {
             val locales = AppCompatDelegate.getApplicationLocales()

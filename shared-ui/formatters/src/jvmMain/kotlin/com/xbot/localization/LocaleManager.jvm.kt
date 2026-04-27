@@ -10,7 +10,7 @@ private val systemDefaultLocale by lazy { Locale.getDefault() }
 private const val LOCALE_KEY = "app_locale_tag"
 private val prefs = Preferences.userNodeForPackage(LocaleManager.javaClass)
 
-actual object LocalAppLocaleIso {
+actual object LocalAppLanguage {
     private val LocalAppLocaleIso = staticCompositionLocalOf { systemDefaultLocale.language }
     
     actual val current: String

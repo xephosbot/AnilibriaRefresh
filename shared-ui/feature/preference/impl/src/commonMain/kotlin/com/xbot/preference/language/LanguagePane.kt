@@ -39,7 +39,7 @@ internal fun LanguagePane(
 ) {
     LanguagePaneContent(
         modifier = modifier,
-        currentLanguage = LocaleManager.locale,
+        currentLanguage = LocaleManager.language,
         onLanguageSelected = { LocaleManager.setLocale(it) },
         onBackClick = onBackClick
     )

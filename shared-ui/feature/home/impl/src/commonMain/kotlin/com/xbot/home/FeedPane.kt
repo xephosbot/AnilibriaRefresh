@@ -112,7 +112,7 @@ import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Release
-import com.xbot.localization.UiText
+import com.xbot.localization.StringResource
 import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
@@ -130,7 +130,7 @@ import com.xbot.resources.label_updates
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -160,7 +160,7 @@ internal fun FeedPane(
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(
-                        title = UiText.Text(Res.string.button_retry),
+                        title = StringResource.Text(Res.string.button_retry),
                         action = sideEffect.onRetry,
                     )
                 )
@@ -561,7 +561,7 @@ private fun LazyGridState.isScrollingUp(): State<Boolean> {
     }
 }
 
-private val BestType.stringRes: StringResource
+private val BestType.stringRes: JetbrainsStringResource
     get() = when (this) {
         BestType.Now -> Res.string.label_best_now
         BestType.AllTime -> Res.string.label_best_all_time

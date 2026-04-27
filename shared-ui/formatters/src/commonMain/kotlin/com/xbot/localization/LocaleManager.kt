@@ -7,12 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLayoutDirection
+import org.jetbrains.compose.resources.InternalResourceApi
 
 object LocaleManager {
     internal var isoCode by mutableStateOf<String?>(null)
 
-    val locale: AppLanguage
-        @Composable get() = AppLanguage.getByIsoCode(LocalAppLocaleIso.current)
+    val language: AppLanguage
+        @Composable get() = AppLanguage.getByIsoCode(LocalAppLanguage.current)
 
     fun setLocale(language: AppLanguage) {
         isoCode = language.isoCode
@@ -22,18 +24,22 @@ object LocaleManager {
 /**
  * Implementation referenced from https://kotlinlang.org/docs/multiplatform/compose-resource-environment.html#locale
  */
-expect object LocalAppLocaleIso {
+expect object LocalAppLanguage {
     val current: String @Composable get
     @Composable infix fun provides(value: String?): ProvidedValue<*>
 }
 
+@OptIn(InternalResourceApi::class)
 @Composable
 fun ProvideAppLocale(content: @Composable () -> Unit) {
-    val locale = LocaleManager.isoCode
+    val isoCode = LocaleManager.isoCode
+    val language = AppLanguage.getByIsoCode(isoCode ?: LocalAppLanguage.current)
+    
     CompositionLocalProvider(
-        LocalAppLocaleIso provides locale,
+        LocalAppLanguage provides isoCode,
+        LocalLayoutDirection provides language.layoutDirection
     ) {
-        key(locale) {
+        key(isoCode) {
             content()
         }
     }

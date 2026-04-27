@@ -52,15 +52,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
-import com.xbot.localization.UiText
+import com.xbot.localization.StringResource
 import com.xbot.localization.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
@@ -95,7 +95,7 @@ internal fun LoginScreen(
             }
             is LoginScreenSideEffect.LoginSuccess -> {
                 SnackbarManager.showMessage(
-                    title = UiText.Text(Res.string.login_success_message)
+                    title = StringResource.Text(Res.string.login_success_message)
                 )
             }
             is LoginScreenSideEffect.NavigateBack -> {

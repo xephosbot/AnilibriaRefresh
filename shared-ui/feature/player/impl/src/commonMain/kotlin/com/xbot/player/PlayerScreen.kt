@@ -23,7 +23,7 @@ import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.EpisodeFixtures
-import com.xbot.localization.UiText
+import com.xbot.localization.StringResource
 import com.xbot.localization.localizedMessage
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
@@ -51,7 +51,7 @@ internal fun PlayerScreen(
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(
-                        title = UiText.Text(Res.string.button_retry),
+                        title = StringResource.Text(Res.string.button_retry),
                         action = sideEffect.onRetry,
                     )
                 )

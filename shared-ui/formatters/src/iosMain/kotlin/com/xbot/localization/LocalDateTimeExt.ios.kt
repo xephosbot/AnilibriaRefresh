@@ -6,12 +6,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSLocale
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 actual fun LocalDateTime.format(locale: Locale, format: String): String {
     val dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = format
-    dateFormatter.locale = locale.platformLocale
+    dateFormatter.locale = NSLocale(locale.toLanguageTag())
     return dateFormatter.stringFromDate(toInstant(TimeZone.currentSystemDefault()).toNSDate())
 }

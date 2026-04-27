@@ -4,24 +4,22 @@ import platform.Foundation.NSString
 import platform.Foundation.stringWithFormat
 
 actual fun String.format(vararg args: Any?): String {
-    var returnString = ""
-    val regex = "%[\\d|.]*[sdf]|[%]".toRegex()
-    val singleFormats = regex.findAll(this).map {
-        it.groupValues.first()
-    }.asSequence().toList()
-    val newStrings = this.split(regex)
-    args.forEachIndexed { index, arg ->
-        returnString += when (arg) {
-            is Double -> {
-                NSString.stringWithFormat(newStrings[index] + singleFormats[index], arg)
+    if (args.isEmpty()) return this
+    
+    var result = this
+    args.forEach { arg ->
+        val pattern = "%[\\d|.]*[sdf]|[%][@]".toRegex()
+        val match = pattern.find(result)
+        if (match != null) {
+            val formatted = when (arg) {
+                is Double -> NSString.stringWithFormat(match.value, arg)
+                is Float -> NSString.stringWithFormat(match.value, arg)
+                is Int -> NSString.stringWithFormat(match.value, arg)
+                is Long -> NSString.stringWithFormat(match.value, arg)
+                else -> NSString.stringWithFormat("%@", arg)
             }
-            is Int -> {
-                NSString.stringWithFormat(newStrings[index] + singleFormats[index], arg)
-            }
-            else -> {
-                NSString.stringWithFormat(newStrings[index] + "%@", arg)
-            }
+            result = result.replaceFirst(match.value, formatted)
         }
     }
-    return returnString
+    return result
 }

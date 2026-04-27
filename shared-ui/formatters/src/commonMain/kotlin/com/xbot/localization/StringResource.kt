@@ -1,35 +1,47 @@
 package com.xbot.localization
 
+import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
 
-suspend fun stringResource(uiText: UiText): String {
-    return when (uiText) {
-        is UiText.String -> uiText.text
-        is UiText.Text -> {
-            if (uiText.formatArgs.isEmpty()) {
-                getString(uiText.resource)
-            } else {
-                getString(uiText.resource, *uiText.formatArgs)
-            }
+@Composable
+fun stringResource(res: StringResource): String = when (res) {
+    is StringResource.String -> res.text
+    is StringResource.Text -> {
+        stringResource(res.resource, *res.formatArgs)
+    }
+    is StringResource.Plural -> {
+        pluralStringResource(res.resource, res.quantity, *res.formatArgs)
+    }
+}
+
+suspend fun getString(res: StringResource): String = when (res) {
+    is StringResource.String -> res.text
+    is StringResource.Text -> {
+        if (res.formatArgs.isEmpty()) {
+            getString(res.resource)
+        } else {
+            getString(res.resource, *res.formatArgs)
         }
-        is UiText.Plural -> {
-            if (uiText.formatArgs.isEmpty()) {
-                getPluralString(uiText.resource, uiText.quantity)
-            } else {
-                getPluralString(uiText.resource, uiText.quantity, *uiText.formatArgs)
-            }
+    }
+    is StringResource.Plural -> {
+        if (res.formatArgs.isEmpty()) {
+            getPluralString(res.resource, res.quantity)
+        } else {
+            getPluralString(res.resource, res.quantity, *res.formatArgs)
         }
     }
 }
 
-sealed interface UiText {
-    data class String(val text: kotlin.String) : UiText
+sealed interface StringResource {
+    data class String(val text: kotlin.String) : StringResource
     
     class Text(
         val resource: org.jetbrains.compose.resources.StringResource,
         vararg val formatArgs: Any,
-    ) : UiText {
+    ) : StringResource {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -53,7 +65,7 @@ sealed interface UiText {
         val resource: org.jetbrains.compose.resources.PluralStringResource,
         val quantity: Int,
         vararg val formatArgs: Any,
-    ) : UiText {
+    ) : StringResource {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

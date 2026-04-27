@@ -33,4 +33,8 @@ kotlin {
             implementation(libs.androidx.appcompat)
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xcontext-parameters", "-Xexpect-actual-classes")
+    }
 }

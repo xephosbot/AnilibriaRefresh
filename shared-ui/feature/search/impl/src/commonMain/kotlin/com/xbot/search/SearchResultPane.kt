@@ -59,7 +59,7 @@ import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
-import com.xbot.localization.UiText
+import com.xbot.localization.StringResource
 import com.xbot.localization.localizedMessage
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
@@ -90,7 +90,7 @@ internal fun SearchResultPane(
                 SnackbarManager.showMessage(
                     title = sideEffect.error.localizedMessage(),
                     action = MessageAction(
-                        title = UiText.Text(Res.string.button_retry),
+                        title = StringResource.Text(Res.string.button_retry),
                         action = sideEffect.onRetry,
                     )
                 )

@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.window.core.layout.WindowSizeClass
 import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.localization.stringResource
+import com.xbot.localization.getString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -262,8 +262,8 @@ class ScaffoldState(
             snackbarManager.messages.collect { currentMessages ->
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
-                    val text = stringResource(message.title)
-                    val actionLabel = message.action?.title?.let { stringResource(it) }
+                    val text = getString(message.title)
+                    val actionLabel = message.action?.title?.let { getString(it) }
                     // Notify the SnackbarManager so it can remove the current message from the list
                     snackbarManager.setMessageShown(message.id)
                     // Display the snackbar on the screen. `showSnackbar` is a function
