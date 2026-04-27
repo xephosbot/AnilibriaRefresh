@@ -47,7 +47,8 @@ import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.LocalMargins
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -216,40 +217,39 @@ private fun LargeReleaseCardPlaceholder(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun LargeReleaseCardPreview() {
-    AnilibriaPreview {
-        LargeReleaseCard(
-            release = releaseMocks[3],
-        ) {
-            MediumSplitButton(
-                onLeadingClick = {
-                    // Handle leading button click
-                },
-                onTrailingClick = {
-                    // Handle trailing button click
-                },
-                leadingContent = {
-                    Icon(
-                        modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                        imageVector = AnilibriaIcons.Filled.PlayArrow,
-                        contentDescription = null
-                    )
-                    Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                    Text(
-                        text = stringResource(Res.string.button_watch),
-                        maxLines = 1
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                        imageVector = AnilibriaIcons.MoreVert,
-                        contentDescription = null
-                    )
-                }
-            )
-        }
+    LargeReleaseCard(
+        release = releaseMocks[3],
+    ) {
+        MediumSplitButton(
+            onLeadingClick = {
+                // Handle leading button click
+            },
+            onTrailingClick = {
+                // Handle trailing button click
+            },
+            leadingContent = {
+                Icon(
+                    modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                    imageVector = AnilibriaIcons.Filled.PlayArrow,
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                Text(
+                    text = stringResource(Res.string.button_watch),
+                    maxLines = 1
+                )
+            },
+            trailingContent = {
+                Icon(
+                    modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
+                    imageVector = AnilibriaIcons.MoreVert,
+                    contentDescription = null
+                )
+            }
+        )
     }
 }
 

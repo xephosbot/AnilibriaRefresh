@@ -26,7 +26,8 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.theme.asPaddingValues
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -95,23 +96,21 @@ fun Header(
 
 
 @Preview(name = "Header", widthDp = 278)
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun HeaderPreview() {
-    AnilibriaPreview {
-        Header(
-            title = { Text("Title") },
-            onClick = {}
-        )
-    }
+    Header(
+        title = { Text("Title") },
+        onClick = {}
+    )
 }
 
 @Preview(name = "Header Dark", widthDp = 278)
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun HeaderPreviewDark() {
-    AnilibriaPreview(useDarkTheme = true) {
-        Header(
-            title = { Text("Title") },
-            onClick = {}
-        )
-    }
+    Header(
+        title = { Text("Title") },
+        onClick = {}
+    )
 }

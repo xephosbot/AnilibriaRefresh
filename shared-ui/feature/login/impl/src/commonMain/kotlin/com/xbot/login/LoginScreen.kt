@@ -56,7 +56,8 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
 import com.xbot.localization.UiText
@@ -266,17 +267,16 @@ internal fun LoginScreenContent(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun LoginScreenPreview(
     @PreviewParameter(LoginScreenStateProvider::class) state: LoginScreenState
 ) {
-    AnilibriaPreview {
-        LoginScreenContent(
-            state = state,
-            onAction = {},
-            onRegistrationClick = {}
-        )
-    }
+    LoginScreenContent(
+        state = state,
+        onAction = {},
+        onRegistrationClick = {}
+    )
 }
 
 private class LoginScreenStateProvider : PreviewParameterProvider<LoginScreenState> {

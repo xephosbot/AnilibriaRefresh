@@ -48,7 +48,8 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
@@ -306,22 +307,20 @@ object ExpressiveFranchiseCardDefaults {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun FranchiseCardPreview() {
-    AnilibriaPreview {
-        FranchiseCard(
-            franchise = franchiseMocks.first(),
-            onClick = {}
-        )
-    }
+    FranchiseCard(
+        franchise = franchiseMocks.first(),
+        onClick = {}
+    )
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun FranchiseCardPlaceholderPreview() {
-    AnilibriaPreview {
-        FranchiseCardPlaceholder()
-    }
+    FranchiseCardPlaceholder()
 }
 
 private val FranchiseCardWidth = 280.dp

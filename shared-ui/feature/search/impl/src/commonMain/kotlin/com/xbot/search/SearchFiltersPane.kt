@@ -42,7 +42,8 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.genreMocks
@@ -518,18 +519,17 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SearchFilterPanePreview(
     @PreviewParameter(SearchFiltersStateProvider::class) state: SearchScreenState
 ) {
-    AnilibriaPreview {
-        SearchFilterPaneContent(
-            state = state,
-            showBackButton = true,
-            onAction = {},
-            onBackClick = {},
-        )
-    }
+    SearchFilterPaneContent(
+        state = state,
+        showBackButton = true,
+        onAction = {},
+        onBackClick = {},
+    )
 }
 
 private class SearchFiltersStateProvider : PreviewParameterProvider<SearchScreenState> {

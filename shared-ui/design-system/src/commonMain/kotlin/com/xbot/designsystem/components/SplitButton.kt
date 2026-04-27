@@ -71,7 +71,8 @@ import androidx.compose.ui.util.fastFirst
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowDropDown
 import com.xbot.designsystem.icons.PlayArrow
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
 import org.jetbrains.compose.resources.stringResource
@@ -266,39 +267,38 @@ private fun SplitButtonLayout(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SplitButtonPreview() {
-    AnilibriaPreview {
-        MediumSplitButton(
-            onLeadingClick = {
-                // Handle leading button click
-            },
-            onTrailingClick = {
-                // Handle trailing button click
-            },
-            leadingContent = {
-                Icon(
-                    modifier = Modifier
-                        .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                    imageVector = AnilibriaIcons.Filled.PlayArrow,
-                    contentDescription = null
-                )
-                Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                Text(
-                    text = stringResource(Res.string.button_watch),
-                    maxLines = 1
-                )
-            },
-            trailingContent = {
-                Icon(
-                    modifier = Modifier
-                        .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                    imageVector = AnilibriaIcons.ArrowDropDown,
-                    contentDescription = null
-                )
-            }
-        )
-    }
+    MediumSplitButton(
+        onLeadingClick = {
+            // Handle leading button click
+        },
+        onTrailingClick = {
+            // Handle trailing button click
+        },
+        leadingContent = {
+            Icon(
+                modifier = Modifier
+                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                contentDescription = null
+            )
+            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+            Text(
+                text = stringResource(Res.string.button_watch),
+                maxLines = 1
+            )
+        },
+        trailingContent = {
+            Icon(
+                modifier = Modifier
+                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                imageVector = AnilibriaIcons.ArrowDropDown,
+                contentDescription = null
+            )
+        }
+    )
 }
 
 object SplitButtonDefaults {

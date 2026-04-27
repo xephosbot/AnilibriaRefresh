@@ -31,7 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -195,45 +196,43 @@ object ExpressivePreferenceItemDefaults {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun PreferenceItemPreview() {
-    AnilibriaPreview {
-        Column {
-            PreferenceItem(
-                headlineContent = { Text("Preference Item") },
-                supportingContent = { Text("Supporting content") },
-                selected = false,
-                onClick = {}
-            )
-            Spacer(Modifier.height(8.dp))
-            PreferenceItem(
-                headlineContent = { Text("Selected Item") },
-                supportingContent = { Text("Supporting content") },
-                selected = true,
-                onClick = {}
-            )
-        }
+    Column {
+        PreferenceItem(
+            headlineContent = { Text("Preference Item") },
+            supportingContent = { Text("Supporting content") },
+            selected = false,
+            onClick = {}
+        )
+        Spacer(Modifier.height(8.dp))
+        PreferenceItem(
+            headlineContent = { Text("Selected Item") },
+            supportingContent = { Text("Supporting content") },
+            selected = true,
+            onClick = {}
+        )
     }
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun SwitchPreferenceItemPreview() {
-    AnilibriaPreview {
-        Column {
-            SwitchPreferenceItem(
-                headlineContent = { Text("Switch Preference") },
-                checked = true,
-                onCheckedChange = {}
-            )
-            Spacer(Modifier.height(8.dp))
-            SwitchPreferenceItem(
-                headlineContent = { Text("Unchecked Preference") },
-                checked = false,
-                onCheckedChange = {}
-            )
-        }
+    Column {
+        SwitchPreferenceItem(
+            headlineContent = { Text("Switch Preference") },
+            checked = true,
+            onCheckedChange = {}
+        )
+        Spacer(Modifier.height(8.dp))
+        SwitchPreferenceItem(
+            headlineContent = { Text("Unchecked Preference") },
+            checked = false,
+            onCheckedChange = {}
+        )
     }
 }

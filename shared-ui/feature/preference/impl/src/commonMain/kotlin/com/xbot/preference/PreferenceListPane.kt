@@ -28,7 +28,8 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
@@ -166,12 +167,11 @@ object PreferenceListDefaults {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun PreferenceListPanePreview() {
-    AnilibriaPreview {
-        PreferenceListPane(
-            currentDestination = null,
-            onDetailClick = {}
-        )
-    }
+    PreferenceListPane(
+        currentDestination = null,
+        onDetailClick = {}
+    )
 }

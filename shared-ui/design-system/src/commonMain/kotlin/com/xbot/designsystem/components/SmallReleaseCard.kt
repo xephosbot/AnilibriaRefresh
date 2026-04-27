@@ -33,7 +33,8 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -127,16 +128,15 @@ private fun SmallReleaseCardPlaceholder(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SmallReleaseCardPreview() {
-    AnilibriaPreview {
-        SmallReleaseCard(
-            release = releaseMocks[1],
-            onClick = {
-                // Handle the click event here
-            }
-        )
-    }
+    SmallReleaseCard(
+        release = releaseMocks[1],
+        onClick = {
+            // Handle the click event here
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

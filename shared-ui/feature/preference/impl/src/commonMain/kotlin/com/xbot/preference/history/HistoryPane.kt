@@ -22,7 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.resources.Res
 import com.xbot.resources.preference_history_title
 import org.jetbrains.compose.resources.stringResource
@@ -88,11 +89,10 @@ private fun HistoryPaneContent(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun HistoryPanePreview() {
-    AnilibriaPreview {
-        HistoryPaneContent(
-            onBackClick = {}
-        )
-    }
+    HistoryPaneContent(
+        onBackClick = {}
+    )
 }

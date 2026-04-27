@@ -44,7 +44,8 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.theme.asPaddingValues
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.ScheduleFixtures
@@ -232,18 +233,17 @@ private fun DateItem(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SchedulePanePreview(
     @PreviewParameter(ScheduleScreenStateProvider::class) state: HomeScreenState
 ) {
-    AnilibriaPreview {
-        SchedulePaneContent(
-            state = state,
-            showBackButton = true,
-            onReleaseClick = {},
-            onBackClick = {}
-        )
-    }
+    SchedulePaneContent(
+        state = state,
+        showBackButton = true,
+        onReleaseClick = {},
+        onBackClick = {}
+    )
 }
 
 private class ScheduleScreenStateProvider : PreviewParameterProvider<HomeScreenState> {

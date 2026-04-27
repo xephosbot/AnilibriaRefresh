@@ -18,7 +18,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.episodeMocks
@@ -153,18 +154,17 @@ private fun PlayerScreenContent(
 }
 
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun PlayerScreenPreview(
     @PreviewParameter(PlayerScreenStateProvider::class) state: PlayerScreenState
 ) {
-    AnilibriaPreview {
-        PlayerScreenContent(
-            modifier = Modifier,
-            state = state,
-            onAction = {},
-            onBackClick = {}
-        )
-    }
+    PlayerScreenContent(
+        modifier = Modifier,
+        state = state,
+        onAction = {},
+        onBackClick = {}
+    )
 }
 
 private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenState> {

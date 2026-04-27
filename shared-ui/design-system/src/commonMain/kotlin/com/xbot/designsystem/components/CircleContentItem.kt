@@ -37,7 +37,8 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.ReleaseMember
@@ -228,49 +229,46 @@ fun CircleContentItem(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun GenreItemPreview() {
-    AnilibriaPreview {
-        GenreItem(
-            genre = Genre(
-                id = 0,
-                name = "Комедия",
-                releasesCount = 15,
-                image = Poster(
-                    src = "https://anilibria.tv/upload/release/genres/comedy.jpg",
-                    thumbnail = null
-                )
-            ),
-            onClick = {}
-        )
-    }
+    GenreItem(
+        genre = Genre(
+            id = 0,
+            name = "Комедия",
+            releasesCount = 15,
+            image = Poster(
+                src = "https://anilibria.tv/upload/release/genres/comedy.jpg",
+                thumbnail = null
+            )
+        ),
+        onClick = {}
+    )
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun MemberItemPreview() {
-    AnilibriaPreview {
-        MemberItem(
-            releaseMember = ReleaseMember(
-                id = "0",
-                name = "Lupin",
-                role = MemberRole.VOICING,
-                avatar = Poster(
-                    src = "https://anilibria.tv/upload/avatars/0.jpg",
-                    thumbnail = null
-                )
-            ),
-            onClick = {}
-        )
-    }
+    MemberItem(
+        releaseMember = ReleaseMember(
+            id = "0",
+            name = "Lupin",
+            role = MemberRole.VOICING,
+            avatar = Poster(
+                src = "https://anilibria.tv/upload/avatars/0.jpg",
+                thumbnail = null
+            )
+        ),
+        onClick = {}
+    )
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun CircleContentPlaceholderPreview() {
-    AnilibriaPreview {
-        CircleContentPlaceholder()
-    }
+    CircleContentPlaceholder()
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

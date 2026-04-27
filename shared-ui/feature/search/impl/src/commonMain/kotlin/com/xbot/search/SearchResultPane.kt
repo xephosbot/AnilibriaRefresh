@@ -52,7 +52,8 @@ import com.xbot.designsystem.icons.Close
 import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
@@ -318,18 +319,17 @@ private fun SearchResultContent(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SearchResultPanePreview() {
-    AnilibriaPreview {
-        val searchResult = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
+    val searchResult = flowOf(PagingData.from(releaseMocks)).collectAsLazyPagingItems()
 
-        SearchResultPaneContent(
-            searchResult = searchResult,
-            state = SearchScreenState(),
-            onAction = {},
-            onBackClick = {},
-            onFiltersClick = {},
-            onReleaseClick = {}
-        )
-    }
+    SearchResultPaneContent(
+        searchResult = searchResult,
+        state = SearchScreenState(),
+        onAction = {},
+        onBackClick = {},
+        onFiltersClick = {},
+        onReleaseClick = {}
+    )
 }

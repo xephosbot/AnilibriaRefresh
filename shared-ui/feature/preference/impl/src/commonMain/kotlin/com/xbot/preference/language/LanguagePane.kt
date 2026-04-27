@@ -23,7 +23,8 @@ import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.localization.AppLanguage
 import com.xbot.localization.LocaleManager
 import com.xbot.localization.stringRes
@@ -108,13 +109,12 @@ private fun LanguagePaneContent(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun LanguagePanePreview() {
-    AnilibriaPreview {
-        LanguagePaneContent(
-            currentLanguage = AppLanguage.English,
-            onLanguageSelected = {},
-            onBackClick = {}
-        )
-    }
+    LanguagePaneContent(
+        currentLanguage = AppLanguage.English,
+        onLanguageSelected = {},
+        onBackClick = {}
+    )
 }

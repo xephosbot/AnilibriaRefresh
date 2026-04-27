@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -102,7 +103,7 @@ import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.only
@@ -588,23 +589,22 @@ private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun FeedPanePreview(
     @PreviewParameter(FeedScreenStateProvider::class) state: HomeScreenState
 ) {
-    AnilibriaPreview {
-        val items = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()
+    val items = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()
 
-        FeedPaneContent(
-            state = state,
-            items = items,
-            onAction = {},
-            onScheduleClick = {},
-            onReleaseClick = {},
-            onEpisodeClick = { _, _ -> },
-            onProfileClick = {}
-        )
-    }
+    FeedPaneContent(
+        state = state,
+        items = items,
+        onAction = {},
+        onScheduleClick = {},
+        onReleaseClick = {},
+        onEpisodeClick = { _, _ -> },
+        onProfileClick = {}
+    )
 }
 
 private class FeedScreenStateProvider : PreviewParameterProvider<HomeScreenState> {

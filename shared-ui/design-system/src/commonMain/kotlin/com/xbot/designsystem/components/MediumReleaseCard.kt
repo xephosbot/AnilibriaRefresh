@@ -38,7 +38,8 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.episodeMocks
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
@@ -213,18 +214,17 @@ object ExpressiveMediumReleaseCardDefaults {
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun MediumReleaseCardPreview() {
-    AnilibriaPreview {
-        MediumReleaseCard(
-            release = releaseMocks[0],
-            onClick = {},
-        ) {
-            EpisodeListItem(
-                episode = episodeMocks.first(),
-                onClick = {}
-            )
-        }
+    MediumReleaseCard(
+        release = releaseMocks[0],
+        onClick = {},
+    ) {
+        EpisodeListItem(
+            episode = episodeMocks.first(),
+            onClick = {}
+        )
     }
 }
 

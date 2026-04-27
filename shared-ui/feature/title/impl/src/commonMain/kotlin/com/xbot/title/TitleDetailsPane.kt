@@ -82,7 +82,8 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
@@ -459,19 +460,18 @@ private fun WatchButton(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun TitleDetailsPanePreview(
     @PreviewParameter(TitleScreenStateProvider::class) state: TitleScreenState
 ) {
-    AnilibriaPreview {
-        TitleDetailsPaneContent(
-            state = state,
-            onAction = {},
-            onBackClick = {},
-            onPlayClick = { _, _ -> },
-            onReleaseClick = {}
-        )
-    }
+    TitleDetailsPaneContent(
+        state = state,
+        onAction = {},
+        onBackClick = {},
+        onPlayClick = { _, _ -> },
+        onReleaseClick = {}
+    )
 }
 
 private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenState> {

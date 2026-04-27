@@ -39,7 +39,8 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.releaseMocks
 import com.xbot.domain.models.Release
 import com.xbot.localization.localizedName
@@ -260,7 +261,8 @@ private fun ListItemLayout(
         val headlineOffset = verticalPadding
         val tagsOffset = headlineOffset + headlinePlaceable.height
 
-        val supportingHeight = (headlineHeight - headlinePlaceable.height - spacing).coerceAtLeast(0)
+        val supportingHeight =
+            (headlineHeight - headlinePlaceable.height - spacing).coerceAtLeast(0)
         val supportingPlaceable = supportingMeasurable.first()
             .measure(
                 constraints = constraints.copy(
@@ -329,21 +331,19 @@ private const val SubtitleAlpha = 0.6f
 private const val DescriptionAlpha = 0.8f
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun ReleaseListItemPreview() {
-    AnilibriaPreview {
-        ReleaseListItem(
-            release = releaseMocks.first()
-        )
-    }
+    ReleaseListItem(
+        release = releaseMocks.first()
+    )
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun ReleaseListItemLoadingPreview() {
-    AnilibriaPreview {
-        ReleaseListItem(
-            release = null
-        )
-    }
+    ReleaseListItem(
+        release = null
+    )
 }

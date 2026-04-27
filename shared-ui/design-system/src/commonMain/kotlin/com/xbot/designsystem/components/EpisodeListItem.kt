@@ -45,7 +45,8 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.episodeMocks
 import com.xbot.domain.models.Episode
 import com.xbot.localization.localizedName
@@ -277,28 +278,26 @@ data class EpisodeListItemColors(
 
 @OptIn(ExperimentalTime::class)
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun EpisodeListItemPreview() {
-    AnilibriaPreview {
-        EpisodeListItem(
-            episode = episodeMocks.first(),
-            selected = false,
-            onClick = {
+    EpisodeListItem(
+        episode = episodeMocks.first(),
+        selected = false,
+        onClick = {
 
-            }
-        )
-    }
+        }
+    )
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun EpisodeListItemLoadingPreview() {
-    AnilibriaPreview {
-        EpisodeListItem(
-            episode = null,
-            onClick = {}
-        )
-    }
+    EpisodeListItem(
+        episode = null,
+        onClick = {}
+    )
 }
 
 private fun formatOrdinal(ordinal: Float): String {

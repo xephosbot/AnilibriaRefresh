@@ -37,7 +37,8 @@ import com.xbot.designsystem.components.SwitchPreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.utils.AnilibriaPreview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.localization.stringRes
 import com.xbot.resources.Res
@@ -174,22 +175,21 @@ private fun AppearanceScreenContent(
 }
 
 @Preview
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun AppearancePanePreview() {
-    AnilibriaPreview {
-        var state by remember { mutableStateOf(AppearanceScreenState()) }
+    var state by remember { mutableStateOf(AppearanceScreenState()) }
 
-        AppearanceScreenContent(
-            state = state,
-            onAction = { action ->
-                when (action) {
-                    is AppearanceScreenAction.OnThemeOptionChange -> state = state.copy(themeOption = action.option)
-                    is AppearanceScreenAction.OnDynamicThemeChange -> state = state.copy(isDynamicTheme = action.enabled)
-                    is AppearanceScreenAction.OnPureBlackChange -> state = state.copy(isPureBlack = action.enabled)
-                    is AppearanceScreenAction.OnExpressiveColorChange -> state = state.copy(isExpressiveColor = action.enabled)
-                }
-            },
-            onBackClick = {}
-        )
-    }
+    AppearanceScreenContent(
+        state = state,
+        onAction = { action ->
+            state = when (action) {
+                is AppearanceScreenAction.OnThemeOptionChange -> state.copy(themeOption = action.option)
+                is AppearanceScreenAction.OnDynamicThemeChange -> state.copy(isDynamicTheme = action.enabled)
+                is AppearanceScreenAction.OnPureBlackChange -> state.copy(isPureBlack = action.enabled)
+                is AppearanceScreenAction.OnExpressiveColorChange -> state.copy(isExpressiveColor = action.enabled)
+            }
+        },
+        onBackClick = {}
+    )
 }
