@@ -1,6 +1,8 @@
 rootProject.name = "AnilibriaRefresh"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+includeBuild("build-logic")
+
 pluginManagement {
     repositories {
         google {

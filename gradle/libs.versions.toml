@@ -4,6 +4,7 @@ android-minsdk = "24"
 android-targetsdk = "37"
 android-compilesdk = "37"
 android-gradle-plugin = "9.2.0"
+android-tools = "32.2.0"
 android-desugar-jdk = "2.1.5"
 
 # Kotlin
@@ -25,6 +26,7 @@ androidx-interpolator = "1.0.0"
 androidx-media3 = "1.10.0"
 androidx-paging = "3.5.0-rc01"
 androidx-savedstate = "1.4.0"
+androidx-lint-gradle = "1.0.0-beta01"
 
 # Jetbrains
 lifecycle = "2.10.0"
@@ -88,6 +90,7 @@ androidx-media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exop
 androidx-paging-core = { group = "androidx.paging", name = "paging-common", version.ref = "androidx-paging" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging" }
 androidx-savedstate = { group = "androidx.savedstate", name = "savedstate", version.ref = "androidx-savedstate" }
+androidx-lint-gradle = { group = "androidx.lint", name = "lint-gradle", version.ref = "androidx-lint-gradle" }
 
 # Jetbrains
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidx-lifecycle" }
@@ -149,14 +152,18 @@ connectivity-android = { module = "dev.jordond.connectivity:connectivity-android
 connectivity-apple = { module = "dev.jordond.connectivity:connectivity-apple", version.ref = "connectivity" }
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 
-# Kotlin Build Tools
+# Dependencies of the included build-logic
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+compose-gradle-plugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
 
 [plugins]
 # Android
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+android-lint = { id = "com.android.lint", version.ref = "android-gradle-plugin" }
 android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 
 # Kotlin
@@ -173,3 +180,6 @@ compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-m
 # Koin
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
+
+# Plugins defined by this project
+anilibria-kotlin-multiplatform = { id = "anilibria.kotlin.multiplatform" }
