@@ -59,9 +59,9 @@ import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
-import com.xbot.localization.stringRes
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_filters
 import com.xbot.resources.button_retry

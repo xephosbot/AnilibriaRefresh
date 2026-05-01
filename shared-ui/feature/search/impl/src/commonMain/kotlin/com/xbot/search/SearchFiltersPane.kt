@@ -54,9 +54,9 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
-import com.xbot.localization.stringRes
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.resources.description_filter_age_ratings

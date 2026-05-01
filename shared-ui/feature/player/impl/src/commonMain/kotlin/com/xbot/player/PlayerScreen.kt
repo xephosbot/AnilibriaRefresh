@@ -23,8 +23,8 @@ import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.EpisodeFixtures
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import com.xbot.resources.Res

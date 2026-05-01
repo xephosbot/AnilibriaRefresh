@@ -24,8 +24,8 @@ kotlin {
     dependencies {
         implementation(projects.shared.core.domain.api)
         implementation(projects.sharedUi.common)
-        implementation(projects.sharedUi.designSystem)
+        implementation(projects.sharedUi.resource)
+        implementation(projects.sharedUi.designSystem.icons)
         implementation(libs.kotlinx.serialization.core)
-        implementation(libs.navigation3.runtime)
     }
 }

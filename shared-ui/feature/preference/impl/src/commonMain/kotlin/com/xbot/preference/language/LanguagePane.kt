@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.localization.AppLanguage
 import com.xbot.localization.LocaleManager
-import com.xbot.localization.stringRes
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.preference_language_title
 import org.jetbrains.compose.resources.stringResource

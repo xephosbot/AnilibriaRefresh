@@ -1,0 +1,17 @@
+package com.xbot.formatters
+
+import androidx.compose.ui.text.intl.Locale
+import kotlinx.datetime.DayOfWeek
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSLocale
+
+actual fun DayOfWeek.getName(locale: Locale, style: DayOfWeekStyle): String {
+    val formatter = NSDateFormatter()
+    formatter.locale = NSLocale(locale.toLanguageTag())
+    val weekdaySymbols = when (style) {
+        DayOfWeekStyle.FULL -> formatter.weekdaySymbols
+        DayOfWeekStyle.SHORT -> formatter.shortWeekdaySymbols
+    }
+    val weekday = (ordinal + 1) % 7
+    return weekdaySymbols[weekday] as String
+}
