@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,12 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 
 @Composable
 fun <T> MultiChoiceChipGroup(
@@ -121,75 +121,69 @@ fun ChipGroup(
 }
 
 
-@Preview
+@Preview(showBackground = true)
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun MultiChoiceChipGroupPreview() {
     val items = remember { listOf("summer", "autumn", "winter", "spring") }
     val selectedItems = remember { mutableStateListOf("summer", "winter") }
 
-    AnilibriaTheme {
-        Surface {
-            MultiChoiceChipGroup(
-                items = items,
-                selectedItems = selectedItems
-            ) { selected, item ->
-                FilterChip(
-                    modifier = Modifier.animatePlacement(),
-                    selected = selected,
-                    onClick = {
-                        if (selectedItems.contains(item)) {
-                            selectedItems.remove(item)
-                        } else {
-                            selectedItems.add(item)
-                        }
-                    },
-                    label = { Text(item) },
-                    leadingIcon = if (selected) {
-                        {
-                            Icon(
-                                AnilibriaIcons.Check,
-                                null,
-                                Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        }
-                    } else null
-                )
-            }
-        }
+    MultiChoiceChipGroup(
+        items = items,
+        selectedItems = selectedItems
+    ) { selected, item ->
+        FilterChip(
+            modifier = Modifier.animatePlacement(),
+            selected = selected,
+            onClick = {
+                if (selectedItems.contains(item)) {
+                    selectedItems.remove(item)
+                } else {
+                    selectedItems.add(item)
+                }
+            },
+            label = { Text(item) },
+            leadingIcon = if (selected) {
+                {
+                    Icon(
+                        AnilibriaIcons.Check,
+                        null,
+                        Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else null
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
+@PreviewWrapper(AnilibriaPreviewWrapper::class)
 @Composable
 private fun SingleChoiceChipGroupPreview() {
     val items = remember { listOf("summer", "autumn", "winter", "spring") }
     var selectedItem by remember { mutableStateOf("summer") }
 
-    AnilibriaTheme {
-        Surface {
-            SingleChoiceChipGroup(
-                items = items,
-                selectedItem = selectedItem
-            ) { selected, item ->
-                FilterChip(
-                    modifier = Modifier.animatePlacement(),
-                    selected = selected,
-                    onClick = {
-                        selectedItem = item
-                    },
-                    label = { Text(item) },
-                    leadingIcon = if (selected) {
-                        {
-                            Icon(
-                                AnilibriaIcons.Check,
-                                null,
-                                Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        }
-                    } else null
-                )
-            }
-        }
+    SingleChoiceChipGroup(
+        items = items,
+        selectedItem = selectedItem
+    ) { selected, item ->
+        FilterChip(
+            modifier = Modifier.animatePlacement(),
+            selected = selected,
+            onClick = {
+                selectedItem = item
+            },
+            label = { Text(item) },
+            leadingIcon = if (selected) {
+                {
+                    Icon(
+                        AnilibriaIcons.Check,
+                        null,
+                        Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else null
+        )
     }
 }
 
