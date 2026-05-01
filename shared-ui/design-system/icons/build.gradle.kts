@@ -19,24 +19,8 @@ kotlin {
 
     jvmToolchain(21)
 
-    applyDefaultHierarchyTemplate()
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(libs.compose.ui)
-    }
-
-    sourceSets {
-        val nonAndroidMain by creating {
-            dependsOn(commonMain.get())
-        }
-
-        jvmMain {
-            dependsOn(nonAndroidMain)
-        }
-
-        iosMain {
-            dependsOn(nonAndroidMain)
-        }
     }
 }
