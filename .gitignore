@@ -13,7 +13,7 @@
 *.iml
 
 # Ignore Gradle related directories and files
-/.gradle
+**/.gradle/**
 
 # Ignore captures directory
 /captures
