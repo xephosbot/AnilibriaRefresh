@@ -42,8 +42,6 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.theme.LocalMargins
-import com.xbot.designsystem.theme.asPaddingValues
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
@@ -178,7 +176,7 @@ private fun ScheduleContent(
                 }
             },
             modifier = modifier.shimmerUpdater(shimmer),
-            contentPadding = contentPadding + LocalMargins.current.asPaddingValues(),
+            contentPadding = contentPadding.plus(PaddingValues(horizontal = 16.dp)),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             stickyHeader = { date ->
                 DateItem(

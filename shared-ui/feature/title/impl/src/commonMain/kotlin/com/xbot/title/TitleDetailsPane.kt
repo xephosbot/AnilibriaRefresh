@@ -81,7 +81,6 @@ import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.MessageAction
@@ -233,7 +232,7 @@ private fun TitleDetailsPaneContent(
                                     )
                                 )
                             )
-                            .padding(horizontal = LocalMargins.current.horizontal + 8.dp, vertical = 16.dp),
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
                         visible = state.isWatchButtonVisible,
                         enter = slideInVertically { it },
                         exit = slideOutVertically { it }
@@ -276,7 +275,7 @@ private fun TitleDetails(
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
-    val horizontalMargin = LocalMargins.current.horizontal
+    val horizontalMargin = 16.dp
 
     Feed(
         modifier = modifier,

@@ -102,7 +102,6 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
@@ -337,7 +336,7 @@ private fun ReleaseFeed(
     }
     
     var activeMenuReleaseId by remember { mutableStateOf<Int?>(null) }
-    val horizontalMargin = LocalMargins.current.horizontal
+    val horizontalMargin = 16.dp
 
     Feed(
         modifier = modifier,
