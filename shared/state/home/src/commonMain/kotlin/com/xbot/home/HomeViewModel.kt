@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.common.asyncLoad
 import com.xbot.domain.models.AuthState
+import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetBestReleasesForAllTimeUseCase
@@ -21,12 +22,19 @@ import com.xbot.domain.usecase.GetScheduleWeekUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
 import org.orbitmvi.orbit.viewmodel.container
+
+private typealias ErrorHandler = suspend (DomainError) -> Unit
+private typealias DataLoader = suspend (onError: ErrorHandler) -> Unit
 
 @OptIn(OrbitExperimental::class)
 @KoinViewModel
@@ -48,16 +56,7 @@ class HomeViewModel(
         savedStateHandle = savedStateHandle ?: SavedStateHandle(),
         serializer = HomeScreenState.serializer(),
     ) {
-        coroutineScope {
-            launch { loadBestReleasesInCurrentSeason() }
-            launch { loadBestReleasesForAllTime() }
-            launch { loadRecommendedFranchises() }
-            launch { loadRecommendedReleases() }
-            launch { loadRecommendedGenres() }
-            launch { loadScheduleForToday() }
-            launch { loadScheduleWeek() }
-            launch { loadAuthState() }
-        }
+        refresh()
     }
 
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
@@ -65,81 +64,93 @@ class HomeViewModel(
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
-    private suspend fun loadBestReleasesInCurrentSeason() = subIntent {
+    private suspend fun loadBestReleasesInCurrentSeason(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getBestReleasesInCurrentSeason() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestNow = it))
             }
         )
     }
 
-    private suspend fun loadBestReleasesForAllTime() = subIntent {
+    private suspend fun loadBestReleasesForAllTime(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getBestReleasesForAllTime() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it))
             }
         )
     }
 
-    private suspend fun loadRecommendedFranchises() = subIntent {
+    private suspend fun loadRecommendedFranchises(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getRecommendedFranchisesUseCase() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it))
             }
         )
     }
 
-    private suspend fun loadRecommendedReleases() = subIntent {
+    private suspend fun loadRecommendedReleases(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getRecommendedReleases() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it))
             }
         )
     }
 
-    private suspend fun loadRecommendedGenres() = subIntent {
+    private suspend fun loadRecommendedGenres(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getRecommendedGenres() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(genres = it))
             }
         )
     }
 
-    private suspend fun loadScheduleForToday() = subIntent {
+    private suspend fun loadScheduleForToday(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getScheduleForToday() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it))
             }
         )
     }
 
-    private suspend fun loadScheduleWeek() = subIntent {
+    private suspend fun loadScheduleWeek(onError: ErrorHandler) = subIntent {
         asyncLoad(
             request = { getScheduleWeek() },
-            onError = { error -> showErrorMessage(error) { refresh() } },
+            onError = { error -> onError(error) },
             reducer = {
                 copy(scheduleWeek = state.scheduleWeek.copy(days = it))
             }
         )
     }
 
-    private suspend fun loadAuthState() = subIntent {
-        getAuthState().collect { authState ->
+    private suspend fun loadAuthState(onError: ErrorHandler) = subIntent {
+        val authFlow = getAuthState()
+        try {
+            val first = authFlow.first()
             reduce {
-                state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
+                state.copy(currentUser = (first as? AuthState.Authenticated)?.user)
             }
+            viewModelScope.launch {
+                authFlow.drop(1).collect { authState ->
+                    reduce {
+                        state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            val domainError = e as? DomainError ?: DomainError.UnknownError(e)
+            onError(domainError)
         }
     }
 
@@ -147,20 +158,48 @@ class HomeViewModel(
         when (action) {
             is HomeScreenAction.Refresh -> refresh()
             is HomeScreenAction.UpdateBestType -> updateBestType(action.bestType)
-            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
+            is HomeScreenAction.ShowErrorMessage -> showErrorMessage(
+                error = action.error as? DomainError ?: DomainError.UnknownError(action.error),
+                onRetry = action.onRetry,
+            )
         }
     }
 
-    private fun refresh(): Job = intent {
+    private fun refresh(): Job = performBatchLoad(getAllLoaders())
+
+    private fun getAllLoaders() = listOf<DataLoader>(
+        { loadBestReleasesInCurrentSeason(it) },
+        { loadBestReleasesForAllTime(it) },
+        { loadRecommendedFranchises(it) },
+        { loadRecommendedReleases(it) },
+        { loadRecommendedGenres(it) },
+        { loadScheduleForToday(it) },
+        { loadScheduleWeek(it) },
+        { loadAuthState(it) }
+    )
+
+    private fun performBatchLoad(loaders: List<DataLoader>): Job = intent {
+        val failedLoaders = mutableListOf<DataLoader>()
+        var firstError: DomainError? = null
+        val mutex = Mutex()
+
         coroutineScope {
-            launch { loadBestReleasesInCurrentSeason() }
-            launch { loadBestReleasesForAllTime() }
-            launch { loadRecommendedFranchises() }
-            launch { loadRecommendedReleases() }
-            launch { loadRecommendedGenres() }
-            launch { loadScheduleForToday() }
-            launch { loadScheduleWeek() }
-            launch { loadAuthState() }
+            loaders.forEach { loader ->
+                launch {
+                    loader { error ->
+                        mutex.withLock {
+                            if (firstError == null) firstError = error
+                            failedLoaders.add(loader)
+                        }
+                    }
+                }
+            }
+        }
+
+        firstError?.let { error ->
+            showErrorMessage(error) {
+                performBatchLoad(failedLoaders)
+            }
         }
     }
 
@@ -168,7 +207,7 @@ class HomeViewModel(
         reduce { state.copy(currentBestType = bestType) }
     }
 
-    private fun showErrorMessage(error: Throwable, onRetry: () -> Unit): Job = intent {
+    private fun showErrorMessage(error: DomainError, onRetry: () -> Unit): Job = intent {
         postSideEffect(HomeScreenSideEffect.ShowErrorMessage(error, onRetry))
     }
 }

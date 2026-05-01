@@ -60,8 +60,8 @@ import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.union
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description

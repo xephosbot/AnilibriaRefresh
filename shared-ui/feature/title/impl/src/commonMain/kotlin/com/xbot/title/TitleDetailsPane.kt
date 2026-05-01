@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -55,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.ShimmerBounds
@@ -82,7 +82,6 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.theme.LocalMargins
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.MessageAction
@@ -92,9 +91,9 @@ import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
+import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
 import com.xbot.resources.button_retry
@@ -277,7 +276,6 @@ private fun TitleDetails(
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
-    val overscrollEffect = rememberOverscrollEffect()
     val horizontalMargin = LocalMargins.current.horizontal
 
     Feed(
@@ -285,7 +283,6 @@ private fun TitleDetails(
         state = gridState,
         columns = GridCells.Adaptive(400.dp),
         contentPadding = contentPadding.only(WindowInsetsSides.Bottom),
-        overscrollEffect = overscrollEffect,
     ) {
         row {
             LargeReleaseCard(
@@ -293,7 +290,6 @@ private fun TitleDetails(
                 contentModifier = Modifier.animateContentSize(),
                 release = state.initialRelease,
                 contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
-                overscrollEffect = overscrollEffect,
             ) {
                 AnimatedVisibility(
                     visible = (state.details.getOrElse { null }?.genres ?: emptyList()).isNotEmpty(),

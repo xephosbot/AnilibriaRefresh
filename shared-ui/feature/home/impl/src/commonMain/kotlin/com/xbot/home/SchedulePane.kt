@@ -50,10 +50,10 @@ import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.models.Release
-import com.xbot.localization.DayOfWeekStyle
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
-import com.xbot.localization.toLocalizedString
+import com.xbot.formatters.DayOfWeekStyle
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
+import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule

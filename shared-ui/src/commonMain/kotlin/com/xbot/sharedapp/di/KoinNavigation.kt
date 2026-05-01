@@ -20,7 +20,6 @@ private fun Scope.getNavSerializersModule(): SerializersModule {
     return serializersModule
 }
 
-
 @OptIn(KoinInternalApi::class)
 @Composable
 internal fun koinNavSerializersModule(scope : Scope = LocalKoinScopeContext.current.getValue()): SerializersModule {

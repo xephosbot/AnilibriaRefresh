@@ -112,8 +112,8 @@ import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Release
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
