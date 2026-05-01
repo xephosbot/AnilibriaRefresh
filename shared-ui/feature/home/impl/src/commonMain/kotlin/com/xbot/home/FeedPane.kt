@@ -102,7 +102,6 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
@@ -112,8 +111,8 @@ import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Release
-import com.xbot.localization.StringResource
-import com.xbot.localization.localizedMessage
+import com.xbot.resources.StringResource
+import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
@@ -337,7 +336,7 @@ private fun ReleaseFeed(
     }
     
     var activeMenuReleaseId by remember { mutableStateOf<Int?>(null) }
-    val horizontalMargin = LocalMargins.current.horizontal
+    val horizontalMargin = 16.dp
 
     Feed(
         modifier = modifier,

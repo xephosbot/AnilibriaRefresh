@@ -24,8 +24,10 @@ kotlin {
     dependencies {
         implementation(projects.shared.state.preference)
         implementation(projects.shared.core.domain.testFixtures)
-        implementation(projects.sharedUi.designSystem)
         implementation(projects.sharedUi.common)
+        implementation(projects.sharedUi.resource)
+        implementation(projects.sharedUi.designSystem.icons)
+        implementation(projects.sharedUi.designSystem.components)
         implementation(projects.sharedUi.feature.preference.api)
         implementation(libs.compose.foundation)
         implementation(libs.compose.preview)

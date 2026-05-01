@@ -40,7 +40,7 @@ import com.xbot.designsystem.icons.ArrowBack
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.models.enums.ThemeOption
-import com.xbot.localization.stringRes
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_dynamic_theme_description
 import com.xbot.resources.preference_appearance_dynamic_theme_title
