@@ -329,7 +329,10 @@ private fun ReleaseFeed(
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
 ) {
-    val pagerState = rememberPagerState { releasesFeed.recommendedReleases.getOrElse { List(10) { null } }.size }
+    val recommendedReleases = releasesFeed.recommendedReleases.getOrElse { List(10) { null } }
+    val pagerState = rememberPagerState(
+        initialPage = (Int.MAX_VALUE / 2) - ((Int.MAX_VALUE / 2) % recommendedReleases.size)
+    ) { Int.MAX_VALUE }
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }

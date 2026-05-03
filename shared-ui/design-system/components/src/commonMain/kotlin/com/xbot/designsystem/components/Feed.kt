@@ -397,7 +397,8 @@ inline fun <T> FeedScope.horizontalPagerItems(
         reverseLayout = reverseLayout,
         snapPosition = snapPosition
     ) { page ->
-        pagerContent(page, items[page])
+        val actualIndex = page % items.size
+        pagerContent(page, items[actualIndex])
     }
 }
 
