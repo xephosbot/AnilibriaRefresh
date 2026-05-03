@@ -18,8 +18,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.setSingletonImageLoaderFactory
-import coil3.network.DeDupeConcurrentRequestStrategy
-import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.enums.ThemeOption
@@ -32,7 +30,6 @@ import com.xbot.network.utils.ImageUrlProvider
 import com.xbot.sharedapp.coil.ImageUrlMapper
 import com.xbot.sharedapp.di.koinNavSerializersModule
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
-import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -42,23 +39,14 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
-    val httpClient = koinInject<HttpClient>()
     val imageUrlProvider = koinInject<ImageUrlProvider>()
     setSingletonImageLoaderFactory { context ->
         ImageLoader.Builder(context)
             .components {
-                add(
-                    KtorNetworkFetcherFactory(
-                        httpClient = httpClient,
-                        concurrentRequestStrategy = DeDupeConcurrentRequestStrategy(),
-                    )
-                )
                 add(ImageUrlMapper(imageUrlProvider))
             }
             .build()
     }
-
-    val appThemeState by viewModel.state.collectAsStateWithLifecycle()
 
     val navigator = rememberNavigator(
         startRoute = HomeRoute,
@@ -69,6 +57,8 @@ internal fun AnilibriaApp(
             //TODO: Implement navigator interception
         }
     )
+
+    val appThemeState by viewModel.state.collectAsStateWithLifecycle()
 
     val darkTheme = when (appThemeState.themeOption) {
         ThemeOption.System -> isSystemInDarkTheme()
