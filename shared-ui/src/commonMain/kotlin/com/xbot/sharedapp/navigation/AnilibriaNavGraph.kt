@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
 import com.xbot.navigation.rememberSharedViewModelStoreNavEntryDecorator
@@ -64,10 +65,11 @@ internal fun AnilibriaNavGraph(
     )
     val dialogStrategy = remember { DialogSceneStrategy<NavKey>() }
 
-    CompositionLocalProvider(
-        LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1)
-    ) {
-        SharedTransitionLayout {
+    SharedTransitionLayout {
+        CompositionLocalProvider(
+            LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1),
+            LocalNavSharedTransitionScope provides this
+        ) {
             NavDisplay(
                 backStack = navigator.backStack,
                 modifier = modifier.fillMaxSize(),

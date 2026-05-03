@@ -1,13 +1,12 @@
 package com.xbot.title
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -61,6 +61,7 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
+import com.xbot.common.getOrNull
 import com.xbot.designsystem.components.ChipGroup
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
@@ -83,12 +84,14 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.designsystem.utils.SnackbarManager
 import com.xbot.designsystem.utils.build
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
@@ -159,68 +162,76 @@ private fun TitleDetailsPaneContent(
     val gridState = rememberLazyGridState()
     var selected by remember { mutableStateOf(false) }
 
-    val shimmer = rememberShimmer(ShimmerBounds.Custom)
+    val isWatchButtonVisible by remember(state.details) {
+        derivedStateOf {
+            state.details.getOrNull()?.episodes?.firstOrNull() != null
+        }
+    }
+    var isHeaderButtonVisible by remember { mutableStateOf(true) }
 
-    ProvideShimmer(shimmer) {
-        Scaffold(
-            modifier = modifier
-                .shimmerUpdater(shimmer),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.surfaceContainer,
-                                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+    val shimmer = rememberShimmer(ShimmerBounds.Custom)
+    val sharedTransitionScope = LocalNavSharedTransitionScope.current
+
+    with(sharedTransitionScope) {
+        ProvideShimmer(shimmer) {
+            Scaffold(
+                modifier = modifier
+                    .shimmerUpdater(shimmer),
+                topBar = {
+                    TopAppBar(
+                        modifier = Modifier
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        MaterialTheme.colorScheme.surfaceContainer,
+                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                    )
                                 )
-                            )
-                        ),
-                    title = {},
-                    navigationIcon = {
-                        FilledIconButton(
-                            onClick = onBackClick,
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.ArrowBack,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    actions = {
-                        FilledIconToggleButton(
-                            checked = selected,
-                            onCheckedChange = { selected = it },
-                            shapes = IconButtonDefaults.toggleableShapes(),
-                            colors = IconButtonDefaults.filledIconToggleButtonColors(
-                                checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                checkedContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.inverseSurface),
                             ),
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.Filled.Star,
-                                contentDescription = null
-                            )
-                        }
-                        FilledIconButton(
-                            onClick = {},
-                            modifier = Modifier.size(
-                                IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)
-                            ),
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                imageVector = AnilibriaIcons.MoreVert,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
-                )
-            },
-            bottomBar = {
-                if (isSinglePane) {
+                        title = {},
+                        navigationIcon = {
+                            FilledIconButton(
+                                onClick = onBackClick,
+                                shapes = IconButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        actions = {
+                            FilledIconToggleButton(
+                                checked = selected,
+                                onCheckedChange = { selected = it },
+                                shapes = IconButtonDefaults.toggleableShapes(),
+                                colors = IconButtonDefaults.filledIconToggleButtonColors(
+                                    checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                                    checkedContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.inverseSurface),
+                                ),
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.Filled.Star,
+                                    contentDescription = null
+                                )
+                            }
+                            FilledIconButton(
+                                onClick = {},
+                                modifier = Modifier.size(
+                                    IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)
+                                ),
+                                shapes = IconButtonDefaults.shapes()
+                            ) {
+                                Icon(
+                                    imageVector = AnilibriaIcons.MoreVert,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
+                    )
+                },
+                bottomBar = {
                     AnimatedVisibility(
                         modifier = Modifier
                             .background(
@@ -232,11 +243,17 @@ private fun TitleDetailsPaneContent(
                                 )
                             )
                             .padding(horizontal = 24.dp, vertical = 16.dp),
-                        visible = state.isWatchButtonVisible,
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it }
+                        visible = isSinglePane && !isHeaderButtonVisible && isWatchButtonVisible,
+                        enter = fadeIn(),
+                        exit = fadeOut()
                     ) {
                         WatchButton(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "watch_button"),
+                                    animatedVisibilityScope = this@AnimatedVisibility,
+                                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
+                                ),
                             onClick = {
                                 state.initialRelease?.let { release ->
                                     onPlayClick(release.id, 0)
@@ -244,18 +261,21 @@ private fun TitleDetailsPaneContent(
                             }
                         )
                     }
-                }
-            },
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ) { innerPadding ->
-            TitleDetails(
-                gridState = gridState,
-                isSinglePane = isSinglePane,
-                state = state,
-                contentPadding = innerPadding,
-                onPlayClick = onPlayClick,
-                onReleaseClick = onReleaseClick,
-            )
+                },
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
+            ) { innerPadding ->
+                TitleDetails(
+                    gridState = gridState,
+                    isSinglePane = isSinglePane,
+                    isWatchButtonVisible = isWatchButtonVisible,
+                    isHeaderButtonVisible = isHeaderButtonVisible,
+                    onHeaderButtonVisibilityChanged = { isHeaderButtonVisible = it },
+                    state = state,
+                    contentPadding = innerPadding,
+                    onPlayClick = onPlayClick,
+                    onReleaseClick = onReleaseClick,
+                )
+            }
         }
     }
 }
@@ -266,6 +286,9 @@ private fun TitleDetails(
     modifier: Modifier = Modifier,
     gridState: LazyGridState,
     isSinglePane: Boolean,
+    isWatchButtonVisible: Boolean,
+    isHeaderButtonVisible: Boolean,
+    onHeaderButtonVisibilityChanged: (Boolean) -> Unit,
     state: TitleScreenState,
     contentPadding: PaddingValues,
     onPlayClick: (Int, Int) -> Unit,
@@ -276,141 +299,160 @@ private fun TitleDetails(
     }
     val horizontalMargin = 16.dp
 
-    Feed(
-        modifier = modifier,
-        state = gridState,
-        columns = GridCells.Adaptive(400.dp),
-        contentPadding = contentPadding.only(WindowInsetsSides.Bottom),
-    ) {
-        row {
-            LargeReleaseCard(
-                modifier = Modifier.verticalParallax(gridState),
-                contentModifier = Modifier.animateContentSize(),
-                release = state.initialRelease,
-                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
-            ) {
-                AnimatedVisibility(
-                    visible = (state.details.getOrElse { null }?.genres ?: emptyList()).isNotEmpty(),
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
+    val sharedTransitionScope = LocalNavSharedTransitionScope.current
+
+    with(sharedTransitionScope) {
+        Feed(
+            modifier = modifier,
+            state = gridState,
+            columns = GridCells.Adaptive(400.dp),
+            contentPadding = contentPadding.only(WindowInsetsSides.Bottom),
+        ) {
+            row {
+                LargeReleaseCard(
+                    modifier = Modifier.verticalParallax(gridState),
+                    contentModifier = Modifier.animateContentSize(),
+                    release = state.initialRelease,
+                    contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
                 ) {
-                    ChipGroup(
-                        items = state.details.getOrElse { null }?.genres ?: emptyList(),
-                        maxLines = 1,
-                        contentPadding = PaddingValues(0.dp)
-                    ) { genre ->
-                        AssistChip(
-                            onClick = {},
-                            label = { Text(text = genre?.name.orEmpty()) }
+                    AnimatedVisibility(
+                        visible = (state.details.getOrElse { null }?.genres ?: emptyList()).isNotEmpty(),
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        ChipGroup(
+                            items = state.details.getOrElse { null }?.genres ?: emptyList(),
+                            maxLines = 1,
+                            contentPadding = PaddingValues(0.dp)
+                        ) { genre ->
+                            AssistChip(
+                                onClick = {},
+                                label = { Text(text = genre?.name.orEmpty()) }
+                            )
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = (!isSinglePane || isHeaderButtonVisible) && isWatchButtonVisible,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        WatchButton(
+                            modifier = Modifier
+                                .onVisibilityChanged(minFractionVisible = 0.2f) {
+                                    onHeaderButtonVisibilityChanged(it)
+                                }
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "watch_button"),
+                                    animatedVisibilityScope = this@AnimatedVisibility,
+                                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
+                                ),
+                            onClick = {
+                                state.initialRelease?.let { release ->
+                                    onPlayClick(release.id, 0)
+                                }
+                            }
                         )
                     }
                 }
-                if (!isSinglePane && state.isWatchButtonVisible) {
-                    WatchButton(
+            }
+
+            row {
+                AnimatedVisibility(
+                    visible = state.details.getOrElse { null }?.availabilityStatus != null && state.details.getOrElse { null }?.availabilityStatus != AvailabilityStatus.Available,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    Column {
+                        Spacer(Modifier.height(16.dp))
+                        AlertCard(
+                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                        ) {
+                            Text(
+                                text = when (state.details.getOrElse { null }?.availabilityStatus) {
+                                    AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
+                                    AvailabilityStatus.CopyrightBlocked -> stringResource(Res.string.alert_blocked_copyright)
+                                    else -> ""
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            row {
+                AnimatedVisibility(
+                    visible = state.details.getOrElse { null }?.notification != null,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    Column {
+                        Spacer(Modifier.height(16.dp))
+                        NotificationCard(
+                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                        ) {
+                            Text(text = state.details.getOrElse { null }?.notification.orEmpty())
+                        }
+                    }
+                }
+            }
+
+            if (state.details.getOrElse { null }?.releaseMembers?.isNotEmpty() == true) {
+                header(
+                    title = { Text(text = stringResource(Res.string.label_members)) },
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                )
+                horizontalItems(
+                    items = state.details.getOrElse { null }?.releaseMembers ?: emptyList(),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                ) { member ->
+                    MemberItem(
+                        releaseMember = member,
+                        onClick = { /*TODO*/ }
+                    )
+                }
+            }
+
+            if (state.relatedReleases.getOrElse { emptyList() }.isNotEmpty()) {
+                header(
+                    title = { Text(text = stringResource(Res.string.label_related_releases)) },
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                )
+                horizontalItems(
+                    items = state.relatedReleases.getOrElse { emptyList() },
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                ) { release ->
+                    SmallReleaseCard(
+                        release = release,
+                        onClick = onReleaseClick,
+                    )
+                }
+            }
+
+            if ((state.details.getOrElse { null }?.episodes ?: emptyList()).isNotEmpty()) {
+                header(
+                    title = { Text(text = stringResource(Res.string.label_episodes)) },
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                )
+                itemsIndexed(
+                    state.details.getOrElse { null }?.episodes ?: emptyList()
+                ) { index, episode ->
+                    EpisodeListItem(
+                        modifier = Modifier.section(
+                            index = index,
+                            itemsCount = (state.details.getOrElse { null }?.episodes ?: emptyList()).size,
+                            columnsCount = columnsCount.value,
+                            sectionSpacing = SectionDefaults.spacing(
+                                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                            )
+                        ),
+                        episode = episode,
                         onClick = {
                             state.initialRelease?.let { release ->
-                                onPlayClick(release.id, 0)
+                                onPlayClick(release.id, index)
                             }
                         }
                     )
                 }
-            }
-        }
-
-        row {
-            AnimatedVisibility(
-                visible = state.details.getOrElse { null }?.availabilityStatus != null && state.details.getOrElse { null }?.availabilityStatus != AvailabilityStatus.Available,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                Column {
-                    Spacer(Modifier.height(16.dp))
-                    AlertCard(
-                        modifier = Modifier.padding(horizontal = horizontalMargin),
-                    ) {
-                        Text(
-                            text = when (state.details.getOrElse { null }?.availabilityStatus) {
-                                AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
-                                AvailabilityStatus.CopyrightBlocked -> stringResource(Res.string.alert_blocked_copyright)
-                                else -> ""
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        row {
-            AnimatedVisibility(
-                visible = state.details.getOrElse { null }?.notification != null,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                Column {
-                    Spacer(Modifier.height(16.dp))
-                    NotificationCard(
-                        modifier = Modifier.padding(horizontal = horizontalMargin),
-                    ) {
-                        Text(text = state.details.getOrElse { null }?.notification.orEmpty())
-                    }
-                }
-            }
-        }
-
-        if (state.details.getOrElse { null }?.releaseMembers?.isNotEmpty() == true) {
-            header(
-                title = { Text(text = stringResource(Res.string.label_members)) },
-                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            )
-            horizontalItems(
-                items = state.details.getOrElse { null }?.releaseMembers ?: emptyList(),
-                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            ) { member ->
-                MemberItem(
-                    releaseMember = member,
-                    onClick = { /*TODO*/ }
-                )
-            }
-        }
-
-        if (state.relatedReleases.getOrElse { emptyList() }.isNotEmpty()) {
-            header(
-                title = { Text(text = stringResource(Res.string.label_related_releases)) },
-                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            )
-            horizontalItems(
-                items = state.relatedReleases.getOrElse { emptyList() },
-                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            ) { release ->
-                SmallReleaseCard(
-                    release = release,
-                    onClick = onReleaseClick,
-                )
-            }
-        }
-
-        if ((state.details.getOrElse { null }?.episodes ?: emptyList()).isNotEmpty()) {
-            header(
-                title = { Text(text = stringResource(Res.string.label_episodes)) },
-                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            )
-            itemsIndexed(state.details.getOrElse { null }?.episodes ?: emptyList()) { index, episode ->
-                EpisodeListItem(
-                    modifier = Modifier.section(
-                        index = index,
-                        itemsCount = (state.details.getOrElse { null }?.episodes ?: emptyList()).size,
-                        columnsCount = columnsCount.value,
-                        sectionSpacing = SectionDefaults.spacing(
-                            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
-                        )
-                    ),
-                    episode = episode,
-                    onClick = {
-                        state.initialRelease?.let { release ->
-                            onPlayClick(release.id, index)
-                        }
-                    }
-                )
             }
         }
     }
