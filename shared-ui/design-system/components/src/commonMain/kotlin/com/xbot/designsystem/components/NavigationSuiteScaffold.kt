@@ -259,24 +259,24 @@ class ScaffoldState(
 ) {
     init {
         coroutineScope.launch {
-            snackbarManager.messages.collect { currentMessages ->
-                if (currentMessages.isNotEmpty()) {
-                    val message = currentMessages[0]
-                    val text = getString(message.title)
-                    val actionLabel = message.action?.title?.let { getString(it) }
-                    // Notify the SnackbarManager so it can remove the current message from the list
-                    snackbarManager.setMessageShown(message.id)
+            snackbarManager.messages.collect { messages ->
+                while (messages.isNotEmpty()) {
+                    val message = messages.first()
+
                     // Display the snackbar on the screen. `showSnackbar` is a function
                     // that suspends until the snackbar disappears from the screen
                     val result = snackbarHostState.showSnackbar(
-                        message = text,
-                        actionLabel = actionLabel,
+                        message = getString(message.title),
+                        actionLabel = message.action?.title?.let { getString(it) },
                     )
 
                     when (result) {
-                        SnackbarResult.Dismissed -> {}
-                        SnackbarResult.ActionPerformed -> message.action?.action?.let { it() }
+                        SnackbarResult.ActionPerformed -> message.action?.action?.invoke()
+                        SnackbarResult.Dismissed -> Unit
                     }
+
+                    // Notify the SnackbarManager so it can remove the current message from the list
+                    snackbarManager.setMessageShown(message.id)
                 }
             }
         }

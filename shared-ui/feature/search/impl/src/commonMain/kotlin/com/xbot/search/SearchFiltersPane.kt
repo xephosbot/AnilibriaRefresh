@@ -44,8 +44,8 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.designsystem.utils.build
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
@@ -54,10 +54,10 @@ import com.xbot.domain.models.enums.PublishStatus
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
-import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
 import com.xbot.resources.description_filter_age_ratings
 import com.xbot.resources.description_filter_genres
@@ -93,13 +93,12 @@ internal fun SearchFilterPane(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SearchScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.showMessage(
-                    title = sideEffect.error.localizedMessage(),
-                    action = MessageAction(
-                        title = StringResource.Text(Res.string.button_retry),
-                        action = sideEffect.onRetry,
-                    )
-                )
+                SnackbarManager.build()
+                    .setTitle(sideEffect.error.localizedMessage())
+                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                        sideEffect.onRetry()
+                    }
+                    .show()
             }
         }
     }

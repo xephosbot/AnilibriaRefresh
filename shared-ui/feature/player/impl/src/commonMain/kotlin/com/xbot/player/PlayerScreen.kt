@@ -16,18 +16,18 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.designsystem.utils.build
 import com.xbot.domain.fixtures.EpisodeFixtures
-import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
@@ -48,13 +48,12 @@ internal fun PlayerScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is PlayerScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.showMessage(
-                    title = sideEffect.error.localizedMessage(),
-                    action = MessageAction(
-                        title = StringResource.Text(Res.string.button_retry),
-                        action = sideEffect.onRetry,
-                    )
-                )
+                SnackbarManager.build()
+                    .setTitle(sideEffect.error.localizedMessage())
+                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                        sideEffect.onRetry()
+                    }
+                    .show()
             }
         }
     }

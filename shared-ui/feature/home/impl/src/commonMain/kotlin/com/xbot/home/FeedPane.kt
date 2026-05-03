@@ -103,17 +103,17 @@ import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.designsystem.utils.build
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Release
-import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.badge_1
 import com.xbot.resources.badge_2
 import com.xbot.resources.badge_3
@@ -129,12 +129,12 @@ import com.xbot.resources.label_updates
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.time.ExperimentalTime
+import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -156,13 +156,12 @@ internal fun FeedPane(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.showMessage(
-                    title = sideEffect.error.localizedMessage(),
-                    action = MessageAction(
-                        title = StringResource.Text(Res.string.button_retry),
-                        action = sideEffect.onRetry,
-                    )
-                )
+                SnackbarManager.build()
+                    .setTitle(sideEffect.error.localizedMessage())
+                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                        sideEffect.onRetry()
+                    }
+                    .show()
             }
         }
     }

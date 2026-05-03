@@ -30,6 +30,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -42,17 +43,16 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.MessageAction
 import com.xbot.designsystem.utils.SnackbarManager
+import com.xbot.designsystem.utils.build
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.DayOfWeekStyle
-import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule
 import kotlinx.datetime.DateTimeUnit
@@ -85,13 +85,12 @@ internal fun SchedulePane(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.showMessage(
-                    title = sideEffect.error.localizedMessage(),
-                    action = MessageAction(
-                        title = StringResource.Text(Res.string.button_retry),
-                        action = sideEffect.onRetry,
-                    )
-                )
+                SnackbarManager.build()
+                    .setTitle(sideEffect.error.localizedMessage())
+                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                        sideEffect.onRetry()
+                    }
+                    .show()
             }
         }
     }

@@ -9,37 +9,66 @@ import kotlinx.coroutines.flow.update
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Stable
-data class Message(
-    val id: Long,
-    val title: StringResource,
-    val action: MessageAction? = null,
-)
+class SnackbarBuilder internal constructor(
+    private val manager: SnackbarManager
+) {
+    private var title: StringResource? = null
+    private var actionTitle: StringResource? = null
+    private var action: (() -> Unit)? = null
 
-data class MessageAction(
-    val title: StringResource,
-    val action: () -> Unit = {},
-)
+    fun setTitle(value: StringResource) = apply {
+        title = value
+    }
+
+    fun setAction(
+        title: StringResource,
+        onClick: () -> Unit
+    ) = apply {
+        this.actionTitle = title
+        this.action = onClick
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    fun show() {
+        val message = Message(
+            id = Uuid.random().toLongs { mostSignificantBits, _ -> mostSignificantBits },
+            title = requireNotNull(title),
+            action = actionTitle?.let {
+                MessageAction(it, action ?: {})
+            }
+        )
+
+        manager.enqueue(message)
+    }
+}
 
 @OptIn(ExperimentalUuidApi::class)
 object SnackbarManager {
     private val _messages: MutableStateFlow<List<Message>> = MutableStateFlow(emptyList())
-    val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
+    internal val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 
-    fun showMessage(title: StringResource, action: MessageAction? = null) {
-        val message = Message(
-            id = Uuid.random().toLongs { mostSignificantBits, _ -> mostSignificantBits },
-            title = title,
-            action = action,
-        )
-        _messages.update { currentMessages ->
-            currentMessages + message
-        }
+    internal fun enqueue(message: Message) {
+        _messages.update { it + message }
     }
 
-    fun setMessageShown(messageId: Long) {
+    internal fun setMessageShown(messageId: Long) {
         _messages.update { currentMessages ->
             currentMessages.filterNot { it.id == messageId }
         }
     }
 }
+
+fun SnackbarManager.build(): SnackbarBuilder = SnackbarBuilder(this)
+
+@Stable
+internal data class Message(
+    val id: Long,
+    val title: StringResource,
+    val action: MessageAction? = null,
+)
+
+@Stable
+internal data class MessageAction(
+    val title: StringResource,
+    val action: () -> Unit = {},
+)
