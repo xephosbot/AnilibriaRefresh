@@ -66,7 +66,6 @@ fun EpisodeListItem(
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
     shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
-    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     @Suppress("NAME_SHADOWING")
@@ -95,29 +94,21 @@ fun EpisodeListItem(
 
     Surface(
         modifier = modifier,
+        onClick = onClick,
+        enabled = episode != null,
         shape = shape,
         color = containerColor,
         contentColor = contentColor,
+        interactionSource = interactionSource,
     ) {
-        Box(
-            modifier = Modifier
-                .combinedClickable(
-                    enabled = episode != null,
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current,
-                    onClick = onClick,
-                    onLongClick = onLongClick
-                )
-        ) {
-            Crossfade(
-                targetState = episode,
-                label = "EpisodeListItem Crossfade to ${if (episode == null) "Loading" else "Loaded Episode"}"
-            ) { state ->
-                if (state != null) {
-                    EpisodeListItemContent(state)
-                } else {
-                    LoadingEpisodeListItem()
-                }
+        Crossfade(
+            targetState = episode,
+            label = "EpisodeListItem Crossfade to ${if (episode == null) "Loading" else "Loaded Episode"}"
+        ) { state ->
+            if (state != null) {
+                EpisodeListItemContent(state)
+            } else {
+                LoadingEpisodeListItem()
             }
         }
     }

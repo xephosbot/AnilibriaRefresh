@@ -14,108 +14,124 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.utils.LocalIsSinglePane
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContextMenu(
     showMenu: Boolean,
     onDismiss: () -> Unit,
-    items: List<ContextMenuItem>,
+    modifier: Modifier = Modifier,
+    menuContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val isDesktop = !LocalIsSinglePane.current
 
-    Box {
+    Box(modifier = modifier) {
         content()
 
         if (isDesktop) {
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = onDismiss
+            CompositionLocalProvider(
+                LocalContextMenuItemOverride provides DefaultContextMenuItemOverride,
             ) {
-                items.forEach { item ->
-                    ContextMenuDropdownItem(
-                        item = item,
-                        onDismiss = onDismiss
-                    )
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = onDismiss
+                ) {
+                    menuContent()
                 }
             }
         }
     }
 
     if (!isDesktop && showMenu) {
-        ContextMenuBottomSheet(
-            items = items,
-            onDismiss = onDismiss
-        )
-    }
-}
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ContextMenuBottomSheet(
-    items: List<ContextMenuItem>,
-    onDismiss: () -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-    ) {
-        items.forEach { item ->
-            ContextMenuListItem(
-                item = item,
-                onDismiss = onDismiss
-            )
+        CompositionLocalProvider(
+            LocalContextMenuItemOverride provides MobileContextMenuItemOverride,
+        ) {
+            ModalBottomSheet(
+                onDismissRequest = onDismiss,
+                sheetState = sheetState,
+            ) {
+                menuContent()
+                Spacer(Modifier.height(16.dp))
+            }
         }
-        Spacer(Modifier.height(16.dp))
     }
 }
 
 @Composable
-private fun ContextMenuListItem(
-    item: ContextMenuItem,
-    onDismiss: () -> Unit,
+fun ContextMenuItem(
+    label: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    onClick: () -> Unit,
 ) {
-    ListItem(
-        modifier = Modifier.clickable {
-            item.onClick()
-            onDismiss()
-        },
-        headlineContent = { Text(item.label) },
-        leadingContent = item.icon?.let {
-            { Icon(imageVector = it, contentDescription = null) }
-        },
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent
-        )
-    )
+    with(LocalContextMenuItemOverride.current) {
+        ContextMenuItemOverrideScope(
+            label = label,
+            modifier = modifier,
+            icon = icon,
+            onClick = onClick,
+        ).ContextMenuItem()
+    }
 }
 
-@Composable
-private fun ContextMenuDropdownItem(
-    item: ContextMenuItem,
-    onDismiss: () -> Unit,
-) {
-    DropdownMenuItem(
-        text = { Text(item.label) },
-        leadingIcon = item.icon?.let {
-            { Icon(imageVector = it, contentDescription = null) }
-        },
-        onClick = {
-            item.onClick()
-            onDismiss()
-        }
-    )
+interface ContextMenuItemOverride {
+    @Composable
+    fun ContextMenuItemOverrideScope.ContextMenuItem()
 }
 
-data class ContextMenuItem(
-    val icon: ImageVector? = null,
+@Immutable
+class ContextMenuItemOverrideScope(
     val label: String,
+    val modifier: Modifier,
+    val icon: ImageVector?,
     val onClick: () -> Unit,
 )
+
+internal val LocalContextMenuItemOverride = compositionLocalOf<ContextMenuItemOverride> {
+    DefaultContextMenuItemOverride
+}
+
+internal object DefaultContextMenuItemOverride : ContextMenuItemOverride {
+    @Composable
+    override fun ContextMenuItemOverrideScope.ContextMenuItem() {
+        DropdownMenuItem(
+            modifier = modifier,
+            text = { Text(label) },
+            leadingIcon = icon?.let {
+                { Icon(imageVector = it, contentDescription = null) }
+            },
+            onClick = {
+                onClick()
+            }
+        )
+    }
+}
+
+internal object MobileContextMenuItemOverride : ContextMenuItemOverride {
+    @Composable
+    override fun ContextMenuItemOverrideScope.ContextMenuItem() {
+        ListItem(
+            modifier = modifier.clickable {
+                onClick()
+            },
+            headlineContent = { Text(label) },
+            leadingContent = icon?.let {
+                { Icon(imageVector = it, contentDescription = null) }
+            },
+            colors = ListItemDefaults.colors(
+                containerColor = Color.Transparent
+            )
+        )
+    }
+}
