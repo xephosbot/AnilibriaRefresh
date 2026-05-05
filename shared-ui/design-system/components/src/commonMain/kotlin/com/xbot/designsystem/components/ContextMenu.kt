@@ -18,12 +18,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,22 +58,22 @@ fun ContextMenu(
 
     if (!isDesktop) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        var sheetVisible by remember { mutableStateOf(false) }
 
         LaunchedEffect(showMenu) {
             if (showMenu) {
-                sheetState.show()
-            } else {
-                launch {
-                    sheetState.hide()
-                }.invokeOnCompletion {
-                    if (sheetState.isVisible) {
-                        onDismiss()
-                    }
+                if (!sheetVisible) {
+                    sheetVisible = true
+                } else {
+                    sheetState.show()
                 }
+            } else if (sheetVisible) {
+                sheetState.hide()
+                sheetVisible = false
             }
         }
 
-        if (sheetState.isVisible || showMenu) {
+        if (sheetVisible) {
             CompositionLocalProvider(
                 LocalContextMenuItemOverride provides MobileContextMenuItemOverride,
             ) {
