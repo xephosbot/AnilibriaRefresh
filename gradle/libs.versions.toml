@@ -3,7 +3,7 @@
 android-minsdk = "24"
 android-targetsdk = "37"
 android-compilesdk = "37"
-android-gradle-plugin = "9.2.0"
+android-gradle-plugin = "9.2.1"
 android-desugar-jdk = "2.1.5"
 
 # Kotlin
