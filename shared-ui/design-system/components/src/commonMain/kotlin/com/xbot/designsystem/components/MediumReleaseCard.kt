@@ -3,7 +3,7 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
@@ -50,6 +51,7 @@ fun MediumReleaseCard(
     release: Release?,
     onClick: (Release) -> Unit,
     modifier: Modifier = Modifier,
+    onContextClick: (() -> Unit)? = null,
     shape: ExpressiveShape = ExpressiveMediumReleaseCardDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
@@ -72,12 +74,22 @@ fun MediumReleaseCard(
     Crossfade(
         modifier = Modifier
             .clip(shape)
-            .clickable(
+            .combinedClickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current,
-            ) {
-                release?.let { onClick(it) }
-            },
+                onLongClick = onContextClick,
+                onClick = { release?.let { onClick(it) } }
+            )
+            .then(
+                if (onContextClick != null) {
+                    Modifier.contextClickable(
+                        enabled = release != null,
+                        onClick = onContextClick,
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         targetState = release,
         label = "ReleaseCardItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
     ) { state ->

@@ -3,7 +3,7 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -53,6 +54,7 @@ fun ReleaseListItem(
     contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
     shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
+    onContextClick: (() -> Unit)? = null,
     onClick: (Release) -> Unit = {},
 ) {
     @Suppress("NAME_SHADOWING")
@@ -71,19 +73,28 @@ fun ReleaseListItem(
     )
 
     Surface(
-        modifier = modifier,
+        modifier = modifier
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onLongClick = onContextClick,
+                onClick = { release?.let { onClick(it) } }
+            )
+            .then(
+                if (onContextClick != null) {
+                    Modifier.contextClickable(
+                        enabled = release != null,
+                        onClick = onContextClick
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         shape = shape,
         color = containerColor,
         contentColor = contentColor
     ) {
         Crossfade(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current,
-                ) {
-                    release?.let { onClick(it) }
-                },
             targetState = release,
             label = "ReleaseListItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
         ) { state ->

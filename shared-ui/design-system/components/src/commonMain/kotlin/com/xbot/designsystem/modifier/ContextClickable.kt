@@ -1,46 +1,34 @@
 package com.xbot.designsystem.modifier
 
 import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.PointerType
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.input.pointer.changedToDown
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.util.fastAll
 
-/**
- * A [Modifier] that handles contextual interactions across platforms:
- * - Long-press for touch interactions.
- * - Right-click (Secondary Button) for mouse interactions.
- *
- * @param enabled Whether the contextual interaction is enabled.
- * @param onContextClick Callback triggered when a contextual interaction occurs.
- */
 fun Modifier.contextClickable(
     enabled: Boolean = true,
-    onContextClick: () -> Unit
-): Modifier = this
-    .pointerInput(enabled, onContextClick) {
-        if (!enabled) return@pointerInput
-        detectTapGestures(
-            onLongPress = { onContextClick() }
-        )
-    }
-    .pointerInput(enabled, onContextClick) {
-        if (!enabled) return@pointerInput
+    onClick: () -> Unit
+): Modifier = if (enabled) this
+    .pointerInput(Unit) {
         awaitEachGesture {
-            val event = awaitPointerEvent()
-            val change = event.changes.firstOrNull() ?: return@awaitEachGesture
-
-            if (
-                event.type == PointerEventType.Press &&
-                event.buttons.isSecondaryPressed &&
-                change.type == PointerType.Mouse
-            ) {
-                change.consume()
-                waitForUpOrCancellation()
-                onContextClick()
+            val event = awaitEventFirstDown()
+            if (event.buttons.isSecondaryPressed) {
+                event.changes.forEach { it.consume() }
+                onClick()
             }
         }
-    }
+    } else this
+
+private suspend fun AwaitPointerEventScope.awaitEventFirstDown(): PointerEvent {
+    var event: PointerEvent
+    do {
+        event = awaitPointerEvent()
+    } while (
+        !event.changes.fastAll { it.changedToDown() }
+    )
+    return event
+}

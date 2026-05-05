@@ -2,7 +2,6 @@ package com.xbot.designsystem.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -45,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
@@ -66,6 +66,7 @@ fun EpisodeListItem(
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
     shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
+    onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     @Suppress("NAME_SHADOWING")
@@ -93,13 +94,26 @@ fun EpisodeListItem(
     )
 
     Surface(
-        modifier = modifier,
-        onClick = onClick,
-        enabled = episode != null,
+        modifier = modifier
+            .combinedClickable(
+                enabled = episode != null,
+                interactionSource = interactionSource,
+                onLongClick = onContextClick,
+                onClick = onClick
+            )
+            .then(
+                if (onContextClick != null) {
+                    Modifier.contextClickable(
+                        enabled = episode != null,
+                        onClick = onContextClick
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         shape = shape,
         color = containerColor,
         contentColor = contentColor,
-        interactionSource = interactionSource,
     ) {
         Crossfade(
             targetState = episode,

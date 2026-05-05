@@ -84,7 +84,6 @@ import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
@@ -478,11 +477,11 @@ private fun TitleDetails(
                                     sectionSpacing = SectionDefaults.spacing(
                                         contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                                     )
-                                )
-                                .contextClickable(episode != null) {
-                                    showEpisodeMenu = episode.id
-                                },
+                                ),
                             episode = episode,
+                            onContextClick = {
+                                showEpisodeMenu = episode.id
+                            },
                             onClick = {
                                 state.initialRelease?.let { release ->
                                     onPlayClick(release.id, index)

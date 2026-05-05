@@ -3,7 +3,7 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -54,6 +55,7 @@ import org.jetbrains.compose.resources.stringResource
 fun GenreItem(
     genre: Genre?,
     modifier: Modifier = Modifier,
+    onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Crossfade(
@@ -65,6 +67,7 @@ fun GenreItem(
             CircleContentItem(
                 modifier = Modifier,
                 onClick = onClick,
+                onContextClick = onContextClick,
                 image = {
                     PosterImage(
                         modifier = Modifier.fillMaxSize(),
@@ -96,6 +99,7 @@ fun GenreItem(
 fun MemberItem(
     releaseMember: ReleaseMember?,
     modifier: Modifier = Modifier,
+    onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Crossfade(
@@ -107,6 +111,7 @@ fun MemberItem(
             CircleContentItem(
                 modifier = modifier,
                 onClick = onClick,
+                onContextClick = onContextClick,
                 image = {
                     PosterImage(
                         modifier = Modifier.fillMaxSize(),
@@ -179,6 +184,7 @@ private fun CircleContentPlaceholder(
 fun CircleContentItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onContextClick: (() -> Unit)? = null,
     shape: ExpressiveShape = CircleContentItemDefaults.shape(),
     image: @Composable BoxScope.() -> Unit,
     title: @Composable () -> Unit,
@@ -208,10 +214,18 @@ fun CircleContentItem(
             modifier = Modifier
                 .size(PosterSize)
                 .clip(shape)
-                .clickable(
+                .combinedClickable(
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
+                    onLongClick = onContextClick,
                     onClick = onClick
+                )
+                .then(
+                    if (onContextClick != null) {
+                        Modifier.contextClickable(onClick = onContextClick)
+                    } else {
+                        Modifier
+                    }
                 )
         ) {
             image()
