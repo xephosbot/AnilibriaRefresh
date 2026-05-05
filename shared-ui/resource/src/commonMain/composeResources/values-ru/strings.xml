@@ -45,6 +45,7 @@
     <string name="button_add_to_favorites">Добавить в избранное</string>
     <string name="button_watched_it">Уже смотрели?</string>
     <string name="button_share">Поделиться</string>
+    <string name="button_copy">Копировать</string>
     <string name="button_telegram">Смотреть в Telegram</string>
 
     <!-- Предупреждения -->
@@ -163,4 +164,6 @@
     <string name="login_create_account">Создать аккаунт</string>
     <string name="login_sign_in">Войти</string>
     <string name="login_success_message">Авторизация успешна</string>
+
+    <string name="message_copied_to_clipboard">Ссылка скопирована</string>
 </resources>

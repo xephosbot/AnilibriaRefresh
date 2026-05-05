@@ -45,11 +45,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onVisibilityChanged
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -60,9 +62,12 @@ import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.AsyncResult
+import com.xbot.common.copyText
 import com.xbot.common.getOrElse
 import com.xbot.common.getOrNull
 import com.xbot.designsystem.components.ChipGroup
+import com.xbot.designsystem.components.ContextMenu
+import com.xbot.designsystem.components.ContextMenuItem
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.LargeReleaseCard
@@ -92,18 +97,22 @@ import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
+import com.xbot.domain.models.hlsUrl
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
 import com.xbot.resources.StringResource
 import com.xbot.resources.alert_blocked_copyright
 import com.xbot.resources.alert_blocked_geo
+import com.xbot.resources.button_copy
 import com.xbot.resources.button_retry
+import com.xbot.resources.button_watch
 import com.xbot.resources.button_watch_continue
 import com.xbot.resources.label_episodes
 import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -298,6 +307,11 @@ private fun TitleDetails(
     }
     val horizontalMargin = 16.dp
 
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+
+    var showEpisodeMenu by remember { mutableStateOf<String?>(null) }
+
     with(LocalNavSharedTransitionScope.current) {
         Feed(
             modifier = modifier,
@@ -430,22 +444,52 @@ private fun TitleDetails(
                 itemsIndexed(
                     state.details.getOrNull()?.episodes ?: emptyList()
                 ) { index, episode ->
-                    EpisodeListItem(
-                        modifier = Modifier.section(
-                            index = index,
-                            itemsCount = (state.details.getOrNull()?.episodes ?: emptyList()).size,
-                            columnsCount = columnsCount.value,
-                            sectionSpacing = SectionDefaults.spacing(
-                                contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                    val copyLabel = stringResource(Res.string.button_copy)
+                    ContextMenu(
+                        showMenu = showEpisodeMenu == episode.id,
+                        onDismiss = { showEpisodeMenu = null },
+                        menuContent = {
+                            ContextMenuItem(
+                                icon = AnilibriaIcons.Filled.PlayArrow,
+                                label = stringResource(Res.string.button_watch),
+                                onClick = {
+                                    state.initialRelease?.let { onPlayClick(it.id, index) }
+                                    showEpisodeMenu = null
+                                }
                             )
-                        ),
-                        episode = episode,
-                        onClick = {
-                            state.initialRelease?.let { release ->
-                                onPlayClick(release.id, index)
-                            }
+                            ContextMenuItem(
+                                icon = AnilibriaIcons.Filled.Star,
+                                label = copyLabel,
+                                onClick = {
+                                    scope.launch {
+                                        clipboard.copyText(episode.hlsUrl)
+                                    }
+                                    showEpisodeMenu = null
+                                }
+                            )
                         }
-                    )
+                    ) {
+                        EpisodeListItem(
+                            modifier = Modifier
+                                .section(
+                                    index = index,
+                                    itemsCount = (state.details.getOrNull()?.episodes ?: emptyList()).size,
+                                    columnsCount = columnsCount.value,
+                                    sectionSpacing = SectionDefaults.spacing(
+                                        contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                                    )
+                                ),
+                            episode = episode,
+                            onContextClick = {
+                                showEpisodeMenu = episode.id
+                            },
+                            onClick = {
+                                state.initialRelease?.let { release ->
+                                    onPlayClick(release.id, index)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

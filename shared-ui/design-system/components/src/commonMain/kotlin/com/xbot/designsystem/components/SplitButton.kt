@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -23,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
@@ -84,7 +82,6 @@ fun MediumSplitButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = com.xbot.designsystem.components.SplitButtonDefaults.colors(),
     spacing: Dp = SplitButtonDefaults.Spacing,
-    dropdownContent: @Composable ColumnScope.() -> Unit,
 ) {
     SplitButtonLayout(
         leadingButton = {
@@ -111,25 +108,18 @@ fun MediumSplitButton(
             )
         },
         trailingButton = {
-            Box {
-                com.xbot.designsystem.components.SplitButtonDefaults.TrailingButton(
-                    checked = trailingChecked,
-                    onCheckedChange = onTrailingCheckedChange,
-                    modifier = Modifier
-                        .height(SplitButtonDefaults.MediumContainerHeight),
-                    shapes = SplitButtonDefaults
-                        .trailingButtonShapesFor(SplitButtonDefaults.MediumContainerHeight),
-                    colors = colors,
-                    contentPadding = SplitButtonDefaults
-                        .trailingButtonContentPaddingFor(SplitButtonDefaults.MediumContainerHeight),
-                    content = trailingContent,
-                )
-                DropdownMenu(
-                    expanded = trailingChecked,
-                    onDismissRequest = { onTrailingCheckedChange(false) },
-                    content = dropdownContent
-                )
-            }
+            com.xbot.designsystem.components.SplitButtonDefaults.TrailingButton(
+                checked = trailingChecked,
+                onCheckedChange = onTrailingCheckedChange,
+                modifier = Modifier
+                    .height(SplitButtonDefaults.MediumContainerHeight),
+                shapes = SplitButtonDefaults
+                    .trailingButtonShapesFor(SplitButtonDefaults.MediumContainerHeight),
+                colors = colors,
+                contentPadding = SplitButtonDefaults
+                    .trailingButtonContentPaddingFor(SplitButtonDefaults.MediumContainerHeight),
+                content = trailingContent,
+            )
         },
         modifier = modifier,
         spacing = spacing

@@ -45,6 +45,7 @@
     <string name="button_add_to_favorites">Add to watchlist</string>
     <string name="button_watched_it">Watched it?</string>
     <string name="button_share">Share</string>
+    <string name="button_copy">Copy</string>
     <string name="button_telegram">Watch in Telegram</string>
 
     <!-- Предупреждения -->
@@ -163,4 +164,6 @@
     <string name="login_create_account">Create account</string>
     <string name="login_sign_in">Sign in</string>
     <string name="login_success_message">Login successful</string>
+
+    <string name="message_copied_to_clipboard">Link copied to clipboard</string>
 </resources>
