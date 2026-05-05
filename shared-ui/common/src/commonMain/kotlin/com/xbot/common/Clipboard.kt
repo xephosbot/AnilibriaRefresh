@@ -1,10 +1,12 @@
 package com.xbot.common
 
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
 
-fun ClipboardManager.copyText(text: String?) {
+suspend fun Clipboard.copyText(text: String?) {
     text?.let {
-        setText(AnnotatedString(it))
+        setClipEntry(clipEntryOf(text))
     }
 }
+
+internal expect fun clipEntryOf(string: String): ClipEntry
