@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
@@ -70,6 +69,8 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
+import com.xbot.designsystem.components.ContextMenu
+import com.xbot.designsystem.components.ContextMenuItem
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Feed
 import com.xbot.designsystem.components.FranchiseCard
@@ -362,53 +363,58 @@ private fun ReleaseFeed(
             ) {
                 val isChecked by rememberUpdatedState(activeMenuReleaseId != null && activeMenuReleaseId == release?.id)
 
-                MediumSplitButton(
-                    onLeadingClick = {
-                        release?.let { onReleaseClick(it) }
-                    },
-                    trailingChecked = isChecked,
-                    onTrailingCheckedChange = { checked ->
-                        activeMenuReleaseId = if (checked) release?.id else null
-                    },
-                    leadingContent = {
-                        Icon(
-                            modifier = Modifier
-                                .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                            imageVector = AnilibriaIcons.Filled.PlayArrow,
-                            contentDescription = null
+                ContextMenu(
+                    showMenu = isChecked,
+                    onDismiss = { activeMenuReleaseId = null },
+                    menuContent = {
+                        ContextMenuItem(
+                            label = "Item 1",
+                            onClick = { activeMenuReleaseId = null }
                         )
-                        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-                        Text(
-                            text = stringResource(Res.string.button_watch),
-                            maxLines = 1
+                        ContextMenuItem(
+                            label = "Item 2",
+                            onClick = { activeMenuReleaseId = null }
                         )
-                    },
-                    trailingContent = {
-                        val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
-
-                        Icon(
-                            modifier = Modifier
-                                .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
-                                .graphicsLayer {
-                                    rotationZ = rotation
-                                },
-                            imageVector = AnilibriaIcons.ArrowDropDown,
-                            contentDescription = null
+                        ContextMenuItem(
+                            label = "Item 3",
+                            onClick = { activeMenuReleaseId = null }
                         )
                     }
                 ) {
-                    //TODO>
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 1") },
-                        onClick = { /* Handle item 1 click */ }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 2") },
-                        onClick = { /* Handle item 3 click */ }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "Item 3") },
-                        onClick = { /* Handle item 3 click */ }
+                    MediumSplitButton(
+                        onLeadingClick = {
+                            release?.let { onReleaseClick(it) }
+                        },
+                        trailingChecked = isChecked,
+                        onTrailingCheckedChange = { checked ->
+                            activeMenuReleaseId = if (checked) release?.id else null
+                        },
+                        leadingContent = {
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
+                            Text(
+                                text = stringResource(Res.string.button_watch),
+                                maxLines = 1
+                            )
+                        },
+                        trailingContent = {
+                            val rotation by animateFloatAsState(if (isChecked) 180f else 0f)
+
+                            Icon(
+                                modifier = Modifier
+                                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    },
+                                imageVector = AnilibriaIcons.ArrowDropDown,
+                                contentDescription = null
+                            )
+                        }
                     )
                 }
             }

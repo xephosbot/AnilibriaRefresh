@@ -3,6 +3,7 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -38,14 +39,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
+import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
@@ -64,6 +66,7 @@ fun EpisodeListItem(
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
     shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
     interactionSource: MutableInteractionSource? = null,
+    onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     @Suppress("NAME_SHADOWING")
@@ -91,13 +94,26 @@ fun EpisodeListItem(
     )
 
     Surface(
-        modifier = modifier,
-        onClick = onClick,
-        enabled = episode != null,
+        modifier = modifier
+            .combinedClickable(
+                enabled = episode != null,
+                interactionSource = interactionSource,
+                onLongClick = onContextClick,
+                onClick = onClick
+            )
+            .then(
+                if (onContextClick != null) {
+                    Modifier.contextClickable(
+                        enabled = episode != null,
+                        onClick = onContextClick
+                    )
+                } else {
+                    Modifier
+                }
+            ),
         shape = shape,
         color = containerColor,
         contentColor = contentColor,
-        interactionSource = interactionSource,
     ) {
         Crossfade(
             targetState = episode,

@@ -260,7 +260,7 @@ class ScaffoldState(
     init {
         coroutineScope.launch {
             snackbarManager.messages.collect { messages ->
-                while (messages.isNotEmpty()) {
+                if (messages.isNotEmpty()) {
                     val message = messages.first()
 
                     // Display the snackbar on the screen. `showSnackbar` is a function

@@ -15,3 +15,6 @@ data class Episode(
     val duration: Duration? = null,
     val updatedAt: LocalDateTime? = null,
 )
+
+val Episode.hlsUrl: String?
+    get() = hls1080 ?: hls720 ?: hls480
