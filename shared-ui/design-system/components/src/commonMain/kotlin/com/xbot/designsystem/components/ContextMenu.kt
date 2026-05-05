@@ -16,12 +16,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,18 +53,34 @@ fun ContextMenu(
         }
     }
 
-    if (!isDesktop && showMenu) {
+    if (!isDesktop) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-        CompositionLocalProvider(
-            LocalContextMenuItemOverride provides MobileContextMenuItemOverride,
-        ) {
-            ModalBottomSheet(
-                onDismissRequest = onDismiss,
-                sheetState = sheetState,
+        LaunchedEffect(showMenu) {
+            if (showMenu) {
+                sheetState.show()
+            } else {
+                launch {
+                    sheetState.hide()
+                }.invokeOnCompletion {
+                    if (sheetState.isVisible) {
+                        onDismiss()
+                    }
+                }
+            }
+        }
+
+        if (sheetState.isVisible || showMenu) {
+            CompositionLocalProvider(
+                LocalContextMenuItemOverride provides MobileContextMenuItemOverride,
             ) {
-                menuContent()
-                Spacer(Modifier.height(16.dp))
+                ModalBottomSheet(
+                    onDismissRequest = onDismiss,
+                    sheetState = sheetState,
+                ) {
+                    menuContent()
+                    Spacer(Modifier.height(16.dp))
+                }
             }
         }
     }
