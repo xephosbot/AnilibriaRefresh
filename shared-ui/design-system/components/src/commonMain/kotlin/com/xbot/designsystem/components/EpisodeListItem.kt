@@ -95,6 +95,7 @@ fun EpisodeListItem(
 
     Surface(
         modifier = modifier
+            .clip(shape)
             .combinedClickable(
                 enabled = episode != null,
                 interactionSource = interactionSource,

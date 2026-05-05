@@ -74,6 +74,7 @@ fun ReleaseListItem(
 
     Surface(
         modifier = modifier
+            .clip(shape)
             .combinedClickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current,
