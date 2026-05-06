@@ -13,8 +13,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.JsonConvertException
 import io.ktor.util.AttributeKey
 import io.ktor.util.network.UnresolvedAddressException
-import kotlinx.io.IOException
 import kotlinx.coroutines.CancellationException
+import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
 expect class UnknownHostException : Exception
@@ -43,7 +43,7 @@ internal suspend inline fun <reified T> HttpClient.singleAttempt(
 }
 
 internal suspend fun Throwable.toDomainError(): DomainError = when (this) {
-    is NoConnectionException -> DomainError.NoConnection()
+    is NoConnectionException -> DomainError.NoConnection(this)
     is HttpRequestTimeoutException -> DomainError.Timeout(this)
     is ResponseException -> DomainError.HttpError(response.status.value, response.bodyAsText())
     is UnknownHostException, is UnresolvedAddressException, is IOException -> DomainError.ConnectionError(this)

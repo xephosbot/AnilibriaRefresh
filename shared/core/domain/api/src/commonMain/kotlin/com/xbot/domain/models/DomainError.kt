@@ -8,7 +8,7 @@ sealed class DomainError(
     data class SerializationError(override val cause: Throwable) : DomainError(cause.message, cause)
     data class ConnectionError(override val cause: Throwable) : DomainError(cause.message, cause)
     data class Timeout(override val cause: Throwable?) : DomainError("Request timed out", cause)
-    class NoConnection : DomainError("No network available")
+    data class NoConnection(override val cause: Throwable) : DomainError("No network available")
     data class UnknownError(override val cause: Throwable) : DomainError(cause.message, cause)
 
     /**
