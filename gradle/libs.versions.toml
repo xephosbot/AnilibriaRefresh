@@ -33,7 +33,7 @@ navigation3-runtime = "1.1.1"
 navigation3-ui = "1.1.1"
 kotlinx-atomicfu = "0.32.1"
 kotlinx-coroutines = "1.10.2"
-kotlinx-datetime = "0.7.1"
+kotlinx-datetime = "0.8.0"
 kotlinx-serialization = "1.11.0"
 
 # Libraries
