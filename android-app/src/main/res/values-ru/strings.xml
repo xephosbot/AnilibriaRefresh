@@ -1,0 +1,12 @@
+<resources>
+    <string name="account_label">Аккаунт Anilibria</string>
+
+    <!-- Каналы уведомлений -->
+    <string name="notification_channel_release_name">Новые релизы</string>
+    <string name="notification_channel_release_description">Уведомления о новых аниме-релизах</string>
+
+    <!-- Запрос разрешения на уведомления -->
+    <string name="notification_permission_granted">Уведомления включены</string>
+    <string name="notification_permission_denied">Уведомления отключены — вы можете пропускать новые релизы</string>
+    <string name="notification_permission_open_settings">Включите уведомления в настройках системы</string>
+</resources>

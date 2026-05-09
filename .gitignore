@@ -35,4 +35,5 @@ android-app/keystore.properties
 .claude
 .artifact
 
+/android-app/google-services.json
 /shared/kotzilla.json

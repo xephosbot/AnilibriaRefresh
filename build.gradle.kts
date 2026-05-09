@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.skie) apply false
     alias(libs.plugins.koin.compiler) apply false
     alias(libs.plugins.kotzilla) apply false
+    alias(libs.plugins.google.services) apply false
 }
 
 buildscript {

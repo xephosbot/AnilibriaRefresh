@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name" translatable="false">Anilibria Refresh</string>
     <string name="account_label">Anilibria account</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_release_id" translatable="false">release_notifications</string>
+    <string name="notification_channel_release_name">New releases</string>
+    <string name="notification_channel_release_description">Notifications about new anime releases</string>
+
+    <!-- Notification permission feedback -->
+    <string name="notification_permission_granted">Notifications enabled</string>
+    <string name="notification_permission_denied">Notifications are off — you may miss new releases</string>
+    <string name="notification_permission_open_settings">Enable notifications in system settings</string>
 </resources>

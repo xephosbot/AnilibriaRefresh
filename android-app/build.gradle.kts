@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
 }
 
 val keystorePropertiesFile = project.file("keystore.properties")
@@ -74,6 +75,9 @@ dependencies {
     implementation(projects.sharedUi)
     implementation(projects.sharedUi.navigation.api)
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.splashscreen)

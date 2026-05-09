@@ -5,6 +5,7 @@ android-targetsdk = "37"
 android-compilesdk = "37"
 android-gradle-plugin = "9.2.1"
 android-desugar-jdk = "2.1.5"
+google-services = "4.4.4"
 
 # Kotlin
 kotlin = "2.3.20"
@@ -37,6 +38,7 @@ kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.11.0"
 
 # Libraries
+firebase-bom = "34.13.0"
 ktor = "3.4.3"
 brotli = "0.1.2"
 koin = "4.2.1"
@@ -149,6 +151,11 @@ connectivity-android = { module = "dev.jordond.connectivity:connectivity-android
 connectivity-apple = { module = "dev.jordond.connectivity:connectivity-apple", version.ref = "connectivity" }
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+
 # Kotlin Build Tools
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
@@ -158,6 +165,9 @@ kotlin-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-p
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
+
+# Firebase
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 # Kotlin
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
