@@ -137,7 +137,7 @@ arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow"
 arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
 arrow-resilience = { group = "io.arrow-kt", name = "arrow-resilience", version.ref = "arrow" }
 eygraber-uri = { group = "com.eygraber", name = "uri-kmp", version.ref = "eygraber-uri" }
-slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.17" }
+slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.18" }
 material-motion-compose-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "material-motion-compose" }
 materialKolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
 shimmer-compose = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
