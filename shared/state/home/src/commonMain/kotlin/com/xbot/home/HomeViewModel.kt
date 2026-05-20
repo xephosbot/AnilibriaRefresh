@@ -63,7 +63,7 @@ class HomeViewModel(
     private val pager: Pager<Int, Release> by lazy { getCatalogReleasesPager.value(null, null) }
 
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
-    val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
+    val releases: Flow<PagingData<Release>> by lazy { pager.flow.cachedIn(viewModelScope) }
 
     private suspend fun loadBestReleasesInCurrentSeason() = subIntent {
         asyncLoad(

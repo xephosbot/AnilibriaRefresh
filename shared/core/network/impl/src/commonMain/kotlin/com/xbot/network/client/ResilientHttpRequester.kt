@@ -31,8 +31,8 @@ import org.koin.core.annotation.Singleton
  */
 @Singleton
 internal class ResilientHttpRequester(
-    private val client: HttpClient,
-    private val schedule: Schedule<DomainError, *>,
+    private val client: Lazy<HttpClient>,
+    private val schedule: Lazy<Schedule<DomainError, *>>,
 ) {
     /**
      * Execute [block] on the underlying [HttpClient] and decode the response as [T].
@@ -42,7 +42,7 @@ internal class ResilientHttpRequester(
      */
     suspend inline fun <reified T> request(
         noinline block: suspend HttpClient.() -> HttpResponse,
-    ): Either<DomainError, T> = schedule.retryRaise {
-        client.singleAttempt<T>(block)
+    ): Either<DomainError, T> = schedule.value.retryRaise {
+        client.value.singleAttempt<T>(block)
     }
 }
