@@ -31,15 +31,15 @@ import org.orbitmvi.orbit.viewmodel.container
 @OptIn(OrbitExperimental::class)
 @KoinViewModel
 class HomeViewModel(
-    getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
-    private val getAuthState: GetAuthStateUseCase,
-    private val getBestReleasesForAllTime: GetBestReleasesForAllTimeUseCase,
-    private val getBestReleasesInCurrentSeason: GetBestReleasesInCurrentSeasonUseCase,
-    private val getRecommendedFranchisesUseCase: GetRecommendedFranchisesUseCase,
-    private val getRecommendedReleases: GetRecommendedReleasesUseCase,
-    private val getRecommendedGenres: GetRecommendedGenresUseCase,
-    private val getScheduleForToday: GetScheduleForTodayUseCase,
-    private val getScheduleWeek: GetScheduleWeekUseCase,
+    private val getCatalogReleasesPager: Lazy<GetCatalogReleasesPagerUseCase>,
+    private val getAuthState: Lazy<GetAuthStateUseCase>,
+    private val getBestReleasesForAllTime: Lazy<GetBestReleasesForAllTimeUseCase>,
+    private val getBestReleasesInCurrentSeason: Lazy<GetBestReleasesInCurrentSeasonUseCase>,
+    private val getRecommendedFranchisesUseCase: Lazy<GetRecommendedFranchisesUseCase>,
+    private val getRecommendedReleases: Lazy<GetRecommendedReleasesUseCase>,
+    private val getRecommendedGenres: Lazy<GetRecommendedGenresUseCase>,
+    private val getScheduleForToday: Lazy<GetScheduleForTodayUseCase>,
+    private val getScheduleWeek: Lazy<GetScheduleWeekUseCase>,
     private val savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
@@ -60,14 +60,14 @@ class HomeViewModel(
         }
     }
 
-    private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
+    private val pager: Pager<Int, Release> by lazy { getCatalogReleasesPager.value(null, null) }
 
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
     val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
 
     private suspend fun loadBestReleasesInCurrentSeason() = subIntent {
         asyncLoad(
-            request = { getBestReleasesInCurrentSeason() },
+            request = { getBestReleasesInCurrentSeason.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestNow = it))
@@ -77,7 +77,7 @@ class HomeViewModel(
 
     private suspend fun loadBestReleasesForAllTime() = subIntent {
         asyncLoad(
-            request = { getBestReleasesForAllTime() },
+            request = { getBestReleasesForAllTime.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(bestAllTime = it))
@@ -87,7 +87,7 @@ class HomeViewModel(
 
     private suspend fun loadRecommendedFranchises() = subIntent {
         asyncLoad(
-            request = { getRecommendedFranchisesUseCase() },
+            request = { getRecommendedFranchisesUseCase.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedFranchises = it))
@@ -97,7 +97,7 @@ class HomeViewModel(
 
     private suspend fun loadRecommendedReleases() = subIntent {
         asyncLoad(
-            request = { getRecommendedReleases() },
+            request = { getRecommendedReleases.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(recommendedReleases = it))
@@ -107,7 +107,7 @@ class HomeViewModel(
 
     private suspend fun loadRecommendedGenres() = subIntent {
         asyncLoad(
-            request = { getRecommendedGenres() },
+            request = { getRecommendedGenres.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(genres = it))
@@ -117,7 +117,7 @@ class HomeViewModel(
 
     private suspend fun loadScheduleForToday() = subIntent {
         asyncLoad(
-            request = { getScheduleForToday() },
+            request = { getScheduleForToday.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releasesFeed = state.releasesFeed.copy(scheduleNow = it))
@@ -127,7 +127,7 @@ class HomeViewModel(
 
     private suspend fun loadScheduleWeek() = subIntent {
         asyncLoad(
-            request = { getScheduleWeek() },
+            request = { getScheduleWeek.value() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(scheduleWeek = state.scheduleWeek.copy(days = it))
@@ -136,7 +136,7 @@ class HomeViewModel(
     }
 
     private suspend fun loadAuthState() = subIntent {
-        getAuthState().collect { authState ->
+        getAuthState.value().collect { authState ->
             reduce {
                 state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
             }

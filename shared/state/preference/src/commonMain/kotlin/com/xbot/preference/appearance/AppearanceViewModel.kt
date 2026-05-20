@@ -18,14 +18,14 @@ import org.orbitmvi.orbit.viewmodel.container
 
 @KoinViewModel
 class AppearanceViewModel(
-    private val getThemeOptionUseCase: GetThemeOptionUseCase,
-    private val getDynamicThemeUseCase: GetDynamicThemeUseCase,
-    private val getPureBlackUseCase: GetPureBlackUseCase,
-    private val getExpressiveColorUseCase: GetExpressiveColorUseCase,
-    private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
-    private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
-    private val updatePureBlackUseCase: UpdatePureBlackUseCase,
-    private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase,
+    private val getThemeOptionUseCase: Lazy<GetThemeOptionUseCase>,
+    private val getDynamicThemeUseCase: Lazy<GetDynamicThemeUseCase>,
+    private val getPureBlackUseCase: Lazy<GetPureBlackUseCase>,
+    private val getExpressiveColorUseCase: Lazy<GetExpressiveColorUseCase>,
+    private val updateThemeOptionUseCase: Lazy<UpdateThemeOptionUseCase>,
+    private val updateDynamicThemeUseCase: Lazy<UpdateDynamicThemeUseCase>,
+    private val updatePureBlackUseCase: Lazy<UpdatePureBlackUseCase>,
+    private val updateExpressiveColorUseCase: Lazy<UpdateExpressiveColorUseCase>,
 ) : ViewModel(), ContainerHost<AppearanceScreenState, Nothing> {
 
     override val container: Container<AppearanceScreenState, Nothing> = container(
@@ -36,10 +36,10 @@ class AppearanceViewModel(
 
     private fun startObservingAppearance() = intent {
         combine(
-            getThemeOptionUseCase(),
-            getDynamicThemeUseCase(),
-            getPureBlackUseCase(),
-            getExpressiveColorUseCase()
+            getThemeOptionUseCase.value(),
+            getDynamicThemeUseCase.value(),
+            getPureBlackUseCase.value(),
+            getExpressiveColorUseCase.value()
         ) { themeOption, isDynamicTheme, isPureBlack, isExpressiveColor ->
             AppearanceScreenState(
                 themeOption = themeOption,
@@ -62,18 +62,18 @@ class AppearanceViewModel(
     }
 
     private fun onThemeOptionChange(option: ThemeOption) = intent {
-        updateThemeOptionUseCase(option)
+        updateThemeOptionUseCase.value(option)
     }
 
     private fun onDynamicThemeChange(enabled: Boolean) = intent {
-        updateDynamicThemeUseCase(enabled)
+        updateDynamicThemeUseCase.value(enabled)
     }
 
     private fun onPureBlackChange(enabled: Boolean) = intent {
-        updatePureBlackUseCase(enabled)
+        updatePureBlackUseCase.value(enabled)
     }
 
     private fun onExpressiveColorChange(enabled: Boolean) = intent {
-        updateExpressiveColorUseCase(enabled)
+        updateExpressiveColorUseCase.value(enabled)
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
@@ -30,10 +31,11 @@ import com.xbot.navigation.TopLevelRoutes
 import com.xbot.navigation.rememberNavigator
 import com.xbot.network.utils.ImageUrlProvider
 import com.xbot.sharedapp.coil.ImageUrlMapper
+import com.xbot.sharedapp.di.koinInject
 import com.xbot.sharedapp.di.koinNavSerializersModule
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
+import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(
@@ -45,10 +47,13 @@ internal fun AnilibriaApp(
     viewModel: AppViewModel = koinViewModel()
 ) {
     val imageUrlProvider = koinInject<ImageUrlProvider>()
+    val httpClient = koinInject<HttpClient>()
+
     setSingletonImageLoaderFactory { context ->
         ImageLoader.Builder(context)
             .components {
-                add(ImageUrlMapper(imageUrlProvider))
+                add(ImageUrlMapper(imageUrlProvider.value))
+                add(KtorNetworkFetcherFactory(httpClient = { httpClient.value }))
             }
             .build()
     }

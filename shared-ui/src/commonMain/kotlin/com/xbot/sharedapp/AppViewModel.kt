@@ -15,16 +15,16 @@ import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 internal class AppViewModel(
-    getThemeOptionUseCase: GetThemeOptionUseCase,
-    getDynamicThemeUseCase: GetDynamicThemeUseCase,
-    getPureBlackUseCase: GetPureBlackUseCase,
-    getExpressiveColorUseCase: GetExpressiveColorUseCase,
+    getThemeOptionUseCase: Lazy<GetThemeOptionUseCase>,
+    getDynamicThemeUseCase: Lazy<GetDynamicThemeUseCase>,
+    getPureBlackUseCase: Lazy<GetPureBlackUseCase>,
+    getExpressiveColorUseCase: Lazy<GetExpressiveColorUseCase>,
 ) : ViewModel() {
     val state: StateFlow<AppThemeState> = combine(
-        getThemeOptionUseCase(),
-        getDynamicThemeUseCase(),
-        getPureBlackUseCase(),
-        getExpressiveColorUseCase()
+        getThemeOptionUseCase.value(),
+        getDynamicThemeUseCase.value(),
+        getPureBlackUseCase.value(),
+        getExpressiveColorUseCase.value()
     ) { themeOption, isDynamicTheme, isPureBlack, isExpressiveColor ->
         AppThemeState(
             themeOption = themeOption,
