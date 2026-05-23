@@ -46,8 +46,8 @@ class NetworkModule {
 
     @Singleton
     internal fun createHttpClient(
-        connectivity: Connectivity,
-        sessionStorage: SessionStorage,
+        connectivity: Lazy<Connectivity>,
+        sessionStorage: Lazy<SessionStorage>,
         json: Json,
     ): HttpClient = HttpClient {
         expectSuccess = true
@@ -76,10 +76,10 @@ class NetworkModule {
             bearer {
                 cacheTokens = false
                 loadTokens {
-                    sessionStorage.getToken()
+                    sessionStorage.value.getToken()
                 }
                 refreshTokens {
-                    sessionStorage.clearToken()
+                    sessionStorage.value.clearToken()
                     null
                 }
                 sendWithoutRequest { request ->
@@ -108,7 +108,7 @@ class NetworkModule {
                 val exceptionResponse = clientException.response
 
                 if (exceptionResponse.status == HttpStatusCode.Unauthorized) {
-                    sessionStorage.clearToken()
+                    sessionStorage.value.clearToken()
                 }
             }
         }

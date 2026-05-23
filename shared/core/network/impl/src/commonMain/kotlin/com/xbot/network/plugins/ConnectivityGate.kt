@@ -15,7 +15,7 @@ internal val ConnectivityGate = createClientPlugin("ConnectivityGate", ::Connect
 
     on(Send) { request ->
         val isDisconnected = withContext(Dispatchers.IO) {
-            connectivity?.status() == Connectivity.Status.Disconnected
+            connectivity?.value?.status() == Connectivity.Status.Disconnected
         }
         if (isDisconnected) {
             throw NoConnectionException()
@@ -25,5 +25,5 @@ internal val ConnectivityGate = createClientPlugin("ConnectivityGate", ::Connect
 }
 
 internal class ConnectivityGateConfig {
-    var connectivity: Connectivity? = null
+    var connectivity: Lazy<Connectivity>? = null
 }
