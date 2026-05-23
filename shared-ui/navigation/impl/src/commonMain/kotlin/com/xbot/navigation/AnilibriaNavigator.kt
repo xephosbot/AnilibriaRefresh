@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import com.xbot.navigation.deeplink.DeepLinkListener
-import com.xbot.navigation.deeplink.ExternalUriHandler
 import kotlinx.serialization.modules.SerializersModule
 
 @Composable

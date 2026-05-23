@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import com.xbot.navigation.deeplink.ExternalUriHandler
+import com.xbot.navigation.ExternalUriHandler
 
 class MainActivity : AppCompatActivity() {
 
