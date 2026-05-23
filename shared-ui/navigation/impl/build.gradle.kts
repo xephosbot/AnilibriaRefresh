@@ -29,7 +29,6 @@ kotlin {
         implementation(projects.sharedUi.feature.login.api)
         implementation(projects.sharedUi.feature.title.api)
         implementation(libs.navigation3.ui)
-        implementation(libs.eygraber.uri)
         implementation(libs.kermit)
         implementation(libs.kotlinx.serialization.core)
     }

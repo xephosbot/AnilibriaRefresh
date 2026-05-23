@@ -47,7 +47,6 @@ kotzilla = "2.2.0"
 kermit = "2.1.0"
 coil = "3.4.0"
 arrow = "2.2.2.1"
-eygraber-uri = "0.0.21"
 material-motion-compose = "2.0.1"
 materialKolor = "5.0.0-alpha07"
 shimmer = "1.5.0-beta02"
@@ -136,7 +135,6 @@ coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", v
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
 arrow-resilience = { group = "io.arrow-kt", name = "arrow-resilience", version.ref = "arrow" }
-eygraber-uri = { group = "com.eygraber", name = "uri-kmp", version.ref = "eygraber-uri" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.18" }
 material-motion-compose-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "material-motion-compose" }
 materialKolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
