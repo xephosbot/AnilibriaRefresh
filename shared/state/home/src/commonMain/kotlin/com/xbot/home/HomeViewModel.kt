@@ -7,9 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.xbot.common.asyncLoad
-import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
-import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetBestReleasesForAllTimeUseCase
 import com.xbot.domain.usecase.GetBestReleasesInCurrentSeasonUseCase
 import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
@@ -32,7 +30,6 @@ import org.orbitmvi.orbit.viewmodel.container
 @KoinViewModel
 class HomeViewModel(
     private val getCatalogReleasesPager: Lazy<GetCatalogReleasesPagerUseCase>,
-    private val getAuthState: Lazy<GetAuthStateUseCase>,
     private val getBestReleasesForAllTime: Lazy<GetBestReleasesForAllTimeUseCase>,
     private val getBestReleasesInCurrentSeason: Lazy<GetBestReleasesInCurrentSeasonUseCase>,
     private val getRecommendedFranchisesUseCase: Lazy<GetRecommendedFranchisesUseCase>,
@@ -56,7 +53,6 @@ class HomeViewModel(
             launch { loadRecommendedGenres() }
             launch { loadScheduleForToday() }
             launch { loadScheduleWeek() }
-            launch { loadAuthState() }
         }
     }
 
@@ -135,14 +131,6 @@ class HomeViewModel(
         )
     }
 
-    private suspend fun loadAuthState() = subIntent {
-        getAuthState.value().collect { authState ->
-            reduce {
-                state.copy(currentUser = (authState as? AuthState.Authenticated)?.user)
-            }
-        }
-    }
-
     fun onAction(action: HomeScreenAction) {
         when (action) {
             is HomeScreenAction.Refresh -> refresh()
@@ -160,7 +148,6 @@ class HomeViewModel(
             launch { loadRecommendedGenres() }
             launch { loadScheduleForToday() }
             launch { loadScheduleWeek() }
-            launch { loadAuthState() }
         }
     }
 

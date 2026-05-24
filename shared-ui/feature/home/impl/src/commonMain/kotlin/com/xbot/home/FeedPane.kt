@@ -68,6 +68,7 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
+import com.xbot.common.state.LocalAppState
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.ContextMenu
 import com.xbot.designsystem.components.ContextMenuItem
@@ -111,6 +112,7 @@ import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.fixtures.franchiseMocks
+import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
@@ -222,6 +224,7 @@ private fun FeedPaneContent(
     }
 
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
+    val appState = LocalAppState.current
 
     ProvideShimmer(shimmer) {
         Scaffold(
@@ -254,6 +257,8 @@ private fun FeedPaneContent(
                         )
                     },
                     actions = {
+                        val user = (appState.authState as? AuthState.Authenticated)?.user
+
                         IconButton(
                             onClick = onProfileClick,
                             shapes = IconButtonDefaults.shapes()
@@ -261,7 +266,7 @@ private fun FeedPaneContent(
                             PosterImage(
                                 modifier = Modifier
                                     .size(IconButtonDefaults.smallContainerSize()),
-                                poster = state.currentUser?.avatar
+                                poster = user?.avatar
                             )
                         }
                     },
