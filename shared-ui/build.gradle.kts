@@ -37,6 +37,7 @@ kotlin {
         implementation(projects.sharedUi.feature.preference.impl)
         implementation(projects.sharedUi.feature.search.impl)
         implementation(projects.sharedUi.feature.title.impl)
+        implementation(projects.sharedUi.feature.login.api)
         implementation(projects.sharedUi.feature.login.impl)
         implementation(libs.coil.core)
         implementation(libs.coil.network.ktor)
@@ -48,6 +49,8 @@ kotlin {
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
+        implementation(libs.connectivity.core)
+        implementation(libs.connectivity.compose)
     }
 }
 

@@ -1,6 +1,5 @@
 package com.xbot.sharedapp
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -15,17 +14,16 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
-import com.xbot.domain.models.enums.ThemeOption
+import com.xbot.domain.models.AuthState
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
+import com.xbot.login.navigation.LoginRoute
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.TopLevelRoutes
 import com.xbot.navigation.rememberNavigator
@@ -36,15 +34,14 @@ import com.xbot.sharedapp.di.koinNavSerializersModule
 import com.xbot.sharedapp.navigation.AnilibriaNavGraph
 import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(
     ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalMaterial3AdaptiveComponentOverrideApi::class
+    ExperimentalMaterial3AdaptiveComponentOverrideApi::class,
 )
 @Composable
 internal fun AnilibriaApp(
-    viewModel: AppViewModel = koinViewModel()
+    appState: AnilibriaAppState = rememberAnilibriaAppState()
 ) {
     val imageUrlProvider = koinLazyInject<ImageUrlProvider>()
     val httpClient = koinLazyInject<HttpClient>()
@@ -63,18 +60,13 @@ internal fun AnilibriaApp(
         topLevelRoutes = TopLevelRoutes,
         serializersModule = koinNavSerializersModule(),
         onInterceptNavigation = { key ->
-            key
-            //TODO: Implement navigator interception
+            if (key.requiresLogin && appState.authState !is AuthState.Authenticated) {
+                LoginRoute(returnTo = key)
+            } else {
+                key
+            }
         }
     )
-
-    val appThemeState by viewModel.state.collectAsStateWithLifecycle()
-
-    val darkTheme = when (appThemeState.themeOption) {
-        ThemeOption.System -> isSystemInDarkTheme()
-        ThemeOption.Dark -> true
-        ThemeOption.Light -> false
-    }
 
     CompositionLocalProvider(
         LocalNavigator provides navigator,
@@ -82,10 +74,10 @@ internal fun AnilibriaApp(
     ) {
         ProvideAppLocale {
             AnilibriaTheme(
-                darkTheme = darkTheme,
-                dynamicColor = appThemeState.isDynamicTheme,
-                amoled = appThemeState.isPureBlack,
-                expressiveColor = appThemeState.isExpressiveColor
+                darkTheme = appState.themeState.isDarkTheme,
+                dynamicColor = appState.themeState.isDynamicTheme,
+                amoled = appState.themeState.isPureBlack,
+                expressiveColor = appState.themeState.isExpressiveColor
             ) {
                 val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
                 val navSuiteType =
