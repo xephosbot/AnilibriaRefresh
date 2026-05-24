@@ -17,6 +17,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
+import com.xbot.common.state.AppState
+import com.xbot.common.state.LocalAppState
 import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
 import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
@@ -41,7 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 )
 @Composable
 internal fun AnilibriaApp(
-    appState: AnilibriaAppState = rememberAnilibriaAppState()
+    appState: AppState = rememberAnilibriaAppState()
 ) {
     val imageUrlProvider = koinLazyInject<ImageUrlProvider>()
     val httpClient = koinLazyInject<HttpClient>()
@@ -69,6 +71,7 @@ internal fun AnilibriaApp(
     )
 
     CompositionLocalProvider(
+        LocalAppState provides appState,
         LocalNavigator provides navigator,
         LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold
     ) {

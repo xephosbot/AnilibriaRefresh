@@ -1,6 +1,5 @@
 package com.xbot.sharedapp
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -8,8 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.xbot.common.state.AppState
+import com.xbot.common.state.AppThemeState
 import com.xbot.domain.models.AuthState
-import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.GetDynamicThemeUseCase
 import com.xbot.domain.usecase.GetExpressiveColorUseCase
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Stable
-class AnilibriaAppState(
+internal class AnilibriaAppState(
     private val connectivityState: ConnectivityState,
     private val getThemeOptionUseCase: GetThemeOptionUseCase,
     private val getDynamicThemeUseCase: GetDynamicThemeUseCase,
@@ -31,13 +31,13 @@ class AnilibriaAppState(
     private val getExpressiveColorUseCase: GetExpressiveColorUseCase,
     private val getAuthStateUseCase: GetAuthStateUseCase,
     coroutineScope: CoroutineScope,
-) {
-    val isOffline: Boolean get() = connectivityState.isDisconnected
+) : AppState {
+    override val isOffline: Boolean get() = connectivityState.isDisconnected
 
-    var themeState: AppThemeState by mutableStateOf(AppThemeState())
+    override var themeState: AppThemeState by mutableStateOf(AppThemeState())
         private set
 
-    var authState: AuthState by mutableStateOf(AuthState.Unauthenticated(null))
+    override var authState: AuthState by mutableStateOf(AuthState.Unauthenticated(null))
         private set
 
     init {
@@ -67,20 +67,6 @@ class AnilibriaAppState(
     }
 }
 
-data class AppThemeState(
-    val themeOption: ThemeOption = ThemeOption.System,
-    val isDynamicTheme: Boolean = false,
-    val isPureBlack: Boolean = false,
-    val isExpressiveColor: Boolean = false,
-) {
-    val isDarkTheme
-        @Composable get() = when (themeOption) {
-            ThemeOption.System -> isSystemInDarkTheme()
-            ThemeOption.Dark -> true
-            ThemeOption.Light -> false
-        }
-}
-
 @Composable
 fun rememberAnilibriaAppState(
     connectivityState: ConnectivityState = rememberConnectivityState(koinInject()),
@@ -90,7 +76,7 @@ fun rememberAnilibriaAppState(
     getExpressiveColorUseCase: GetExpressiveColorUseCase = koinInject(),
     getAuthStateUseCase: GetAuthStateUseCase = koinInject(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-): AnilibriaAppState {
+): AppState {
     return remember(
         connectivityState,
         getThemeOptionUseCase,
