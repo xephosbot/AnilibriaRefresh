@@ -28,12 +28,12 @@ import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
-import com.xbot.navigation.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
-import com.xbot.navigation.SnackbarMessage
-import com.xbot.navigation.rememberSharedViewModelStoreNavEntryDecorator
-import com.xbot.navigation.rememberSnackbarSceneDecoratorStrategy
+import com.xbot.navigation.snackbar.SnackbarMessage
+import com.xbot.navigation.viewmodel.rememberSharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.snackbar.rememberSnackbarSceneDecoratorStrategy
 import com.xbot.resources.stringResource
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI

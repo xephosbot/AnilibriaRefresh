@@ -7,7 +7,7 @@ import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
-import com.xbot.navigation.SharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.viewmodel.SharedViewModelStoreNavEntryDecorator
 import com.xbot.search.SearchFilterPane
 import com.xbot.search.SearchResultPane
 import com.xbot.search.navigation.SearchFiltersRoute

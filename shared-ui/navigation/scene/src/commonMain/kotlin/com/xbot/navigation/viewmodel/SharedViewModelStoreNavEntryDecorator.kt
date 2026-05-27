@@ -1,4 +1,4 @@
-package com.xbot.navigation
+package com.xbot.navigation.viewmodel
 
 /*
  * Copyright 2025 The Android Open Source Project
@@ -44,7 +44,7 @@ import androidx.savedstate.compose.LocalSavedStateRegistryOwner
 /**
  * Returns a [SharedViewModelStoreNavEntryDecorator] that is remembered across recompositions.
  *
- * @param [viewModelStoreOwner] The [androidx.lifecycle.ViewModelStoreOwner] that provides the [androidx.lifecycle.ViewModelStore] to
+ * @param [viewModelStoreOwner] The [ViewModelStoreOwner] that provides the [ViewModelStore] to
  *   NavEntries
  * @param [removeViewModelStoreOnPop] A lambda that returns a Boolean for whether the store for a
  *   [NavEntry] should be removed when the [NavEntry] is popped from the backStack. If true, the
@@ -68,14 +68,14 @@ fun <T : Any> rememberSharedViewModelStoreNavEntryDecorator(
 }
 
 /**
- * Provides the content of a [NavEntry] with a [androidx.lifecycle.ViewModelStoreOwner] and provides that
- * [androidx.lifecycle.ViewModelStoreOwner] as a [androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner] so that it is available within the content.
+ * Provides the content of a [NavEntry] with a [ViewModelStoreOwner] and provides that
+ * [ViewModelStoreOwner] as a [LocalViewModelStoreOwner] so that it is available within the content.
  *
  * This requires the usage of [androidx.navigation3.runtime.SaveableStateHolderNavEntryDecorator] to
- * ensure that the [NavEntry] scoped [androidx.lifecycle.ViewModel]s can properly provide access to
+ * ensure that the [NavEntry] scoped [ViewModel]s can properly provide access to
  * [androidx.lifecycle.SavedStateHandle]s
  *
- * @param [viewModelStore] The [androidx.lifecycle.ViewModelStore] that provides to NavEntries
+ * @param [viewModelStore] The [ViewModelStore] that provides to NavEntries
  * @param [removeViewModelStoreOnPop] A lambda that returns a Boolean for whether the store for a
  *   [NavEntry] should be cleared when the [NavEntry] is popped from the backStack. If true, the
  *   entry's ViewModelStore will be removed.

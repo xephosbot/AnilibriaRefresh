@@ -13,7 +13,7 @@ import com.xbot.home.navigation.navigateToSchedule
 import com.xbot.login.navigation.navigateToLogin
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
-import com.xbot.navigation.SharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.viewmodel.SharedViewModelStoreNavEntryDecorator
 import com.xbot.player.navigation.navigateToPlayer
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass

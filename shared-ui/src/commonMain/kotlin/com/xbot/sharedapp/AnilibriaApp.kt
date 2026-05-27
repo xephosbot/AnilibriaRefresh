@@ -7,10 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveComponentOverrideApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
-import androidx.compose.material3.adaptive.navigationsuite.LocalNavigationSuiteScaffoldWithPrimaryActionOverride
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -19,8 +19,6 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.common.state.AppState
 import com.xbot.common.state.LocalAppState
-import com.xbot.designsystem.components.AnilibriaNavigationSuiteScaffold
-import com.xbot.designsystem.components.NavigationSuiteScaffoldDefaults
 import com.xbot.designsystem.theme.AnilibriaTheme
 import com.xbot.domain.models.AuthState
 import com.xbot.home.navigation.HomeRoute
@@ -73,7 +71,6 @@ internal fun AnilibriaApp(
     CompositionLocalProvider(
         LocalAppState provides appState,
         LocalNavigator provides navigator,
-        LocalNavigationSuiteScaffoldWithPrimaryActionOverride provides AnilibriaNavigationSuiteScaffold
     ) {
         ProvideAppLocale {
             AnilibriaTheme(
@@ -84,7 +81,7 @@ internal fun AnilibriaApp(
             ) {
                 val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
                 val navSuiteType =
-                    NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfoV2())
+                    NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfoV2())
 
                 val currentDestination = navigator.currentDestination
                 val currentTopLevelDestination = navigator.currentTopLevelDestination

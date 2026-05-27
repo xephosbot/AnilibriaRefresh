@@ -59,8 +59,8 @@ import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.union
-import com.xbot.navigation.GlobalSnackbarComponent
-import com.xbot.navigation.show
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res

@@ -45,8 +45,8 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.ScheduleFixtures
-import com.xbot.navigation.GlobalSnackbarComponent
-import com.xbot.navigation.show
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.domain.models.Release
 import com.xbot.formatters.DayOfWeekStyle
 import com.xbot.formatters.localizedMessage

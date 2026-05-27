@@ -1,4 +1,4 @@
-package com.xbot.navigation
+package com.xbot.navigation.snackbar
 
 import com.xbot.resources.StringResource
 import io.github.ajiekcx.declarativeSnackbar.core.SnackbarComponent
@@ -25,11 +25,18 @@ class SnackbarMessageBuilder internal constructor(
         this.duration = duration
     }
 
-    internal fun build(): SnackbarEnvelope<SnackbarMessage> {
+    internal fun build(onActionPerformed: () -> Unit): SnackbarEnvelope<SnackbarMessage> {
         val label = actionLabel
-        val action = onAction
-        val content: SnackbarMessage = if (label != null && action != null) {
-            SnackbarMessage.WithAction(text = text, actionLabel = label, onAction = action)
+        val userAction = onAction
+        val content = if (label != null && userAction != null) {
+            SnackbarMessage.WithAction(
+                text = text,
+                actionLabel = label,
+                onAction = {
+                    userAction()
+                    onActionPerformed()
+                },
+            )
         } else {
             SnackbarMessage.Plain(text)
         }
@@ -45,5 +52,5 @@ fun SnackbarComponent<SnackbarMessage>.show(
     text: StringResource,
     block: SnackbarMessageBuilder.() -> Unit = {},
 ) {
-    show(SnackbarMessageBuilder(text).apply(block).build())
+    show(SnackbarMessageBuilder(text).apply(block).build(onActionPerformed = ::hide))
 }

@@ -1,4 +1,4 @@
-package com.xbot.navigation
+package com.xbot.navigation.snackbar
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition

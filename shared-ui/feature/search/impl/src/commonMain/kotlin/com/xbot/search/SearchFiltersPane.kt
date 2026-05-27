@@ -54,8 +54,8 @@ import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.stringRes
-import com.xbot.navigation.GlobalSnackbarComponent
-import com.xbot.navigation.show
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
 import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry

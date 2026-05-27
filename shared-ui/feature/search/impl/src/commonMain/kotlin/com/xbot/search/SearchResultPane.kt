@@ -57,8 +57,8 @@ import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
-import com.xbot.navigation.GlobalSnackbarComponent
-import com.xbot.navigation.show
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.stringRes
