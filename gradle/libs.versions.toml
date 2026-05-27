@@ -54,6 +54,7 @@ sticky-headers = "0.1.0-alpha04"
 videoplayer = "0.10.0"
 orbit-mvi = "11.0.0"
 connectivity = "2.4.1"
+declarative-snackbar = "0.2.1"
 
 [libraries]
 # Android
@@ -149,6 +150,8 @@ connectivity-android = { module = "dev.jordond.connectivity:connectivity-android
 connectivity-apple = { module = "dev.jordond.connectivity:connectivity-apple", version.ref = "connectivity" }
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 connectivity-compose = { module = "dev.jordond.connectivity:connectivity-compose", version.ref = "connectivity" }
+declarative-snackbar-core = { group = "io.github.ajiekcx", name = "declarative-snackbar-core", version.ref = "declarative-snackbar" }
+declarative-snackbar-compose = { group = "io.github.ajiekcx", name = "declarative-snackbar-compose", version.ref = "declarative-snackbar" }
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }

@@ -58,9 +58,9 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.build
 import com.xbot.designsystem.utils.union
+import com.xbot.navigation.GlobalSnackbarComponent
+import com.xbot.navigation.show
 import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
@@ -90,14 +90,10 @@ internal fun LoginScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.build()
-                    .setTitle(sideEffect.error.localizedMessage())
-                    .show()
+                GlobalSnackbarComponent.show(sideEffect.error.localizedMessage())
             }
             is LoginScreenSideEffect.LoginSuccess -> {
-                SnackbarManager.build()
-                    .setTitle(StringResource.Text(Res.string.login_success_message))
-                    .show()
+                GlobalSnackbarComponent.show(StringResource.Text(Res.string.login_success_message))
             }
         }
     }

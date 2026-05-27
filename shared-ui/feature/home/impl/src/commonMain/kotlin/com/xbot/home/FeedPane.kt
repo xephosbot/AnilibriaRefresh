@@ -105,9 +105,9 @@ import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.build
 import com.xbot.designsystem.utils.only
+import com.xbot.navigation.GlobalSnackbarComponent
+import com.xbot.navigation.show
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
@@ -159,12 +159,11 @@ internal fun FeedPane(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.build()
-                    .setTitle(sideEffect.error.localizedMessage())
-                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                GlobalSnackbarComponent.show(sideEffect.error.localizedMessage()) {
+                    action(StringResource.Text(Res.string.button_retry)) {
                         sideEffect.onRetry()
                     }
-                    .show()
+                }
             }
         }
     }

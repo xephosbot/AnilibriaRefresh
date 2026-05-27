@@ -24,6 +24,10 @@ kotlin {
         api(libs.navigation3.runtime)
         api(libs.navigation3.ui)
         api(libs.lifecycle.viewmodel.compose)
+        api(libs.declarative.snackbar.compose)
+        implementation(projects.sharedUi.resource)
         implementation(libs.compose.runtime)
+        implementation(libs.compose.ui)
+        implementation(libs.compose.material3)
     }
 }

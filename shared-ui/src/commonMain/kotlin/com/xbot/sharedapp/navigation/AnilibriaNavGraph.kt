@@ -4,6 +4,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.AdaptStrategy
@@ -16,6 +20,7 @@ import androidx.compose.material3.adaptive.navigation3.rememberSupportingPaneSce
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -23,9 +28,13 @@ import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
+import com.xbot.navigation.GlobalSnackbarComponent
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
+import com.xbot.navigation.SnackbarMessage
 import com.xbot.navigation.rememberSharedViewModelStoreNavEntryDecorator
+import com.xbot.navigation.rememberSnackbarSceneDecoratorStrategy
+import com.xbot.resources.stringResource
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 import soup.compose.material.motion.animation.materialFadeThroughIn
@@ -65,6 +74,25 @@ internal fun AnilibriaNavGraph(
     )
     val dialogStrategy = remember { DialogSceneStrategy<NavKey>() }
 
+    val snackbarDecorator = rememberSnackbarSceneDecoratorStrategy<NavKey, SnackbarMessage>(
+        component = GlobalSnackbarComponent,
+        alignment = Alignment.BottomCenter,
+        snackbarContent = { message ->
+            Snackbar(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                action = (message as? SnackbarMessage.WithAction)?.let { msg ->
+                    {
+                        TextButton(onClick = msg.onAction) {
+                            Text(stringResource(msg.actionLabel))
+                        }
+                    }
+                },
+            ) {
+                Text(stringResource(message.text))
+            }
+        },
+    )
+
     SharedTransitionLayout {
         CompositionLocalProvider(
             LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1),
@@ -92,6 +120,9 @@ internal fun AnilibriaNavGraph(
                     supportingPaneSceneStrategy,
                     listDetailSceneStrategy,
                     dialogStrategy
+                ),
+                sceneDecoratorStrategies = listOf(
+                    snackbarDecorator
                 ),
                 entryProvider = koinEntryProvider()
             )

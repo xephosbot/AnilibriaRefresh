@@ -54,11 +54,11 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.build
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
+import com.xbot.navigation.GlobalSnackbarComponent
+import com.xbot.navigation.show
 import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.stringRes
@@ -87,12 +87,11 @@ internal fun SearchResultPane(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SearchScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.build()
-                    .setTitle(sideEffect.error.localizedMessage())
-                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                GlobalSnackbarComponent.show(sideEffect.error.localizedMessage()) {
+                    action(StringResource.Text(Res.string.button_retry)) {
                         sideEffect.onRetry()
                     }
-                    .show()
+                }
             }
         }
     }

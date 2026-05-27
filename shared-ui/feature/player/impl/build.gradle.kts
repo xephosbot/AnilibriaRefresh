@@ -32,6 +32,7 @@ kotlin {
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.designSystem.icons)
         implementation(projects.sharedUi.designSystem.components)
+        implementation(projects.sharedUi.navigation.scene)
         implementation(projects.sharedUi.feature.player.api)
         implementation(libs.compose.foundation)
         implementation(libs.compose.preview)

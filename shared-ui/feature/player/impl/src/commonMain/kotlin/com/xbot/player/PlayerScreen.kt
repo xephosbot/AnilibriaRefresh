@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
-import com.xbot.designsystem.utils.SnackbarManager
-import com.xbot.designsystem.utils.build
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.formatters.localizedMessage
+import com.xbot.navigation.GlobalSnackbarComponent
+import com.xbot.navigation.show
 import com.xbot.player.ui.VideoPlayerController
 import com.xbot.player.ui.VideoPlayerLayout
 import com.xbot.resources.Res
@@ -48,12 +48,11 @@ internal fun PlayerScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is PlayerScreenSideEffect.ShowErrorMessage -> {
-                SnackbarManager.build()
-                    .setTitle(sideEffect.error.localizedMessage())
-                    .setAction(StringResource.Text(Res.string.button_retry)) {
+                GlobalSnackbarComponent.show(sideEffect.error.localizedMessage()) {
+                    action(StringResource.Text(Res.string.button_retry)) {
                         sideEffect.onRetry()
                     }
-                    .show()
+                }
             }
         }
     }
