@@ -79,7 +79,7 @@ internal fun AnilibriaNavGraph(
         alignment = Alignment.BottomCenter,
         snackbarContent = { message ->
             Snackbar(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(16.dp),
                 action = (message as? SnackbarMessage.WithAction)?.let { msg ->
                     {
                         TextButton(onClick = msg.onAction) {
