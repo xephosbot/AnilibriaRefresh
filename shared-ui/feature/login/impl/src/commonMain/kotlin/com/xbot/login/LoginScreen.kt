@@ -99,9 +99,6 @@ internal fun LoginScreen(
                     .setTitle(StringResource.Text(Res.string.login_success_message))
                     .show()
             }
-            is LoginScreenSideEffect.NavigateBack -> {
-                onBackClick()
-            }
         }
     }
 
