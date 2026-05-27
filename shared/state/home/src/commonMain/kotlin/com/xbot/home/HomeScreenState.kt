@@ -6,7 +6,6 @@ import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.Schedule
-import com.xbot.domain.models.User
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -20,7 +19,6 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 data class HomeScreenState(
-    @Transient val currentUser: User? = null,
     @Transient val releasesFeed: ReleasesFeed = ReleasesFeed(),
     @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek(),
     val currentBestType: BestType = BestType.Now,

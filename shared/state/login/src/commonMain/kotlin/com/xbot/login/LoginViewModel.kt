@@ -65,7 +65,6 @@ class LoginViewModel(
             ifRight = {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(LoginScreenSideEffect.LoginSuccess)
-                postSideEffect(LoginScreenSideEffect.NavigateBack)
             }
         )
     }
