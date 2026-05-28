@@ -28,12 +28,14 @@ import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
-import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
+import com.xbot.navigation.TopLevelRoutes
+import com.xbot.navigation.scaffold.rememberNavigationSuiteSceneDecoratorStrategy
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.SnackbarMessage
-import com.xbot.navigation.viewmodel.rememberSharedViewModelStoreNavEntryDecorator
 import com.xbot.navigation.snackbar.rememberSnackbarSceneDecoratorStrategy
+import com.xbot.navigation.viewmodel.rememberSharedViewModelStoreNavEntryDecorator
 import com.xbot.resources.stringResource
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -43,7 +45,7 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 @OptIn(
     ExperimentalAnimationApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
-    KoinExperimentalAPI::class
+    KoinExperimentalAPI::class,
 )
 @Composable
 internal fun AnilibriaNavGraph(
@@ -93,6 +95,10 @@ internal fun AnilibriaNavGraph(
         },
     )
 
+    val navigationSuiteDecorator = rememberNavigationSuiteSceneDecoratorStrategy<NavKey>(
+        topLevelRoutes = TopLevelRoutes,
+    )
+
     SharedTransitionLayout {
         CompositionLocalProvider(
             LocalIsSinglePane provides (scaffoldDirective.maxHorizontalPartitions == 1),
@@ -122,7 +128,8 @@ internal fun AnilibriaNavGraph(
                     dialogStrategy
                 ),
                 sceneDecoratorStrategies = listOf(
-                    snackbarDecorator
+                    snackbarDecorator,
+                    navigationSuiteDecorator,
                 ),
                 entryProvider = koinEntryProvider()
             )
