@@ -3,8 +3,10 @@ package com.xbot.sharedapp.navigation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,10 +29,10 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
 import com.xbot.navigation.TopLevelRoutes
+import com.xbot.navigation.scaffold.LocalNavSharedTransitionScope
 import com.xbot.navigation.scaffold.rememberNavigationSuiteSceneDecoratorStrategy
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.SnackbarMessage
@@ -106,7 +108,9 @@ internal fun AnilibriaNavGraph(
         ) {
             NavDisplay(
                 backStack = navigator.backStack,
-                modifier = modifier.fillMaxSize(),
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 onBack = { navigator.navigateBack() },
                 sharedTransitionScope = this,
                 transitionSpec = {

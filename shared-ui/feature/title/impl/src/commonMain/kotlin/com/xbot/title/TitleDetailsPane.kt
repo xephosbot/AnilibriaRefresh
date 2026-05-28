@@ -89,7 +89,6 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.designsystem.utils.LocalIsSinglePane
-import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
@@ -97,6 +96,7 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.hlsUrl
 import com.xbot.formatters.localizedMessage
+import com.xbot.navigation.scaffold.LocalNavSharedTransitionScope
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
