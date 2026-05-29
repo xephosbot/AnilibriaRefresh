@@ -95,8 +95,8 @@ import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.hlsUrl
+import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.formatters.localizedMessage
-import com.xbot.navigation.scaffold.LocalNavSharedTransitionScope
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res

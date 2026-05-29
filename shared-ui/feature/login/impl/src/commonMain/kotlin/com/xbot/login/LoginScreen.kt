@@ -94,6 +94,7 @@ internal fun LoginScreen(
             }
             is LoginScreenSideEffect.LoginSuccess -> {
                 GlobalSnackbarComponent.show(StringResource.Text(Res.string.login_success_message))
+                onBackClick()
             }
         }
     }
