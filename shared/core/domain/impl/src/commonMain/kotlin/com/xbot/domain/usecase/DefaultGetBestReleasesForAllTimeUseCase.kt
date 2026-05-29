@@ -7,8 +7,10 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogQuery
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetBestReleasesForAllTimeUseCase(
     private val catalogRepository: CatalogRepository
 ) : GetBestReleasesForAllTimeUseCase {

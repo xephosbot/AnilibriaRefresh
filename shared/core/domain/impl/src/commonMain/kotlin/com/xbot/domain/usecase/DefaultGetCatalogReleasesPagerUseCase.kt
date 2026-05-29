@@ -6,8 +6,10 @@ import com.xbot.data.repository.CatalogRepository
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.filters.CatalogQuery
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetCatalogReleasesPagerUseCase(
     private val catalogRepository: CatalogRepository
 ) : GetCatalogReleasesPagerUseCase {

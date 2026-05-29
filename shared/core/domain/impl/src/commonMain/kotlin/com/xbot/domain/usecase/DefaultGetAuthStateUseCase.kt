@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetAuthStateUseCase(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,

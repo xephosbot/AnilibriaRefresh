@@ -5,8 +5,10 @@ import com.xbot.data.repository.FranchisesRepository
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Release
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetFranchiseReleasesUseCase(
     private val franchisesRepository: FranchisesRepository,
 ) : GetFranchiseReleasesUseCase {

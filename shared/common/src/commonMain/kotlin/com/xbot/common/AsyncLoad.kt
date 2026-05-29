@@ -1,8 +1,10 @@
 package com.xbot.common
 
 import arrow.core.Either
+import kotlin.native.HiddenFromObjC
 import org.orbitmvi.orbit.syntax.Syntax
 
+@HiddenFromObjC
 suspend fun <T, E, S : Any, SE : Any> Syntax<S, SE>.asyncLoad(
     request: suspend () -> Either<E, T>,
     onError: (suspend (E) -> Unit)? = null,

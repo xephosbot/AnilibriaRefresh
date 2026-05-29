@@ -3,8 +3,10 @@ package com.xbot.domain.usecase
 import com.xbot.data.repository.AppearanceRepository
 import com.xbot.domain.models.enums.ThemeOption
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultUpdateThemeOptionUseCase(
     private val repository: AppearanceRepository
 ) : UpdateThemeOptionUseCase {

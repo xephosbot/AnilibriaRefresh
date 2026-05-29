@@ -10,8 +10,10 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetScheduleWeekUseCase(
     private val scheduleRepository: ScheduleRepository
 ) : GetScheduleWeekUseCase {

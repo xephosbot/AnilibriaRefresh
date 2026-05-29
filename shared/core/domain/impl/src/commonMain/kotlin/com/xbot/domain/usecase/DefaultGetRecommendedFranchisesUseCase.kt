@@ -8,8 +8,10 @@ import com.xbot.data.repository.FranchisesRepository
 import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.Franchise
 import org.koin.core.annotation.Factory
+import kotlin.native.HiddenFromObjC
 
 @Factory
+@HiddenFromObjC
 internal class DefaultGetRecommendedFranchisesUseCase(
     private val franchisesRepository: FranchisesRepository
 ) : GetRecommendedFranchisesUseCase {

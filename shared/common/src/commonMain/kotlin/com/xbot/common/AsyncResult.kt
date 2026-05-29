@@ -1,6 +1,7 @@
 package com.xbot.common
 
 import arrow.core.Either
+import kotlin.native.HiddenFromObjC
 
 /**
  * Tri-state UI container: `Loading` while an async operation is in flight, `Success`
@@ -36,6 +37,7 @@ inline fun <E, T, R> AsyncResult<E, T>.map(transform: (T) -> R): AsyncResult<E, 
  * that the caller is expected to have set *before* awaiting the [Either]. Use this
  * at the end of the await step (typically in an Orbit `reduce {}`).
  */
+@HiddenFromObjC
 fun <E, T> Either<E, T>.toAsyncResult(): AsyncResult<E, T> = fold(
     ifLeft = { AsyncResult.Error(it) },
     ifRight = { AsyncResult.Success(it) },

@@ -34,6 +34,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
+        optIn.add("kotlin.experimental.ExperimentalObjCRefinement")
     }
 }
 
