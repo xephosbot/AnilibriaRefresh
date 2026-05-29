@@ -3,7 +3,9 @@ package com.xbot.domain.fixtures
 import com.xbot.common.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlin.native.HiddenFromObjC
 
+@HiddenFromObjC
 class TestDispatcherProvider(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : DispatcherProvider {

@@ -85,8 +85,8 @@ struct ReleaseRow: View {
 
 #Preview("Loaded") {
     List {
-        ReleaseRow(release: PreviewData.release)
-        ReleaseRow(release: PreviewData.release)
+        ReleaseRow(release: ReleaseFixtures.shared.frieren)
+        ReleaseRow(release: ReleaseFixtures.shared.jujutsuKaisen)
     }
     .listStyle(.plain)
 }

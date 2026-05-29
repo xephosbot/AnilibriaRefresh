@@ -23,7 +23,7 @@ fun createRelease(
     episodesCount: Int? = 28,
     episodeDuration: Int? = 24,
     favoritesCount: Int = 1500,
-    poster: Poster? = Poster("https://www.anilibria.tv/storage/releases/posters/9555/9555_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9555/9555_original.jpg")
+    poster: Poster? = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
 ) = Release(
     id = id,
     type = type,
@@ -74,7 +74,7 @@ object ReleaseFixtures {
         id = 1,
         name = "Frieren: Beyond Journey's End",
         englishName = "Sousou no Frieren",
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9555/9555_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9555/9555_original.jpg")
+        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
     )
 
     val oshiNoKo = createRelease(
@@ -86,7 +86,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 11,
         favoritesCount = 2000,
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9450/9450_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9450/9450_original.jpg")
+        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
     )
 
     val jujutsuKaisen = createRelease(
@@ -98,7 +98,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 23,
         favoritesCount = 2500,
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9600/9600_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9600/9600_original.jpg")
+        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
     )
 
     val mushokuTensei = createRelease(
@@ -110,7 +110,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R18_PLUS,
         episodesCount = 24,
         favoritesCount = 1800,
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9200/9200_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9200/9200_original.jpg")
+        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
     )
 
     val soloLeveling = createRelease(
@@ -122,7 +122,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 12,
         favoritesCount = 3000,
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9700/9700_original.jpg", "https://www.anilibria.tv/storage/releases/posters/9700/9700_original.jpg")
+        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
     )
 
     val all = listOf(frieren, oshiNoKo, jujutsuKaisen, mushokuTensei, soloLeveling)

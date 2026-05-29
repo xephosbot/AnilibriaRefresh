@@ -24,6 +24,7 @@ kotlin {
             isStatic = true
             export(projects.shared.common)
             export(projects.shared.core.domain.api)
+            export(projects.shared.core.domain.testFixtures)
             export(projects.shared.state.home)
             export(projects.shared.state.login)
             export(projects.shared.state.player)
@@ -46,8 +47,9 @@ kotlin {
     dependencies {
         api(projects.shared.common)
         api(projects.shared.core.domain.api)
-        api(projects.shared.core.network.impl)
         api(projects.shared.core.domain.impl)
+        api(projects.shared.core.domain.testFixtures)
+        api(projects.shared.core.network.impl)
         api(projects.shared.core.data.impl)
         api(projects.shared.state.home)
         api(projects.shared.state.login)

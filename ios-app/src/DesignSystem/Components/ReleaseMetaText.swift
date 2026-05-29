@@ -48,6 +48,6 @@ struct ReleaseMetaText: View {
 }
 
 #Preview {
-    ReleaseMetaText(release: PreviewData.release)
+    ReleaseMetaText(release: ReleaseFixtures.shared.frieren)
         .padding()
 }
