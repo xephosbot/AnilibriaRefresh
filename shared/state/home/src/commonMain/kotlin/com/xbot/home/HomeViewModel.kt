@@ -37,12 +37,12 @@ class HomeViewModel(
     private val getRecommendedGenres: Lazy<GetRecommendedGenresUseCase>,
     private val getScheduleForToday: Lazy<GetScheduleForTodayUseCase>,
     private val getScheduleWeek: Lazy<GetScheduleWeekUseCase>,
-    private val savedStateHandle: SavedStateHandle? = null,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
 
     override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
         initialState = HomeScreenState(),
-        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
+        savedStateHandle = savedStateHandle,
         serializer = HomeScreenState.serializer(),
     ) {
         coroutineScope {

@@ -13,24 +13,42 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.enableSavedStateHandles
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.savedstate.SavedState
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.savedState
 
 /**
- * A full-featured architecture components owner for iOS/Swift usage.
+ * Standalone architecture-components owner for iOS/Swift.
+ *
+ * This is a faithful copy of Compose Multiplatform's internal
+ * `androidx.compose.ui.platform.DefaultArchitectureComponentsOwner` (the object CMP creates per
+ * [androidx.compose.ui.scene.ComposeContainer]). It plays the role `ComponentActivity` plays on
+ * Android: it provides [Lifecycle], [ViewModelStore] and [SavedStateRegistry] so that Koin's
+ * `resolveViewModel` + `SavedStateHandle` work outside of a Compose scene, in plain SwiftUI.
+ *
+ * Differences from CMP, all intentional:
+ * - No `NavigationEventDispatcherOwner`: it only feeds Compose's predictive-back into the scene
+ *   mediator and is meaningless in SwiftUI (would also require the `androidx.navigationevent` dep).
+ * - [enableSavedStateHandles] is called in `init` instead of by the caller. There is exactly one
+ *   call site (the Swift owner), it must run while the lifecycle is still INITIALIZED, and CMP's own
+ *   standalone instance does the same (`EmptyArchitectureComponentsOwner.apply { enableSavedStateHandles() }`).
  */
-class IosArchitectureComponentsOwner :
-    LifecycleOwner,
+class IosArchitectureComponentsOwner(
+    savedState: SavedState? = null,
+    enforceMainThread: Boolean = true,
+) : LifecycleOwner,
     ViewModelStoreOwner,
-    SavedStateRegistryOwner,
-    HasDefaultViewModelProviderFactory {
+    HasDefaultViewModelProviderFactory,
+    SavedStateRegistryOwner {
 
-    override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this)
+    override val lifecycle: LifecycleRegistry =
+        if (enforceMainThread) LifecycleRegistry(this) else LifecycleRegistry.createUnsafe(this)
+
     override val viewModelStore: ViewModelStore = ViewModelStore()
 
     private val savedStateController = SavedStateRegistryController.create(this)
-
     override val savedStateRegistry: SavedStateRegistry
         get() = savedStateController.savedStateRegistry
 
@@ -45,25 +63,29 @@ class IosArchitectureComponentsOwner :
 
     init {
         savedStateController.performAttach()
-        savedStateController.performRestore(null)
+        savedStateController.performRestore(savedState)
         enableSavedStateHandles()
-        lifecycle.currentState = Lifecycle.State.CREATED
     }
 
-    fun onStart() {
-        lifecycle.currentState = Lifecycle.State.STARTED
+    /**
+     * Captures the current state — including every ViewModel's [androidx.lifecycle.SavedStateHandle] —
+     * into a [SavedState] that can be fed back into a new owner via the `savedState` constructor
+     * parameter. Mirrors `DefaultArchitectureComponentsOwner.saveState()`.
+     */
+    fun saveState(): SavedState {
+        val savedState = savedState()
+        savedStateController.performSave(savedState)
+        return savedState
     }
 
-    fun onResume() {
-        lifecycle.currentState = Lifecycle.State.RESUMED
-    }
-
-    fun onStop(targetState: Lifecycle.State = Lifecycle.State.CREATED) {
-        lifecycle.currentState = targetState
-    }
-
-    fun clear() {
-        lifecycle.currentState = Lifecycle.State.DESTROYED
-        viewModelStore.clear()
+    /**
+     * Single lifecycle entry point — mirrors `DefaultArchitectureComponentsOwner.setLifecycleState`.
+     * Moving to [Lifecycle.State.DESTROYED] also clears the [ViewModelStore].
+     */
+    fun setLifecycleState(state: Lifecycle.State) {
+        lifecycle.currentState = state
+        if (state == Lifecycle.State.DESTROYED) {
+            viewModelStore.clear()
+        }
     }
 }

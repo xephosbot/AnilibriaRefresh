@@ -53,12 +53,12 @@ class SearchViewModel(
     private val getCatalogSeasons: Lazy<GetCatalogSeasonsUseCase>,
     private val getCatalogSortingTypes: Lazy<GetCatalogSortingTypesUseCase>,
     private val getCatalogYears: Lazy<GetCatalogYearsUseCase>,
-    private val savedStateHandle: SavedStateHandle? = null,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<SearchScreenState, SearchScreenSideEffect> {
 
     override val container: Container<SearchScreenState, SearchScreenSideEffect> = container(
         initialState = SearchScreenState(),
-        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
+        savedStateHandle = savedStateHandle,
         serializer = SearchScreenState.serializer()
     ) {
         coroutineScope {

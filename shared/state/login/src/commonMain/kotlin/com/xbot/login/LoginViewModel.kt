@@ -16,12 +16,12 @@ class LoginViewModel(
     private val getAuthState: Lazy<GetAuthStateUseCase>,
     private val loginUseCase: Lazy<LoginUseCase>,
     private val logoutUseCase: Lazy<LogoutUseCase>,
-    private val savedStateHandle: SavedStateHandle? = null,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<LoginScreenState, LoginScreenSideEffect> {
 
     override val container: Container<LoginScreenState, LoginScreenSideEffect> = container(
         initialState = LoginScreenState(),
-        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
+        savedStateHandle = savedStateHandle,
         serializer = LoginScreenState.serializer(),
     ) {
         startObservingAuth()

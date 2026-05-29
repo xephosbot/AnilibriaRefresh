@@ -19,12 +19,12 @@ class PlayerViewModel(
     @Provided private val releaseId: String,
     @Provided private val initialEpisodeOrdinal: Int,
     private val getReleaseUseCase: Lazy<GetReleaseUseCase>,
-    private val savedStateHandle: SavedStateHandle? = null,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
 
     override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
         initialState = PlayerScreenState(),
-        savedStateHandle = savedStateHandle ?: SavedStateHandle(),
+        savedStateHandle = savedStateHandle,
         serializer = PlayerScreenState.serializer(),
     ) {
         loadTitleDetails()
