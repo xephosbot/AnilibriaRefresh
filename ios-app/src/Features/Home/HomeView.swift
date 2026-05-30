@@ -1,51 +1,45 @@
 import SwiftUI
 import Shared
 
-struct HomeView: View {
-    let viewModel: HomeViewModel
-
-    @State private var state: HomeScreenState?
+/// Stateful entry: resolves & owns the feature's ViewModel from the scoped store.
+struct HomeScreen: View {
+    @EnvironmentObject private var store: IosViewModelStoreOwner
 
     var body: some View {
-        HomeViewContent(state: state)
-            .task {
-                for await anyState in viewModel.container.stateFlow {
-                    state = anyState as? HomeScreenState
-                }
-            }
+        HomeContent(viewModel: store.viewModel())
     }
 }
 
-private struct HomeViewContent: View {
-    let state: HomeScreenState?
+/// Observes the ViewModel's state (typed, non-null via `StateModel`) and renders by it.
+private struct HomeContent: View {
+    @State private var model: StateModel<HomeScreenState>
+
+    init(viewModel: HomeViewModel) {
+        _model = State(initialValue: StateModel(viewModel.container.stateFlow))
+    }
 
     var body: some View {
-        NavigationStack {
-            List {
-                releasesSection
-            }
-            .listStyle(.plain)
-            .navigationTitle(String(localized: "tab_home"))
-            .navigationDestination(for: Release.self) { release in
-                Text(release.name) // заглушка, потом заменишь на DetailView
-            }
+        List {
+            releasesSection
         }
+        .listStyle(.plain)
+        .navigationTitle("tab_home")
     }
 
     @ViewBuilder
     private var releasesSection: some View {
         let items: [Release?] = {
-            switch onEnum(of: state?.releasesFeed.recommendedReleases) {
+            switch onEnum(of: model.state.releasesFeed.recommendedReleases) {
             case .success(let success):
                 return (success.data as! [Release]).map { Optional($0) }
-            case .loading, .error, .none:
+            case .loading, .error:
                 return Array(repeating: nil, count: 10)
             }
         }()
 
         ForEach(Array(items.enumerated()), id: \.offset) { _, release in
             if let release {
-                NavigationLink(value: release) {
+                NavigationLink(value: AppRoute.title(releaseId: Int(release.id))) {
                     ReleaseRow(release: release)
                 }
             } else {
@@ -53,8 +47,4 @@ private struct HomeViewContent: View {
             }
         }
     }
-}
-
-#Preview("Loading") {
-    HomeViewContent(state: nil)
 }

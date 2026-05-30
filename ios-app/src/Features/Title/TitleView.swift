@@ -2,34 +2,23 @@
 //  TitleView.swift
 //  AnilibriaRefresh
 //
-//  Каркас фичи Title — детали релиза (≈ shared-ui/feature/title).
+//  Title — release details (≈ shared-ui/feature/title). Pushed via `AppRoute.title(releaseId:)`.
 //
-//  `TitleViewModel` требует рантайм-аргументы (@Provided): `aliasOrId: String` и
-//  опциональный `initialRelease: Release?`. Экран создаётся при навигации с релиза
-//  (см. `HomeDestination.title(Release)`), а не как самостоятельный таб. Проводка через
-//  `parameters:` (первый элемент — aliasOrId, второй — initialRelease):
-//
-//      import Shared
-//      struct TitleView: View {
-//          @EnvironmentObject var store: IosViewModelStoreOwner
-//          let release: Release
-//          var body: some View {
-//              let viewModel: TitleViewModel = store.viewModel(
-//                  parameters: { ParametersHolder(_values: [String(release.id), release]) }
-//              )
-//              TitleContent(viewModel: viewModel)
-//          }
-//      }
+//  TODO: resolve `TitleViewModel` (needs @Provided `aliasOrId` + optional `initialRelease`):
+//      let vm: TitleViewModel = store.viewModel(
+//          parameters: { ParametersHolder(_values: [String(releaseId), nil]) }
+//      )
+//  then render via `StateModel<TitleScreenState>` like `HomeContent`.
 //
 
 import SwiftUI
 
-struct TitleView: View {
+struct TitleScreen: View {
+    let releaseId: Int
+
     var body: some View {
         FeaturePlaceholder(title: "Title", systemImage: "film")
+            .navigationTitle(Text(verbatim: "Title #\(releaseId)"))
+            .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    TitleView()
 }

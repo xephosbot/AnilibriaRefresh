@@ -1,30 +1,33 @@
-//
-//  SearchView.swift
-//  AnilibriaRefresh
-//
-//  Каркас фичи Search (≈ shared-ui/feature/search).
-//
-//  `SearchViewModel` из `Shared` НЕ требует @Provided-параметров (как `HomeViewModel`),
-//  поэтому подключается напрямую через store — по образцу `RootView` / `HomeView`:
-//
-//      import Shared
-//      struct SearchView: View {
-//          @EnvironmentObject var store: IosViewModelStoreOwner
-//          var body: some View {
-//              let viewModel: SearchViewModel = store.viewModel()
-//              SearchContent(viewModel: viewModel)   // collect viewModel.container.stateFlow
-//          }
-//      }
-//
-
 import SwiftUI
+import Shared
 
-struct SearchView: View {
+/// Stateful entry: resolves & owns `SearchViewModel` (no `@Provided` args → resolved like Home).
+struct SearchScreen: View {
+    @EnvironmentObject private var store: IosViewModelStoreOwner
+
     var body: some View {
-        FeaturePlaceholder(title: "fab_search", systemImage: "magnifyingglass")
+        SearchContent(viewModel: store.viewModel())
     }
 }
 
-#Preview {
-    SearchView()
+/// Minimal content driven by typed, non-null `SearchScreenState` (full UI is a follow-up).
+private struct SearchContent: View {
+    let viewModel: SearchViewModel
+    @State private var model: StateModel<SearchScreenState>
+
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        _model = State(initialValue: StateModel(viewModel.container.stateFlow))
+    }
+
+    var body: some View {
+        List {
+            Section("search_bar_placeholder") {
+                Text(verbatim: model.state.query.isEmpty ? "—" : model.state.query)
+                    .foregroundStyle(.secondary)
+            }
+            NavigationLink("button_filters", value: AppRoute.searchFilters)
+        }
+        .navigationTitle("fab_search")
+    }
 }

@@ -2,34 +2,24 @@
 //  PlayerView.swift
 //  AnilibriaRefresh
 //
-//  Каркас фичи Player — воспроизведение (≈ shared-ui/feature/player).
+//  Player — playback (≈ shared-ui/feature/player). Pushed via `AppRoute.player(...)`.
 //
-//  `PlayerViewModel` требует рантайм-аргументы (@Provided): `releaseId: String` и
-//  `initialEpisodeOrdinal: Int`. Экран создаётся при навигации с эпизода, не как таб.
-//  Проводка через `parameters:` (первый элемент — releaseId, второй — episodeOrdinal):
-//
-//      import Shared
-//      struct PlayerView: View {
-//          @EnvironmentObject var store: IosViewModelStoreOwner
-//          let releaseId: String
-//          let episodeOrdinal: Int
-//          var body: some View {
-//              let viewModel: PlayerViewModel = store.viewModel(
-//                  parameters: { ParametersHolder(_values: [releaseId, episodeOrdinal]) }
-//              )
-//              PlayerContent(viewModel: viewModel)
-//          }
-//      }
+//  TODO: resolve `PlayerViewModel` (needs @Provided `releaseId` + `initialEpisodeOrdinal`):
+//      let vm: PlayerViewModel = store.viewModel(
+//          parameters: { ParametersHolder(_values: [String(releaseId), KotlinInt(int: Int32(episodeOrdinal))]) }
+//      )
+//  then render via `StateModel<PlayerScreenState>`.
 //
 
 import SwiftUI
 
-struct PlayerView: View {
+struct PlayerScreen: View {
+    let releaseId: Int
+    let episodeOrdinal: Int
+
     var body: some View {
         FeaturePlaceholder(title: "Player", systemImage: "play.circle")
+            .navigationTitle(Text(verbatim: "Player · release \(releaseId), ep \(episodeOrdinal)"))
+            .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    PlayerView()
 }
