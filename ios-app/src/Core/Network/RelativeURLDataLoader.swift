@@ -7,27 +7,13 @@
 
 import Nuke
 import Foundation
+import Shared
 
-protocol ImageUrlProvider : Sendable {
-    func resolve(_ path: String?) -> URL?
-}
-
-// MARK: - Impl
-
-final class ImageUrlProviderImpl: ImageUrlProvider {
-    func resolve(_ path: String?) -> URL? {
-        guard let path, !path.isEmpty else { return nil }
-        if path.hasPrefix("http") { return URL(string: path) }
-        let normalized = path.hasPrefix("/") ? path : "/\(path)"
-        return URL(string: "https://aniliberty.top" + normalized)
-    }
-}
-
-final class RelativeURLDataLoader: DataLoading {
+final class RelativeURLDataLoader: DataLoading, @unchecked Sendable {
     private let inner = DataLoader()
-    private let urlProvider: ImageUrlProvider
+    private let urlProvider: ApiImageUrlProvider
 
-    init(urlProvider: ImageUrlProvider) {
+    init(urlProvider: ApiImageUrlProvider) {
         self.urlProvider = urlProvider
     }
 
@@ -38,7 +24,8 @@ final class RelativeURLDataLoader: DataLoading {
     ) -> any Cancellable {
         var modified = request
         if let raw = request.url?.absoluteString,
-           let resolved = urlProvider.resolve(raw) {
+           let full = urlProvider.getFullUrl(path: raw),
+           let resolved = URL(string: full) {
             modified.url = resolved
         }
         return inner.loadData(

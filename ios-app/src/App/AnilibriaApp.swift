@@ -22,7 +22,7 @@ struct AnilibriaApp: App {
             name: "com.anilibria.imagecache"
         )
         config.dataLoader = RelativeURLDataLoader(
-            urlProvider: ImageUrlProviderImpl()
+            urlProvider: imageUrlProvider()
         )
         ImagePipeline.shared = ImagePipeline(configuration: config)
     }

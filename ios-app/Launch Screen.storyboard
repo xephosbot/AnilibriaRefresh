@@ -16,11 +16,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="SplashIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Qwn-8u-3Or">
-                                <rect key="frame" x="95.762931034484268" y="326.81034482757275" width="200" height="199.99999999999989"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Qwn-8u-3Or">
+                                <rect key="frame" x="96.5" y="326" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="wid-th-001"/>
+                                    <constraint firstAttribute="height" constant="200" id="hei-gt-002"/>
+                                </constraints>
                             </imageView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="Qwn-8u-3Or" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ctx-aa-003"/>
+                            <constraint firstItem="Qwn-8u-3Or" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="cty-aa-004"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" name="SplashBackgroundColor"/>
                     </view>
@@ -33,7 +40,7 @@
     <resources>
         <image name="SplashIcon" width="290" height="290"/>
         <namedColor name="SplashBackgroundColor">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.9882352941176471" green="0.91764705882352937" blue="0.90588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

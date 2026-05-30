@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.xbot.network.utils.ImageUrlProvider
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.getOriginalKotlinClass
@@ -46,3 +47,5 @@ fun ViewModelStore.resolveViewModel(
         parameters = parameters,
     )
 }
+
+fun imageUrlProvider(): ImageUrlProvider = KoinPlatform.getKoin().get()
