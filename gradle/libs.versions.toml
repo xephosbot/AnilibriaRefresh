@@ -9,7 +9,7 @@ google-services = "4.4.4"
 
 # Kotlin
 kotlin = "2.3.21"
-ksp = "2.3.7"
+ksp = "2.3.9"
 skie = "0.10.12"
 compose-multiplatform = "1.11.0"
 compose-material3 = "1.11.0-alpha07"
