@@ -46,7 +46,7 @@ val searchFeatureModule = module {
     }
     navigation<SearchFiltersRoute>(
         metadata = SupportingPaneSceneStrategy.supportingPane(SearchRoute)
-            + SharedViewModelStoreNavEntryDecorator.viewModelParent(SearchRoute.toString())
+            + SharedViewModelStoreNavEntryDecorator.parent(SearchRoute.toString())
     ) {
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
