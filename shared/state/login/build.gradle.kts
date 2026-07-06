@@ -10,8 +10,12 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.state.login"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
     iosArm64()
     iosSimulatorArm64()

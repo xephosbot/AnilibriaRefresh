@@ -14,13 +14,19 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    compileSdk = libs.versions.android.compilesdk.get().toInt()
     namespace = "com.xbot.anilibriarefresh"
+    compileSdk {
+        version = release(libs.versions.android.compilesdk.get().toInt())
+    }
 
     defaultConfig {
         applicationId = "com.xbot.anilibriarefresh"
-        minSdk = libs.versions.android.minsdk.get().toInt()
-        targetSdk = libs.versions.android.targetsdk.get().toInt()
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
+        targetSdk {
+            version = release(libs.versions.android.targetsdk.get().toInt())
+        }
         versionCode = 1
         versionName = "1.0"
     }
@@ -51,10 +57,9 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            proguardFiles(
-                // Default file with automatically generated optimization rules.
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-            )
+            optimization {
+                enable = true
+            }
         }
     }
 
@@ -69,6 +74,10 @@ android {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 dependencies {

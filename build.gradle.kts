@@ -15,10 +15,3 @@ plugins {
     alias(libs.plugins.kotzilla) apply false
     alias(libs.plugins.google.services) apply false
 }
-
-buildscript {
-    dependencies {
-        classpath(libs.kotlin.gradle.plugin)
-        classpath(libs.kotlin.ksp.gradle.plugin)
-    }
-}
