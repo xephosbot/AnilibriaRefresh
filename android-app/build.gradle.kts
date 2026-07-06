@@ -52,8 +52,6 @@ android {
             isDebuggable = true
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
