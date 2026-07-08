@@ -21,8 +21,8 @@ import org.orbitmvi.orbit.viewmodel.container
 class TitleViewModel(
     @Provided private val aliasOrId: String,
     @Provided private val initialRelease: Release? = null,
-    private val getRelease: Lazy<GetReleaseUseCase>,
-    private val getFranchiseReleases: Lazy<GetFranchiseReleasesUseCase>,
+    private val getRelease: GetReleaseUseCase,
+    private val getFranchiseReleases: GetFranchiseReleasesUseCase,
 ) : ViewModel(), ContainerHost<TitleScreenState, TitleScreenSideEffect> {
 
     override val container: Container<TitleScreenState, TitleScreenSideEffect> = container(
@@ -36,7 +36,7 @@ class TitleViewModel(
 
     private suspend fun loadDetails() = subIntent {
         asyncLoad(
-            request = { getRelease.value(aliasOrId) },
+            request = { getRelease(aliasOrId) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(
@@ -49,7 +49,7 @@ class TitleViewModel(
 
     private suspend fun loadRelatedReleases() = subIntent {
         asyncLoad(
-            request = { getFranchiseReleases.value(aliasOrId) },
+            request = { getFranchiseReleases(aliasOrId) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(relatedReleases = it)

@@ -44,15 +44,15 @@ import org.orbitmvi.orbit.viewmodel.container
 @OptIn(ExperimentalCoroutinesApi::class, OrbitExperimental::class)
 @KoinViewModel
 class SearchViewModel(
-    private val getCatalogReleasesPager: Lazy<GetCatalogReleasesPagerUseCase>,
-    private val getCatalogAgeRatings: Lazy<GetCatalogAgeRatingsUseCase>,
-    private val getCatalogGenres: Lazy<GetCatalogGenresUseCase>,
-    private val getCatalogProductionStatuses: Lazy<GetCatalogProductionStatusesUseCase>,
-    private val getCatalogPublishStatuses: Lazy<GetCatalogPublishStatusesUseCase>,
-    private val getCatalogReleaseTypes: Lazy<GetCatalogReleaseTypesUseCase>,
-    private val getCatalogSeasons: Lazy<GetCatalogSeasonsUseCase>,
-    private val getCatalogSortingTypes: Lazy<GetCatalogSortingTypesUseCase>,
-    private val getCatalogYears: Lazy<GetCatalogYearsUseCase>,
+    private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
+    private val getCatalogAgeRatings: GetCatalogAgeRatingsUseCase,
+    private val getCatalogGenres: GetCatalogGenresUseCase,
+    private val getCatalogProductionStatuses: GetCatalogProductionStatusesUseCase,
+    private val getCatalogPublishStatuses: GetCatalogPublishStatusesUseCase,
+    private val getCatalogReleaseTypes: GetCatalogReleaseTypesUseCase,
+    private val getCatalogSeasons: GetCatalogSeasonsUseCase,
+    private val getCatalogSortingTypes: GetCatalogSortingTypesUseCase,
+    private val getCatalogYears: GetCatalogYearsUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<SearchScreenState, SearchScreenSideEffect> {
 
@@ -81,7 +81,7 @@ class SearchViewModel(
     ) { query, filters ->
         query to filters
     }.flatMapLatest { (query, filters) ->
-        getCatalogReleasesPager.value(
+        getCatalogReleasesPager(
             search = query,
             filters = filters.takeIf { it.hasActiveFilters }?.toCatalogQuery(),
         ).flow
@@ -89,7 +89,7 @@ class SearchViewModel(
 
     private suspend fun loadGenres() = subIntent {
         asyncLoad(
-            request = { getCatalogGenres.value() },
+            request = { getCatalogGenres() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(genres = it)
@@ -99,7 +99,7 @@ class SearchViewModel(
 
     private suspend fun loadReleaseTypes() = subIntent {
         asyncLoad(
-            request = { getCatalogReleaseTypes.value() },
+            request = { getCatalogReleaseTypes() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(releaseTypes = it)
@@ -109,7 +109,7 @@ class SearchViewModel(
 
     private suspend fun loadPublishStatuses() = subIntent {
         asyncLoad(
-            request = { getCatalogPublishStatuses.value() },
+            request = { getCatalogPublishStatuses() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(publishStatuses = it)
@@ -119,7 +119,7 @@ class SearchViewModel(
 
     private suspend fun loadProductionStatuses() = subIntent {
         asyncLoad(
-            request = { getCatalogProductionStatuses.value() },
+            request = { getCatalogProductionStatuses() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(productionStatuses = it)
@@ -129,7 +129,7 @@ class SearchViewModel(
 
     private suspend fun loadSortingTypes() = subIntent {
         asyncLoad(
-            request = { getCatalogSortingTypes.value() },
+            request = { getCatalogSortingTypes() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(sortingTypes = it)
@@ -139,7 +139,7 @@ class SearchViewModel(
 
     private suspend fun loadSeasons() = subIntent {
         asyncLoad(
-            request = { getCatalogSeasons.value() },
+            request = { getCatalogSeasons() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(seasons = it)
@@ -149,7 +149,7 @@ class SearchViewModel(
 
     private suspend fun loadAgeRatings() = subIntent {
         asyncLoad(
-            request = { getCatalogAgeRatings.value() },
+            request = { getCatalogAgeRatings() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(ageRatings = it)
@@ -159,7 +159,7 @@ class SearchViewModel(
 
     private suspend fun loadYears() = subIntent {
         asyncLoad(
-            request = { getCatalogYears.value() },
+            request = { getCatalogYears() },
             onError = { error -> showErrorMessage(error) { refresh() } },
             reducer = {
                 copy(

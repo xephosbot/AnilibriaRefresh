@@ -18,7 +18,7 @@ import org.orbitmvi.orbit.viewmodel.container
 class PlayerViewModel(
     @Provided private val releaseId: String,
     @Provided private val initialEpisodeOrdinal: Int,
-    private val getReleaseUseCase: Lazy<GetReleaseUseCase>,
+    private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
 
@@ -32,7 +32,7 @@ class PlayerViewModel(
 
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
-            request = { getReleaseUseCase.value(releaseId) },
+            request = { getReleaseUseCase(releaseId) },
             onError = { error -> showErrorMessage(error) { loadTitleDetails() } },
             reducer = { details ->
                 val episode = details.map { release ->

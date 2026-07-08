@@ -13,9 +13,9 @@ import org.orbitmvi.orbit.viewmodel.container
 
 @KoinViewModel
 class LoginViewModel(
-    private val getAuthState: Lazy<GetAuthStateUseCase>,
-    private val loginUseCase: Lazy<LoginUseCase>,
-    private val logoutUseCase: Lazy<LogoutUseCase>,
+    private val getAuthState: GetAuthStateUseCase,
+    private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<LoginScreenState, LoginScreenSideEffect> {
 
@@ -28,7 +28,7 @@ class LoginViewModel(
     }
 
     private fun startObservingAuth() = intent {
-        getAuthState.value().collect { authState ->
+        getAuthState().collect { authState ->
             reduce {
                 state.copy(
                     isSuccess = authState is AuthState.Authenticated,
@@ -57,7 +57,7 @@ class LoginViewModel(
     private fun login() = intent {
         reduce { state.copy(isLoading = true) }
 
-        loginUseCase.value(state.username, state.password).fold(
+        loginUseCase(state.username, state.password).fold(
             ifLeft = {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(LoginScreenSideEffect.ShowErrorMessage(it))
@@ -70,6 +70,6 @@ class LoginViewModel(
     }
 
     private fun logout() = intent {
-        logoutUseCase.value()
+        logoutUseCase()
     }
 }
