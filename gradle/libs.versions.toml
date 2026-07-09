@@ -3,7 +3,7 @@
 android-minsdk = "24"
 android-targetsdk = "37"
 android-compilesdk = "37"
-android-gradle-plugin = "9.3.0-rc01"
+android-gradle-plugin = "9.3.0-rc02"
 android-desugar-jdk = "2.1.5"
 google-services = "4.4.4"
 
@@ -123,6 +123,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = 
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-navigation3 = { group = "io.insert-koin", name = "koin-compose-navigation3", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
+kotzilla-sdk = { module = "io.kotzilla:kotzilla-sdk", version.ref = "kotzilla" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kermit-koin = { group = "co.touchlab", name = "kermit-koin", version.ref = "kermit" }
 coil-core = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
