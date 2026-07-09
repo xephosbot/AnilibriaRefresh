@@ -56,18 +56,6 @@ kotlin {
         implementation(libs.connectivity.core)
         implementation(libs.connectivity.compose)
     }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.connectivity.android)
-        }
-        iosMain.dependencies {
-            implementation(libs.connectivity.apple)
-        }
-        jvmMain.dependencies {
-            implementation(libs.connectivity.http)
-        }
-    }
 }
 
 koinCompiler {

@@ -15,8 +15,6 @@ import com.xbot.domain.usecase.GetDynamicThemeUseCase
 import com.xbot.domain.usecase.GetExpressiveColorUseCase
 import com.xbot.domain.usecase.GetPureBlackUseCase
 import com.xbot.domain.usecase.GetThemeOptionUseCase
-import dev.jordond.connectivity.compose.ConnectivityState
-import dev.jordond.connectivity.compose.rememberConnectivityState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -24,7 +22,6 @@ import org.koin.compose.koinInject
 
 @Stable
 internal class AnilibriaAppState(
-    private val connectivityState: ConnectivityState,
     private val getThemeOptionUseCase: GetThemeOptionUseCase,
     private val getDynamicThemeUseCase: GetDynamicThemeUseCase,
     private val getPureBlackUseCase: GetPureBlackUseCase,
@@ -32,7 +29,8 @@ internal class AnilibriaAppState(
     private val getAuthStateUseCase: GetAuthStateUseCase,
     coroutineScope: CoroutineScope,
 ) : AppState {
-    override val isOffline: Boolean get() = connectivityState.isDisconnected
+    //TODO: remove it
+    override val isOffline: Boolean get() = false
 
     override var themeState: AppThemeState by mutableStateOf(AppThemeState())
         private set
@@ -69,7 +67,6 @@ internal class AnilibriaAppState(
 
 @Composable
 fun rememberAnilibriaAppState(
-    connectivityState: ConnectivityState = rememberConnectivityState(koinInject()),
     getThemeOptionUseCase: GetThemeOptionUseCase = koinInject(),
     getDynamicThemeUseCase: GetDynamicThemeUseCase = koinInject(),
     getPureBlackUseCase: GetPureBlackUseCase = koinInject(),
@@ -78,7 +75,6 @@ fun rememberAnilibriaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): AppState {
     return remember(
-        connectivityState,
         getThemeOptionUseCase,
         getDynamicThemeUseCase,
         getPureBlackUseCase,
@@ -87,7 +83,6 @@ fun rememberAnilibriaAppState(
         coroutineScope
     ) {
         AnilibriaAppState(
-            connectivityState = connectivityState,
             getThemeOptionUseCase = getThemeOptionUseCase,
             getDynamicThemeUseCase = getDynamicThemeUseCase,
             getPureBlackUseCase = getPureBlackUseCase,

@@ -5,7 +5,7 @@ import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.KoinApplication
 import org.koin.core.annotation.Module
 
-@Module(includes = [ConnectivityPlatformModule::class])
+@Module
 @Configuration
 @ComponentScan("com.xbot.sharedapp")
 class AppModule

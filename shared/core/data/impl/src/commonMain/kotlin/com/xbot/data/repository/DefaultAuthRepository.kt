@@ -2,9 +2,8 @@ package com.xbot.data.repository
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.xbot.data.mapper.toDomain
-import com.xbot.data.mapper.toDto
 import com.xbot.common.error.AppError
+import com.xbot.data.mapper.toDto
 import com.xbot.domain.models.enums.SocialType
 import com.xbot.network.api.AuthApi
 import com.xbot.network.client.SessionStorage
@@ -18,8 +17,8 @@ internal class DefaultAuthRepository(
     private val tokenStorage: SessionStorage
 ) : AuthRepository {
 
-    override val authState: Flow<Boolean> =
-        (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
+    override val authState: Flow<Boolean>
+        get() = (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
 
     override suspend fun login(login: String, password: String): Either<AppError, Unit> = either {
         val response = authApi.login(login, password)
