@@ -2,7 +2,7 @@ package com.xbot.domain.usecase
 
 import arrow.core.Either
 import com.xbot.data.repository.CatalogRepository
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
 
@@ -11,6 +11,6 @@ import kotlin.native.HiddenFromObjC
 internal class DefaultGetCatalogYearsUseCase(
     private val catalogRepository: CatalogRepository,
 ) : GetCatalogYearsUseCase {
-    override suspend fun invoke(): Either<DomainError, IntRange> =
+    override suspend fun invoke(): Either<AppError, IntRange> =
         catalogRepository.getCatalogYears()
 }

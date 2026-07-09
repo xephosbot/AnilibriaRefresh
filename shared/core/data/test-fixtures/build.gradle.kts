@@ -26,6 +26,7 @@ kotlin {
         api(projects.shared.core.data.api)
         implementation(projects.shared.core.domain.api)
         implementation(projects.shared.core.domain.testFixtures)
+        implementation(projects.shared.common)
         implementation(libs.androidx.paging.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)

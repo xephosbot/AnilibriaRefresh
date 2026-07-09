@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.context.bind
 import arrow.core.raise.context.either
 import com.xbot.data.repository.ScheduleRepository
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Schedule
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -17,7 +17,7 @@ import kotlin.native.HiddenFromObjC
 internal class DefaultGetScheduleWeekUseCase(
     private val scheduleRepository: ScheduleRepository
 ) : GetScheduleWeekUseCase {
-    override suspend fun invoke(): Either<DomainError, Map<LocalDate, List<Schedule>>> = either {
+    override suspend fun invoke(): Either<AppError, Map<LocalDate, List<Schedule>>> = either {
         val startDate = scheduleRepository.getCurrentDay().bind()
         val scheduleWeek = scheduleRepository.getScheduleWeek().bind()
 

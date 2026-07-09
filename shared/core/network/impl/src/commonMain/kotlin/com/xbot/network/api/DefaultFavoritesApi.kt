@@ -1,8 +1,8 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
-import com.xbot.network.client.ResilientHttpRequester
+import com.xbot.common.error.AppError
+import com.xbot.network.client.HttpRequester
 import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
@@ -19,8 +19,8 @@ import io.ktor.client.request.setBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultFavoritesApi(private val requester: ResilientHttpRequester) : FavoritesApi {
-    override suspend fun getFavoriteIds(): Either<DomainError, List<Int>> = requester.request {
+internal class DefaultFavoritesApi(private val requester: HttpRequester) : FavoritesApi {
+    override suspend fun getFavoriteIds(): Either<AppError, List<Int>> = requester.request {
         get("accounts/users/me/favorites/ids") {
             requiresAuth()
         }
@@ -35,7 +35,7 @@ internal class DefaultFavoritesApi(private val requester: ResilientHttpRequester
         search: String?,
         sorting: SortingTypeDto?,
         ageRatings: List<AgeRatingDto>?
-    ): Either<DomainError, PaginatedResponse<ReleaseDto>> = requester.request {
+    ): Either<AppError, PaginatedResponse<ReleaseDto>> = requester.request {
         get("accounts/users/me/favorites/releases") {
             requiresAuth()
             parameter("page", page)
@@ -51,7 +51,7 @@ internal class DefaultFavoritesApi(private val requester: ResilientHttpRequester
 
     override suspend fun addToFavorites(
         releaseIds: List<Int>
-    ): Either<DomainError, List<Int>> = requester.request {
+    ): Either<AppError, List<Int>> = requester.request {
         post("accounts/users/me/favorites") {
             requiresAuth()
             setBody(releaseIds.map { mapOf("release_id" to it) })
@@ -60,38 +60,38 @@ internal class DefaultFavoritesApi(private val requester: ResilientHttpRequester
 
     override suspend fun removeFromFavorites(
         releaseIds: List<Int>
-    ): Either<DomainError, List<Int>> = requester.request {
+    ): Either<AppError, List<Int>> = requester.request {
         delete("accounts/users/me/favorites") {
             requiresAuth()
             setBody(releaseIds.map { mapOf("release_id" to it) })
         }
     }
 
-    override suspend fun getFavoriteAgeRatings(): Either<DomainError, List<AgeRatingDto>> = requester.request {
+    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRatingDto>> = requester.request {
         get("accounts/users/me/favorites/references/age-ratings") {
             requiresAuth()
         }
     }
 
-    override suspend fun getFavoriteGenres(): Either<DomainError, List<GenreDto>> = requester.request {
+    override suspend fun getFavoriteGenres(): Either<AppError, List<GenreDto>> = requester.request {
         get("accounts/users/me/favorites/references/genres") {
             requiresAuth()
         }
     }
 
-    override suspend fun getFavoriteSortingTypes(): Either<DomainError, List<FavoriteSortingTypeDto>> = requester.request {
+    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<FavoriteSortingTypeDto>> = requester.request {
         get("accounts/users/me/favorites/references/sorting") {
             requiresAuth()
         }
     }
 
-    override suspend fun getFavoriteReleaseTypes(): Either<DomainError, List<ReleaseTypeDto>> = requester.request {
+    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> = requester.request {
         get("accounts/users/me/favorites/references/types") {
             requiresAuth()
         }
     }
 
-    override suspend fun getFavoriteYears(): Either<DomainError, List<Int>> = requester.request {
+    override suspend fun getFavoriteYears(): Either<AppError, List<Int>> = requester.request {
         get("accounts/users/me/favorites/references/years") {
             requiresAuth()
         }

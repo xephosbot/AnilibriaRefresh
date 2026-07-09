@@ -27,6 +27,7 @@ kotlin {
     dependencies {
         api(projects.shared.core.network.api)
         implementation(projects.shared.common)
+        implementation(projects.shared.core.logger.api)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.encoding)
@@ -36,31 +37,21 @@ kotlin {
         implementation(libs.kotlinx.atomicfu)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.arrow.core)
-        implementation(libs.arrow.resilience)
         implementation(libs.koin.core)
         implementation(libs.koin.annotations)
         implementation(libs.kermit)
-        implementation(libs.connectivity.core)
     }
 
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.annotation)
             implementation(libs.ktor.client.okhttp)
-            implementation(libs.connectivity.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(libs.connectivity.apple)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
-            implementation(libs.connectivity.http)
-        }
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.ktor.client.mock)
         }
     }
 

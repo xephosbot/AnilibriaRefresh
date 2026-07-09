@@ -1,14 +1,14 @@
 package com.xbot.player
 
 import com.xbot.common.AsyncResult
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Episode
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
 data class PlayerScreenState(
-    @Transient val episodes: AsyncResult<DomainError, List<Episode>> = AsyncResult.Loading,
+    @Transient val episodes: AsyncResult<AppError, List<Episode>> = AsyncResult.Loading,
     @Transient val currentEpisode: Episode? = null,
     val quality: VideoQuality = VideoQuality.FHD,
 ) {

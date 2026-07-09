@@ -2,7 +2,7 @@ package com.xbot.search
 
 import com.xbot.common.AsyncResult
 import com.xbot.domain.models.Genre
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
@@ -17,14 +17,14 @@ import kotlinx.serialization.Transient
 data class SearchScreenState(
     val query: String = "",
     @Transient val filters: SearchFiltersState = SearchFiltersState(),
-    @Transient val genres: AsyncResult<DomainError, List<Genre>> = AsyncResult.Loading,
-    @Transient val releaseTypes: AsyncResult<DomainError, List<ReleaseType>> = AsyncResult.Loading,
-    @Transient val publishStatuses: AsyncResult<DomainError, List<PublishStatus>> = AsyncResult.Loading,
-    @Transient val productionStatuses: AsyncResult<DomainError, List<ProductionStatus>> = AsyncResult.Loading,
-    @Transient val sortingTypes: AsyncResult<DomainError, List<SortingType>> = AsyncResult.Loading,
-    @Transient val seasons: AsyncResult<DomainError, List<Season>> = AsyncResult.Loading,
-    @Transient val ageRatings: AsyncResult<DomainError, List<AgeRating>> = AsyncResult.Loading,
-    @Transient val years: AsyncResult<DomainError, IntRange> = AsyncResult.Loading,
+    @Transient val genres: AsyncResult<AppError, List<Genre>> = AsyncResult.Loading,
+    @Transient val releaseTypes: AsyncResult<AppError, List<ReleaseType>> = AsyncResult.Loading,
+    @Transient val publishStatuses: AsyncResult<AppError, List<PublishStatus>> = AsyncResult.Loading,
+    @Transient val productionStatuses: AsyncResult<AppError, List<ProductionStatus>> = AsyncResult.Loading,
+    @Transient val sortingTypes: AsyncResult<AppError, List<SortingType>> = AsyncResult.Loading,
+    @Transient val seasons: AsyncResult<AppError, List<Season>> = AsyncResult.Loading,
+    @Transient val ageRatings: AsyncResult<AppError, List<AgeRating>> = AsyncResult.Loading,
+    @Transient val years: AsyncResult<AppError, IntRange> = AsyncResult.Loading,
 )
 
 data class SearchFiltersState(

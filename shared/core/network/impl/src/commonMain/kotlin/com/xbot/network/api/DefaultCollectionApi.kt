@@ -1,8 +1,8 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
-import com.xbot.network.client.ResilientHttpRequester
+import com.xbot.common.error.AppError
+import com.xbot.network.client.HttpRequester
 import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
@@ -18,8 +18,8 @@ import io.ktor.client.request.setBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultCollectionApi(private val requester: ResilientHttpRequester) : CollectionApi {
-    override suspend fun getCollectionIds(): Either<DomainError, Map<Int, CollectionTypeDto>> = requester.request {
+internal class DefaultCollectionApi(private val requester: HttpRequester) : CollectionApi {
+    override suspend fun getCollectionIds(): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
         get("accounts/users/me/collections/ids") {
             requiresAuth()
         }
@@ -34,7 +34,7 @@ internal class DefaultCollectionApi(private val requester: ResilientHttpRequeste
         years: List<Int>?,
         search: String?,
         ageRatings: List<AgeRatingDto>?
-    ): Either<DomainError, PaginatedResponse<ReleaseDto>> = requester.request {
+    ): Either<AppError, PaginatedResponse<ReleaseDto>> = requester.request {
         get("accounts/users/me/collections/releases") {
             requiresAuth()
             parameter("page", page)
@@ -48,7 +48,7 @@ internal class DefaultCollectionApi(private val requester: ResilientHttpRequeste
         }
     }
 
-    override suspend fun addToCollections(collections: Map<Int, CollectionTypeDto>): Either<DomainError, Map<Int, CollectionTypeDto>> = requester.request {
+    override suspend fun addToCollections(collections: Map<Int, CollectionTypeDto>): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
         post("accounts/users/me/collections") {
             requiresAuth()
             setBody(collections.map { (releaseId, collectionType) ->
@@ -60,32 +60,32 @@ internal class DefaultCollectionApi(private val requester: ResilientHttpRequeste
         }
     }
 
-    override suspend fun removeFromCollections(releaseIds: List<Int>): Either<DomainError, Map<Int, CollectionTypeDto>> = requester.request {
+    override suspend fun removeFromCollections(releaseIds: List<Int>): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
         delete("accounts/users/me/collections") {
             requiresAuth()
             setBody(releaseIds.map { mapOf("release_id" to it) })
         }
     }
 
-    override suspend fun getCollectionAgeRatings(): Either<DomainError, List<AgeRatingDto>> = requester.request {
+    override suspend fun getCollectionAgeRatings(): Either<AppError, List<AgeRatingDto>> = requester.request {
         get("accounts/users/me/collections/references/age-ratings") {
             requiresAuth()
         }
     }
 
-    override suspend fun getCollectionGenres(): Either<DomainError, List<GenreDto>> = requester.request {
+    override suspend fun getCollectionGenres(): Either<AppError, List<GenreDto>> = requester.request {
         get("accounts/users/me/collections/references/genres") {
             requiresAuth()
         }
     }
 
-    override suspend fun getCollectionReleaseTypes(): Either<DomainError, List<ReleaseTypeDto>> = requester.request {
+    override suspend fun getCollectionReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> = requester.request {
         get("accounts/users/me/collections/references/types") {
             requiresAuth()
         }
     }
 
-    override suspend fun getCollectionYears(): Either<DomainError, List<Int>> = requester.request {
+    override suspend fun getCollectionYears(): Either<AppError, List<Int>> = requester.request {
         get("accounts/users/me/collections/references/years") {
             requiresAuth()
         }

@@ -24,7 +24,7 @@ kotlin {
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
-        api(projects.shared.core.domain.api)
+        api(projects.shared.common)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.ktor.client.auth)
         implementation(libs.arrow.core)

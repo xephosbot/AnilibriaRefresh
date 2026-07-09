@@ -55,6 +55,8 @@ kotlin {
         api(projects.shared.core.domain.testFixtures)
         api(projects.shared.core.network.impl)
         api(projects.shared.core.data.impl)
+        api(projects.shared.core.logger.api)
+        api(projects.shared.core.logger.impl)
         api(projects.shared.state.home)
         api(projects.shared.state.login)
         api(projects.shared.state.player)

@@ -6,7 +6,7 @@ import arrow.core.right
 import com.xbot.data.repository.FavoritesRepository
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class FakeFavoritesRepository : FavoritesRepository {
     private val favorites = MutableStateFlow(listOf(1, 2, 3))
 
-    override suspend fun getFavoriteIds(): Either<DomainError, List<Int>> {
+    override suspend fun getFavoriteIds(): Either<AppError, List<Int>> {
         return favorites.value.right()
     }
 
@@ -28,37 +28,37 @@ class FakeFavoritesRepository : FavoritesRepository {
         return FakePagingSource(ReleaseFixtures.all.filter { favorites.value.contains(it.id) })
     }
 
-    override suspend fun addToFavorites(releaseIds: List<Int>): Either<DomainError, Unit> {
+    override suspend fun addToFavorites(releaseIds: List<Int>): Either<AppError, Unit> {
         val current = favorites.value.toMutableList()
         current.addAll(releaseIds)
         favorites.value = current.distinct()
         return Unit.right()
     }
 
-    override suspend fun removeFromFavorites(releaseIds: List<Int>): Either<DomainError, Unit> {
+    override suspend fun removeFromFavorites(releaseIds: List<Int>): Either<AppError, Unit> {
         val current = favorites.value.toMutableList()
         current.removeAll(releaseIds)
         favorites.value = current
         return Unit.right()
     }
 
-    override suspend fun getFavoriteAgeRatings(): Either<DomainError, List<AgeRating>> {
+    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRating>> {
         return AgeRating.entries.right()
     }
 
-    override suspend fun getFavoriteGenres(): Either<DomainError, List<Genre>> {
+    override suspend fun getFavoriteGenres(): Either<AppError, List<Genre>> {
         return GenreFixtures.all.right()
     }
 
-    override suspend fun getFavoriteSortingTypes(): Either<DomainError, List<SortingType>> {
+    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<SortingType>> {
         return SortingType.entries.right()
     }
 
-    override suspend fun getFavoriteReleaseTypes(): Either<DomainError, List<ReleaseType>> {
+    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseType>> {
         return ReleaseType.entries.right()
     }
 
-    override suspend fun getFavoriteYears(): Either<DomainError, List<Int>> {
+    override suspend fun getFavoriteYears(): Either<AppError, List<Int>> {
         return (2010..2024).toList().right()
     }
 

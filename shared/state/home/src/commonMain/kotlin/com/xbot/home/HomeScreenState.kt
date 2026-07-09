@@ -1,7 +1,7 @@
 package com.xbot.home
 
 import com.xbot.common.AsyncResult
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
@@ -28,14 +28,14 @@ data class HomeScreenState(
 enum class BestType { Now, AllTime }
 
 data class ReleasesFeed(
-    val recommendedReleases: AsyncResult<DomainError, List<Release>> = AsyncResult.Loading,
-    val scheduleNow: AsyncResult<DomainError, List<Schedule>> = AsyncResult.Loading,
-    val bestNow: AsyncResult<DomainError, List<Release>> = AsyncResult.Loading,
-    val bestAllTime: AsyncResult<DomainError, List<Release>> = AsyncResult.Loading,
-    val recommendedFranchises: AsyncResult<DomainError, List<Franchise>> = AsyncResult.Loading,
-    val genres: AsyncResult<DomainError, List<Genre>> = AsyncResult.Loading,
+    val recommendedReleases: AsyncResult<AppError, List<Release>> = AsyncResult.Loading,
+    val scheduleNow: AsyncResult<AppError, List<Schedule>> = AsyncResult.Loading,
+    val bestNow: AsyncResult<AppError, List<Release>> = AsyncResult.Loading,
+    val bestAllTime: AsyncResult<AppError, List<Release>> = AsyncResult.Loading,
+    val recommendedFranchises: AsyncResult<AppError, List<Franchise>> = AsyncResult.Loading,
+    val genres: AsyncResult<AppError, List<Genre>> = AsyncResult.Loading,
 )
 
 data class ScheduleWeek(
-    val days: AsyncResult<DomainError, Map<LocalDate, List<Schedule?>>> = AsyncResult.Loading
+    val days: AsyncResult<AppError, Map<LocalDate, List<Schedule?>>> = AsyncResult.Loading
 )

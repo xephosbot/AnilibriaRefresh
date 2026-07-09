@@ -3,7 +3,7 @@ package com.xbot.data.datasource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import kotlinx.coroutines.CancellationException
 import kotlin.math.max
 
@@ -11,9 +11,9 @@ import kotlin.math.max
  * Paging3 bridge that speaks Arrow [Either] internally and only crosses into Paging's
  * `Throwable`-based contract at the very last step.
  *
- * [loadPage] returns `Either<DomainError, PaginatedResponse<T>>` so repositories never
+ * [loadPage] returns `Either<AppError, PaginatedResponse<T>>` so repositories never
  * have to `throw` to signal failure; we [fold][Either.fold] at the [LoadResult]
- * boundary. Because [DomainError] extends [Exception], `LoadResult.Error(domainError)`
+ * boundary. Because [AppError] extends [Exception], `LoadResult.Error(domainError)`
  * satisfies Paging's contract without an artificial wrapper — UI readers (e.g.,
  * `(loadState.refresh as? LoadState.Error)?.error`) get the typed error directly and
  * can downcast for tailored messaging.
@@ -36,7 +36,7 @@ import kotlin.math.max
  */
 internal class CommonPagingSource<T : Any>(
     private val pageSize: Int = DEFAULT_PAGE_SIZE,
-    private val loadPage: suspend (page: Int, limit: Int) -> Either<DomainError, PaginatedResponse<T>>,
+    private val loadPage: suspend (page: Int, limit: Int) -> Either<AppError, PaginatedResponse<T>>,
 ) : PagingSource<Int, T>() {
 
     init {

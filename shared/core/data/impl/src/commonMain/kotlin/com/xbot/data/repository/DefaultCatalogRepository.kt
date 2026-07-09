@@ -5,7 +5,7 @@ import arrow.core.Either
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
 import com.xbot.data.mapper.toDto
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -60,7 +60,7 @@ internal class DefaultCatalogRepository(
         search: String?,
         filters: CatalogQuery?,
         limit: Int
-    ): Either<DomainError, List<Release>> = catalogApi
+    ): Either<AppError, List<Release>> = catalogApi
         .getCatalogReleases(
             page = 1,
             limit = limit,
@@ -77,37 +77,37 @@ internal class DefaultCatalogRepository(
         )
         .map { it.data.map(ReleaseDto::toDomain) }
 
-    override suspend fun getCatalogAgeRatings(): Either<DomainError, List<AgeRating>> = catalogApi
+    override suspend fun getCatalogAgeRatings(): Either<AppError, List<AgeRating>> = catalogApi
         .getCatalogAgeRatings()
         .map { it.map(AgeRatingDto::toDomain) }
 
-    override suspend fun getCatalogGenres(): Either<DomainError, List<Genre>> = catalogApi
+    override suspend fun getCatalogGenres(): Either<AppError, List<Genre>> = catalogApi
         .getCatalogGenres()
         .map { it.map(GenreDto::toDomain) }
 
-    override suspend fun getCatalogProductionStatuses(): Either<DomainError, List<ProductionStatus>> =
+    override suspend fun getCatalogProductionStatuses(): Either<AppError, List<ProductionStatus>> =
         catalogApi
             .getCatalogProductionStatuses()
             .map { it.map(ProductionStatusDto::toDomain) }
 
-    override suspend fun getCatalogPublishStatuses(): Either<DomainError, List<PublishStatus>> =
+    override suspend fun getCatalogPublishStatuses(): Either<AppError, List<PublishStatus>> =
         catalogApi
             .getCatalogPublishStatuses()
             .map { it.map(PublishStatusDto::toDomain) }
 
-    override suspend fun getCatalogSeasons(): Either<DomainError, List<Season>> = catalogApi
+    override suspend fun getCatalogSeasons(): Either<AppError, List<Season>> = catalogApi
         .getCatalogSeasons()
         .map { it.map(SeasonDto::toDomain) }
 
-    override suspend fun getCatalogSortingTypes(): Either<DomainError, List<SortingType>> = catalogApi
+    override suspend fun getCatalogSortingTypes(): Either<AppError, List<SortingType>> = catalogApi
         .getCatalogSortingTypes()
         .map { it.map(SortingTypeDto::toDomain) }
 
-    override suspend fun getCatalogReleaseTypes(): Either<DomainError, List<ReleaseType>> = catalogApi
+    override suspend fun getCatalogReleaseTypes(): Either<AppError, List<ReleaseType>> = catalogApi
         .getCatalogReleaseTypes()
         .map { it.map(ReleaseTypeDto::toDomain) }
 
-    override suspend fun getCatalogYears(): Either<DomainError, IntRange> = catalogApi
+    override suspend fun getCatalogYears(): Either<AppError, IntRange> = catalogApi
         .getCatalogYears()
         .map { years -> years.first()..years.last() }
 }

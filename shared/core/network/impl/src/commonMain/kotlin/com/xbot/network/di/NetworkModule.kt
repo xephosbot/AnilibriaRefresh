@@ -1,12 +1,9 @@
 package com.xbot.network.di
 
-import arrow.resilience.Schedule
-import com.xbot.domain.models.DomainError
 import com.xbot.network.Constants
 import com.xbot.network.client.AuthenticatedRequest
 import com.xbot.network.client.SessionStorage
-import com.xbot.network.plugins.ConnectivityGate
-import dev.jordond.connectivity.Connectivity
+import com.xbot.network.client.NetworkRetry
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
@@ -23,7 +20,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
@@ -32,7 +28,7 @@ import org.koin.core.annotation.Singleton
 import co.touchlab.kermit.Logger as KermitLogger
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 
-@Module(includes = [NetworkPlatformModule::class])
+@Module
 @Configuration
 @ComponentScan("com.xbot.network")
 class NetworkModule {
@@ -46,7 +42,6 @@ class NetworkModule {
 
     @Singleton
     internal fun createHttpClient(
-        connectivity: Lazy<Connectivity>,
         sessionStorage: Lazy<SessionStorage>,
         json: Json,
     ): HttpClient = HttpClient {
@@ -58,13 +53,11 @@ class NetworkModule {
             accept(ContentType.Application.Json)
         }
 
-        install(ConnectivityGate) {
-            this.connectivity = connectivity
-        }
-
         install(ContentNegotiation) {
             json(json)
         }
+
+        NetworkRetry()
 
         install(HttpTimeout) {
             requestTimeoutMillis = 10_000
@@ -113,13 +106,4 @@ class NetworkModule {
             }
         }
     }
-
-    @Singleton
-    internal fun networkRetrySchedule(): Schedule<DomainError, *> =
-        Schedule.exponential<DomainError>(200.milliseconds, factor = 2.0)
-            .and(Schedule.recurs(RETRIES))
-            .jittered()
-            .doWhile { error, _ -> error.isRetryable }
 }
-
-private const val RETRIES: Long = 3
