@@ -16,11 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 
 @Composable
 fun <T> SingleChoiceConnectedButtonGroup(
@@ -41,9 +39,7 @@ fun <T> SingleChoiceConnectedButtonGroup(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun SingleChoiceConnectedButtonGroupPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")

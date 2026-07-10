@@ -27,10 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -43,14 +41,14 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.ScheduleFixtures
-import com.xbot.navigation.snackbar.GlobalSnackbarComponent
-import com.xbot.navigation.snackbar.show
 import com.xbot.domain.models.Release
 import com.xbot.formatters.DayOfWeekStyle
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.toLocalizedString
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
 import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
@@ -228,8 +226,7 @@ private fun DateItem(
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun SchedulePanePreview(
     @PreviewParameter(ScheduleScreenStateProvider::class) state: HomeScreenState

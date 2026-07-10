@@ -54,10 +54,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -104,10 +102,8 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.only
-import com.xbot.navigation.snackbar.GlobalSnackbarComponent
-import com.xbot.navigation.snackbar.show
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.ScheduleFixtures
@@ -115,6 +111,8 @@ import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.AuthState
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedMessage
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
 import com.xbot.resources.StringResource
 import com.xbot.resources.badge_1
@@ -599,8 +597,7 @@ private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun FeedPanePreview(
     @PreviewParameter(FeedScreenStateProvider::class) state: HomeScreenState

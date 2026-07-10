@@ -50,6 +50,7 @@ import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Franchise
@@ -320,8 +321,7 @@ object ExpressiveFranchiseCardDefaults {
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun FranchiseCardPreview() {
     FranchiseCard(
@@ -330,8 +330,7 @@ private fun FranchiseCardPreview() {
     )
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun FranchiseCardPlaceholderPreview() {
     FranchiseCardPlaceholder()

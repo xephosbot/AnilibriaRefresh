@@ -49,21 +49,19 @@ import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.AnilibriaLogo
 import com.xbot.designsystem.icons.Favorite
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.union
+import com.xbot.formatters.localizedMessage
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.show
-import com.xbot.resources.StringResource
-import com.xbot.formatters.localizedMessage
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.login_create_account
 import com.xbot.resources.login_description
 import com.xbot.resources.login_email_label
@@ -261,8 +259,7 @@ internal fun LoginScreenContent(
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun LoginScreenPreview(
     @PreviewParameter(LoginScreenStateProvider::class) state: LoginScreenState

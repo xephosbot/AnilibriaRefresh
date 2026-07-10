@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AutoScrollSideEffect(
@@ -31,7 +32,7 @@ fun AutoScrollSideEffect(
             lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 while (true) {
                     yield()
-                    delay(autoScrollDurationMillis)
+                    delay(autoScrollDurationMillis.milliseconds)
                     pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
                 }
             }

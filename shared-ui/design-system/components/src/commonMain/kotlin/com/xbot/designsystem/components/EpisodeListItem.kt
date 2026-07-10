@@ -38,8 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
@@ -48,7 +46,7 @@ import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
 import com.xbot.formatters.localizedName
@@ -56,7 +54,6 @@ import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.episode_title
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun EpisodeListItem(
@@ -293,9 +290,7 @@ data class EpisodeListItemColors(
     val selectedContentColor: Color
 )
 
-@OptIn(ExperimentalTime::class)
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun EpisodeListItemPreview() {
     EpisodeListItem(
@@ -307,8 +302,7 @@ private fun EpisodeListItemPreview() {
     )
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun EpisodeListItemLoadingPreview() {
     EpisodeListItem(
