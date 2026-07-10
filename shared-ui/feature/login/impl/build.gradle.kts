@@ -63,9 +63,11 @@ dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling)
 }
 
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    metricsDestination = layout.buildDirectory.dir("compose_compiler")
+if (providers.gradleProperty("compose.compiler.reports").getOrElse("false").toBoolean()) {
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        metricsDestination = layout.buildDirectory.dir("compose_compiler")
+    }
 }
 
 koinCompiler {
