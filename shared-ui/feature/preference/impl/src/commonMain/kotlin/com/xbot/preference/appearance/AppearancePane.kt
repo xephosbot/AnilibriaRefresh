@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.ExperimentalPill
@@ -37,8 +36,7 @@ import com.xbot.designsystem.components.SwitchPreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
-import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
@@ -174,8 +172,7 @@ private fun AppearanceScreenContent(
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun AppearancePanePreview() {
     var state by remember { mutableStateOf(AppearanceScreenState()) }

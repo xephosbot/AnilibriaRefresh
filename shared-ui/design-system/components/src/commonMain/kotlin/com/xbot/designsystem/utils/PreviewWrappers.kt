@@ -14,17 +14,6 @@ import com.xbot.designsystem.theme.AnilibriaTheme
 @PreviewWrapper(ThemeAndShimmerWrapper::class)
 annotation class AnilibriaPreview
 
-@Deprecated("")
-class AnilibriaPreviewWrapper : PreviewWrapperProvider {
-    private val themeWrapper = ThemeWrapper()
-    private val shimmerWrapper = ShimmerWrapper()
-
-    @Composable
-    override fun Wrap(content: @Composable (() -> Unit)) {
-        themeWrapper.Wrap { shimmerWrapper.Wrap { content() } }
-    }
-}
-
 internal class ThemeAndShimmerWrapper : PreviewWrapperProvider {
     private val themeWrapper = ThemeWrapper()
     private val shimmerWrapper = ShimmerWrapper()

@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -49,9 +48,7 @@ import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.ExpressiveShape
 import com.xbot.designsystem.theme.MorphingExpressiveShape
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.utils.AnilibriaPreview
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release

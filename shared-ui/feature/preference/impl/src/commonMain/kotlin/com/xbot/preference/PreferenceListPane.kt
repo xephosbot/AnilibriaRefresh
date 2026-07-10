@@ -17,20 +17,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
@@ -166,8 +164,7 @@ object PreferenceListDefaults {
     )
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun PreferenceListPanePreview() {
     PreferenceListPane(

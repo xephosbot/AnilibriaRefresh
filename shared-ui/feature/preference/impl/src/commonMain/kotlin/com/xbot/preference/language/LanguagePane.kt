@@ -16,18 +16,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
-import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.formatters.stringRes
 import com.xbot.localization.AppLanguage
 import com.xbot.localization.LocaleManager
-import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.preference_language_title
 import org.jetbrains.compose.resources.stringResource
@@ -108,8 +106,7 @@ private fun LanguagePaneContent(
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun LanguagePanePreview() {
     LanguagePaneContent(

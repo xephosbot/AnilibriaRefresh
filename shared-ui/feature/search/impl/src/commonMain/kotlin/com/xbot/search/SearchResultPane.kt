@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -52,17 +51,16 @@ import com.xbot.designsystem.icons.Close
 import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
-import com.xbot.navigation.snackbar.GlobalSnackbarComponent
-import com.xbot.navigation.snackbar.show
-import com.xbot.resources.StringResource
 import com.xbot.formatters.localizedMessage
 import com.xbot.formatters.stringRes
+import com.xbot.navigation.snackbar.GlobalSnackbarComponent
+import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
+import com.xbot.resources.StringResource
 import com.xbot.resources.button_filters
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_search_results
@@ -316,8 +314,7 @@ private fun SearchResultContent(
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun SearchResultPanePreview() {
     val searchResult = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()
