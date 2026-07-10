@@ -1,5 +1,6 @@
 package com.xbot.designsystem.utils
 
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -20,7 +21,7 @@ internal class ThemeAndShimmerWrapper : PreviewWrapperProvider {
 
     @Composable
     override fun Wrap(content: @Composable (() -> Unit)) {
-        themeWrapper.Wrap { shimmerWrapper.Wrap { content() } }
+        themeWrapper.Wrap { shimmerWrapper.Wrap { Surface(content = content) } }
     }
 }
 
