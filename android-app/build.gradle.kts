@@ -29,6 +29,8 @@ android {
         }
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     androidResources {
@@ -91,4 +93,11 @@ dependencies {
     implementation(libs.androidx.interpolator)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
+
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.core.pip)
 }

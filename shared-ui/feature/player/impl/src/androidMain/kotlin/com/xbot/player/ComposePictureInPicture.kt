@@ -1,11 +1,14 @@
 package com.xbot.player
 
+import android.app.PictureInPictureParams
 import android.graphics.Rect
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toAndroidRectF
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.core.app.PictureInPictureProvider
 import androidx.core.graphics.toRect
 import androidx.core.pip.BasicPictureInPicture
 import java.util.concurrent.Executor
@@ -40,15 +43,18 @@ internal class BoundsTracker {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 internal class ComposePictureInPicture(
-    private val provider: PictureInPictureProvider,
+    private val activity: ComponentActivity,
     executor: Executor
-) : BasicPictureInPicture(provider, executor), AutoCloseable {
+) : BasicPictureInPicture(activity, executor), AutoCloseable {
 
     private val boundsChangedListener: BoundsTracker.OnBoundsChangedListener =
         BoundsTracker.OnBoundsChangedListener { newBounds ->
-            pictureInPictureParamsBuilder.setSourceRectHint(newBounds)
-            commit()
+            if (newBounds == null || !activity.isInPictureInPictureMode) {
+                pictureInPictureParamsBuilder.setSourceRectHint(newBounds)
+                commit()
+            }
         }
 
     private var boundsTracker: BoundsTracker? = null
@@ -58,21 +64,18 @@ internal class ComposePictureInPicture(
     }
 
     fun setBoundsTracker(tracker: BoundsTracker) {
-        close()
-
         boundsTracker = tracker
         boundsTracker?.addListener(boundsChangedListener)
     }
 
     fun enter() {
-        provider.enterPictureInPictureMode(pictureInPictureParamsBuilder.build())
+        setPictureInPictureParams(pictureInPictureParamsBuilder.build())
+        activity.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
     }
 
     override fun close() {
-        boundsTracker?.removeListener(boundsChangedListener)
+        boundsChangedListener.onBoundsChanged(null)
         boundsTracker?.release()
         boundsTracker = null
-        pictureInPictureParamsBuilder.setSourceRectHint(null)
-        commit()
     }
 }

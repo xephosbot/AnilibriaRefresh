@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.xbot.sharedui.feature.player.impl.R
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import kotlinx.coroutines.flow.combine
+import java.util.concurrent.Executors
 
 @Composable
 actual fun rememberPictureInPictureController(player: VideoPlayerState): PictureInPictureController {
@@ -114,8 +115,9 @@ internal class PictureInPictureControllerImpl(
     private val playerState: VideoPlayerState,
 ) : PictureInPictureController, OnPictureInPictureEventListener {
 
-    private val executor = ContextCompat.getMainExecutor(activity)
-    private val delegate = ComposePictureInPicture(activity, executor)
+    private val mainExecutor = ContextCompat.getMainExecutor(activity)
+    private val paramsExecutor = Executors.newSingleThreadExecutor()
+    private val delegate = ComposePictureInPicture(activity, paramsExecutor)
     private val boundsTracker = BoundsTracker()
 
     override var isInPictureInPictureMode by mutableStateOf(activity.isInPictureInPictureMode)
@@ -125,7 +127,7 @@ internal class PictureInPictureControllerImpl(
         private set
 
     init {
-        delegate.addOnPictureInPictureEventListener(executor, this)
+        delegate.addOnPictureInPictureEventListener(mainExecutor, this)
         delegate.setBoundsTracker(boundsTracker)
     }
 
@@ -135,10 +137,12 @@ internal class PictureInPictureControllerImpl(
     ) {
         Log.d(LOG_TAG, "Event: $event, config: $config")
         when (event) {
-            Event.ENTERED -> isInPictureInPictureMode = true
+            Event.ENTERED -> {
+                isInPictureInPictureMode = true
+                isTransitioningToPip = false
+            }
             Event.EXITED -> isInPictureInPictureMode = false
-            // TODO: Uncomment after ENTER_ANIMATION_END event will fixed
-            // Event.ENTER_ANIMATION_START -> isTransitioningToPip = true
+            Event.ENTER_ANIMATION_START -> isTransitioningToPip = true
             Event.ENTER_ANIMATION_END -> isTransitioningToPip = false
             else -> {}
         }
@@ -176,6 +180,7 @@ internal class PictureInPictureControllerImpl(
         delegate.removeOnPictureInPictureEventListener(this)
         delegate.setEnabled(false)
         delegate.close()
+        paramsExecutor.shutdown()
     }
 
     companion object {

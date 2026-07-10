@@ -55,6 +55,13 @@ orbit-mvi = "11.0.0"
 connectivity = "2.4.1"
 declarative-snackbar = "0.2.1"
 
+# Testing
+junit4 = "4.13.2"
+androidx-test-core = "1.7.0"
+androidx-test-runner = "1.7.0"
+androidx-test-ext-junit = "1.3.0"
+truth = "1.4.5"
+
 [libraries]
 # Android
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk" }
@@ -148,6 +155,13 @@ connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", ver
 connectivity-compose = { module = "dev.jordond.connectivity:connectivity-compose", version.ref = "connectivity" }
 declarative-snackbar-core = { group = "io.github.ajiekcx", name = "declarative-snackbar-core", version.ref = "declarative-snackbar" }
 declarative-snackbar-compose = { group = "io.github.ajiekcx", name = "declarative-snackbar-compose", version.ref = "declarative-snackbar" }
+
+# Testing
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "androidx-test-core" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidx-test-ext-junit" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
