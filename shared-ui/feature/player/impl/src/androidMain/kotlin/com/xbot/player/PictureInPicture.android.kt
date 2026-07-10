@@ -114,7 +114,8 @@ internal class PictureInPictureControllerImpl(
     private val playerState: VideoPlayerState,
 ) : PictureInPictureController, OnPictureInPictureEventListener {
 
-    private val delegate = ComposePictureInPicture(activity)
+    private val executor = ContextCompat.getMainExecutor(activity)
+    private val delegate = ComposePictureInPicture(activity, executor)
     private val boundsTracker = BoundsTracker()
 
     override var isInPictureInPictureMode by mutableStateOf(activity.isInPictureInPictureMode)
@@ -124,7 +125,7 @@ internal class PictureInPictureControllerImpl(
         private set
 
     init {
-        delegate.addOnPictureInPictureEventListener(ContextCompat.getMainExecutor(activity), this)
+        delegate.addOnPictureInPictureEventListener(executor, this)
         delegate.setBoundsTracker(boundsTracker)
     }
 
@@ -154,6 +155,7 @@ internal class PictureInPictureControllerImpl(
             delegate.setAspectRatio(rational)
                 .setActions(buildRemoteActions(playerState.isPlaying, activity))
                 .setEnabled(playerState.isPlaying)
+                .commit()
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to update params", e)
         }

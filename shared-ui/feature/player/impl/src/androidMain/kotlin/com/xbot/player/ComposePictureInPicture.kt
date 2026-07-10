@@ -8,6 +8,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.core.app.PictureInPictureProvider
 import androidx.core.graphics.toRect
 import androidx.core.pip.BasicPictureInPicture
+import java.util.concurrent.Executor
 
 internal class BoundsTracker {
     fun interface OnBoundsChangedListener {
@@ -40,23 +41,25 @@ internal class BoundsTracker {
 }
 
 internal class ComposePictureInPicture(
-    private val provider: PictureInPictureProvider
-) : BasicPictureInPicture(provider), AutoCloseable {
+    private val provider: PictureInPictureProvider,
+    executor: Executor
+) : BasicPictureInPicture(provider, executor), AutoCloseable {
 
     private val boundsChangedListener: BoundsTracker.OnBoundsChangedListener =
         BoundsTracker.OnBoundsChangedListener { newBounds ->
             pictureInPictureParamsBuilder.setSourceRectHint(newBounds)
-            setPictureInPictureParams(pictureInPictureParamsBuilder.build())
+            commit()
         }
 
     private var boundsTracker: BoundsTracker? = null
 
     init {
         pictureInPictureParamsBuilder.setSeamlessResizeEnabled(true)
-        setPictureInPictureParams(pictureInPictureParamsBuilder.build())
     }
 
     fun setBoundsTracker(tracker: BoundsTracker) {
+        close()
+
         boundsTracker = tracker
         boundsTracker?.addListener(boundsChangedListener)
     }
@@ -66,8 +69,10 @@ internal class ComposePictureInPicture(
     }
 
     override fun close() {
-        boundsChangedListener.onBoundsChanged(null)
+        boundsTracker?.removeListener(boundsChangedListener)
         boundsTracker?.release()
         boundsTracker = null
+        pictureInPictureParamsBuilder.setSourceRectHint(null)
+        commit()
     }
 }
