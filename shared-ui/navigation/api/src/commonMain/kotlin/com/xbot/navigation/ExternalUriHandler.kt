@@ -1,6 +1,7 @@
 package com.xbot.navigation
 
 import androidx.navigation3.runtime.deeplink.DeepLinkRequest
+import androidx.navigation3.runtime.deeplink.DeepLinkUri
 
 object ExternalUriHandler {
 
@@ -27,6 +28,6 @@ object ExternalUriHandler {
     }
 
     fun onNewUri(uri: String) {
-        onNewUri(DeepLinkRequest.fromUriString(uri))
+        onNewUri(DeepLinkRequest(DeepLinkUri(uri)))
     }
 }
