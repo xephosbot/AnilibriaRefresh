@@ -4,8 +4,9 @@ package com.xbot.designsystem.theme
 
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.internal.rememberAnimatedShape
 import androidx.compose.material3.toPath
 import androidx.compose.runtime.Composable
@@ -49,7 +50,8 @@ class MorphingExpressiveShape(
         val morph = remember { Morph(shape, pressedShape) }
         val progress by animateFloatAsState(
             targetValue = if (pressed) 1f else 0f,
-            animationSpec = animationSpec,
+            //TODO: workaround for corner size negative overshoot
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "MorphingProgress"
         )
         return MorphPolygonShape(morph, progress)
@@ -83,11 +85,12 @@ class RoundedCornerExpressiveShape(
             else -> shape
         }
 
-        return if (targetShape is RoundedCornerShape) {
+        return if (targetShape is CornerBasedShape) {
             key(shape, pressedShape, selectedShape, focusedShape, hoveredShape, draggedShape) {
                 rememberAnimatedShape(
                     currentShape = targetShape,
-                    animationSpec = animationSpec
+                    //TODO: workaround for corner size negative overshoot
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
             }
         } else targetShape
