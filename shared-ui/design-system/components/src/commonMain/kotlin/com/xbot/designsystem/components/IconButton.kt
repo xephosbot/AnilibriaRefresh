@@ -23,16 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LabeledIconButton(
     onClick: () -> Unit,
     icon: ImageVector,
     text: String,
     modifier: Modifier = Modifier,
-    shape: ExpressiveShape = ExpressiveIconButtonDefaults.smallShape(),
+    shapes: MorphableShapes = ExpressiveIconButtonDefaults.smallShapes(),
     colors: IconButtonColors = IconButtonDefaults.filledIconButtonColors(
         containerColor = MaterialTheme.colorScheme.surfaceBright,
         contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
@@ -46,11 +47,12 @@ fun LabeledIconButton(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -84,28 +86,26 @@ fun LabeledIconButton(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveIconButtonDefaults {
     @Composable
-    fun smallShape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun smallShapes(): MorphableShapes {
+        return MorphableShapes(
             shape = IconButtonDefaults.smallRoundShape,
             pressedShape = IconButtonDefaults.smallPressedShape,
             selectedShape = IconButtonDefaults.smallSquareShape,
             focusedShape = IconButtonDefaults.smallRoundShape,
             hoveredShape = IconButtonDefaults.smallRoundShape,
-            draggedShape = IconButtonDefaults.smallPressedShape,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = IconButtonDefaults.smallPressedShape
         )
     }
 
     @Composable
-    fun largeShape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun largeShapes(): MorphableShapes {
+        return MorphableShapes(
             shape = IconButtonDefaults.largeRoundShape,
             pressedShape = IconButtonDefaults.largePressedShape,
             selectedShape = IconButtonDefaults.largeSquareShape,
             focusedShape = IconButtonDefaults.largeRoundShape,
             hoveredShape = IconButtonDefaults.largeRoundShape,
-            draggedShape = IconButtonDefaults.largePressedShape,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = IconButtonDefaults.largePressedShape
         )
     }
 }

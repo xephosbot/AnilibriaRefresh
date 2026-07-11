@@ -37,20 +37,21 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ReleaseListItem(
     release: Release?,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surfaceBright,
     contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
-    shape: ExpressiveShape = ExpressiveReleaseListItemDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveReleaseListItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
     onClick: (Release) -> Unit = {},
@@ -62,11 +63,12 @@ fun ReleaseListItem(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -319,15 +321,14 @@ private fun ListItemLayout(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseListItemDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
             focusedShape = MaterialTheme.shapes.large,
             hoveredShape = MaterialTheme.shapes.medium,
-            draggedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = MaterialTheme.shapes.large
         )
     }
 }

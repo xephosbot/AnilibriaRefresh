@@ -46,8 +46,8 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.MorphingExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.franchiseMocks
 import com.xbot.domain.models.Franchise
@@ -58,13 +58,14 @@ import com.xbot.resources.franchise_episodes_count
 import com.xbot.resources.franchise_seasons_count
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FranchiseCard(
     franchise: Franchise?,
     onClick: (Franchise) -> Unit,
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
-    shape: ExpressiveShape = ExpressiveFranchiseCardDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveFranchiseCardDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
 ) {
     @Suppress("NAME_SHADOWING")
@@ -74,11 +75,12 @@ fun FranchiseCard(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -308,12 +310,10 @@ private fun FranchiseCardPlaceholder(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveFranchiseCardDefaults {
-    @Composable
-    fun shape(): ExpressiveShape {
-        return MorphingExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = MaterialShapes.Circle,
-            pressedShape = MaterialShapes.Cookie12Sided,
-            animationSpec =  MaterialTheme.motionScheme.fastSpatialSpec(),
+            pressedShape = MaterialShapes.Cookie12Sided
         )
     }
 }

@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.MorphingExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
@@ -183,7 +183,7 @@ fun CircleContentItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
-    shape: ExpressiveShape = CircleContentItemDefaults.shape(),
+    shapes: MorphableShapes = CircleContentItemDefaults.shapes(),
     image: @Composable BoxScope.() -> Unit,
     title: @Composable () -> Unit,
     subtitle: @Composable () -> Unit,
@@ -196,11 +196,12 @@ fun CircleContentItem(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -282,12 +283,11 @@ private fun CircleContentPlaceholderPreview() {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object CircleContentItemDefaults {
-    @Composable
-    fun shape(): ExpressiveShape {
-        return MorphingExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = MaterialShapes.Circle,
             pressedShape = MaterialShapes.Cookie7Sided,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            hoveredShape = MaterialShapes.Pill,
         )
     }
 }

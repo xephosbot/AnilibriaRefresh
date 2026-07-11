@@ -44,8 +44,8 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
@@ -55,13 +55,14 @@ import com.xbot.resources.Res
 import com.xbot.resources.episode_title
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode?,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
-    shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveEpisodeListItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
@@ -73,11 +74,13 @@ fun EpisodeListItem(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
         selected = selected,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -256,15 +259,14 @@ internal fun ListItemLayout(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveEpisodeListItemDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
             focusedShape = MaterialTheme.shapes.large,
             hoveredShape = MaterialTheme.shapes.medium,
-            draggedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = MaterialTheme.shapes.large
         )
     }
 

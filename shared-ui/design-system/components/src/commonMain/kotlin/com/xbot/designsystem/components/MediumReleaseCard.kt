@@ -36,21 +36,22 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.fadedEdge
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MediumReleaseCard(
     release: Release?,
     onClick: (Release) -> Unit,
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
-    shape: ExpressiveShape = ExpressiveMediumReleaseCardDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveMediumReleaseCardDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
@@ -61,11 +62,12 @@ fun MediumReleaseCard(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -210,15 +212,14 @@ private fun MediumReleaseCardPlaceholder(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveMediumReleaseCardDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = MaterialTheme.shapes.large,
             pressedShape = MaterialTheme.shapes.small,
             selectedShape = MaterialTheme.shapes.small,
             focusedShape = MaterialTheme.shapes.large,
             hoveredShape = MaterialTheme.shapes.large,
-            draggedShape = MaterialTheme.shapes.small,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = MaterialTheme.shapes.small
         )
     }
 }
