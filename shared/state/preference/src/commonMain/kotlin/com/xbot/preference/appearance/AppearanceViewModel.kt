@@ -12,9 +12,9 @@ import com.xbot.domain.usecase.UpdatePureBlackUseCase
 import com.xbot.domain.usecase.UpdateThemeOptionUseCase
 import kotlinx.coroutines.flow.combine
 import org.koin.core.annotation.KoinViewModel
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 @KoinViewModel
 class AppearanceViewModel(
@@ -26,9 +26,9 @@ class AppearanceViewModel(
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
     private val updatePureBlackUseCase: UpdatePureBlackUseCase,
     private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase,
-) : ViewModel(), ContainerHost<AppearanceScreenState, Nothing> {
+) : ViewModel(), OrbitContainerHost<AppearanceScreenState, AppearanceScreenState, Nothing> {
 
-    override val container: Container<AppearanceScreenState, Nothing> = container(
+    override val container: OrbitContainer<AppearanceScreenState, AppearanceScreenState, Nothing> = orbitContainer(
         initialState = AppearanceScreenState()
     ) {
         startObservingAppearance()

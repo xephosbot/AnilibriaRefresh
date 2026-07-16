@@ -7,9 +7,9 @@ import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.LoginUseCase
 import com.xbot.domain.usecase.LogoutUseCase
 import org.koin.core.annotation.KoinViewModel
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 @KoinViewModel
 class LoginViewModel(
@@ -17,9 +17,9 @@ class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), ContainerHost<LoginScreenState, LoginScreenSideEffect> {
+) : ViewModel(), OrbitContainerHost<LoginScreenState, LoginScreenState, LoginScreenSideEffect> {
 
-    override val container: Container<LoginScreenState, LoginScreenSideEffect> = container(
+    override val container: OrbitContainer<LoginScreenState, LoginScreenState, LoginScreenSideEffect> = orbitContainer(
         initialState = LoginScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = LoginScreenState.serializer(),

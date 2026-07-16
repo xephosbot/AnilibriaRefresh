@@ -53,10 +53,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.ShimmerBounds
@@ -89,13 +87,13 @@ import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
+import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AvailabilityStatus
 import com.xbot.domain.models.hlsUrl
-import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.formatters.localizedMessage
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.show

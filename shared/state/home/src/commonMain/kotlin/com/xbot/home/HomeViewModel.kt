@@ -21,12 +21,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.annotation.OrbitExperimental
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 
-@OptIn(OrbitExperimental::class)
 @KoinViewModel
 class HomeViewModel(
     private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
@@ -38,9 +36,9 @@ class HomeViewModel(
     private val getScheduleForToday: GetScheduleForTodayUseCase,
     private val getScheduleWeek: GetScheduleWeekUseCase,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), ContainerHost<HomeScreenState, HomeScreenSideEffect> {
+) : ViewModel(), OrbitContainerHost<HomeScreenState, HomeScreenState, HomeScreenSideEffect> {
 
-    override val container: Container<HomeScreenState, HomeScreenSideEffect> = container(
+    override val container: OrbitContainer<HomeScreenState, HomeScreenState, HomeScreenSideEffect> = orbitContainer(
         initialState = HomeScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = HomeScreenState.serializer(),
