@@ -41,6 +41,10 @@ kotlin {
         implementation(libs.compose.foundation)
         implementation(libs.kotlinx.datetime)
     }
+
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=androidx.compose.foundation.style.ExperimentalFoundationStyleApi")
+    }
 }
 
 dependencies {
