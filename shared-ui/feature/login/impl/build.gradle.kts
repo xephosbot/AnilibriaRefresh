@@ -53,10 +53,6 @@ kotlin {
             implementation(libs.compose.ui.tooling)
         }
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 dependencies {

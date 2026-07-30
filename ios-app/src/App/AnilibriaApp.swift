@@ -1,29 +1,13 @@
 import SwiftUI
-import Nuke
-import Shared
 
+/// The iOS app is a thin shim: every screen, all state and DI live in the Compose Multiplatform
+/// `SharedUI` framework. Swift only owns the app lifecycle and hands the window over to Compose.
 @main
 struct AnilibriaApp: App {
-    init() {
-        KoinKt.doInitKoin()
-        configureImagePipeline()
-     }
-
     var body: some Scene {
         WindowGroup {
-            ViewModelStoreOwnerProvider {
-                RootView()
-            }
+            ComposeView()
+                .ignoresSafeArea(.all)
         }
-    }
-    
-    private func configureImagePipeline() {
-        var config = ImagePipeline.Configuration.withDataCache(
-            name: "com.anilibria.imagecache"
-        )
-        config.dataLoader = RelativeURLDataLoader(
-            urlProvider: imageUrlProvider()
-        )
-        ImagePipeline.shared = ImagePipeline(configuration: config)
     }
 }

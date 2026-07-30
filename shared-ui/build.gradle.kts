@@ -18,8 +18,17 @@ kotlin {
             version = release(libs.versions.android.minsdk.get().toInt())
         }
     }
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedUI"
+            isStatic = true
+            binaryOption("bundleId", "com.xbot.sharedui")
+        }
+    }
+
     jvm()
 
     jvmToolchain(21)

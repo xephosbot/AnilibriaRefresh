@@ -18,8 +18,6 @@ fun initKoin(
     }
 }
 
-fun initKoin() = initKoin(config = null)
-
 internal fun KoinApplication.kermitLogger() {
     logger(KermitKoinLogger(Logger.withTag("koin")))
 }

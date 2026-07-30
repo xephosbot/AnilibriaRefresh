@@ -39,10 +39,6 @@ kotlin {
         implementation(libs.koin.core.viewmodel)
         implementation(libs.koin.annotations)
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 koinCompiler {

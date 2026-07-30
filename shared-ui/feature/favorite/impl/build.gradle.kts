@@ -45,10 +45,6 @@ kotlin {
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 dependencies {

@@ -65,10 +65,6 @@ kotlin {
             implementation(libs.androidx.media3.exoplayer.hls)
         }
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 dependencies {
