@@ -158,7 +158,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# KOTZILLA_SCRIPT_VERSION=10\nset -e\nM=$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/kotzilla-debug\n[ \"$CONFIGURATION\" = Release ] && rm -f \"$M\" 2>/dev/null || touch \"$M\" 2>/dev/null\n[ -z \"$DWARF_DSYM_FOLDER_PATH\" ] && exit 0\ncd \"$SRCROOT/..\"\nif [ ! -x \"./gradlew\" ]; then\n  echo \"[Kotzilla] Expected executable gradlew at $(pwd)/gradlew. Re-run ./gradlew setupKotzillaXcode after moving the Xcode project.\"\n  exit 0\nfi\n./gradlew ':shared:uploadDsymFile' --dsymPath=\"$DWARF_DSYM_FOLDER_PATH\"\n";
+			shellScript = "# KOTZILLA_SCRIPT_VERSION=10\nset -e\nM=$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/kotzilla-debug\n[ \"$CONFIGURATION\" = Release ] && rm -f \"$M\" 2>/dev/null || touch \"$M\" 2>/dev/null\n[ -z \"$DWARF_DSYM_FOLDER_PATH\" ] && exit 0\ncd \"$SRCROOT/..\"\nif [ ! -x \"./gradlew\" ]; then\n  echo \"[Kotzilla] Expected executable gradlew at $(pwd)/gradlew. Re-run ./gradlew setupKotzillaXcode after moving the Xcode project.\"\n  exit 0\nfi\n./gradlew ':shared-ui:uploadDsymFile' --dsymPath=\"$DWARF_DSYM_FOLDER_PATH\"\n";
 		};
 		85ED1C399AA9F6BA834591C3 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;

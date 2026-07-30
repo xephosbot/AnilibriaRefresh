@@ -2,7 +2,6 @@ package com.xbot.shared.di
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
-import io.kotzilla.generated.monitoring
 import org.koin.core.KoinApplication
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.includes
@@ -12,9 +11,8 @@ fun initKoin(
     config: KoinConfiguration? = null,
 ) {
     startKoin<AnilibriaCore> {
-        includes(config)
         kermitLogger()
-        monitoring()
+        includes(config)
     }
 }
 

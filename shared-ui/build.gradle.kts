@@ -1,10 +1,9 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotzilla)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -33,8 +32,7 @@ kotlin {
 
     jvmToolchain(21)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    dependencies {
+    sourceSets.commonMain.dependencies {
         implementation(projects.shared)
         implementation(projects.shared.core.network.api)
         implementation(projects.sharedUi.common)
@@ -65,6 +63,10 @@ kotlin {
         implementation(libs.connectivity.core)
         implementation(libs.connectivity.compose)
     }
+}
+
+kotzilla {
+    versionName = "1.0.0"
 }
 
 koinCompiler {

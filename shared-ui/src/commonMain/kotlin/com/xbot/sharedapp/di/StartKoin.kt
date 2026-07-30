@@ -7,6 +7,7 @@ import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
 import com.xbot.title.di.titleFeatureModule
+import io.kotzilla.generated.monitoring
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.includes
 import org.koin.dsl.koinConfiguration
@@ -28,6 +29,7 @@ fun initKoin(
                 titleFeatureModule,
                 loginFeatureModule
             )
+            monitoring()
         }
     )
 }

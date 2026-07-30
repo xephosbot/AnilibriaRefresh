@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotzilla)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -46,10 +45,6 @@ kotlin {
         api(libs.kermit)
         api(libs.kermit.koin)
     }
-}
-
-kotzilla {
-    versionName = "1.0.0"
 }
 
 koinCompiler {

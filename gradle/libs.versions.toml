@@ -8,9 +8,9 @@ android-desugar-jdk = "2.1.5"
 google-services = "4.5.0"
 
 # Kotlin
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 ksp = "2.3.7"
-compose-multiplatform = "1.12.0-beta02"
+compose-multiplatform = "1.12.0-beta03"
 compose-material3 = "1.12.0-alpha03"
 compose-material3-adaptive = "1.3.0-beta02"
 
@@ -20,7 +20,7 @@ androidx-annotation = "1.10.0"
 androidx-appcompat = "1.7.1"
 androidx-core-splashscreen = "1.2.0"
 androidx-core-pip = "1.0.0-alpha03"
-androidx-datastore = "1.3.0-alpha09"
+androidx-datastore = "1.3.0-alpha10"
 androidx-interpolator = "1.0.0"
 androidx-media3 = "1.10.1"
 androidx-paging = "3.5.0"
@@ -28,7 +28,7 @@ androidx-lifecycle = "2.11.0"
 androidx-savedstate = "1.5.0"
 
 # Jetbrains
-navigation3-runtime = "1.2.0-alpha06"
+navigation3-runtime = "1.2.0-alpha07"
 navigation3-ui = "1.1.1"
 kotlinx-atomicfu = "0.33.0"
 kotlinx-coroutines = "1.11.0"
@@ -36,12 +36,12 @@ kotlinx-datetime = "0.8.0"
 kotlinx-serialization = "1.11.0"
 
 # Libraries
-firebase-bom = "34.16.0"
+firebase-bom = "34.17.0"
 ktor = "3.5.1"
 brotli = "0.1.2"
 koin = "4.2.2"
-koin-plugin = "1.0.2"
-kotzilla = "2.3.0"
+koin-plugin = "1.1.0"
+kotzilla = "2.3.1"
 kermit = "2.1.0"
 coil = "3.5.0"
 arrow = "2.2.3"
@@ -130,6 +130,7 @@ koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmo
 koin-compose-navigation3 = { group = "io.insert-koin", name = "koin-compose-navigation3", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
 kotzilla-sdk = { module = "io.kotzilla:kotzilla-sdk", version.ref = "kotzilla" }
+kotzilla-sdk-compose = { module = "io.kotzilla:kotzilla-sdk-compose", version.ref = "kotzilla" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kermit-koin = { group = "co.touchlab", name = "kermit-koin", version.ref = "kermit" }
 coil-core = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
