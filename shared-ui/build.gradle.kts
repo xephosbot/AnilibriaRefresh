@@ -60,6 +60,8 @@ kotlin {
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
+        implementation(libs.kermit)
+        implementation(libs.kermit.koin)
         implementation(libs.connectivity.core)
         implementation(libs.connectivity.compose)
     }

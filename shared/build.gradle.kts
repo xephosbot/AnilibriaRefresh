@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -39,14 +38,5 @@ kotlin {
         api(projects.shared.state.preference)
         api(projects.shared.state.search)
         api(projects.shared.state.title)
-        api(libs.koin.core)
-        api(libs.koin.core.viewmodel)
-        api(libs.koin.annotations)
-        api(libs.kermit)
-        api(libs.kermit.koin)
     }
-}
-
-koinCompiler {
-    compileSafety = false
 }
