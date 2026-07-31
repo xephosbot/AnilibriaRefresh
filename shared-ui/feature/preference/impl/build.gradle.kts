@@ -61,5 +61,5 @@ if (providers.gradleProperty("compose.compiler.reports").getOrElse("false").toBo
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

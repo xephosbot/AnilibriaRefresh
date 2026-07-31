@@ -42,5 +42,5 @@ kotlin {
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

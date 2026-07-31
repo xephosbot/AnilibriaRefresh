@@ -28,8 +28,10 @@ kotlin {
         implementation(projects.shared.core.domain.api)
         implementation(projects.shared.core.network.api)
         implementation(projects.shared.common)
-        implementation(libs.androidx.datastore.core)
-        implementation(libs.androidx.datastore.preferences)
+        // TODO: временно api вместо implementation — compileSafety не резолвит тип
+        //  биндинга, если его нет на classpath точки сборки графа (:shared-ui)
+        api(libs.androidx.datastore.core)
+        api(libs.androidx.datastore.preferences)
         implementation(libs.androidx.paging.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
@@ -51,5 +53,5 @@ kotlin {
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

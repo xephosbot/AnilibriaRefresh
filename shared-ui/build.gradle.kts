@@ -72,5 +72,5 @@ kotzilla {
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }
