@@ -51,7 +51,7 @@ shimmer = "1.5.0"
 sticky-headers = "0.1.0-alpha04"
 videoplayer = "0.11.1"
 orbit-mvi = "12.0.0"
-connectivity = "2.4.1"
+connectivity = "2.5.0"
 declarative-snackbar = "0.2.1"
 
 # Testing
