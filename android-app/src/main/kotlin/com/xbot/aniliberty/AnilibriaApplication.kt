@@ -1,12 +1,12 @@
-package com.xbot.anilibriarefresh
+package com.xbot.aniliberty
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
-import com.xbot.anilibriarefresh.fcm.FcmTopics
-import com.xbot.anilibriarefresh.notifications.NotificationHelper
+import com.xbot.aniliberty.fcm.FcmTopics
+import com.xbot.aniliberty.notifications.NotificationHelper
 import com.xbot.sharedapp.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.koinConfiguration

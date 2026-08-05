@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh
+package com.xbot.aniliberty
 
 import MainView
 import android.Manifest

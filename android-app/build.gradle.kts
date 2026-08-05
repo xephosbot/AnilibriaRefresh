@@ -14,13 +14,13 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.xbot.anilibriarefresh"
+    namespace = "com.xbot.aniliberty"
     compileSdk {
         version = release(libs.versions.android.compilesdk.get().toInt())
     }
 
     defaultConfig {
-        applicationId = "com.xbot.anilibriarefresh"
+        applicationId = "com.xbot.aniliberty"
         minSdk {
             version = release(libs.versions.android.minsdk.get().toInt())
         }

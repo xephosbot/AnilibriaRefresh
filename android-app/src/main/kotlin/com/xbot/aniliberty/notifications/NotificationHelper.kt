@@ -1,4 +1,4 @@
-package com.xbot.anilibriarefresh.notifications
+package com.xbot.aniliberty.notifications
 
 import android.Manifest
 import android.app.PendingIntent
@@ -11,8 +11,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.xbot.anilibriarefresh.MainActivity
-import com.xbot.anilibriarefresh.R
+import com.xbot.aniliberty.MainActivity
+import com.xbot.aniliberty.R
 import java.util.concurrent.atomic.AtomicInteger
 
 object NotificationHelper {

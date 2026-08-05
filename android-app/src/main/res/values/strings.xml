@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Anilibria Refresh</string>
-    <string name="account_label">Anilibria account</string>
+    <string name="app_name" translatable="false">Aniliberty Refresh</string>
+    <string name="account_label">Aniliberty account</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_release_id" translatable="false">release_notifications</string>

@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name="com.xbot.anilibriarefresh.AnilibriaApplication"
+        android:name="com.xbot.aniliberty.AnilibriaApplication"
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +20,7 @@
         android:theme="@style/Theme.AnilibriaRefresh.Splash"
         tools:targetApi="tiramisu">
         <activity
-            android:name="com.xbot.anilibriarefresh.MainActivity"
+            android:name="com.xbot.aniliberty.MainActivity"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|locale|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask"
@@ -52,7 +52,7 @@
         </activity>
 
         <service
-            android:name="com.xbot.anilibriarefresh.fcm.AnilibriaFcmService"
+            android:name="com.xbot.aniliberty.fcm.AnilibriaFcmService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
