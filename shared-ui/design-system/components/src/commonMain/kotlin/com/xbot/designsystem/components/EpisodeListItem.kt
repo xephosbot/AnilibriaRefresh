@@ -38,17 +38,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
 import com.xbot.formatters.localizedName
@@ -56,15 +54,15 @@ import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.episode_title
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode?,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     colors: EpisodeListItemColors = ExpressiveEpisodeListItemDefaults.colors(),
-    shape: ExpressiveShape = ExpressiveEpisodeListItemDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveEpisodeListItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
     onClick: () -> Unit,
@@ -76,11 +74,13 @@ fun EpisodeListItem(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
         selected = selected,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -259,15 +259,14 @@ internal fun ListItemLayout(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveEpisodeListItemDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = RoundedCornerShape(0.dp),
             pressedShape = MaterialTheme.shapes.large,
             selectedShape = MaterialTheme.shapes.large,
             focusedShape = MaterialTheme.shapes.large,
             hoveredShape = MaterialTheme.shapes.medium,
-            draggedShape = MaterialTheme.shapes.large,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = MaterialTheme.shapes.large
         )
     }
 
@@ -293,9 +292,7 @@ data class EpisodeListItemColors(
     val selectedContentColor: Color
 )
 
-@OptIn(ExperimentalTime::class)
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun EpisodeListItemPreview() {
     EpisodeListItem(
@@ -307,8 +304,7 @@ private fun EpisodeListItemPreview() {
     )
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun EpisodeListItemLoadingPreview() {
     EpisodeListItem(

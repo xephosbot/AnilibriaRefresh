@@ -5,7 +5,7 @@ import arrow.core.Either
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
 import com.xbot.data.mapper.toReleaseDetails
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseMember
@@ -20,11 +20,11 @@ internal class DefaultReleasesRepository(
     private val releasesApi: ReleasesApi,
     private val searchApi: SearchApi,
 ) : ReleasesRepository {
-    override suspend fun getLatestReleases(limit: Int): Either<DomainError, List<Release>> = releasesApi
+    override suspend fun getLatestReleases(limit: Int): Either<AppError, List<Release>> = releasesApi
         .getLatestReleases(limit)
         .map { it.map(ReleaseDto::toDomain) }
 
-    override suspend fun getRandomReleases(limit: Int): Either<DomainError, List<Release>> = releasesApi
+    override suspend fun getRandomReleases(limit: Int): Either<AppError, List<Release>> = releasesApi
         .getRandomReleases(limit)
         .map { it.map(ReleaseDto::toDomain) }
 
@@ -49,15 +49,15 @@ internal class DefaultReleasesRepository(
         )
     }
 
-    override suspend fun getRelease(aliasOrId: String): Either<DomainError, ReleaseDetails> = releasesApi
+    override suspend fun getRelease(aliasOrId: String): Either<AppError, ReleaseDetails> = releasesApi
         .getRelease(aliasOrId)
         .map(ReleaseDto::toReleaseDetails)
 
-    override suspend fun getReleaseMembers(aliasOrId: String): Either<DomainError, List<ReleaseMember>> = releasesApi
+    override suspend fun getReleaseMembers(aliasOrId: String): Either<AppError, List<ReleaseMember>> = releasesApi
         .getReleaseMembers(aliasOrId)
         .map { it.map(ReleaseMemberDto::toDomain) }
 
-    override suspend fun searchReleases(query: String): Either<DomainError, List<Release>> = searchApi
+    override suspend fun searchReleases(query: String): Either<AppError, List<Release>> = searchApi
         .searchReleases(query)
         .map { it.map(ReleaseDto::toDomain) }
 }

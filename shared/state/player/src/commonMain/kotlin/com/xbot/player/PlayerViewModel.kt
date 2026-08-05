@@ -10,19 +10,19 @@ import com.xbot.domain.usecase.GetReleaseUseCase
 import kotlinx.coroutines.Job
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 @KoinViewModel
 class PlayerViewModel(
     @Provided private val releaseId: String,
     @Provided private val initialEpisodeOrdinal: Int,
-    private val getReleaseUseCase: Lazy<GetReleaseUseCase>,
+    private val getReleaseUseCase: GetReleaseUseCase,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), ContainerHost<PlayerScreenState, PlayerScreenSideEffect> {
+) : ViewModel(), OrbitContainerHost<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> {
 
-    override val container: Container<PlayerScreenState, PlayerScreenSideEffect> = container(
+    override val container: OrbitContainer<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> = orbitContainer(
         initialState = PlayerScreenState(),
         savedStateHandle = savedStateHandle,
         serializer = PlayerScreenState.serializer(),
@@ -32,7 +32,7 @@ class PlayerViewModel(
 
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
-            request = { getReleaseUseCase.value(releaseId) },
+            request = { getReleaseUseCase(releaseId) },
             onError = { error -> showErrorMessage(error) { loadTitleDetails() } },
             reducer = { details ->
                 val episode = details.map { release ->

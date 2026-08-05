@@ -47,7 +47,7 @@ compose.desktop {
     }
 }
 
-val generateAssetsCar by tasks.registering(Exec::class) {
+val generateAssetsCar = tasks.register<Exec>("generateAssetsCar") {
     group = "build"
     description = "Generate Assets.car for macOS"
 

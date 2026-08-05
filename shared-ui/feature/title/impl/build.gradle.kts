@@ -11,8 +11,12 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.sharedui.feature.title.impl"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -45,21 +49,19 @@ kotlin {
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling)
 }
 
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    metricsDestination = layout.buildDirectory.dir("compose_compiler")
+if (providers.gradleProperty("compose.compiler.reports").getOrElse("false").toBoolean()) {
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        metricsDestination = layout.buildDirectory.dir("compose_compiler")
+    }
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

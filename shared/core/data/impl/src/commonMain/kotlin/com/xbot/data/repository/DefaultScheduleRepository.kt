@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.network.api.ReleasesApi
@@ -22,11 +22,11 @@ internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
     private val releasesApi: ReleasesApi,
 ) : ScheduleRepository {
-    override suspend fun getScheduleNow(): Either<DomainError, List<Schedule>> = scheduleApi
+    override suspend fun getScheduleNow(): Either<AppError, List<Schedule>> = scheduleApi
         .getScheduleNow()
         .map { schedule -> schedule["today"]?.mapNotNull(ScheduleDto::toDomain) ?: emptyList() }
 
-    override suspend fun getScheduleWeek(): Either<DomainError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
+    override suspend fun getScheduleWeek(): Either<AppError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
         .getScheduleWeek()
         .map { schedule ->
             schedule
@@ -44,11 +44,11 @@ internal class DefaultScheduleRepository(
                 }
         }
 
-    override suspend fun getCurrentDay(): Either<DomainError, LocalDate> = either {
+    override suspend fun getCurrentDay(): Either<AppError, LocalDate> = either {
         Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
-    override suspend fun getCurrentSeason(): Either<DomainError, Season> = releasesApi
+    override suspend fun getCurrentSeason(): Either<AppError, Season> = releasesApi
         .getLatestReleases(10)
         .map { releases ->
             releases
@@ -59,7 +59,7 @@ internal class DefaultScheduleRepository(
                 .key!!
         }
 
-    override suspend fun getCurrentYear(): Either<DomainError, Int> = releasesApi
+    override suspend fun getCurrentYear(): Either<AppError, Int> = releasesApi
         .getLatestReleases(10)
         .map { releases ->
             releases

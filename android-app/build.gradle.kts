@@ -14,15 +14,23 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    compileSdk = libs.versions.android.compilesdk.get().toInt()
     namespace = "com.xbot.anilibriarefresh"
+    compileSdk {
+        version = release(libs.versions.android.compilesdk.get().toInt())
+    }
 
     defaultConfig {
         applicationId = "com.xbot.anilibriarefresh"
-        minSdk = libs.versions.android.minsdk.get().toInt()
-        targetSdk = libs.versions.android.targetsdk.get().toInt()
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
+        targetSdk {
+            version = release(libs.versions.android.targetsdk.get().toInt())
+        }
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     androidResources {
@@ -46,15 +54,12 @@ android {
             isDebuggable = true
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            proguardFiles(
-                // Default file with automatically generated optimization rules.
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-            )
+            optimization {
+                enable = true
+            }
         }
     }
 
@@ -71,6 +76,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
 dependencies {
     implementation(projects.sharedUi)
     implementation(projects.sharedUi.navigation.api)
@@ -84,4 +93,10 @@ dependencies {
     implementation(libs.androidx.interpolator)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
+
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 }

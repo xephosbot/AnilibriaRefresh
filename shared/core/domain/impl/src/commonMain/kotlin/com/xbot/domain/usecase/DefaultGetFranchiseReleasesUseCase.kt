@@ -2,7 +2,7 @@ package com.xbot.domain.usecase
 
 import arrow.core.Either
 import com.xbot.data.repository.FranchisesRepository
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Release
 import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
@@ -12,6 +12,6 @@ import kotlin.native.HiddenFromObjC
 internal class DefaultGetFranchiseReleasesUseCase(
     private val franchisesRepository: FranchisesRepository,
 ) : GetFranchiseReleasesUseCase {
-    override suspend fun invoke(aliasOrId: String): Either<DomainError, List<Release>> =
+    override suspend fun invoke(aliasOrId: String): Either<AppError, List<Release>> =
         franchisesRepository.getFranchiseReleases(aliasOrId)
 }

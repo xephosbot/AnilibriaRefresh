@@ -53,7 +53,7 @@ val homeFeatureModule = module {
     }
     navigation<ScheduleRoute>(
         metadata = SupportingPaneSceneStrategy.supportingPane(HomeRoute)
-            + SharedViewModelStoreNavEntryDecorator.viewModelParent(HomeRoute.toString())
+            + SharedViewModelStoreNavEntryDecorator.parent(HomeRoute.toString())
     ) {
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current

@@ -7,11 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CF1F602D2FCA178700013CC8 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = CF1F602C2FCA178700013CC8 /* Nuke */; };
-		CF1F602F2FCA178700013CC8 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = CF1F602E2FCA178700013CC8 /* NukeUI */; };
 		CF3566132EC8883F00EE2F35 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF3566122EC8883F00EE2F35 /* AppIcon.icon */; };
 		CF8DEA472F1E9B3400221689 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF8DEA462F1E9B3400221689 /* Assets.xcassets */; };
-		CFCD10462F87E9B0008CAE7A /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = CFCD10452F87E9B0008CAE7A /* Shimmer */; };
 		CFF36A342F88E02B008331FD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFF36A292F88E02B008331FD /* Launch Screen.storyboard */; };
 		CFF36A382F88E6BE008331FD /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CFF36A372F88E6BE008331FD /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -51,9 +48,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF1F602F2FCA178700013CC8 /* NukeUI in Frameworks */,
-				CFCD10462F87E9B0008CAE7A /* Shimmer in Frameworks */,
-				CF1F602D2FCA178700013CC8 /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,10 +117,6 @@
 				Base,
 			);
 			mainGroup = 279A4C149BE22C4B16DC69BE;
-			packageReferences = (
-				CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
-				CF1F602B2FCA178700013CC8 /* XCRemoteSwiftPackageReference "Nuke" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 279A476559D7F8A9A59270EB /* Products */;
 			projectDirPath = "";
@@ -168,7 +158,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# KOTZILLA_SCRIPT_VERSION=10\nset -e\nM=$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/kotzilla-debug\n[ \"$CONFIGURATION\" = Release ] && rm -f \"$M\" 2>/dev/null || touch \"$M\" 2>/dev/null\n[ -z \"$DWARF_DSYM_FOLDER_PATH\" ] && exit 0\ncd \"$SRCROOT/..\"\nif [ ! -x \"./gradlew\" ]; then\n  echo \"[Kotzilla] Expected executable gradlew at $(pwd)/gradlew. Re-run ./gradlew setupKotzillaXcode after moving the Xcode project.\"\n  exit 0\nfi\n./gradlew ':shared:uploadDsymFile' --dsymPath=\"$DWARF_DSYM_FOLDER_PATH\"\n";
+			shellScript = "# KOTZILLA_SCRIPT_VERSION=10\nset -e\nM=$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/kotzilla-debug\n[ \"$CONFIGURATION\" = Release ] && rm -f \"$M\" 2>/dev/null || touch \"$M\" 2>/dev/null\n[ -z \"$DWARF_DSYM_FOLDER_PATH\" ] && exit 0\ncd \"$SRCROOT/..\"\nif [ ! -x \"./gradlew\" ]; then\n  echo \"[Kotzilla] Expected executable gradlew at $(pwd)/gradlew. Re-run ./gradlew setupKotzillaXcode after moving the Xcode project.\"\n  exit 0\nfi\n./gradlew ':shared-ui:uploadDsymFile' --dsymPath=\"$DWARF_DSYM_FOLDER_PATH\"\n";
 		};
 		85ED1C399AA9F6BA834591C3 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -186,7 +176,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode -i\n";
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared-ui:embedAndSignAppleFrameworkForXcode -i\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -371,42 +361,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		CF1F602B2FCA178700013CC8 /* XCRemoteSwiftPackageReference "Nuke" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/Nuke";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 13.0.6;
-			};
-		};
-		CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		CF1F602C2FCA178700013CC8 /* Nuke */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CF1F602B2FCA178700013CC8 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = Nuke;
-		};
-		CF1F602E2FCA178700013CC8 /* NukeUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CF1F602B2FCA178700013CC8 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeUI;
-		};
-		CFCD10452F87E9B0008CAE7A /* Shimmer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CFCD10442F87E9B0008CAE7A /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
-			productName = Shimmer;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 279A4D3C956DE91CE7B94022 /* Project object */;
 }

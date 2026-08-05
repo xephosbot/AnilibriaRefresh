@@ -1,10 +1,10 @@
 package com.xbot.data.repository
 
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 
 interface OtpRepository {
-    suspend fun getOtp(deviceId: String): Either<DomainError, Int>
-    suspend fun acceptOtp(code: Int): Either<DomainError, Unit>
-    suspend fun loginWithOtp(code: Int, deviceId: String): Either<DomainError, String>
+    suspend fun getOtp(deviceId: String): Either<AppError, Int>
+    suspend fun acceptOtp(code: Int): Either<AppError, Unit>
+    suspend fun loginWithOtp(code: Int, deviceId: String): Either<AppError, String>
 }

@@ -10,8 +10,12 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.sharedui.designsystem.components"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -36,6 +40,10 @@ kotlin {
         implementation(libs.compose.preview)
         implementation(libs.compose.foundation)
         implementation(libs.kotlinx.datetime)
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=androidx.compose.foundation.style.ExperimentalFoundationStyleApi")
     }
 }
 

@@ -10,8 +10,12 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.state.login"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -34,12 +38,8 @@ kotlin {
         implementation(libs.koin.core.viewmodel)
         implementation(libs.koin.annotations)
     }
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

@@ -1,8 +1,8 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
-import com.xbot.network.client.ResilientHttpRequester
+import com.xbot.common.error.AppError
+import com.xbot.network.client.HttpRequester
 import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.dto.TimecodeApi
 import io.ktor.client.request.delete
@@ -12,8 +12,8 @@ import io.ktor.client.request.setBody
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultViewsApi(private val requester: ResilientHttpRequester) : ViewsApi {
-    override suspend fun getTimecodes(): Either<DomainError, List<TimecodeApi>> = requester.request {
+internal class DefaultViewsApi(private val requester: HttpRequester) : ViewsApi {
+    override suspend fun getTimecodes(): Either<AppError, List<TimecodeApi>> = requester.request {
         get("accounts/users/me/views/timecodes") {
             requiresAuth()
         }
@@ -21,7 +21,7 @@ internal class DefaultViewsApi(private val requester: ResilientHttpRequester) : 
 
     override suspend fun updateTimecodes(
         timecodes: List<ViewsApi.UpdateTimecodesRequest>
-    ): Either<DomainError, List<TimecodeApi>> = requester.request {
+    ): Either<AppError, List<TimecodeApi>> = requester.request {
         post("accounts/users/me/views/timecodes") {
             requiresAuth()
             setBody(timecodes.map { (episodeId, time, isWatched) ->
@@ -36,7 +36,7 @@ internal class DefaultViewsApi(private val requester: ResilientHttpRequester) : 
 
     override suspend fun deleteTimecodes(
         episodeIds: List<String>
-    ): Either<DomainError, List<TimecodeApi>> = requester.request {
+    ): Either<AppError, List<TimecodeApi>> = requester.request {
         delete("accounts/users/me/views/timecodes") {
             requiresAuth()
             setBody(episodeIds.map { mapOf("release_episode_id" to it) })

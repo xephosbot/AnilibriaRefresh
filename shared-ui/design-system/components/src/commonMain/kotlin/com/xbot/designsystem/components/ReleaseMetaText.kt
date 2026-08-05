@@ -18,10 +18,9 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -109,24 +108,10 @@ private fun ReleaseAgeRatingPill(
     }
 }
 
-@Preview
+@AnilibriaPreview
 @Composable
 private fun ReleaseMetaTextPreview() {
-    AnilibriaTheme {
-        Surface {
-            ReleaseMetaText(release = ReleaseFixtures.all[1])
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ReleaseMetaTextPreviewDark() {
-    AnilibriaTheme(darkTheme = true) {
-        Surface {
-            ReleaseMetaText(release = ReleaseFixtures.all[1])
-        }
-    }
+    ReleaseMetaText(release = ReleaseFixtures.all[1])
 }
 
 private val Int.dpTextUnit: TextUnit

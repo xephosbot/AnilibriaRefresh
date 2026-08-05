@@ -9,8 +9,12 @@ plugins {
 kotlin {
     android {
         namespace = "com.xbot.shared.data.impl"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -24,8 +28,10 @@ kotlin {
         implementation(projects.shared.core.domain.api)
         implementation(projects.shared.core.network.api)
         implementation(projects.shared.common)
-        implementation(libs.androidx.datastore.core)
-        implementation(libs.androidx.datastore.preferences)
+        // TODO: временно api вместо implementation — compileSafety не резолвит тип
+        //  биндинга, если его нет на classpath точки сборки графа (:shared-ui)
+        api(libs.androidx.datastore.core)
+        api(libs.androidx.datastore.preferences)
         implementation(libs.androidx.paging.core)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.datetime)
@@ -42,10 +48,10 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.addAll("-Xcontext-parameters", "-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

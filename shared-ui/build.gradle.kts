@@ -1,27 +1,38 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotzilla)
     alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
     android {
         namespace = "com.xbot.sharedui"
-        compileSdk = libs.versions.android.compilesdk.get().toInt()
-        minSdk = libs.versions.android.minsdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compilesdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minsdk.get().toInt())
+        }
     }
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedUI"
+            isStatic = true
+            binaryOption("bundleId", "com.xbot.sharedui")
+        }
+    }
+
     jvm()
 
     jvmToolchain(21)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    dependencies {
+    sourceSets.commonMain.dependencies {
         implementation(projects.shared)
         implementation(projects.shared.core.network.api)
         implementation(projects.sharedUi.common)
@@ -49,11 +60,17 @@ kotlin {
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
+        implementation(libs.kermit)
+        implementation(libs.kermit.koin)
         implementation(libs.connectivity.core)
         implementation(libs.connectivity.compose)
     }
 }
 
+kotzilla {
+    versionName = "1.0.0"
+}
+
 koinCompiler {
-    compileSafety = false
+    compileSafety = true
 }

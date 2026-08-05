@@ -3,7 +3,6 @@ package com.xbot.designsystem.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -27,25 +26,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.scrim
-import com.xbot.designsystem.theme.ExpressiveShape
-import com.xbot.designsystem.theme.RoundedCornerExpressiveShape
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.xbot.designsystem.modifier.contextClickable
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.modifier.scrim
+import com.xbot.designsystem.shape.MorphableShapes
+import com.xbot.designsystem.shape.rememberMorphableShape
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SmallReleaseCard(
     release: Release?,
     modifier: Modifier = Modifier,
-    shape: ExpressiveShape = ExpressiveReleaseCardItemDefaults.shape(),
+    shapes: MorphableShapes = ExpressiveReleaseCardItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
     onClick: (Release) -> Unit,
@@ -57,11 +55,12 @@ fun SmallReleaseCard(
     val hovered by interactionSource.collectIsHoveredAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
 
-    val shape = shape.shapeForInteraction(
+    val shape = rememberMorphableShape(
+        shapes = shapes,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         pressed = pressed,
-        selected = false,
-        focused = focused,
         hovered = hovered,
+        focused = focused,
         dragged = dragged
     )
 
@@ -140,8 +139,7 @@ private fun SmallReleaseCardPlaceholder(
     )
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun SmallReleaseCardPreview() {
     SmallReleaseCard(
@@ -155,15 +153,14 @@ private fun SmallReleaseCardPreview() {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseCardItemDefaults {
     @Composable
-    fun shape(): ExpressiveShape {
-        return RoundedCornerExpressiveShape(
+    fun shapes(): MorphableShapes {
+        return MorphableShapes(
             shape = MaterialTheme.shapes.large,
             pressedShape = MaterialTheme.shapes.small,
             selectedShape = MaterialTheme.shapes.small,
             focusedShape = MaterialTheme.shapes.large,
             hoveredShape = MaterialTheme.shapes.large,
-            draggedShape = MaterialTheme.shapes.small,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+            draggedShape = MaterialTheme.shapes.small
         )
     }
 }

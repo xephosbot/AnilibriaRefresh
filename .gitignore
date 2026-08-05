@@ -36,4 +36,4 @@ android-app/keystore.properties
 .artifact
 
 /android-app/google-services.json
-/shared/kotzilla.json
+/shared-ui/kotzilla.json

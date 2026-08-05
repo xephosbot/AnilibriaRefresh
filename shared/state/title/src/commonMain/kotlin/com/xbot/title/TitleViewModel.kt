@@ -11,21 +11,19 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.annotation.OrbitExperimental
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 
-@OptIn(OrbitExperimental::class)
 @KoinViewModel
 class TitleViewModel(
     @Provided private val aliasOrId: String,
     @Provided private val initialRelease: Release? = null,
-    private val getRelease: Lazy<GetReleaseUseCase>,
-    private val getFranchiseReleases: Lazy<GetFranchiseReleasesUseCase>,
-) : ViewModel(), ContainerHost<TitleScreenState, TitleScreenSideEffect> {
+    private val getRelease: GetReleaseUseCase,
+    private val getFranchiseReleases: GetFranchiseReleasesUseCase,
+) : ViewModel(), OrbitContainerHost<TitleScreenState, TitleScreenState, TitleScreenSideEffect> {
 
-    override val container: Container<TitleScreenState, TitleScreenSideEffect> = container(
+    override val container: OrbitContainer<TitleScreenState, TitleScreenState, TitleScreenSideEffect> = orbitContainer(
         initialState = TitleScreenState(initialRelease = initialRelease)
     ) {
         coroutineScope {
@@ -36,7 +34,7 @@ class TitleViewModel(
 
     private suspend fun loadDetails() = subIntent {
         asyncLoad(
-            request = { getRelease.value(aliasOrId) },
+            request = { getRelease(aliasOrId) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(
@@ -49,7 +47,7 @@ class TitleViewModel(
 
     private suspend fun loadRelatedReleases() = subIntent {
         asyncLoad(
-            request = { getFranchiseReleases.value(aliasOrId) },
+            request = { getFranchiseReleases(aliasOrId) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(relatedReleases = it)

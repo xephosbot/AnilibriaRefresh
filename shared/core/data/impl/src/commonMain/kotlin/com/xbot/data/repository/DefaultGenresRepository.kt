@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import arrow.core.Either
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.network.api.GenresApi
@@ -16,15 +16,15 @@ import org.koin.core.annotation.Singleton
 internal class DefaultGenresRepository(
     private val genresApi: GenresApi,
 ) : GenresRepository {
-    override suspend fun getGenres(): Either<DomainError, List<Genre>> = genresApi
+    override suspend fun getGenres(): Either<AppError, List<Genre>> = genresApi
         .getGenres()
         .map { it.map(GenreDto::toDomain) }
 
-    override suspend fun getGenre(genreId: Int): Either<DomainError, Genre> = genresApi
+    override suspend fun getGenre(genreId: Int): Either<AppError, Genre> = genresApi
         .getGenre(genreId)
         .map(GenreDto::toDomain)
 
-    override suspend fun getRandomGenres(limit: Int): Either<DomainError, List<Genre>> = genresApi
+    override suspend fun getRandomGenres(limit: Int): Either<AppError, List<Genre>> = genresApi
         .getRandomGenres(limit)
         .map { it.map(GenreDto::toDomain) }
 

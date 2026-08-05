@@ -26,12 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -194,8 +192,7 @@ object ExpressivePreferenceItemDefaults {
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun PreferenceItemPreview() {
@@ -216,8 +213,7 @@ private fun PreferenceItemPreview() {
     }
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun SwitchPreferenceItemPreview() {

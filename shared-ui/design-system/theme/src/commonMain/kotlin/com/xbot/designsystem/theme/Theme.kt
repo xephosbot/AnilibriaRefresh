@@ -33,7 +33,8 @@ fun AnilibriaTheme(
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
             shapes = Shapes,
-            motionScheme = MotionScheme.expressive(),
+            //TODO: Revert to expressive after negative corner size exception fixed
+            motionScheme = MotionScheme.standard(),
             typography = AnilibriaTypography(),
             content = content,
         )

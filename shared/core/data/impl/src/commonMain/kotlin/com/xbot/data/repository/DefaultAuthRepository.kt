@@ -2,9 +2,8 @@ package com.xbot.data.repository
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.xbot.data.mapper.toDomain
+import com.xbot.common.error.AppError
 import com.xbot.data.mapper.toDto
-import com.xbot.domain.models.DomainError
 import com.xbot.domain.models.enums.SocialType
 import com.xbot.network.api.AuthApi
 import com.xbot.network.client.SessionStorage
@@ -18,17 +17,17 @@ internal class DefaultAuthRepository(
     private val tokenStorage: SessionStorage
 ) : AuthRepository {
 
-    override val authState: Flow<Boolean> =
-        (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
+    override val authState: Flow<Boolean>
+        get() = (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
 
-    override suspend fun login(login: String, password: String): Either<DomainError, Unit> = either {
+    override suspend fun login(login: String, password: String): Either<AppError, Unit> = either {
         val response = authApi.login(login, password)
             .bind()
 
         response.token?.let { tokenStorage.saveToken(it) }
     }
 
-    override suspend fun logout(): Either<DomainError, Unit> = either {
+    override suspend fun logout(): Either<AppError, Unit> = either {
         val result = authApi.logout()
         
         tokenStorage.clearToken()
@@ -36,7 +35,7 @@ internal class DefaultAuthRepository(
         result.bind()
     }
 
-    override suspend fun socialLogin(provider: SocialType): Either<DomainError, Unit> = either {
+    override suspend fun socialLogin(provider: SocialType): Either<AppError, Unit> = either {
         val state = authApi.socialLogin(provider.toDto())
             .bind().state
 
@@ -46,13 +45,13 @@ internal class DefaultAuthRepository(
         response.token?.let { tokenStorage.saveToken(it) }
     }
 
-    override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = authApi
+    override suspend fun forgotPassword(email: String): Either<AppError, Unit> = authApi
         .forgotPassword(email)
 
     override suspend fun resetPassword(
         token: String,
         password: String,
         passwordConfirmation: String
-    ): Either<DomainError, Unit> = authApi
+    ): Either<AppError, Unit> = authApi
         .resetPassword(token, password, passwordConfirmation)
 }

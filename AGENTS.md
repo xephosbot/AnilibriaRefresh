@@ -23,9 +23,9 @@
 
 - **`android-app/`**: Android application entry point.
 - **`jvm-app/`**: Desktop (JVM) application entry point.
-- **`ios-app/`**: iOS application (Xcode project) wrapping the shared UI.
-- **`shared/`**: Core business logic (Domain, Data, Network).
-- **`shared-ui/`**: Compose Multiplatform UI, features, and design system.
+- **`ios-app/`**: iOS application (Xcode project). A thin Swift shim that hosts the Compose UI — no SwiftUI feature code.
+- **`shared/`**: Core business logic (Domain, Data, Network). Plain KMP library, produces no Apple framework.
+- **`shared-ui/`**: Compose Multiplatform UI, features, and design system. **Also the iOS framework producer** (`SharedUI`, static, arm64 only).
 
 ### Module Hierarchy
 
@@ -231,7 +231,7 @@ kotlin {
 
 - **Android**: `./gradlew :android-app:assembleDebug`
 - **Desktop**: `./gradlew :jvm-app:run`
-- **iOS**: Standard Xcode build workflow (relies on `:shared` framework).
+- **iOS**: Standard Xcode build workflow. The `Compile Kotlin Framework` phase runs `./gradlew :shared-ui:embedAndSignAppleFrameworkForXcode`; for a Kotlin-only check use `./gradlew :shared-ui:linkDebugFrameworkIosSimulatorArm64`. See `ios-app/AGENTS.md`.
 
 ## Development Notes
 

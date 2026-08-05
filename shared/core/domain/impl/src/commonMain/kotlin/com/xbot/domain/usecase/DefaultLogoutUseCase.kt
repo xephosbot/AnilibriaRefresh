@@ -2,7 +2,7 @@ package com.xbot.domain.usecase
 
 import arrow.core.Either
 import com.xbot.data.repository.AuthRepository
-import com.xbot.domain.models.DomainError
+import com.xbot.common.error.AppError
 import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
 
@@ -11,6 +11,6 @@ import kotlin.native.HiddenFromObjC
 class DefaultLogoutUseCase(
     private val authRepository: AuthRepository,
 ) : LogoutUseCase {
-    override suspend fun invoke(): Either<DomainError, Unit> =
+    override suspend fun invoke(): Either<AppError, Unit> =
         authRepository.logout()
 }

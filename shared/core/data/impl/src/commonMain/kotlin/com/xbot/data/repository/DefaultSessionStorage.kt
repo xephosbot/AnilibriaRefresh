@@ -13,19 +13,20 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultSessionStorage(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: Lazy<DataStore<Preferences>>
 ) : SessionStorage {
 
     private object Keys {
         val token = stringPreferencesKey("session_access_token")
     }
 
-    val tokenFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[Keys.token]
-    }
+    val tokenFlow: Flow<String?>
+        get() = dataStore.value.data.map { preferences ->
+            preferences[Keys.token]
+        }
 
     override suspend fun saveToken(token: String) {
-        dataStore.edit { preferences ->
+        dataStore.value.edit { preferences ->
             preferences[Keys.token] = token
         }
     }
@@ -37,7 +38,7 @@ internal class DefaultSessionStorage(
     }
 
     override suspend fun clearToken() {
-        dataStore.edit { preferences ->
+        dataStore.value.edit { preferences ->
             preferences.remove(Keys.token)
         }
     }

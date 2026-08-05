@@ -1,8 +1,8 @@
 package com.xbot.network.api
 
 import arrow.core.Either
-import com.xbot.domain.models.DomainError
-import com.xbot.network.client.ResilientHttpRequester
+import com.xbot.common.error.AppError
+import com.xbot.network.client.HttpRequester
 import com.xbot.network.client.requiresAuth
 import com.xbot.network.models.enums.SocialTypeDto
 import com.xbot.network.models.responses.AuthResponse
@@ -18,34 +18,34 @@ import io.ktor.http.contentType
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultAuthApi(private val requester: ResilientHttpRequester) : AuthApi {
+internal class DefaultAuthApi(private val requester: HttpRequester) : AuthApi {
     override suspend fun login(
         login: String,
         password: String
-    ): Either<DomainError, LoginResponse> = requester.request {
+    ): Either<AppError, LoginResponse> = requester.request {
         post("accounts/users/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("login" to login, "password" to password))
         }
     }
 
-    override suspend fun logout(): Either<DomainError, LogoutResponse> = requester.request {
+    override suspend fun logout(): Either<AppError, LogoutResponse> = requester.request {
         post("accounts/users/auth/logout") {
             requiresAuth()
         }
     }
 
-    override suspend fun socialLogin(provider: SocialTypeDto): Either<DomainError, SocialAuthResponse> = requester.request {
+    override suspend fun socialLogin(provider: SocialTypeDto): Either<AppError, SocialAuthResponse> = requester.request {
         get("accounts/users/auth/social/$provider/login")
     }
 
-    override suspend fun socialAuthenticate(state: String): Either<DomainError, AuthResponse> = requester.request {
+    override suspend fun socialAuthenticate(state: String): Either<AppError, AuthResponse> = requester.request {
         get("accounts/users/auth/social/authenticate") {
             parameter("state", state)
         }
     }
 
-    override suspend fun forgotPassword(email: String): Either<DomainError, Unit> = requester.request {
+    override suspend fun forgotPassword(email: String): Either<AppError, Unit> = requester.request {
         get("accounts/users/auth/password/forget") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("email" to email))
@@ -56,7 +56,7 @@ internal class DefaultAuthApi(private val requester: ResilientHttpRequester) : A
         token: String,
         password: String,
         passwordConfirmation: String
-    ): Either<DomainError, Unit> = requester.request {
+    ): Either<AppError, Unit> = requester.request {
         post("accounts/users/auth/password/reset") {
             contentType(ContentType.Application.Json)
             setBody(

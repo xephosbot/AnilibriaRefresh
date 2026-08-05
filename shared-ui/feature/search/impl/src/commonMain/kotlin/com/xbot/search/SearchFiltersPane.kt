@@ -27,10 +27,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
@@ -43,7 +41,7 @@ import com.xbot.designsystem.icons.AnilibriaIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
-import com.xbot.designsystem.utils.AnilibriaPreviewWrapper
+import com.xbot.designsystem.utils.AnilibriaPreview
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
@@ -516,8 +514,7 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
     return start.roundToInt()..endInclusive.roundToInt()
 }
 
-@Preview
-@PreviewWrapper(AnilibriaPreviewWrapper::class)
+@AnilibriaPreview
 @Composable
 private fun SearchFilterPanePreview(
     @PreviewParameter(SearchFiltersStateProvider::class) state: SearchScreenState
