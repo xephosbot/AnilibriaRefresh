@@ -38,3 +38,4 @@ android-app/keystore.properties
 
 /android-app/google-services.json
 /shared-ui/kotzilla.json
+/.firebaserc
