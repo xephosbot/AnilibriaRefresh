@@ -19,7 +19,7 @@
 
     <style name="Theme.AnilibertyRefresh.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
-        <item name="windowSplashScreenAnimationDuration">@integer/splash_icon_animation_duration</item>
+        <item name="windowSplashScreenAnimationDuration">640</item>
         <item name="postSplashScreenTheme">@style/Theme.AnilibertyRefresh</item>
     </style>
 </resources>
