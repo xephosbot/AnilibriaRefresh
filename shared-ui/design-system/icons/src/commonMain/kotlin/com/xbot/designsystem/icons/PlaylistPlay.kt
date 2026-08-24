@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.PlaylistPlay: ImageVector
+val AnilibertyIcons.PlaylistPlay: ImageVector
     get() {
         if (_playlistPlay != null) {
             return _playlistPlay!!

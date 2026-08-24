@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
 import com.xbot.designsystem.icons.ArrowDropDown
 import com.xbot.designsystem.icons.PlayArrow
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.resources.Res
 import com.xbot.resources.button_watch
 import org.jetbrains.compose.resources.stringResource
@@ -250,7 +250,7 @@ private fun SplitButtonLayout(
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SplitButtonPreview() {
     MediumSplitButton(
@@ -264,7 +264,7 @@ private fun SplitButtonPreview() {
             Icon(
                 modifier = Modifier
                     .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                imageVector = com.xbot.designsystem.icons.AnilibriaIcons.Filled.PlayArrow,
+                imageVector = com.xbot.designsystem.icons.AnilibertyIcons.Filled.PlayArrow,
                 contentDescription = null
             )
             Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
@@ -277,7 +277,7 @@ private fun SplitButtonPreview() {
             Icon(
                 modifier = Modifier
                     .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                imageVector = com.xbot.designsystem.icons.AnilibriaIcons.ArrowDropDown,
+                imageVector = com.xbot.designsystem.icons.AnilibertyIcons.ArrowDropDown,
                 contentDescription = null
             )
         }

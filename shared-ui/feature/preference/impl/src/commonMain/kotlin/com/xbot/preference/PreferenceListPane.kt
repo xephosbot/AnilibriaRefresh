@@ -22,11 +22,11 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.preference.navigation.DiscordRoute
@@ -129,7 +129,7 @@ private fun PreferencesList(
                         trailingContent = {
                             if (item !is ExternalUriNavKey) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.ChevronRight,
+                                    imageVector = AnilibertyIcons.ChevronRight,
                                     contentDescription = null
                                 )
                             }
@@ -164,7 +164,7 @@ object PreferenceListDefaults {
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun PreferenceListPanePreview() {
     PreferenceListPane(

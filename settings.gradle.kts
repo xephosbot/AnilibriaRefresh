@@ -1,4 +1,4 @@
-rootProject.name = "AnilibriaRefresh"
+rootProject.name = "AnilibertyRefresh"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

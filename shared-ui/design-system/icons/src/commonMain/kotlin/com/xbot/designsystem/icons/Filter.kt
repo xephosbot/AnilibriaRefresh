@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filter: ImageVector
+val AnilibertyIcons.Filter: ImageVector
     get() {
         if (_filter != null) {
             return _filter!!

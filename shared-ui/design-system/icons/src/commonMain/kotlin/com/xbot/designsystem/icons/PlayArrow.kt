@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.PlayArrow: ImageVector
+val AnilibertyIcons.Filled.PlayArrow: ImageVector
     get() {
         if (_playArrowFilled != null) {
             return _playArrowFilled!!
@@ -58,7 +58,7 @@ val AnilibriaIcons.Filled.PlayArrow: ImageVector
     }
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Outlined.PlayArrow: ImageVector
+val AnilibertyIcons.Outlined.PlayArrow: ImageVector
     get() {
         if (_playArrowOutlined != null) {
             return _playArrowOutlined!!

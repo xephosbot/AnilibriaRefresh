@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name="com.xbot.anilibriarefresh.AnilibriaApplication"
+        android:name="com.xbot.aniliberty.AnilibertyApplication"
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,10 +17,10 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AnilibriaRefresh.Splash"
+        android:theme="@style/Theme.AnilibertyRefresh.Splash"
         tools:targetApi="tiramisu">
         <activity
-            android:name="com.xbot.anilibriarefresh.MainActivity"
+            android:name="com.xbot.aniliberty.MainActivity"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|locale|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask"
@@ -47,12 +47,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="anilibria" />
+                <data android:scheme="aniliberty" />
             </intent-filter>
         </activity>
 
         <service
-            android:name="com.xbot.anilibriarefresh.fcm.AnilibriaFcmService"
+            android:name="com.xbot.aniliberty.fcm.AnilibertyFcmService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -64,7 +64,7 @@
             android:resource="@drawable/ic_launcher_monochrome" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/anilibria_red" />
+            android:resource="@color/aniliberty_red" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_channel_release_id" />

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Close: ImageVector
+val AnilibertyIcons.Close: ImageVector
     get() {
         if (_close != null) {
             return _close!!

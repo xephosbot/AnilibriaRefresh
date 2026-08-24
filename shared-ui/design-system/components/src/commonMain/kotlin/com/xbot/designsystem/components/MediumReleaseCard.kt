@@ -38,7 +38,7 @@ import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
@@ -224,7 +224,7 @@ object ExpressiveMediumReleaseCardDefaults {
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun MediumReleaseCardPreview() {
     MediumReleaseCard(

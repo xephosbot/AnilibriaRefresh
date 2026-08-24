@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class,)
 @Composable
-fun AnilibriaTheme(
+fun AnilibertyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     amoled: Boolean = false,
@@ -35,7 +35,7 @@ fun AnilibriaTheme(
             shapes = Shapes,
             //TODO: Revert to expressive after negative corner size exception fixed
             motionScheme = MotionScheme.standard(),
-            typography = AnilibriaTypography(),
+            typography = AnilibertyTypography(),
             content = content,
         )
     }

@@ -12,6 +12,7 @@ interface AppState {
     val isOffline: Boolean
     val themeState: AppThemeState
     val authState: AuthState
+    val isReady: Boolean
 }
 
 data class AppThemeState(

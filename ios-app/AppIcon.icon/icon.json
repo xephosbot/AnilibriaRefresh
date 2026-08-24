@@ -1,31 +1,21 @@
 {
   "fill" : {
-    "automatic-gradient" : "display-p3:0.52490,0.30420,0.31152,1.00000"
+    "solid" : "display-p3:0.97607,0.91992,0.90820,1.00000"
   },
   "groups" : [
     {
-      "blur-material" : 0.5,
       "layers" : [
         {
-          "fill-specializations" : [
-            {
-              "value" : "automatic"
-            },
-            {
-              "appearance" : "dark",
-              "value" : "none"
-            },
-            {
-              "appearance" : "tinted",
-              "value" : "automatic"
-            }
-          ],
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "Icon.svg",
-          "name" : "Icon",
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.91699,0.29053,0.25293,1.00000",
+              "display-p3:0.96783,0.57485,0.54310,1.00000"
+            ]
+          },
+          "image-name" : "icon.svg",
+          "name" : "icon",
           "position" : {
-            "scale" : 15.5,
+            "scale" : 0.65,
             "translation-in-points" : [
               0,
               0
@@ -33,15 +23,13 @@
           }
         }
       ],
-      "lighting" : "individual",
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.5
+        "opacity" : 0.6
       },
-      "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
+        "value" : 0.2
       }
     }
   ],

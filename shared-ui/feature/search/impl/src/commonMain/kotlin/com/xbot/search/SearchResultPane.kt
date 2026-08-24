@@ -45,13 +45,13 @@ import com.xbot.designsystem.components.TopSearchInputField
 import com.xbot.designsystem.components.header
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Close
 import com.xbot.designsystem.icons.Filter
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.union
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
@@ -153,7 +153,7 @@ private fun SearchResultPaneContent(
                             onClick = { onBackClick() }
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.ArrowBack,
+                                imageVector = AnilibertyIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
@@ -167,7 +167,7 @@ private fun SearchResultPaneContent(
                                 onClick = { onFiltersClick() }
                             ) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.Filter,
+                                    imageVector = AnilibertyIcons.Filter,
                                     contentDescription = stringResource(Res.string.button_filters)
                                 )
                             }
@@ -175,7 +175,7 @@ private fun SearchResultPaneContent(
                                 onClick = { searchFieldState.clearText() }
                             ) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.Close,
+                                    imageVector = AnilibertyIcons.Close,
                                     contentDescription = null
                                 )
                             }
@@ -191,7 +191,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(genre.name) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -203,7 +203,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(stringResource(type.stringRes)) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -215,7 +215,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -227,7 +227,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -239,7 +239,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(stringResource(season.stringRes)) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -251,7 +251,7 @@ private fun SearchResultPaneContent(
                                 label = { Text(stringResource(rating.stringRes)) },
                                 trailingIcon = {
                                     Icon(
-                                        imageVector = AnilibriaIcons.Close,
+                                        imageVector = AnilibertyIcons.Close,
                                         contentDescription = null
                                     )
                                 }
@@ -314,7 +314,7 @@ private fun SearchResultContent(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SearchResultPanePreview() {
     val searchResult = flowOf(PagingData.from(ReleaseFixtures.all)).collectAsLazyPagingItems()

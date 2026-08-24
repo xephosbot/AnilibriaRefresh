@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.xbot.common.AsyncResult
 import com.xbot.common.getOrElse
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.formatters.localizedMessage
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
@@ -149,7 +149,7 @@ private fun PlayerScreenContent(
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun PlayerScreenPreview(
     @PreviewParameter(PlayerScreenStateProvider::class) state: PlayerScreenState

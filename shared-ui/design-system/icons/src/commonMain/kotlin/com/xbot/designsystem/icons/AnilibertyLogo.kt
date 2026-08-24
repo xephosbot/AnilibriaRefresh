@@ -11,13 +11,13 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.AnilibriaLogo: ImageVector
+val AnilibertyIcons.AnilibertyLogo: ImageVector
     get() {
-        if (_anilibriaLogo != null) {
-            return _anilibriaLogo!!
+        if (_anilibertyLogo != null) {
+            return _anilibertyLogo!!
         }
-        _anilibriaLogo = Builder(
-            name = "AnilibriaLogo",
+        _anilibertyLogo = Builder(
+            name = "AnilibertyLogo",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -78,7 +78,7 @@ val AnilibriaIcons.AnilibriaLogo: ImageVector
             }
         }
             .build()
-        return _anilibriaLogo!!
+        return _anilibertyLogo!!
     }
 
-private var _anilibriaLogo: ImageVector? = null
+private var _anilibertyLogo: ImageVector? = null

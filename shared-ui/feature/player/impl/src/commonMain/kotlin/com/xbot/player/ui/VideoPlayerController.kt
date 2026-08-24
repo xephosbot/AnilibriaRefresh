@@ -68,7 +68,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Forward10
 import com.xbot.designsystem.icons.Pause
@@ -410,7 +410,7 @@ private fun VideoPlayerTopBar(
         navigationIcon = {
             IconButton(onClick = onClickBack) {
                 Icon(
-                    imageVector = AnilibriaIcons.ArrowBack,
+                    imageVector = AnilibertyIcons.ArrowBack,
                     contentDescription = null,
                 )
             }
@@ -419,7 +419,7 @@ private fun VideoPlayerTopBar(
             Box {
                 IconButton(onClick = { isQualityMenuExpanded = true }) {
                     Icon(
-                        imageVector = AnilibriaIcons.Filled.Settings,
+                        imageVector = AnilibertyIcons.Filled.Settings,
                         contentDescription = "Quality Settings",
                     )
                 }
@@ -447,7 +447,7 @@ private fun VideoPlayerTopBar(
 
             IconButton(onClick = onOpenPlaylist) {
                 Icon(
-                    imageVector = AnilibriaIcons.PlaylistPlay,
+                    imageVector = AnilibertyIcons.PlaylistPlay,
                     contentDescription = null,
                 )
             }
@@ -470,9 +470,9 @@ private fun PlayPauseButton(
     modifier: Modifier = Modifier,
 ) {
     val icon = if (state.isPlaying) {
-        AnilibriaIcons.Filled.Pause
+        AnilibertyIcons.Filled.Pause
     } else {
-        AnilibriaIcons.Filled.PlayArrow
+        AnilibertyIcons.Filled.PlayArrow
     }
 
     FilledTonalIconToggleButton(
@@ -502,7 +502,7 @@ private fun SeekBackButton(
     ) {
         Icon(
             modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-            imageVector = AnilibriaIcons.Replay10,
+            imageVector = AnilibertyIcons.Replay10,
             contentDescription = null,
         )
     }
@@ -521,7 +521,7 @@ private fun SeekForwardButton(
     ) {
         Icon(
             modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-            imageVector = AnilibriaIcons.Forward10,
+            imageVector = AnilibertyIcons.Forward10,
             contentDescription = null,
         )
     }

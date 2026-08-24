@@ -1,8 +1,8 @@
-# AGENTS.md - AnilibriaRefresh Project Context
+# AGENTS.md - AnilibertyRefresh Project Context
 
 ## Project Overview
 
-**AnilibriaRefresh** is a modern Kotlin Multiplatform (KMP) application for streaming anime from the Anilibria service. It targets Android, iOS, and JVM Desktop, sharing business logic, networking, and UI via Compose Multiplatform.
+**AnilibertyRefresh** is a modern Kotlin Multiplatform (KMP) application for streaming anime from the Aniliberty service. It targets Android, iOS, and JVM Desktop, sharing business logic, networking, and UI via Compose Multiplatform.
 
 ### Tech Stack & Libraries
 
@@ -237,5 +237,5 @@ kotlin {
 
 - **Multiplatform Resources**: Use `Res` object from `compose-resources` for strings/images.
 - **Image Loading**: Use `PosterImage` component (wraps Coil).
-- **Design System**: Strict usage of `AnilibriaTheme` and components in `:shared-ui:design-system`.
+- **Design System**: Strict usage of `AnilibertyTheme` and components in `:shared-ui:design-system`.
 - **Error Handling**: `DomainError` sealed class in Domain layer. ViewModels map errors to UI messages.

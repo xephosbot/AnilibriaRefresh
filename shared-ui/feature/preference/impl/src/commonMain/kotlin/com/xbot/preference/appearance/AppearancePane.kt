@@ -34,9 +34,9 @@ import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.SwitchPreferenceItem
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
@@ -95,7 +95,7 @@ private fun AppearanceScreenContent(
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
                         Icon(
-                            imageVector = AnilibriaIcons.ArrowBack,
+                            imageVector = AnilibertyIcons.ArrowBack,
                             contentDescription = null
                         )
                     }
@@ -172,7 +172,7 @@ private fun AppearanceScreenContent(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun AppearancePanePreview() {
     var state by remember { mutableStateOf(AppearanceScreenState()) }

@@ -1,10 +1,10 @@
-package com.xbot.anilibriarefresh.fcm
+package com.xbot.aniliberty.fcm
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.xbot.anilibriarefresh.notifications.NotificationHelper
+import com.xbot.aniliberty.notifications.NotificationHelper
 
-class AnilibriaFcmService : FirebaseMessagingService() {
+class AnilibertyFcmService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         sendTokenToServer(token)

@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Stable
-internal class AnilibriaAppState(
+internal class AnilibertyAppState(
     private val getThemeOptionUseCase: GetThemeOptionUseCase,
     private val getDynamicThemeUseCase: GetDynamicThemeUseCase,
     private val getPureBlackUseCase: GetPureBlackUseCase,
@@ -37,6 +37,12 @@ internal class AnilibriaAppState(
 
     override var authState: AuthState by mutableStateOf(AuthState.Unauthenticated(null))
         private set
+
+    override var isReady: Boolean by mutableStateOf(false)
+        private set
+
+    private var hasThemeState = false
+    private var hasAuthState = false
 
     init {
         coroutineScope.launch {
@@ -54,19 +60,27 @@ internal class AnilibriaAppState(
                 )
             }.collect {
                 themeState = it
+                hasThemeState = true
+                updateReadiness()
             }
         }
 
         coroutineScope.launch {
             getAuthStateUseCase().collect {
                 authState = it
+                hasAuthState = true
+                updateReadiness()
             }
         }
+    }
+
+    private fun updateReadiness() {
+        isReady = hasThemeState && hasAuthState
     }
 }
 
 @Composable
-fun rememberAnilibriaAppState(
+fun rememberAnilibertyAppState(
     getThemeOptionUseCase: GetThemeOptionUseCase = koinInject(),
     getDynamicThemeUseCase: GetDynamicThemeUseCase = koinInject(),
     getPureBlackUseCase: GetPureBlackUseCase = koinInject(),
@@ -82,7 +96,7 @@ fun rememberAnilibriaAppState(
         getAuthStateUseCase,
         coroutineScope
     ) {
-        AnilibriaAppState(
+        AnilibertyAppState(
             getThemeOptionUseCase = getThemeOptionUseCase,
             getDynamicThemeUseCase = getDynamicThemeUseCase,
             getPureBlackUseCase = getPureBlackUseCase,

@@ -24,7 +24,7 @@ import org.jetbrains.compose.resources.FontResource
 internal val baseline = Typography()
 
 @Composable
-internal fun AnilibriaTypography() = Typography(
+internal fun AnilibertyTypography() = Typography(
     displayLarge = baseline.displayLarge.applyDisplayFontFamily(),
     displayMedium = baseline.displayMedium.applyDisplayFontFamily(),
     displaySmall = baseline.displaySmall.applyDisplayFontFamily(),

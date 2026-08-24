@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 
 @Composable
 fun <T> MultiChoiceChipGroup(
@@ -117,7 +117,7 @@ fun ChipGroup(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun MultiChoiceChipGroupPreview() {
     val items = remember { listOf("summer", "autumn", "winter", "spring") }
@@ -141,7 +141,7 @@ private fun MultiChoiceChipGroupPreview() {
             leadingIcon = if (selected) {
                 {
                     Icon(
-                        com.xbot.designsystem.icons.AnilibriaIcons.Check,
+                        com.xbot.designsystem.icons.AnilibertyIcons.Check,
                         null,
                         Modifier.size(FilterChipDefaults.IconSize)
                     )
@@ -151,7 +151,7 @@ private fun MultiChoiceChipGroupPreview() {
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SingleChoiceChipGroupPreview() {
     val items = remember { listOf("summer", "autumn", "winter", "spring") }
@@ -171,7 +171,7 @@ private fun SingleChoiceChipGroupPreview() {
             leadingIcon = if (selected) {
                 {
                     Icon(
-                        com.xbot.designsystem.icons.AnilibriaIcons.Check,
+                        com.xbot.designsystem.icons.AnilibertyIcons.Check,
                         null,
                         Modifier.size(FilterChipDefaults.IconSize)
                     )

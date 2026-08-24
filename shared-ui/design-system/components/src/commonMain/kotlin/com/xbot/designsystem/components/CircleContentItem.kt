@@ -37,7 +37,7 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.ReleaseMember
@@ -241,7 +241,7 @@ fun CircleContentItem(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun GenreItemPreview() {
     GenreItem(
@@ -258,7 +258,7 @@ private fun GenreItemPreview() {
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun MemberItemPreview() {
     MemberItem(
@@ -275,7 +275,7 @@ private fun MemberItemPreview() {
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun CircleContentPlaceholderPreview() {
     CircleContentPlaceholder()

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.Home: ImageVector
+val AnilibertyIcons.Filled.Home: ImageVector
     get() {
         if (_homeFilled != null) {
             return _homeFilled!!
@@ -70,7 +70,7 @@ val AnilibriaIcons.Filled.Home: ImageVector
     }
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Outlined.Home: ImageVector
+val AnilibertyIcons.Outlined.Home: ImageVector
     get() {
         if (_homeOutlined != null) {
             return _homeOutlined!!

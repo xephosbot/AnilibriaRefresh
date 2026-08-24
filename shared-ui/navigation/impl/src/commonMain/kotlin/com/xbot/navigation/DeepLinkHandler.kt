@@ -14,15 +14,19 @@ import kotlinx.serialization.serializer
 
 private val deepLinkMatchers = listOf(
     UriDeepLinkMatcher(
-        uriPattern = DeepLinkUri("https://anilibria.tv/release/{aliasOrId}"),
+        uriPattern = DeepLinkUri("https://aniliberty.top/release/{aliasOrId}"),
         serializer = serializer<TitleRoute>()
     ),
     UriDeepLinkMatcher(
-        uriPattern = DeepLinkUri("anilibria://release/{aliasOrId}"),
+        uriPattern = DeepLinkUri("https://anilibria.top/release/{aliasOrId}"),
         serializer = serializer<TitleRoute>()
     ),
     UriDeepLinkMatcher(
-        uriPattern = DeepLinkUri("anilibria://login"),
+        uriPattern = DeepLinkUri("aniliberty://release/{aliasOrId}"),
+        serializer = serializer<TitleRoute>()
+    ),
+    UriDeepLinkMatcher(
+        uriPattern = DeepLinkUri("aniliberty://login"),
         serializer = serializer<LoginRoute>()
     )
 )

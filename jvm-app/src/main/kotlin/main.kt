@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Anilibria JVM",
+            title = "Aniliberty JVM",
         ) {
             SideEffect {
                 enableEdgeToEdge()
