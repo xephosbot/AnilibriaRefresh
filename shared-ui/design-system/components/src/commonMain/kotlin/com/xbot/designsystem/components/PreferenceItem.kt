@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -99,13 +99,13 @@ fun SwitchPreferenceItem(
                 thumbContent = {
                     if (checked) {
                         Icon(
-                            imageVector = com.xbot.designsystem.icons.AnilibriaIcons.Check,
+                            imageVector = com.xbot.designsystem.icons.AnilibertyIcons.Check,
                             contentDescription = null,
                             modifier = Modifier.size(SwitchDefaults.IconSize)
                         )
                     } else {
                         Icon(
-                            imageVector = com.xbot.designsystem.icons.AnilibriaIcons.Close,
+                            imageVector = com.xbot.designsystem.icons.AnilibertyIcons.Close,
                             contentDescription = null,
                             modifier = Modifier.size(SwitchDefaults.IconSize)
                         )
@@ -192,7 +192,7 @@ object ExpressivePreferenceItemDefaults {
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun PreferenceItemPreview() {
@@ -213,7 +213,7 @@ private fun PreferenceItemPreview() {
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun SwitchPreferenceItemPreview() {

@@ -18,7 +18,7 @@ import org.koin.plugin.module.dsl.startKoin
 fun initKoin(
     config: KoinConfiguration? = null
 ) {
-    startKoin<AnilibriaApp> {
+    startKoin<AnilibertyApp> {
         kermitLogger()
         includes(config)
         modules(

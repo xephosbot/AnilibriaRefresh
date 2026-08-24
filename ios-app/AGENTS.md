@@ -1,4 +1,4 @@
-# AGENTS.md - ios-app (Anilibria Refresh, iOS)
+# AGENTS.md - ios-app (Aniliberty Refresh, iOS)
 
 ## Overview
 
@@ -15,7 +15,7 @@ bridge, Nuke image loading, `AppRouter`) was removed in the CMP migration.
 ```
 src/
 ├── App/
-│   ├── AnilibriaApp.swift   // @main App — one WindowGroup hosting ComposeView
+│   ├── AnilibertyApp.swift   // @main App — one WindowGroup hosting ComposeView
 │   └── ComposeView.swift    // UIViewControllerRepresentable over MainViewControllerKt
 └── Info.plist               // MUST stay here (INFOPLIST_FILE = src/Info.plist)
 ```
@@ -26,7 +26,7 @@ That is the entire Swift surface, and it should stay that way.
 
 - Entry point is `MainViewControllerKt.MainViewController()` (Kotlin:
   `shared-ui/src/iosMain/kotlin/MainViewController.kt`). It **starts Koin on first call** and
-  returns the `ComposeUIViewController` rendering `AnilibriaApp()`. Swift must not call
+  returns the `ComposeUIViewController` rendering `AnilibertyApp()`. Swift must not call
   `initKoin` itself — the guard in Kotlin is the single source of truth.
 - The controller owns the Compose scene, its lifecycle and the navigation back stack, so it is
   created once in `makeUIViewController` and never reconfigured.
@@ -55,7 +55,7 @@ Anything that renders belongs in `shared-ui`.
 - **The framework is arm64-only** (`iosArm64`, `iosSimulatorArm64` — no `iosX64`). Build the
   simulator with arm64; an x86_64 slice will fail to link:
   ```
-  xcodebuild -project ios-app/AnilibriaRefresh.xcodeproj -scheme ios-app \
+  xcodebuild -project ios-app/AnilibertyRefresh.xcodeproj -scheme ios-app \
     -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
     ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build
   ```

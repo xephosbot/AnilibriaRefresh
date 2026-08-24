@@ -91,8 +91,8 @@ import com.xbot.designsystem.components.horizontalSnappableItems
 import com.xbot.designsystem.components.pagingItems
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
-import com.xbot.designsystem.icons.AnilibriaLogoLarge
+import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.AnilibertyLogoLarge
 import com.xbot.designsystem.icons.ArrowDropDown
 import com.xbot.designsystem.icons.ArrowDropUp
 import com.xbot.designsystem.icons.PlayArrow
@@ -102,7 +102,7 @@ import com.xbot.designsystem.modifier.horizontalParallax
 import com.xbot.designsystem.modifier.overlayDrawable
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
@@ -248,7 +248,7 @@ private fun FeedPaneContent(
                         ),
                     title = {
                         Image(
-                            imageVector = AnilibriaIcons.AnilibriaLogoLarge,
+                            imageVector = AnilibertyIcons.AnilibertyLogoLarge,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             contentDescription = null
                         )
@@ -285,7 +285,7 @@ private fun FeedPaneContent(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                        imageVector = AnilibriaIcons.ArrowDropUp,
+                        imageVector = AnilibertyIcons.ArrowDropUp,
                         contentDescription = null
                     )
                 }
@@ -395,7 +395,7 @@ private fun ReleaseFeed(
                             Icon(
                                 modifier = Modifier
                                     .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
-                                imageVector = AnilibriaIcons.Filled.PlayArrow,
+                                imageVector = AnilibertyIcons.Filled.PlayArrow,
                                 contentDescription = null
                             )
                             Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
@@ -413,7 +413,7 @@ private fun ReleaseFeed(
                                     .graphicsLayer {
                                         rotationZ = rotation
                                     },
-                                imageVector = AnilibriaIcons.ArrowDropDown,
+                                imageVector = AnilibertyIcons.ArrowDropDown,
                                 contentDescription = null
                             )
                         }
@@ -597,7 +597,7 @@ private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun FeedPanePreview(
     @PreviewParameter(FeedScreenStateProvider::class) state: HomeScreenState

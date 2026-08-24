@@ -34,7 +34,7 @@ internal actual fun rememberColorScheme(
             val tonalPalette = dynamicTonalPalette(context)
             tonalPalette.primary40
         } else {
-            AnilibriaSeedColor
+            AnilibertySeedColor
         }
     }
 

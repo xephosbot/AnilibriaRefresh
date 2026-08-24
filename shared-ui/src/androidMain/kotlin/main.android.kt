@@ -1,7 +1,7 @@
 import androidx.compose.runtime.Composable
-import com.xbot.sharedapp.AnilibriaApp
+import com.xbot.sharedapp.AnilibertyApp
 
 @Composable
 fun MainView() {
-    AnilibriaApp()
+    AnilibertyApp()
 }

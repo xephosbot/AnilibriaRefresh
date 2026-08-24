@@ -4,7 +4,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.xbot.aniliberty.notifications.NotificationHelper
 
-class AnilibriaFcmService : FirebaseMessagingService() {
+class AnilibertyFcmService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         sendTokenToServer(token)

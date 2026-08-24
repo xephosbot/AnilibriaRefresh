@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.TopLevelNavKey
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.icons.TelegramLogo
@@ -36,9 +36,9 @@ data object PreferenceRoute : TopLevelNavKey {
     override val textRes: StringResource
         get() = Res.string.tab_preference
     override val selectedIcon: ImageVector
-        get() = AnilibriaIcons.Filled.Settings
+        get() = AnilibertyIcons.Filled.Settings
     override val unselectedIcon: ImageVector
-        get() = AnilibriaIcons.Outlined.Settings
+        get() = AnilibertyIcons.Outlined.Settings
 }
 
 sealed interface PreferenceOptionRoute : NavKey {
@@ -56,7 +56,7 @@ data object PreferenceHistoryRoute : PreferenceOptionRoute {
     override val description: StringResource
         get() = Res.string.preference_history_description
     override val icon: ImageVector
-        get() = AnilibriaIcons.Filled.Star
+        get() = AnilibertyIcons.Filled.Star
 }
 
 @Serializable
@@ -65,7 +65,7 @@ data object PreferenceTeamRoute : PreferenceOptionRoute {
         get() = Res.string.preference_team_title
     override val description: StringResource
         get() = Res.string.preference_team_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Star
 }
 
 @Serializable
@@ -74,7 +74,7 @@ data object PreferenceDonateRoute : PreferenceOptionRoute {
         get() = Res.string.preference_donate_title
     override val description: StringResource
         get() = Res.string.preference_donate_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Star
 }
 
 @Serializable
@@ -83,7 +83,7 @@ data object PreferenceAppearanceRoute : PreferenceOptionRoute {
         get() = Res.string.preference_appearance_title
     override val description: StringResource
         get() = Res.string.preference_appearance_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Settings
+    override val icon: ImageVector = AnilibertyIcons.Filled.Settings
 }
 
 @Serializable
@@ -92,7 +92,7 @@ data object PreferenceLanguageRoute : PreferenceOptionRoute {
         get() = Res.string.preference_language_title
     override val description: StringResource
         get() = Res.string.preference_language_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Settings
+    override val icon: ImageVector = AnilibertyIcons.Filled.Settings
 }
 
 @Serializable
@@ -101,7 +101,7 @@ data object GitHubRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_github_title
     override val description: StringResource
         get() = Res.string.preference_github_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Star
     override val uri: String = "https://github.com/xephosbot/AnilibriaRefresh"
 }
 
@@ -111,7 +111,7 @@ data object YouTubeRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_youtube_title
     override val description: StringResource
         get() = Res.string.preference_youtube_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Star
     override val uri: String = "https://www.youtube.com/user/anilibriatv"
 }
 
@@ -121,7 +121,7 @@ data object DiscordRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_discord_title
     override val description: StringResource
         get() = Res.string.preference_discord_description
-    override val icon: ImageVector = AnilibriaIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Star
     override val uri: String = "https://discord.com/M6yCGeGN9B"
 }
 
@@ -131,6 +131,6 @@ data object TelegramRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_telegram_title
     override val description: StringResource
         get() = Res.string.preference_telegram_description
-    override val icon: ImageVector = AnilibriaIcons.TelegramLogo
+    override val icon: ImageVector = AnilibertyIcons.TelegramLogo
     override val uri: String = "https://t.me/aniliberty_tv"
 }

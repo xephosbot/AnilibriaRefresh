@@ -77,7 +77,7 @@ import com.xbot.designsystem.components.horizontalItems
 import com.xbot.designsystem.components.itemsIndexed
 import com.xbot.designsystem.components.row
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
@@ -85,7 +85,7 @@ import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.modifier.verticalParallax
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
 import com.xbot.designsystem.utils.only
@@ -195,7 +195,7 @@ private fun TitleDetailsPaneContent(
                                 shapes = IconButtonDefaults.shapes()
                             ) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.ArrowBack,
+                                    imageVector = AnilibertyIcons.ArrowBack,
                                     contentDescription = null
                                 )
                             }
@@ -211,7 +211,7 @@ private fun TitleDetailsPaneContent(
                                 ),
                             ) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.Filled.Star,
+                                    imageVector = AnilibertyIcons.Filled.Star,
                                     contentDescription = null
                                 )
                             }
@@ -223,7 +223,7 @@ private fun TitleDetailsPaneContent(
                                 shapes = IconButtonDefaults.shapes()
                             ) {
                                 Icon(
-                                    imageVector = AnilibriaIcons.MoreVert,
+                                    imageVector = AnilibertyIcons.MoreVert,
                                     contentDescription = null
                                 )
                             }
@@ -447,7 +447,7 @@ private fun TitleDetails(
                         onDismiss = { showEpisodeMenu = null },
                         menuContent = {
                             ContextMenuItem(
-                                icon = AnilibriaIcons.Filled.PlayArrow,
+                                icon = AnilibertyIcons.Filled.PlayArrow,
                                 label = stringResource(Res.string.button_watch),
                                 onClick = {
                                     state.initialRelease?.let { onPlayClick(it.id, index) }
@@ -455,7 +455,7 @@ private fun TitleDetails(
                                 }
                             )
                             ContextMenuItem(
-                                icon = AnilibriaIcons.Filled.Star,
+                                icon = AnilibertyIcons.Filled.Star,
                                 label = copyLabel,
                                 onClick = {
                                     scope.launch {
@@ -512,7 +512,7 @@ private fun WatchButton(
     ) {
         Icon(
             modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-            imageVector = AnilibriaIcons.Filled.PlayArrow,
+            imageVector = AnilibertyIcons.Filled.PlayArrow,
             contentDescription = null
         )
         Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
@@ -530,7 +530,7 @@ private fun WatchButton(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun TitleDetailsPanePreview(
     @PreviewParameter(TitleScreenStateProvider::class) state: TitleScreenState

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.ArrowBack: ImageVector
+val AnilibertyIcons.ArrowBack: ImageVector
     get() {
         if (_arrowBack != null) {
             return _arrowBack!!

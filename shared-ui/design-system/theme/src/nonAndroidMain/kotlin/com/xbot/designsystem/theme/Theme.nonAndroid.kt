@@ -19,7 +19,7 @@ internal actual fun rememberColorScheme(
 
     return remember(darkTheme, amoled, style, dynamicColor) {
         dynamicColorScheme(
-            seedColor = AnilibriaSeedColor,
+            seedColor = AnilibertySeedColor,
             isDark = darkTheme,
             isAmoled = amoled,
             style = style,

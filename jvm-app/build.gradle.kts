@@ -26,13 +26,13 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Anilibria Refresh"
+            packageName = "Aniliberty Refresh"
             packageVersion = "1.0.0"
             modules("jdk.security.auth", "java.instrument", "java.management", "jdk.unsupported")
 
             macOS {
-                bundleID = "com.xbot.anilibriarefresh"
-                dockName = "Anilibria"
+                bundleID = "com.xbot.aniliberty"
+                dockName = "Aniliberty"
                 iconFile.set(project.file("src/main/resources/icons/AppIcon.icns"))
                 jvmArgs("-Dapple.awt.application.appearance=system")
             }

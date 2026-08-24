@@ -20,7 +20,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -108,7 +108,7 @@ private fun ReleaseAgeRatingPill(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun ReleaseMetaTextPreview() {
     ReleaseMetaText(release = ReleaseFixtures.all[1])

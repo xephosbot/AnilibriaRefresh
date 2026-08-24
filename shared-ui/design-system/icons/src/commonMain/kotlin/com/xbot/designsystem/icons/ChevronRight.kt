@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.ChevronRight: ImageVector
+val AnilibertyIcons.ChevronRight: ImageVector
     get() {
         if (_chevronRight != null) {
             return _chevronRight!!

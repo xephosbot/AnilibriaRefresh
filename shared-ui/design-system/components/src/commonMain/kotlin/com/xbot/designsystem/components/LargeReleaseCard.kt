@@ -41,7 +41,7 @@ import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.fadedEdge
 import com.xbot.designsystem.theme.LocalMargins
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
@@ -199,7 +199,7 @@ private fun LargeReleaseCardPlaceholder(
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun LargeReleaseCardPreview() {
     LargeReleaseCard(
@@ -215,7 +215,7 @@ private fun LargeReleaseCardPreview() {
             leadingContent = {
                 Icon(
                     modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-                    imageVector = com.xbot.designsystem.icons.AnilibriaIcons.Filled.PlayArrow,
+                    imageVector = com.xbot.designsystem.icons.AnilibertyIcons.Filled.PlayArrow,
                     contentDescription = null
                 )
                 Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
@@ -227,7 +227,7 @@ private fun LargeReleaseCardPreview() {
             trailingContent = {
                 Icon(
                     modifier = Modifier.size(SplitButtonDefaults.MediumTrailingButtonIconSize),
-                    imageVector = com.xbot.designsystem.icons.AnilibriaIcons.MoreVert,
+                    imageVector = com.xbot.designsystem.icons.AnilibertyIcons.MoreVert,
                     contentDescription = null
                 )
             }

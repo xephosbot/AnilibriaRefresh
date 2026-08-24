@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Share: ImageVector
+val AnilibertyIcons.Share: ImageVector
     get() {
         if (_share != null) {
             return _share!!

@@ -8,12 +8,12 @@ import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.theme.AnilibertyTheme
 
 @Preview(uiMode = UI_MODE_NIGHT_NO, name = "Light theme", showBackground = true)
 @Preview(uiMode = UI_MODE_NIGHT_YES, name = "Dark theme", showBackground = true)
 @PreviewWrapper(ThemeAndShimmerWrapper::class)
-annotation class AnilibriaPreview
+annotation class AnilibertyPreview
 
 internal class ThemeAndShimmerWrapper : PreviewWrapperProvider {
     private val themeWrapper = ThemeWrapper()
@@ -28,7 +28,7 @@ internal class ThemeAndShimmerWrapper : PreviewWrapperProvider {
 internal class ThemeWrapper : PreviewWrapperProvider {
     @Composable
     override fun Wrap(content: @Composable (() -> Unit)) {
-        AnilibriaTheme {
+        AnilibertyTheme {
             content()
         }
     }

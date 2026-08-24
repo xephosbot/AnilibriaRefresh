@@ -39,7 +39,7 @@ import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
@@ -341,7 +341,7 @@ private val ReleaseItemTagsSpacing = 8.dp
 private const val SubtitleAlpha = 0.6f
 private const val DescriptionAlpha = 0.8f
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun ReleaseListItemPreview() {
     ReleaseListItem(
@@ -349,7 +349,7 @@ private fun ReleaseListItemPreview() {
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun ReleaseListItemLoadingPreview() {
     ReleaseListItem(

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Search: ImageVector
+val AnilibertyIcons.Search: ImageVector
     get() {
         if (_search != null) {
             return _search!!

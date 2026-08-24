@@ -52,10 +52,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.icons.AnilibriaIcons
-import com.xbot.designsystem.icons.AnilibriaLogo
+import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.AnilibertyLogo
 import com.xbot.designsystem.icons.Favorite
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.union
 import com.xbot.formatters.localizedMessage
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
@@ -157,7 +157,7 @@ internal fun LoginScreenContent(
                     .padding(24.dp)
             ) {
                 Icon(
-                    imageVector = AnilibriaIcons.AnilibriaLogo,
+                    imageVector = AnilibertyIcons.AnilibertyLogo,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.primary
@@ -208,7 +208,7 @@ internal fun LoginScreenContent(
                     trailingIcon = {
                         IconButton(onClick = { isPasswordObfuscated = !isPasswordObfuscated }) {
                             Icon(
-                                imageVector = if (isPasswordObfuscated) AnilibriaIcons.Outlined.Favorite else AnilibriaIcons.Filled.Favorite,
+                                imageVector = if (isPasswordObfuscated) AnilibertyIcons.Outlined.Favorite else AnilibertyIcons.Filled.Favorite,
                                 contentDescription = null
                             )
                         }
@@ -259,7 +259,7 @@ internal fun LoginScreenContent(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun LoginScreenPreview(
     @PreviewParameter(LoginScreenStateProvider::class) state: LoginScreenState

@@ -3,10 +3,10 @@
 
     <!-- Allows us to override night specific attributes in the
      values-night folder. -->
-    <style name="NightAdjusted.Theme.AnilibriaRefresh" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="NightAdjusted.Theme.AnilibertyRefresh" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <!-- The final theme we use -->
-    <style name="Theme.AnilibriaRefresh" parent="NightAdjusted.Theme.AnilibriaRefresh" >
+    <style name="Theme.AnilibertyRefresh" parent="NightAdjusted.Theme.AnilibertyRefresh" >
         <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">default</item>
     </style>
 
@@ -17,9 +17,8 @@
         <item name="windowSplashScreenBackground">@color/splash_background_light</item>
     </style>
 
-    <style name="Theme.AnilibriaRefresh.Splash" parent="NightAdjusted.Theme.Splash">
-        <item name="windowSplashScreenIconBackgroundColor">@color/anilibria_red</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
-        <item name="postSplashScreenTheme">@style/Theme.AnilibriaRefresh</item>
+    <style name="Theme.AnilibertyRefresh.Splash" parent="NightAdjusted.Theme.Splash">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_draw</item>
+        <item name="postSplashScreenTheme">@style/Theme.AnilibertyRefresh</item>
     </style>
 </resources>

@@ -37,11 +37,11 @@ import com.xbot.common.getOrElse
 import com.xbot.designsystem.components.EpisodeListItem
 import com.xbot.designsystem.components.LazyColumnWithStickyHeader
 import com.xbot.designsystem.components.MediumReleaseCard
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ScheduleFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.DayOfWeekStyle
@@ -131,7 +131,7 @@ private fun SchedulePaneContent(
                             colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.ArrowBack,
+                                imageVector = AnilibertyIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
@@ -226,7 +226,7 @@ private fun DateItem(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SchedulePanePreview(
     @PreviewParameter(ScheduleScreenStateProvider::class) state: HomeScreenState

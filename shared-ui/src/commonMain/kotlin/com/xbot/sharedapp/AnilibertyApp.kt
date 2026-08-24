@@ -19,7 +19,7 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.xbot.common.state.AppState
 import com.xbot.common.state.LocalAppState
-import com.xbot.designsystem.theme.AnilibriaTheme
+import com.xbot.designsystem.theme.AnilibertyTheme
 import com.xbot.domain.models.AuthState
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
@@ -31,7 +31,7 @@ import com.xbot.network.utils.ImageUrlProvider
 import com.xbot.sharedapp.coil.ImageUrlMapper
 import com.xbot.sharedapp.di.koinLazyInject
 import com.xbot.sharedapp.di.koinNavSerializersModule
-import com.xbot.sharedapp.navigation.AnilibriaNavGraph
+import com.xbot.sharedapp.navigation.AnilibertyNavGraph
 import io.ktor.client.HttpClient
 import org.jetbrains.compose.resources.stringResource
 
@@ -40,8 +40,8 @@ import org.jetbrains.compose.resources.stringResource
     ExperimentalMaterial3AdaptiveComponentOverrideApi::class,
 )
 @Composable
-internal fun AnilibriaApp(
-    appState: AppState = rememberAnilibriaAppState()
+internal fun AnilibertyApp(
+    appState: AppState = rememberAnilibertyAppState()
 ) {
     val imageUrlProvider = koinLazyInject<ImageUrlProvider>()
     val httpClient = koinLazyInject<HttpClient>()
@@ -73,7 +73,7 @@ internal fun AnilibriaApp(
         LocalNavigator provides navigator,
     ) {
         ProvideAppLocale {
-            AnilibriaTheme(
+            AnilibertyTheme(
                 darkTheme = appState.themeState.isDarkTheme,
                 dynamicColor = appState.themeState.isDynamicTheme,
                 amoled = appState.themeState.isPureBlack,
@@ -112,7 +112,7 @@ internal fun AnilibriaApp(
                     state = navigationSuiteScaffoldState,
                     navigationItemVerticalArrangement = Arrangement.Center,
                 ) {
-                    AnilibriaNavGraph(navigator = navigator)
+                    AnilibertyNavGraph(navigator = navigator)
                 }
             }
         }

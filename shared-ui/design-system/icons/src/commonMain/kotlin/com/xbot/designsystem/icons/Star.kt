@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.Star: ImageVector
+val AnilibertyIcons.Filled.Star: ImageVector
     get() {
         if (_starFilled != null) {
             return _starFilled!!
@@ -73,7 +73,7 @@ val AnilibriaIcons.Filled.Star: ImageVector
     }
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.StarOutlined: ImageVector
+val AnilibertyIcons.StarOutlined: ImageVector
     get() {
         if (_starOutlined != null) {
             return _starOutlined!!

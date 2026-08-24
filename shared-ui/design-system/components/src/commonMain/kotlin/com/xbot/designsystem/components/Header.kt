@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.ChevronRight
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.theme.asPaddingValues
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -48,7 +48,7 @@ fun Header(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconButtonDefaults.smallIconSize),
-                        imageVector = com.xbot.designsystem.icons.AnilibriaIcons.ChevronRight,
+                        imageVector = com.xbot.designsystem.icons.AnilibertyIcons.ChevronRight,
                         contentDescription = null
                     )
                 }
@@ -91,7 +91,7 @@ fun Header(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun HeaderPreview() {
     Header(

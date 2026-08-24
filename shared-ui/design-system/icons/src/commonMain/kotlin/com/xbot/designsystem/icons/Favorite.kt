@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Filled.Favorite: ImageVector
+val AnilibertyIcons.Filled.Favorite: ImageVector
     get() {
         if (_favoriteFilled != null) {
             return _favoriteFilled!!
@@ -61,7 +61,7 @@ val AnilibriaIcons.Filled.Favorite: ImageVector
     }
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Outlined.Favorite: ImageVector
+val AnilibertyIcons.Outlined.Favorite: ImageVector
     get() {
         if (_favoriteOutlined != null) {
             return _favoriteOutlined!!

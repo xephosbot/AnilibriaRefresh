@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.MoreVert: ImageVector
+val AnilibertyIcons.MoreVert: ImageVector
     get() {
         if (_moreVert != null) {
             return _moreVert!!

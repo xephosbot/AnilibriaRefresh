@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 object NotificationHelper {
 
-    private const val DEEP_LINK_RELEASE_PATTERN = "anilibria://release/%s"
+    private const val DEEP_LINK_RELEASE_PATTERN = "aniliberty://release/%s"
     private val notificationCounter = AtomicInteger(0)
 
     fun createNotificationChannels(context: Context) {

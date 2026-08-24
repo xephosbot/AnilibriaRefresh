@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.Forward10: ImageVector
+val AnilibertyIcons.Forward10: ImageVector
     get() {
         if (_Forward10 != null) {
             return _Forward10!!

@@ -1,5 +1,5 @@
 <resources>
-    <string name="account_label">Аккаунт Anilibria</string>
+    <string name="account_label">Аккаунт Aniliberty</string>
 
     <!-- Каналы уведомлений -->
     <string name="notification_channel_release_name">Новые релизы</string>

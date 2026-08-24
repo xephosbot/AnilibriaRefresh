@@ -19,9 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.resources.Res
 import com.xbot.resources.preference_donate_title
 import org.jetbrains.compose.resources.stringResource
@@ -63,7 +63,7 @@ private fun DonatePaneContent(
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
                         Icon(
-                            imageVector = AnilibriaIcons.ArrowBack,
+                            imageVector = AnilibertyIcons.ArrowBack,
                             contentDescription = null
                         )
                     }
@@ -86,7 +86,7 @@ private fun DonatePaneContent(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun DonatePanePreview() {
     DonatePaneContent(

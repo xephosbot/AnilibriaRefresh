@@ -1,6 +1,6 @@
 package com.xbot.designsystem.icons
 
-object AnilibriaIcons {
+object AnilibertyIcons {
     object Outlined
     object Filled
 }

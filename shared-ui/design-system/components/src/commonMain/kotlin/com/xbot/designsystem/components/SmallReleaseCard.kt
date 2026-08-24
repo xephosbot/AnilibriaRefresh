@@ -33,7 +33,7 @@ import com.xbot.designsystem.modifier.contextClickable
 import com.xbot.designsystem.modifier.scrim
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
 import com.xbot.formatters.localizedName
@@ -139,7 +139,7 @@ private fun SmallReleaseCardPlaceholder(
     )
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SmallReleaseCardPreview() {
     SmallReleaseCard(

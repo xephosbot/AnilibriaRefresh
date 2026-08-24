@@ -11,7 +11,7 @@ import com.xbot.sharedapp.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.koinConfiguration
 
-class AnilibriaApplication : Application() {
+class AnilibertyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -21,7 +21,7 @@ class AnilibriaApplication : Application() {
 
         initKoin(
             config = koinConfiguration {
-                androidContext(this@AnilibriaApplication)
+                androidContext(this@AnilibertyApplication)
             }
         )
     }

@@ -37,11 +37,11 @@ import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.RangeSlider
 import com.xbot.designsystem.components.SingleChoiceChipGroup
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.modifier.animatePlacement
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.enums.AgeRating
@@ -131,7 +131,7 @@ private fun SearchFilterPaneContent(
                             colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                         ) {
                             Icon(
-                                imageVector = AnilibriaIcons.ArrowBack,
+                                imageVector = AnilibertyIcons.ArrowBack,
                                 contentDescription = null
                             )
                         }
@@ -251,7 +251,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -287,7 +287,7 @@ private fun FiltersScreenContent(
                                 label = { Text(item.name) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -323,7 +323,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -359,7 +359,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -395,7 +395,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -431,7 +431,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -493,7 +493,7 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibriaIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
                                     }
                                 } else null
                             )
@@ -514,7 +514,7 @@ private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
     return start.roundToInt()..endInclusive.roundToInt()
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SearchFilterPanePreview(
     @PreviewParameter(SearchFiltersStateProvider::class) state: SearchScreenState

@@ -17,7 +17,7 @@ fun rememberNavigator(
     val currentOnInterceptNavigation by rememberUpdatedState(onInterceptNavigation)
 
     val navigator = remember(navigationState) {
-        AnilibriaNavigator(
+        AnilibertyNavigator(
             state = navigationState,
             navigationInterceptor = { key -> currentOnInterceptNavigation(key) }
         )
@@ -30,7 +30,7 @@ fun rememberNavigator(
     return navigator
 }
 
-internal class AnilibriaNavigator(
+internal class AnilibertyNavigator(
     val state: NavigationState,
     val navigationInterceptor: (NavKey) -> NavKey,
 ) : Navigator {

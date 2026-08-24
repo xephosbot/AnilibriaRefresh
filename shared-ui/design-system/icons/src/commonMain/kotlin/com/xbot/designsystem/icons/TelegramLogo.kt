@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 @Suppress("UnusedReceiverParameter")
-val AnilibriaIcons.TelegramLogo: ImageVector
+val AnilibertyIcons.TelegramLogo: ImageVector
     get() {
         if (_telegramLogo != null) {
             return _telegramLogo!!

@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 
 @Composable
 fun <T> SingleChoiceConnectedButtonGroup(
@@ -39,7 +39,7 @@ fun <T> SingleChoiceConnectedButtonGroup(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun SingleChoiceConnectedButtonGroupPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")

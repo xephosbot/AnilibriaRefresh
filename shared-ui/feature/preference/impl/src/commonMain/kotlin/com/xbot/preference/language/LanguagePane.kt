@@ -19,10 +19,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.components.PreferenceItem
 import com.xbot.designsystem.components.section
-import com.xbot.designsystem.icons.AnilibriaIcons
+import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.icons.Check
-import com.xbot.designsystem.utils.AnilibriaPreview
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.formatters.stringRes
 import com.xbot.localization.AppLanguage
 import com.xbot.localization.LocaleManager
@@ -69,7 +69,7 @@ private fun LanguagePaneContent(
                         colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
                         Icon(
-                            imageVector = AnilibriaIcons.ArrowBack,
+                            imageVector = AnilibertyIcons.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -93,7 +93,7 @@ private fun LanguagePaneContent(
                     trailingContent = {
                         if (isSelected) {
                             Icon(
-                                imageVector = AnilibriaIcons.Check,
+                                imageVector = AnilibertyIcons.Check,
                                 contentDescription = "Selected"
                             )
                         }
@@ -106,7 +106,7 @@ private fun LanguagePaneContent(
     }
 }
 
-@AnilibriaPreview
+@AnilibertyPreview
 @Composable
 private fun LanguagePanePreview() {
     LanguagePaneContent(
