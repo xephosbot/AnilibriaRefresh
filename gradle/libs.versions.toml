@@ -37,7 +37,7 @@ kotlinx-serialization = "1.11.0"
 
 # Libraries
 firebase-bom = "34.17.0"
-ktor = "3.5.1"
+ktor = "3.5.2"
 brotli = "0.1.2"
 koin = "4.2.2"
 koin-plugin = "1.1.0"
