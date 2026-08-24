@@ -10,15 +10,28 @@ There is deliberately **no SwiftUI feature code**. If a screen needs to change, 
 `shared-ui/feature/*`, not here. The previous native-SwiftUI iOS app (its own views, view-model
 bridge, Nuke image loading, `AppRouter`) was removed in the CMP migration.
 
+The one rendering exception is the **launch animation** (`SplashView.swift`). The launch storyboard
+is drawn by the system before any app code runs and cannot animate, so the animation has to start
+in-process, above Compose, before the framework has finished starting. Do not move it to
+`shared-ui`. It clears only once its animation has finished *and* Compose reports a drawn frame,
+which is what `SplashScreen.setKeepOnScreenCondition` does on Android.
+
 ## Project layout (`src/`)
 
 ```
 src/
 ├── App/
-│   ├── AnilibertyApp.swift   // @main App — one WindowGroup hosting ComposeView
-│   └── ComposeView.swift    // UIViewControllerRepresentable over MainViewControllerKt
-└── Info.plist               // MUST stay here (INFOPLIST_FILE = src/Info.plist)
+│   ├── AnilibertyApp.swift     // @main App — ComposeView with SplashView layered over it
+│   ├── ComposeView.swift       // hosts MainViewControllerKt, reports its first drawn frame
+│   ├── SplashView.swift        // launch animation, mirrors android-app's avd_splash.xml
+│   └── SplashLogoPaths.swift   // GENERATED logo outlines — see tools/generate-splash-paths.py
+└── Info.plist                  // MUST stay here (INFOPLIST_FILE = src/Info.plist)
 ```
+
+`SplashLogoPaths.swift` is generated from `AppIcon.icon/Assets/icon.svg`; never edit it by hand.
+After changing the artwork, run `tools/generate-splash-paths.py` (needs `brew install swiftdraw`)
+and re-check the outlines against `android-app`'s `avd_splash.xml`, which is maintained separately —
+the system draws Android's splash from a resource before the app starts, so it cannot share code.
 
 That is the entire Swift surface, and it should stay that way.
 
