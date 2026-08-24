@@ -18,7 +18,8 @@
     </style>
 
     <style name="Theme.AnilibertyRefresh.Splash" parent="NightAdjusted.Theme.Splash">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_draw</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+        <item name="windowSplashScreenAnimationDuration">@integer/splash_icon_animation_duration</item>
         <item name="postSplashScreenTheme">@style/Theme.AnilibertyRefresh</item>
     </style>
 </resources>
