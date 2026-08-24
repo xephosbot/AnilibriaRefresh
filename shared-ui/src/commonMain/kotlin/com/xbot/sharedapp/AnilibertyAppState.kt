@@ -38,6 +38,12 @@ internal class AnilibertyAppState(
     override var authState: AuthState by mutableStateOf(AuthState.Unauthenticated(null))
         private set
 
+    override var isReady: Boolean by mutableStateOf(false)
+        private set
+
+    private var hasThemeState = false
+    private var hasAuthState = false
+
     init {
         coroutineScope.launch {
             combine(
@@ -54,14 +60,22 @@ internal class AnilibertyAppState(
                 )
             }.collect {
                 themeState = it
+                hasThemeState = true
+                updateReadiness()
             }
         }
 
         coroutineScope.launch {
             getAuthStateUseCase().collect {
                 authState = it
+                hasAuthState = true
+                updateReadiness()
             }
         }
+    }
+
+    private fun updateReadiness() {
+        isReady = hasThemeState && hasAuthState
     }
 }
 

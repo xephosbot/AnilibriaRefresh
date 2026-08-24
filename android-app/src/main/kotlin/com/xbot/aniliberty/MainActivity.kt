@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -15,14 +16,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.SideEffect
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import com.xbot.navigation.ExternalUriHandler
+import com.xbot.sharedapp.rememberAnilibertyAppState
 
 class MainActivity : AppCompatActivity() {
+
+    private var isAppReady = false
 
     private val requestNotificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -34,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        splashScreen.setKeepOnScreenCondition(KeepSplashUntilAppReady())
         splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
             onSplashScreenExit(splashScreenViewProvider)
         }
@@ -43,7 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContent {
-            MainView()
+            val appState = rememberAnilibertyAppState()
+            val isReady = appState.isReady
+
+            SideEffect {
+                isAppReady = isReady
+            }
+
+            MainView(appState = appState)
         }
     }
 
@@ -105,7 +119,15 @@ class MainActivity : AppCompatActivity() {
         animatorSet.start()
     }
 
+    private inner class KeepSplashUntilAppReady : SplashScreen.KeepOnScreenCondition {
+        private val deadline = SystemClock.uptimeMillis() + SPLASHSCREEN_READINESS_CEILING
+
+        override fun shouldKeepOnScreen(): Boolean =
+            !isAppReady && SystemClock.uptimeMillis() < deadline
+    }
+
     companion object {
         private const val SPLASHSCREEN_ALPHA_ANIMATION_DURATION = 200L
+        private const val SPLASHSCREEN_READINESS_CEILING = 5000L
     }
 }
