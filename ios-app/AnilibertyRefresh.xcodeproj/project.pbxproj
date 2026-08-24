@@ -209,6 +209,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = src/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Aniliberty Refresh";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -324,6 +325,7 @@
 				);
 				INFOPLIST_FILE = src/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Aniliberty Refresh";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -360,7 +362,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = 279A4D3C956DE91CE7B94022 /* Project object */;
 }
