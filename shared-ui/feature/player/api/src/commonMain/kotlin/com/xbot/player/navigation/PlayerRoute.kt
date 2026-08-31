@@ -8,7 +8,9 @@ import kotlinx.serialization.Serializable
 data class PlayerRoute(
     val releaseId: Int,
     val episodeOrdinal: Int,
-) : NavKey
+) : NavKey {
+    override val hidesNavigationBar: Boolean get() = true
+}
 
 fun Navigator.navigateToPlayer(releaseId: Int, episodeOrdinal: Int) {
     navigate(PlayerRoute(releaseId, episodeOrdinal))

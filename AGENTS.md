@@ -216,12 +216,13 @@ kotlin {
 ## Configuration
 
 ### Key Versions (`libs.versions.toml`)
-- **Kotlin**: 2.3.0
-- **Compose Multiplatform**: 1.11.0-alpha01
-- **Android Gradle Plugin**: 9.0.0
-- **Koin**: 4.2.0-beta3
-- **Ktor**: 3.3.3
-- **Coil**: 3.3.0
+- **Kotlin**: 2.4.10
+- **Compose Multiplatform**: 1.12.0
+- **Android Gradle Plugin**: 9.3.2
+- **Koin**: 4.2.2
+- **Ktor**: 3.5.2
+- **Coil**: 3.6.0
+- **iOS deployment target**: 18.0
 
 ### API Configuration
 - **Base URL**: `https://aniliberty.top/api/v1/`

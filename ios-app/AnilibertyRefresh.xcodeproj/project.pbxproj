@@ -219,6 +219,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
 				PRODUCT_MODULE_NAME = AnilibertyRefresh;
 				PRODUCT_NAME = "Aniliberty Refresh";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -334,6 +335,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "--BUNDLIE-ID---TEAM-ID-";
 				PRODUCT_MODULE_NAME = AnilibertyRefresh;
 				PRODUCT_NAME = "Aniliberty Refresh";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1 2";
