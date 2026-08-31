@@ -24,6 +24,7 @@ import com.xbot.common.state.AppState
 import com.xbot.common.state.LocalAppState
 import com.xbot.designsystem.theme.AnilibertyTheme
 import com.xbot.domain.models.AuthState
+import com.xbot.domain.models.enums.ThemeOption
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.localization.ProvideAppLocale
 import com.xbot.login.navigation.LoginRoute
@@ -79,23 +80,6 @@ internal fun AnilibertyApp(
         }
     )
 
-    if (chromeHost != null) {
-        DisposableEffect(chromeHost, navigator) {
-            chromeHost.onTabSelected = { destination -> navigator.navigate(destination) }
-            onDispose { chromeHost.onTabSelected = null }
-        }
-        LaunchedEffect(chromeHost, navigator) {
-            snapshotFlow {
-                navigator.currentTopLevelDestination to
-                    (navigator.currentDestination?.hidesNavigationBar != true)
-            }
-                .distinctUntilChanged()
-                .collect { (topLevel, chromeVisible) ->
-                    chromeHost.onNavigationStateChanged(topLevel, chromeVisible)
-                }
-        }
-    }
-
     CompositionLocalProvider(
         LocalAppState provides appState,
         LocalNavigator provides navigator,
@@ -108,12 +92,56 @@ internal fun AnilibertyApp(
                 expressiveColor = appState.themeState.isExpressiveColor
             ) {
                 if (chromeHost != null) {
+                    NativeNavigationChrome(
+                        chromeHost = chromeHost,
+                        navigator = navigator,
+                        themeOption = appState.themeState.themeOption,
+                    )
                     AnilibertyNavGraph(navigator = navigator)
                 } else {
                     ComposeNavigationChrome(navigator = navigator)
                 }
             }
         }
+    }
+}
+
+/**
+ * Feeds the platform-owned navigation chrome from the composition.
+ *
+ * Lives inside [ProvideAppLocale] and [AnilibertyTheme] on purpose: resolving the tab labels and
+ * reading the theme here is what makes the native chrome follow a language or theme change without
+ * anything having to notify it.
+ */
+@Composable
+private fun NativeNavigationChrome(
+    chromeHost: NavigationChromeHost,
+    navigator: Navigator,
+    themeOption: ThemeOption,
+) {
+    DisposableEffect(chromeHost, navigator) {
+        chromeHost.onTabSelected = { destination -> navigator.navigate(destination) }
+        onDispose { chromeHost.onTabSelected = null }
+    }
+
+    LaunchedEffect(chromeHost, navigator) {
+        snapshotFlow {
+            navigator.currentTopLevelDestination to
+                (navigator.currentDestination?.hidesNavigationBar != true)
+        }
+            .distinctUntilChanged()
+            .collect { (topLevel, chromeVisible) ->
+                chromeHost.onNavigationStateChanged(topLevel, chromeVisible)
+            }
+    }
+
+    val tabTitles = TopLevelRoutes.associateWith { stringResource(it.textRes) }
+    LaunchedEffect(chromeHost, tabTitles) {
+        chromeHost.onTabTitlesChanged(tabTitles)
+    }
+
+    LaunchedEffect(chromeHost, themeOption) {
+        chromeHost.onThemeOptionChanged(themeOption)
     }
 }
 

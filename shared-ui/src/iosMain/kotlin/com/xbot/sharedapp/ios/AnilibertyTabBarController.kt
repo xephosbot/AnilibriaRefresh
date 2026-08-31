@@ -2,13 +2,9 @@ package com.xbot.sharedapp.ios
 
 import com.xbot.navigation.TopLevelNavKey
 import com.xbot.sharedapp.NavigationChromeHost
+import com.xbot.domain.models.enums.ThemeOption
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import platform.Foundation.NSProcessInfo
 import platform.UIKit.UIColor
 import platform.UIKit.UIEdgeInsetsMake
@@ -16,6 +12,7 @@ import platform.UIKit.UIImage
 import platform.UIKit.UITab
 import platform.UIKit.UITabBarController
 import platform.UIKit.UITabBarControllerDelegateProtocol
+import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
@@ -45,7 +42,6 @@ internal class AnilibertyTabBarController :
     UITabBarController(nibName = null, bundle = null),
     UITabBarControllerDelegateProtocol {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val tabsByIdentifier = mutableMapOf<String, UITab>()
 
     private var chromeHost: IosNavigationChromeHost? = null
@@ -93,6 +89,30 @@ internal class AnilibertyTabBarController :
         }
     }
 
+    /**
+     * Applies the labels resolved by Compose, so they follow the in-app language.
+     */
+    fun applyTabTitles(titles: Map<TopLevelNavKey, String>) {
+        titles.forEach { (route, title) ->
+            tabsByIdentifier[route.tabIdentifier]?.setTitle(title)
+        }
+    }
+
+    /**
+     * Matches the native chrome to the app's theme.
+     *
+     * Applied to this controller rather than to the bar alone so the status bar and the keyboard
+     * follow too. [ThemeOption.System] must stay unspecified: overriding it would also pin the
+     * trait collection inherited by the Compose child, and the app would stop tracking the system.
+     */
+    fun applyThemeOption(themeOption: ThemeOption) {
+        overrideUserInterfaceStyle = when (themeOption) {
+            ThemeOption.System -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
+            ThemeOption.Light -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
+            ThemeOption.Dark -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+        }
+    }
+
     override fun tabBarController(
         tabBarController: UITabBarController,
         shouldSelectTab: UITab,
@@ -121,7 +141,6 @@ internal class AnilibertyTabBarController :
         composeViewController.didMoveToParentViewController(this)
 
         setTabs(buildTabs(), animated = false)
-        loadTabTitles()
 
         chromeHost.attach(this)
     }
@@ -150,26 +169,13 @@ internal class AnilibertyTabBarController :
 
     private fun buildTabs(): List<UITab> = topLevelRoutes.map { route ->
         val tab = UITab(
-            title = route.tabIdentifier,
+            title = "",
             image = UIImage.systemImageNamed(route.sfSymbolName),
             identifier = route.tabIdentifier,
             viewControllerProvider = { PassthroughViewController() },
         )
         tabsByIdentifier[route.tabIdentifier] = tab
         tab
-    }
-
-    /**
-     * Tab titles come from the same Compose string resources the other platforms use, so they are
-     * resolved asynchronously and applied once available.
-     */
-    private fun loadTabTitles() {
-        scope.launch {
-            topLevelRoutes.forEach { route ->
-                val title = getString(route.textRes)
-                tabsByIdentifier[route.tabIdentifier]?.setTitle(title)
-            }
-        }
     }
 
     /**
@@ -230,24 +236,47 @@ private class PassthroughViewController : UIViewController(nibName = null, bundl
 internal class IosNavigationChromeHost : NavigationChromeHost {
 
     private var controller: AnilibertyTabBarController? = null
-    private var pendingState: Pair<TopLevelNavKey?, Boolean>? = null
+
+    // The composition starts after the controller is built, but only by convention — buffer the
+    // latest value of each push so nothing is lost if that ever stops being true.
+    private var pendingNavigationState: Pair<TopLevelNavKey?, Boolean>? = null
+    private var pendingTitles: Map<TopLevelNavKey, String>? = null
+    private var pendingThemeOption: ThemeOption? = null
 
     override var onTabSelected: ((TopLevelNavKey) -> Unit)? = null
 
     fun attach(controller: AnilibertyTabBarController) {
         this.controller = controller
-        pendingState?.let { (topLevel, chromeVisible) ->
+        pendingTitles?.let(controller::applyTabTitles)
+        pendingThemeOption?.let(controller::applyThemeOption)
+        pendingNavigationState?.let { (topLevel, chromeVisible) ->
             controller.applyNavigationState(topLevel, chromeVisible)
         }
-        pendingState = null
+        pendingTitles = null
+        pendingThemeOption = null
+        pendingNavigationState = null
     }
 
     override fun onNavigationStateChanged(topLevel: TopLevelNavKey?, chromeVisible: Boolean) {
         val controller = controller
         if (controller == null) {
-            pendingState = topLevel to chromeVisible
+            pendingNavigationState = topLevel to chromeVisible
         } else {
             controller.applyNavigationState(topLevel, chromeVisible)
+        }
+    }
+
+    override fun onTabTitlesChanged(titles: Map<TopLevelNavKey, String>) {
+        val controller = controller
+        if (controller == null) pendingTitles = titles else controller.applyTabTitles(titles)
+    }
+
+    override fun onThemeOptionChanged(themeOption: ThemeOption) {
+        val controller = controller
+        if (controller == null) {
+            pendingThemeOption = themeOption
+        } else {
+            controller.applyThemeOption(themeOption)
         }
     }
 }

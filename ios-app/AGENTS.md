@@ -71,8 +71,15 @@ Glass tab bar. It is **not** a navigation container:
   designated initializer loads its view, so `viewDidLoad` runs while a Kotlin subclass's fields are
   still uninitialized. For the same reason, `addChildViewController` must precede reading the
   child's `view` — it returns nil beforehand despite the non-null binding.
-- Tab titles come from the shared Compose `StringResource`s via `getString`; SF Symbols are mapped
-  in `TabBarItems.kt` so the shared route contract stays free of iOS specifics.
+- Everything the chrome mirrors is pushed from inside the composition (`NativeNavigationChrome` in
+  `AnilibertyApp.kt`, which sits inside `ProvideAppLocale` and `AnilibertyTheme`), so tab labels and
+  the bar's appearance follow a language or theme change for free. Do not resolve them from
+  `iosMain` — a one-shot `getString` outside the composition cannot see either. SF Symbols are
+  mapped in `TabBarItems.kt` so the shared route contract stays free of iOS specifics.
+- The theme is pushed as the raw `ThemeOption`, never a resolved "is dark" flag:
+  `overrideUserInterfaceStyle` is set on the controller (so the status bar and keyboard follow too),
+  and `ThemeOption.System` must stay `Unspecified` — pinning it would also pin the trait collection
+  the Compose child inherits, and the app would stop tracking the system.
 - Minimising the tab bar on scroll does **not** work automatically: UIKit drives it from
   `setContentScrollView:forEdge:` and Compose provides no `UIScrollView`. Drive
   `setTabBarHidden(_:animated:)` from Compose scroll state if that behaviour is wanted.
