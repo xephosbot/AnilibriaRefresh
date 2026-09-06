@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data class LoginRoute(val returnTo: NavKey? = null) : NavKey
+data class LoginRoute(val returnTo: NavKey? = null) : NavKey {
+    override val hidesNavigationBar: Boolean get() = true
+}
 
 @Serializable
 data object RegistrationRoute : ExternalUriNavKey {
