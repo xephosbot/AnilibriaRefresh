@@ -6,12 +6,12 @@
 
 ### Tech Stack & Libraries
 
-- **Language**: Kotlin 2.3.0+
-- **UI Framework**: Compose Multiplatform (Material 3) 1.11.0
+- **Language**: Kotlin
+- **UI Framework**: Compose Multiplatform (Material 3)
 - **Architecture**: Clean Architecture + MVI + Multi-Module
-- **DI**: Koin 4.2.0
-  - **Networking**: Ktor Client 3.3.3
-- **Image Loading**: Coil 3.3.0
+- **DI**: Koin
+- **Networking**: Ktor Client
+- **Image Loading**: Coil
 - **Navigation**: Jetpack Navigation 3 (Type-safe)
 - **Serialization**: Kotlinx Serialization
 - **Asynchrony**: Coroutines & Flow
@@ -215,7 +215,7 @@ kotlin {
 
 ## Configuration
 
-### Key Versions (`libs.versions.toml`)
+### Key Versions (`libs.versions.toml` is authoritative)
 - **Kotlin**: 2.4.10
 - **Compose Multiplatform**: 1.12.0
 - **Android Gradle Plugin**: 9.3.2

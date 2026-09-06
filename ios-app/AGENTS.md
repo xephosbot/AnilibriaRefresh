@@ -47,7 +47,14 @@ That is the entire Swift surface, and it should stay that way.
 - `ComposeView` uses `.ignoresSafeArea(.all)`: Compose draws edge-to-edge and applies its own
   window insets. Do not re-add SwiftUI safe-area padding around it.
 
-### Native navigation chrome (`shared-ui/src/iosMain/kotlin/com/xbot/sharedapp/ios/`)
+### Native navigation bar (`shared-ui/src/iosMain/kotlin/com/xbot/sharedapp/ios/`)
+
+Nothing here is exported from the framework — every type in this package is `internal`, and Swift
+still sees only `MainViewController()`. `commonMain` knows about none of it either: it declares a
+`NavigationChrome` (`shared-ui/src/commonMain/.../navigation/NavigationChrome.kt`) and reads it from
+`LocalNavigationChrome`, whose default draws a `NavigationSuiteScaffold`. `main.ios.kt` is the only
+place that swaps in `NativeTabBarChrome`. Do not reintroduce a platform parameter or a nullable host
+on `AnilibertyApp` — the chrome is what decides.
 
 `AnilibertyTabBarController` is a `UITabBarController` that exists purely to get the system Liquid
 Glass tab bar. It is **not** a navigation container:
@@ -67,19 +74,29 @@ Glass tab bar. It is **not** a navigation container:
   layout pass because UIKit rebuilds the hierarchy on tab changes.
 - The tab bar height is fed to Compose through `additionalSafeAreaInsets`, minus the inherited
   safe area so the home indicator is not counted twice. Compose insets need no other wiring.
-- Dependencies arrive via `configure(...)`, never the constructor: `UITabBarController`'s
+- The Compose controller arrives via `attach(...)`, never the constructor: `UITabBarController`'s
   designated initializer loads its view, so `viewDidLoad` runs while a Kotlin subclass's fields are
   still uninitialized. For the same reason, `addChildViewController` must precede reading the
-  child's `view` — it returns nil beforehand despite the non-null binding.
-- Everything the chrome mirrors is pushed from inside the composition (`NativeNavigationChrome` in
-  `AnilibertyApp.kt`, which sits inside `ProvideAppLocale` and `AnilibertyTheme`), so tab labels and
-  the bar's appearance follow a language or theme change for free. Do not resolve them from
-  `iosMain` — a one-shot `getString` outside the composition cannot see either. SF Symbols are
-  mapped in `TabBarItems.kt` so the shared route contract stays free of iOS specifics.
+  child's `view` — it returns nil beforehand despite the non-null binding. `applyState` before the
+  attach is buffered and replayed, so the order between the controller being built and the
+  composition starting does not matter.
+- Everything the bar mirrors arrives as one `NativeTabBarState` snapshot pushed from inside the
+  composition by `NativeTabBarChrome`, which runs inside `ProvideAppLocale` and `AnilibertyTheme`,
+  so tab labels and appearance follow a language or theme change for free. Do not resolve them from
+  outside the composition — a one-shot `getString` there cannot see either. SF Symbols are mapped
+  in `TabBarItems.kt` so the shared route contract stays free of iOS specifics.
 - The theme is pushed as the raw `ThemeOption`, never a resolved "is dark" flag:
   `overrideUserInterfaceStyle` is set on the controller (so the status bar and keyboard follow too),
   and `ThemeOption.System` must stay `Unspecified` — pinning it would also pin the trait collection
   the Compose child inherits, and the app would stop tracking the system.
+- Destinations declare `NavKey.hidesNavigationBar` to go full screen; the chrome decides how. On
+  iOS that is `setTabBarHidden(_:animated:)` plus a relayout so the safe area follows; the Compose
+  chrome collapses its navigation suite instead. The flag is platform-neutral — do not treat it as
+  an iOS hook.
+- The snackbar is drawn by a scene decorator that sits inside the chrome but outside any screen's
+  `Scaffold`, so it pads itself with `safeDrawing` in `AnilibertyNavGraph`. That is a no-op wherever
+  a Compose chrome has already consumed those insets, and is what lifts the snackbar clear of the
+  native bar here.
 - Minimising the tab bar on scroll does **not** work automatically: UIKit drives it from
   `setContentScrollView:forEdge:` and Compose provides no `UIScrollView`. Drive
   `setTabBarHidden(_:animated:)` from Compose scroll state if that behaviour is wanted.

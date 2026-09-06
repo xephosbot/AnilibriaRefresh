@@ -1,8 +1,9 @@
 package com.xbot.sharedapp.ios
 
-import com.xbot.navigation.TopLevelNavKey
-import com.xbot.sharedapp.NavigationChromeHost
+import co.touchlab.kermit.Logger
 import com.xbot.domain.models.enums.ThemeOption
+import com.xbot.navigation.TopLevelNavKey
+import com.xbot.navigation.TopLevelRoutes
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSProcessInfo
@@ -23,50 +24,52 @@ import platform.UIKit.didMoveToParentViewController
  * Hosts the whole Compose scene underneath a native tab bar.
  *
  * Navigation 3 remains the single source of truth: a tap is refused in [tabBarController] and
- * merely forwarded to the navigator, and the selected tab is then applied from the resulting
- * navigation state in [applyNavigationState]. Nothing is mirrored, so a rejected navigation — such
- * as opening a login-gated tab while signed out — simply leaves the previous tab selected without
- * any special casing.
+ * merely forwarded to [onTabSelected], and the selected tab is then applied from the resulting
+ * navigation state in [applyState]. Nothing is mirrored, so a rejected navigation — such as opening
+ * a login-gated tab while signed out — simply leaves the previous tab selected without any special
+ * casing. [NativeTabBarChrome] is the other half of this: it is what turns the composition into the
+ * snapshots [applyState] receives.
  *
  * The Compose controller is a child of this controller rather than of an individual tab, so the
  * composition (and with it the whole Navigation 3 back stack, scene strategies and shared element
  * transitions) survives every tab switch. Each tab is backed by an empty placeholder, and the
  * Compose view is kept above that placeholder but below the bar — see [keepComposeAboveTabContent].
  *
- * Dependencies arrive through [configure] rather than the constructor: `UITabBarController`'s
- * designated initializer loads its view, so `viewDidLoad` runs while the Kotlin fields of a
- * subclass are still uninitialized.
+ * The Compose controller arrives through [attach] rather than the constructor:
+ * `UITabBarController`'s designated initializer loads its view, so `viewDidLoad` runs while the
+ * Kotlin fields of a subclass are still uninitialized.
  */
 @OptIn(ExperimentalForeignApi::class)
 internal class AnilibertyTabBarController :
     UITabBarController(nibName = null, bundle = null),
     UITabBarControllerDelegateProtocol {
 
+    /** Set from the composition; invoked when the user picks a destination. */
+    var onTabSelected: ((TopLevelNavKey) -> Unit)? = null
+
+    private val topLevelRoutes: List<TopLevelNavKey> = TopLevelRoutes.toList()
+    private val routesByIdentifier: Map<String, TopLevelNavKey> =
+        topLevelRoutes.associateBy { it.tabIdentifier }
     private val tabsByIdentifier = mutableMapOf<String, UITab>()
 
-    private var chromeHost: IosNavigationChromeHost? = null
     private var composeViewController: UIViewController? = null
-    private var topLevelRoutes: List<TopLevelNavKey> = emptyList()
-    private var routesByIdentifier: Map<String, TopLevelNavKey> = emptyMap()
-
     private var isInstalled = false
-    private var chromeVisible = true
 
-    fun configure(
-        chromeHost: IosNavigationChromeHost,
-        composeViewController: UIViewController,
-        topLevelRoutes: List<TopLevelNavKey>,
-    ) {
-        this.chromeHost = chromeHost
+    /**
+     * The last snapshot seen, or null if none has arrived yet. Doubles as a replay buffer: the
+     * composition may push before the Compose view is attached, which makes the ordering between
+     * this controller being built and the composition starting irrelevant.
+     */
+    private var appliedState: NativeTabBarState? = null
+
+    fun attach(composeViewController: UIViewController) {
         this.composeViewController = composeViewController
-        this.topLevelRoutes = topLevelRoutes
-        this.routesByIdentifier = topLevelRoutes.associateBy { it.tabIdentifier }
         installIfNeeded()
     }
 
     override fun viewDidLoad() {
         super.viewDidLoad()
-        // Runs from the superclass initializer as well, before `configure` — hence the guard.
+        // Runs from the superclass initializer as well, before `attach` — hence the guard.
         installIfNeeded()
     }
 
@@ -77,39 +80,42 @@ internal class AnilibertyTabBarController :
         updateComposeSafeAreaInsets()
     }
 
-    /** Applies navigation state coming out of Compose. Never reads back from the chrome. */
-    fun applyNavigationState(topLevel: TopLevelNavKey?, chromeVisible: Boolean) {
-        val tab = topLevel?.tabIdentifier?.let(tabsByIdentifier::get)
+    /** Projects a Compose snapshot onto the bar. Never reads state back out of UIKit. */
+    fun applyState(state: NativeTabBarState) {
+        val previous = appliedState
+        if (previous == state) return
+        appliedState = state
+
+        if (!isInstalled) return
+
+        if (previous?.tabTitles != state.tabTitles) {
+            state.tabTitles.forEach { (route, title) ->
+                tabsByIdentifier[route.tabIdentifier]?.setTitle(title)
+            }
+        }
+
+        if (previous?.themeOption != state.themeOption) {
+            // Applied to this controller rather than to the bar alone so the status bar and the
+            // keyboard follow too. ThemeOption.System must stay unspecified: overriding it would
+            // also pin the trait collection inherited by the Compose child, and the app would stop
+            // tracking the system.
+            overrideUserInterfaceStyle = when (state.themeOption) {
+                ThemeOption.System -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
+                ThemeOption.Light -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
+                ThemeOption.Dark -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+            }
+        }
+
+        val tab = state.topLevelRoute?.tabIdentifier?.let(tabsByIdentifier::get)
         if (tab != null && tab != selectedTab) {
             selectedTab = tab
         }
-        if (chromeVisible != this.chromeVisible) {
-            this.chromeVisible = chromeVisible
-            setTabBarHidden(!chromeVisible, animated = true)
-        }
-    }
 
-    /**
-     * Applies the labels resolved by Compose, so they follow the in-app language.
-     */
-    fun applyTabTitles(titles: Map<TopLevelNavKey, String>) {
-        titles.forEach { (route, title) ->
-            tabsByIdentifier[route.tabIdentifier]?.setTitle(title)
-        }
-    }
-
-    /**
-     * Matches the native chrome to the app's theme.
-     *
-     * Applied to this controller rather than to the bar alone so the status bar and the keyboard
-     * follow too. [ThemeOption.System] must stay unspecified: overriding it would also pin the
-     * trait collection inherited by the Compose child, and the app would stop tracking the system.
-     */
-    fun applyThemeOption(themeOption: ThemeOption) {
-        overrideUserInterfaceStyle = when (themeOption) {
-            ThemeOption.System -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
-            ThemeOption.Light -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
-            ThemeOption.Dark -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+        if (previous?.tabBarVisible != state.tabBarVisible) {
+            setTabBarHidden(!state.tabBarVisible, animated = true)
+            // The bar's height is part of the Compose safe area, so it has to be recomputed rather
+            // than waiting for a layout pass that a visibility change alone does not schedule.
+            view.setNeedsLayout()
         }
     }
 
@@ -118,7 +124,7 @@ internal class AnilibertyTabBarController :
         shouldSelectTab: UITab,
     ): Boolean {
         routesByIdentifier[shouldSelectTab.identifier]?.let { route ->
-            chromeHost?.onTabSelected?.invoke(route)
+            onTabSelected?.invoke(route)
         }
         // Selection is driven exclusively by the resulting Navigation 3 state.
         return false
@@ -127,7 +133,6 @@ internal class AnilibertyTabBarController :
     private fun installIfNeeded() {
         if (isInstalled) return
         val composeViewController = composeViewController ?: return
-        val chromeHost = chromeHost ?: return
         isInstalled = true
 
         delegate = this
@@ -142,7 +147,11 @@ internal class AnilibertyTabBarController :
 
         setTabs(buildTabs(), animated = false)
 
-        chromeHost.attach(this)
+        // Replays whatever the composition pushed while the tabs did not exist yet.
+        appliedState?.let { pending ->
+            appliedState = null
+            applyState(pending)
+        }
     }
 
     private fun keepComposeAboveTabContent() {
@@ -168,9 +177,13 @@ internal class AnilibertyTabBarController :
     }
 
     private fun buildTabs(): List<UITab> = topLevelRoutes.map { route ->
+        val symbolName = route.sfSymbolName ?: run {
+            Logger.w { "No SF Symbol mapped for ${route.tabIdentifier}, using a generic icon" }
+            FallbackSfSymbolName
+        }
         val tab = UITab(
             title = "",
-            image = UIImage.systemImageNamed(route.sfSymbolName),
+            image = UIImage.systemImageNamed(symbolName),
             identifier = route.tabIdentifier,
             viewControllerProvider = { PassthroughViewController() },
         )
@@ -185,7 +198,7 @@ internal class AnilibertyTabBarController :
      */
     private fun updateComposeSafeAreaInsets() {
         val composeViewController = composeViewController ?: return
-        if (!chromeVisible) {
+        if (appliedState?.tabBarVisible == false) {
             composeViewController.additionalSafeAreaInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
             return
         }
@@ -229,54 +242,5 @@ private class PassthroughViewController : UIViewController(nibName = null, bundl
         super.viewDidLoad()
         view.backgroundColor = UIColor.clearColor
         view.setUserInteractionEnabled(false)
-    }
-}
-
-/** iOS side of [NavigationChromeHost]; forwards Compose navigation state to the native tab bar. */
-internal class IosNavigationChromeHost : NavigationChromeHost {
-
-    private var controller: AnilibertyTabBarController? = null
-
-    // The composition starts after the controller is built, but only by convention — buffer the
-    // latest value of each push so nothing is lost if that ever stops being true.
-    private var pendingNavigationState: Pair<TopLevelNavKey?, Boolean>? = null
-    private var pendingTitles: Map<TopLevelNavKey, String>? = null
-    private var pendingThemeOption: ThemeOption? = null
-
-    override var onTabSelected: ((TopLevelNavKey) -> Unit)? = null
-
-    fun attach(controller: AnilibertyTabBarController) {
-        this.controller = controller
-        pendingTitles?.let(controller::applyTabTitles)
-        pendingThemeOption?.let(controller::applyThemeOption)
-        pendingNavigationState?.let { (topLevel, chromeVisible) ->
-            controller.applyNavigationState(topLevel, chromeVisible)
-        }
-        pendingTitles = null
-        pendingThemeOption = null
-        pendingNavigationState = null
-    }
-
-    override fun onNavigationStateChanged(topLevel: TopLevelNavKey?, chromeVisible: Boolean) {
-        val controller = controller
-        if (controller == null) {
-            pendingNavigationState = topLevel to chromeVisible
-        } else {
-            controller.applyNavigationState(topLevel, chromeVisible)
-        }
-    }
-
-    override fun onTabTitlesChanged(titles: Map<TopLevelNavKey, String>) {
-        val controller = controller
-        if (controller == null) pendingTitles = titles else controller.applyTabTitles(titles)
-    }
-
-    override fun onThemeOptionChanged(themeOption: ThemeOption) {
-        val controller = controller
-        if (controller == null) {
-            pendingThemeOption = themeOption
-        } else {
-            controller.applyThemeOption(themeOption)
-        }
     }
 }

@@ -8,11 +8,12 @@ interface NavKey : Nav3Key {
     val requiresLogin: Boolean get() = false
 
     /**
-     * Whether this destination covers the platform navigation chrome.
+     * Whether this destination replaces the app's top level navigation chrome rather than sitting
+     * inside it — the player and the login flow do, an ordinary screen does not.
      *
-     * On iOS the tab bar is a native `UITabBarController` drawn above the Compose
-     * scene, so full screen destinations must ask for it to be hidden explicitly. On platforms
-     * where the chrome is rendered by Compose itself this flag is unused.
+     * The destination states the intent; making it happen is the chrome's business, and each does
+     * it its own way — Compose collapses its navigation suite, iOS hides the native tab bar. The
+     * decision itself is the same on every platform.
      */
     val hidesNavigationBar: Boolean get() = false
 }
