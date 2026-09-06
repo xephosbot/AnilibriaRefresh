@@ -3,8 +3,13 @@ package com.xbot.sharedapp.navigation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -79,7 +84,9 @@ internal fun AnilibertyNavGraph(
         alignment = Alignment.BottomCenter,
         snackbarContent = { message ->
             Snackbar(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+                    .padding(16.dp),
                 action = (message as? SnackbarMessage.WithAction)?.let { msg ->
                     {
                         TextButton(onClick = msg.onAction) {

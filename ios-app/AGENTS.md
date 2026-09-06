@@ -37,14 +37,43 @@ That is the entire Swift surface, and it should stay that way.
 
 ## Consuming the `SharedUI` framework
 
-- Entry point is `MainViewControllerKt.MainViewController()` (Kotlin:
-  `shared-ui/src/iosMain/kotlin/MainViewController.kt`). It **starts Koin on first call** and
-  returns the `ComposeUIViewController` rendering `AnilibertyApp()`. Swift must not call
-  `initKoin` itself — the guard in Kotlin is the single source of truth.
+- Entry point is `Main_iosKt.MainViewController()` (Kotlin:
+  `shared-ui/src/iosMain/kotlin/main.ios.kt`, a top-level file with no package, hence the
+  `Main_iosKt` Objective-C name). It **starts Koin on first call** and returns an
+  `AnilibertyTabBarController`. Swift must not call `initKoin` itself — the guard in Kotlin is the
+  single source of truth.
 - The controller owns the Compose scene, its lifecycle and the navigation back stack, so it is
   created once in `makeUIViewController` and never reconfigured.
 - `ComposeView` uses `.ignoresSafeArea(.all)`: Compose draws edge-to-edge and applies its own
   window insets. Do not re-add SwiftUI safe-area padding around it.
+
+### Native navigation bar (`shared-ui/src/iosMain/kotlin/com/xbot/sharedapp/ios/`)
+
+`AnilibertyTabBarController` is a `UITabBarController` that exists purely to get the system Liquid
+Glass tab bar. It is **not** a navigation container.
+
+Everything in this package is `internal` — Swift still sees only `MainViewController()`.
+`commonMain` declares a `NavigationChrome` and reads it from `LocalNavigationChrome`; the default
+draws a `NavigationSuiteScaffold`, and `main.ios.kt` is the only place that swaps in
+`NativeTabBarChrome`. Do not add a platform parameter or nullable host to `AnilibertyApp`.
+
+- Navigation 3 is the source of truth. A tap is *refused* in `shouldSelectTab` and only forwarded
+  to the navigator; selection is then applied from the resulting Compose state. Never mirror back.
+- One `ComposeUIViewController` hosts the whole app as a child of the tab bar controller, not of a
+  tab, so the composition survives tab switches. Tabs hold transparent `PassthroughViewController`s.
+- The Compose view must sit above the tab's content wrapper and below the bar.
+  `keepComposeAboveTabContent()` re-asserts this each layout pass — UIKit rebuilds the hierarchy.
+- Dependencies arrive via `attach(...)`, never the constructor: the designated initializer loads the
+  view, so `viewDidLoad` runs before Kotlin fields exist. Likewise `addChildViewController` must
+  precede reading the child's `view`. Pushes before attach are buffered and replayed.
+- State arrives as one `NativeTabBarState` pushed from inside the composition, so labels and theme
+  follow locale/theme changes for free. Never resolve them outside it. Theme is pushed as raw
+  `ThemeOption`; `System` must map to `Unspecified` or the Compose child stops tracking the system.
+- `NavKey.hidesNavigationBar` is platform-neutral, not an iOS hook: iOS hides the native bar,
+  Compose collapses its navigation suite.
+- Tab bar height reaches Compose via `additionalSafeAreaInsets`, minus the inherited safe area.
+- Minimising the bar on scroll does **not** work automatically — UIKit drives it from
+  `setContentScrollView:forEdge:` and Compose provides no `UIScrollView`.
 
 ## When Swift code *is* justified
 

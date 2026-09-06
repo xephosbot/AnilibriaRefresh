@@ -8,17 +8,22 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -235,34 +240,40 @@ private fun TitleDetailsPaneContent(
                     val details = state.details.getOrNull()
                     val hasEpisodes = details?.episodes?.isNotEmpty() == true
 
-                    AnimatedVisibility(
-                        modifier = Modifier
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(
-                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
-                                        MaterialTheme.colorScheme.surfaceContainer,
+                    Box(
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
+                        )
+                    ) {
+                        AnimatedVisibility(
+                            modifier = Modifier
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                            MaterialTheme.colorScheme.surfaceContainer,
+                                        )
                                     )
                                 )
-                            )
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
-                        visible = isSinglePane && !isWatchButtonOnScreen && hasEpisodes,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        WatchButton(
-                            modifier = Modifier
-                                .sharedBounds(
-                                    rememberSharedContentState(key = "watch_button"),
-                                    animatedVisibilityScope = this@AnimatedVisibility,
-                                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
-                                ),
-                            onClick = {
-                                state.initialRelease?.let { release ->
-                                    onPlayClick(release.id, 0)
+                                .padding(horizontal = 24.dp, vertical = 16.dp),
+                            visible = isSinglePane && !isWatchButtonOnScreen && hasEpisodes,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
+                            WatchButton(
+                                modifier = Modifier
+                                    .sharedBounds(
+                                        rememberSharedContentState(key = "watch_button"),
+                                        animatedVisibilityScope = this@AnimatedVisibility,
+                                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
+                                    ),
+                                onClick = {
+                                    state.initialRelease?.let { release ->
+                                        onPlayClick(release.id, 0)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 },
                 containerColor = MaterialTheme.colorScheme.surfaceContainer
