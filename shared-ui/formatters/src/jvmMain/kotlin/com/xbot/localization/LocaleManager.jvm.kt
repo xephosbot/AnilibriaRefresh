@@ -10,9 +10,13 @@ private val systemDefaultLocale by lazy { Locale.getDefault() }
 private const val LOCALE_KEY = "app_locale_tag"
 private val prefs = Preferences.userNodeForPackage(LocaleManager.javaClass)
 
+private val storedLocale by lazy {
+    prefs.get(LOCALE_KEY, null)?.let(Locale::forLanguageTag) ?: systemDefaultLocale
+}
+
 actual object LocalAppLanguage {
-    private val LocalAppLocaleIso = staticCompositionLocalOf { systemDefaultLocale.language }
-    
+    private val LocalAppLocaleIso = staticCompositionLocalOf { storedLocale.language }
+
     actual val current: String
         @Composable get() = LocalAppLocaleIso.current
 
@@ -22,8 +26,7 @@ actual object LocalAppLanguage {
             prefs.put(LOCALE_KEY, value)
             Locale.forLanguageTag(value)
         } else {
-            val iso = prefs.get(LOCALE_KEY, systemDefaultLocale.language)
-            Locale.forLanguageTag(iso)
+            storedLocale
         }
 
         Locale.setDefault(newLocale)
@@ -32,7 +35,5 @@ actual object LocalAppLanguage {
 }
 
 fun LocaleManager.init() {
-    val iso = prefs.get(LOCALE_KEY, systemDefaultLocale.language)
-    val locale = Locale.forLanguageTag(iso)
-    Locale.setDefault(locale)
+    Locale.setDefault(storedLocale)
 }
