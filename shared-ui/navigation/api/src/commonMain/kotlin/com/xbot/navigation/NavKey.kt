@@ -6,6 +6,7 @@ import org.jetbrains.compose.resources.StringResource
 
 interface NavKey : Nav3Key {
     val requiresLogin: Boolean get() = false
+    val hidesNavigationBar: Boolean get() = false
 }
 
 interface TopLevelNavKey : NavKey {
