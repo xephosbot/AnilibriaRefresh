@@ -63,8 +63,6 @@ internal fun AnilibertyApp(
                 amoled = appState.themeState.isPureBlack,
                 expressiveColor = appState.themeState.isExpressiveColor
             ) {
-                // The chrome wraps the graph rather than the other way round, and it is chosen by
-                // the platform, not by this composable: see LocalNavigationChrome.
                 LocalNavigationChrome.current.Content(navigator) {
                     AnilibertyNavGraph(navigator = navigator)
                 }

@@ -240,10 +240,6 @@ private fun TitleDetailsPaneContent(
                     val details = state.details.getOrNull()
                     val hasEpisodes = details?.episodes?.isNotEmpty() == true
 
-                    // Scaffold drops contentWindowInsets as soon as a bottomBar exists, so this
-                    // slot has to reserve them itself — including while the button is hidden and
-                    // the slot would otherwise collapse to zero height. It stays transparent, and
-                    // the body is placed at full size, so content keeps scrolling underneath.
                     Box(
                         modifier = Modifier.windowInsetsPadding(
                             WindowInsets.systemBars.only(WindowInsetsSides.Bottom)

@@ -18,10 +18,6 @@ import com.xbot.navigation.Navigator
 import com.xbot.navigation.TopLevelRoutes
 import org.jetbrains.compose.resources.stringResource
 
-/**
- * The navigation chrome Compose renders itself, used on every platform that does not install one of
- * its own.
- */
 internal object ComposeNavigationChrome : NavigationChrome {
 
     @OptIn(

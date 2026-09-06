@@ -31,38 +31,22 @@ object LocaleManager {
 expect object LocalAppLanguage {
     val current: String @Composable get
 
-    /**
-     * Records the choice with the platform. This is persistence and native-side localization only —
-     * the strings Compose renders come from [ProvideAppLocale]'s resource environment.
-     */
+    /** Platform persistence and native-side localization only; Compose strings come from [ProvideAppLocale]. */
     @Composable infix fun provides(value: String?): ProvidedValue<*>
 }
 
 /**
- * Makes the in-app language the one Compose resources resolve against.
- *
- * Compose Resources does not consult the platform locale for `stringResource`: it goes through
- * `LocalComposeEnvironment`, whose default implementation reads `Locale.current`. On iOS that is
- * `NSLocale.preferredLanguages`, which Foundation fixes for the lifetime of the process — writing
- * `AppleLanguages` only takes effect on the next launch. So rather than nudging the platform locale
- * and remounting the tree to re-read it, this overrides the resource environment directly, which
- * makes a language change ordinary Compose state and applies it immediately on every platform.
- *
- * The environment is remembered per language: `LocalComposeEnvironment` is a static
- * `CompositionLocal`, so a new instance would invalidate the whole subtree on every recomposition.
- * Changing the language still recomposes everything below — but recomposition, unlike the `key()`
- * this used to rely on, keeps the state under it alive.
- *
- * Reaches for three symbols the library keeps internal: `ComposeEnvironment`,
- * `LocalComposeEnvironment` and `ResourceEnvironment`'s constructor. There is no public way to
- * supply a resource environment to `stringResource`. A Compose Resources upgrade can break this —
- * it would break at compile time, not silently.
+ * Overrides the Compose Resources environment so a language change applies immediately. Nudging the
+ * platform locale does not work on iOS: Foundation fixes `preferredLanguages` for the process
+ * lifetime. Uses internal Compose Resources symbols — an upgrade breaks this at compile time.
  */
 @OptIn(InternalResourceApi::class)
 @Composable
 fun ProvideAppLocale(content: @Composable () -> Unit) {
     val isoCode = LocaleManager.isoCode
     val language = AppLanguage.getByIsoCode(isoCode ?: LocalAppLanguage.current)
+    // Remembered per language: LocalComposeEnvironment is static, so a fresh instance every
+    // recomposition would invalidate the whole subtree.
     val environment = remember(language) { AppComposeEnvironment(language.isoCode) }
 
     CompositionLocalProvider(
@@ -79,8 +63,7 @@ private class AppComposeEnvironment(private val languageCode: String) : ComposeE
 
     @Composable
     override fun rememberEnvironment(): ResourceEnvironment {
-        // Everything but the language still comes from the library's own environment, so theme,
-        // density, script and region keep behaving exactly as they would by default.
+        // Only the language is overridden; theme, density, script and region keep their defaults.
         val default = DefaultComposeEnvironment.rememberEnvironment()
         return remember(languageCode, default) {
             ResourceEnvironment(
