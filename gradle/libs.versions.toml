@@ -3,47 +3,47 @@
 android-minsdk = "24"
 android-targetsdk = "37"
 android-compilesdk = "37"
-android-gradle-plugin = "9.3.2"
+android-gradle-plugin = "9.4.1"
 android-desugar-jdk = "2.1.5"
 google-services = "4.5.0"
 
 # Kotlin
 kotlin = "2.4.20"
-ksp = "2.3.11"
-compose-multiplatform = "1.12.0"
+ksp = "2.3.12"
+compose-multiplatform = "1.12.1"
 compose-material3 = "1.12.0-alpha03"
-compose-material3-adaptive = "1.3.0-beta02"
+compose-material3-adaptive = "1.3.0-rc01"
 
 # AndroidX
 androidx-activity = "1.13.0"
-androidx-annotation = "1.10.0"
+androidx-annotation = "1.11.0"
 androidx-appcompat = "1.8.0"
 androidx-core-splashscreen = "1.2.0"
-androidx-core-pip = "1.0.0-alpha03"
-androidx-datastore = "1.3.0-alpha10"
+androidx-core-pip = "1.0.0-alpha04"
+androidx-datastore = "1.3.0-alpha11"
 androidx-interpolator = "1.0.0"
-androidx-media3 = "1.11.0"
+androidx-media3 = "1.11.1"
 androidx-paging = "3.5.1"
 androidx-lifecycle = "2.11.0"
 androidx-savedstate = "1.5.0"
 
 # Jetbrains
-navigation3-runtime = "1.2.0-alpha07"
-navigation3-ui = "1.1.1"
+navigation3-runtime = "1.2.0"
+navigation3-ui = "1.1.2"
 kotlinx-atomicfu = "0.33.0"
 kotlinx-coroutines = "1.11.0"
 kotlinx-datetime = "0.8.0"
 kotlinx-serialization = "1.11.0"
 
 # Libraries
-firebase-bom = "34.18.0"
-ktor = "3.5.2"
+firebase-bom = "34.19.0"
+ktor = "3.6.0"
 brotli = "0.1.2"
 koin = "4.2.2"
-koin-plugin = "1.1.0"
+koin-plugin = "1.2.1"
 kotzilla = "2.3.6"
 kermit = "2.2.0"
-coil = "3.6.2"
+coil = "3.6.3"
 arrow = "2.2.3"
 material-motion-compose = "2.0.1"
 materialKolor = "5.0.1"
@@ -139,7 +139,7 @@ coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", v
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
 arrow-resilience = { group = "io.arrow-kt", name = "arrow-resilience", version.ref = "arrow" }
-slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.19" }
+slf4j = { group = "org.slf4j", name = "slf4j-simple", version = "2.0.20" }
 material-motion-compose-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "material-motion-compose" }
 materialKolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
 shimmer-compose = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }

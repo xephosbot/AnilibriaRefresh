@@ -8,7 +8,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
-               BuildableName = "Aniliberty Refresh.app"
+               BuildableName = "AnilibertyRefresh"
                BlueprintName = "AnilibertyRefresh"
                ReferencedContainer = "container:AnilibertyRefresh.xcodeproj">
             </BuildableReference>
@@ -23,7 +23,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "279A4EBFBBE620E1DD374910"
-            BuildableName = "Aniliberty Refresh.app"
+            BuildableName = "AnilibertyRefresh"
             BlueprintName = "AnilibertyRefresh"
             ReferencedContainer = "container:AnilibertyRefresh.xcodeproj">
          </BuildableReference>
