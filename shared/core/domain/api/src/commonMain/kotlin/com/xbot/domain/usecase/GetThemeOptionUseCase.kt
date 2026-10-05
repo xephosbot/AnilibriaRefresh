@@ -1,8 +1,8 @@
 package com.xbot.domain.usecase
 
 import com.xbot.domain.models.enums.ThemeOption
-import kotlinx.coroutines.flow.Flow
 import kotlin.native.HiddenFromObjC
+import kotlinx.coroutines.flow.Flow
 
 @HiddenFromObjC
 fun interface GetThemeOptionUseCase {

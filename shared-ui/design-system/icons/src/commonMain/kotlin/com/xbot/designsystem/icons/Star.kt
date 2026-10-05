@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.Star: ImageVector
         }
         _starFilled =
             Builder(
-                    name = "StarFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "StarFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.Star: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(480.0f, 691.0f)
                         lineTo(314.0f, 791.0f)
@@ -84,7 +84,7 @@ val AnilibertyIcons.StarOutlined: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -94,7 +94,7 @@ val AnilibertyIcons.StarOutlined: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(354.0f, 673.0f)
                         lineTo(480.0f, 597.0f)
@@ -156,7 +156,6 @@ val AnilibertyIcons.StarOutlined: ImageVector
                 .build()
         return _starOutlined!!
     }
-
 
 private var _starFilled: ImageVector? = null
 private var _starOutlined: ImageVector? = null

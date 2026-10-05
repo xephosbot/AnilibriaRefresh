@@ -12,18 +12,26 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import kotlinx.datetime.DayOfWeek
 
+private const val POSTER_URL =
+    "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp"
+private const val LEGACY_POSTER_URL =
+    "https://www.anilibria.tv/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp"
+
+private val defaultPoster = Poster(POSTER_URL, POSTER_URL)
+
 fun createRelease(
     id: Int = 1,
     type: ReleaseType? = ReleaseType.TV,
     year: Int = 2024,
     name: String = "Frieren: Beyond Journey's End",
     englishName: String? = "Sousou no Frieren",
-    description: String? = "The adventure is over but life goes on for an elf mage just beginning to learn what living is all about.",
+    description: String? = "The adventure is over but life goes on for an elf mage " +
+        "just beginning to learn what living is all about.",
     ageRating: AgeRating = AgeRating.R12_PLUS,
     episodesCount: Int? = 28,
     episodeDuration: Int? = 24,
     favoritesCount: Int = 1500,
-    poster: Poster? = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+    poster: Poster? = defaultPoster
 ) = Release(
     id = id,
     type = type,
@@ -74,7 +82,7 @@ object ReleaseFixtures {
         id = 1,
         name = "Frieren: Beyond Journey's End",
         englishName = "Sousou no Frieren",
-        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+        poster = defaultPoster
     )
 
     val oshiNoKo = createRelease(
@@ -82,11 +90,12 @@ object ReleaseFixtures {
         year = 2023,
         name = "Oshi no Ko",
         englishName = "My Star",
-        description = "Gorou is a gynecologist and idol fan who's in shock after his favorite star, Ai, announces an impromptu hiatus.",
+        description = "Gorou is a gynecologist and idol fan who's in shock " +
+            "after his favorite star, Ai, announces an impromptu hiatus.",
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 11,
         favoritesCount = 2000,
-        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+        poster = defaultPoster
     )
 
     val jujutsuKaisen = createRelease(
@@ -98,7 +107,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 23,
         favoritesCount = 2500,
-        poster = Poster("https://www.anilibria.tv/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+        poster = Poster(LEGACY_POSTER_URL, POSTER_URL)
     )
 
     val mushokuTensei = createRelease(
@@ -110,7 +119,7 @@ object ReleaseFixtures {
         ageRating = AgeRating.R18_PLUS,
         episodesCount = 24,
         favoritesCount = 1800,
-        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+        poster = defaultPoster
     )
 
     val soloLeveling = createRelease(
@@ -118,11 +127,12 @@ object ReleaseFixtures {
         year = 2024,
         name = "Solo Leveling",
         englishName = "Ore dake Level Up na Ken",
-        description = "Ten years ago, the Gate appeared and connected the real world with the realm of magic and monsters.",
+        description = "Ten years ago, the Gate appeared and connected the real world " +
+            "with the realm of magic and monsters.",
         ageRating = AgeRating.R16_PLUS,
         episodesCount = 12,
         favoritesCount = 3000,
-        poster = Poster("https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp", "https://anilibria.top/storage/releases/posters/9893/ItO6iCEFhNYxSmB1sSighfDiObiNyS57.webp")
+        poster = defaultPoster
     )
 
     val all = listOf(frieren, oshiNoKo, jujutsuKaisen, mushokuTensei, soloLeveling)

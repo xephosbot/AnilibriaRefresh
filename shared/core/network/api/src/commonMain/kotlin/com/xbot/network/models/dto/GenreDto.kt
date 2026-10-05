@@ -8,5 +8,5 @@ data class GenreDto(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("image") val image: ImageDto? = null,
-    @SerialName("total_releases") val totalReleases: Int? = null,
+    @SerialName("total_releases") val totalReleases: Int? = null
 )

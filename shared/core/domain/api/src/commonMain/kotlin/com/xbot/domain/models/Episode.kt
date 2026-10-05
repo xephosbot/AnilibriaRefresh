@@ -1,7 +1,7 @@
 package com.xbot.domain.models
 
-import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration
+import kotlinx.datetime.LocalDateTime
 
 data class Episode(
     val id: String,
@@ -13,7 +13,7 @@ data class Episode(
     val hls720: String? = null,
     val hls1080: String? = null,
     val duration: Duration? = null,
-    val updatedAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null
 )
 
 val Episode.hlsUrl: String?

@@ -25,7 +25,7 @@ interface CatalogApi {
         sorting: SortingTypeDto? = null,
         ageRatings: List<AgeRatingDto>? = null,
         publishStatuses: List<PublishStatusDto>? = null,
-        productionStatuses: List<ProductionStatusDto>? = null,
+        productionStatuses: List<ProductionStatusDto>? = null
     ): Either<AppError, PaginatedResponse<ReleaseDto>>
     suspend fun getCatalogAgeRatings(): Either<AppError, List<AgeRatingDto>>
     suspend fun getCatalogGenres(): Either<AppError, List<GenreDto>>

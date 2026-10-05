@@ -20,15 +20,9 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.times
 import com.xbot.designsystem.theme.LocalMargins
 
-data class SectionShape(
-    val innerCornerSize: CornerSize,
-    val outerCornerSize: CornerSize,
-)
+data class SectionShape(val innerCornerSize: CornerSize, val outerCornerSize: CornerSize)
 
-data class SectionSpacing(
-    val innerSpacing: Dp,
-    val outerSpacing: PaddingValues,
-)
+data class SectionSpacing(val innerSpacing: Dp, val outerSpacing: PaddingValues)
 
 object SectionDefaults {
 
@@ -37,19 +31,19 @@ object SectionDefaults {
     @Composable
     fun shape(
         innerCornerSize: CornerSize = MaterialTheme.shapes.extraSmall.topStart,
-        outerCornerSize: CornerSize = MaterialTheme.shapes.large.topStart,
+        outerCornerSize: CornerSize = MaterialTheme.shapes.large.topStart
     ): SectionShape = SectionShape(
         innerCornerSize = innerCornerSize,
-        outerCornerSize = outerCornerSize,
+        outerCornerSize = outerCornerSize
     )
 
     @Composable
     fun spacing(
         innerSpacing: Dp = DefaultInnerSpacing,
-        contentPadding: PaddingValues? = null,
+        contentPadding: PaddingValues? = null
     ): SectionSpacing {
         val margin = LocalMargins.current.horizontal
-        
+
         val outerSpacing = remember(contentPadding, margin) {
             if (contentPadding != null) {
                 object : PaddingValues {
@@ -70,7 +64,7 @@ object SectionDefaults {
 
         return SectionSpacing(
             innerSpacing = innerSpacing,
-            outerSpacing = outerSpacing,
+            outerSpacing = outerSpacing
         )
     }
 
@@ -78,7 +72,7 @@ object SectionDefaults {
         index: Int,
         itemsCount: Int,
         columnsCount: Int,
-        sectionShape: SectionShape,
+        sectionShape: SectionShape
     ): Shape {
         @Suppress("NAME_SHADOWING")
         val columnsCount = if (columnsCount != 0) columnsCount else 1
@@ -107,7 +101,7 @@ fun Modifier.section(
     itemsCount: Int,
     columnsCount: Int = 1,
     sectionShape: SectionShape? = null,
-    sectionSpacing: SectionSpacing? = null,
+    sectionSpacing: SectionSpacing? = null
 ): Modifier = composed {
     val resolvedShape = sectionShape ?: SectionDefaults.shape()
     val resolvedSpacing = sectionSpacing ?: SectionDefaults.spacing()
@@ -129,13 +123,13 @@ private fun Modifier.sectionShape(
     index: Int,
     itemsCount: Int,
     columnsCount: Int,
-    sectionShape: SectionShape,
+    sectionShape: SectionShape
 ): Modifier = clip(
     shape = SectionDefaults.itemShape(
         index = index,
         itemsCount = itemsCount,
         columnsCount = columnsCount,
-        sectionShape = sectionShape,
+        sectionShape = sectionShape
     )
 )
 
@@ -143,7 +137,7 @@ private fun Modifier.sectionSpacing(
     index: Int,
     itemsCount: Int,
     columnsCount: Int,
-    sectionSpacing: SectionSpacing,
+    sectionSpacing: SectionSpacing
 ): Modifier {
     @Suppress("NAME_SHADOWING")
     val columnsCount = if (columnsCount != 0) columnsCount else 1
@@ -155,16 +149,18 @@ private fun Modifier.sectionSpacing(
         .layout { measurable, constraints ->
             val startPadding = sectionSpacing.outerSpacing.calculateStartPadding(layoutDirection)
             val endPadding = sectionSpacing.outerSpacing.calculateEndPadding(layoutDirection)
-            
+
             val paddingPerItem =
-                (startPadding + endPadding + (columnsCount - 1) * sectionSpacing.innerSpacing) / columnsCount
-            
+                (startPadding + endPadding + (columnsCount - 1) * sectionSpacing.innerSpacing) /
+                    columnsCount
+
             val translation = if (columnIndex == 0) {
                 startPadding
             } else {
-                startPadding + columnIndex * sectionSpacing.innerSpacing - columnIndex * paddingPerItem
+                startPadding + columnIndex * sectionSpacing.innerSpacing -
+                    columnIndex * paddingPerItem
             }
-            
+
             val endPaddingPx = paddingPerItem.roundToPx()
             val adjustedConstraints = constraints.offset(horizontal = -endPaddingPx)
             val placeable = measurable.measure(adjustedConstraints)

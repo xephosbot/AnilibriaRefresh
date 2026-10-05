@@ -12,5 +12,5 @@ data class Franchise(
     val totalDuration: String? = null,
     val totalDurationInSeconds: Long,
     val poster: Poster?,
-    val franchiseReleases: List<Release>? = null,
+    val franchiseReleases: List<Release>? = null
 )

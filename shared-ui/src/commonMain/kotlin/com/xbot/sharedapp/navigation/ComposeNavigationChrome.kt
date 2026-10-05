@@ -22,7 +22,7 @@ internal object ComposeNavigationChrome : NavigationChrome {
 
     @OptIn(
         ExperimentalMaterial3ExpressiveApi::class,
-        ExperimentalMaterial3AdaptiveComponentOverrideApi::class,
+        ExperimentalMaterial3AdaptiveComponentOverrideApi::class
     )
     @Composable
     override fun Content(navigator: Navigator, content: @Composable () -> Unit) {
@@ -47,23 +47,27 @@ internal object ComposeNavigationChrome : NavigationChrome {
                         onClick = { navigator.navigate(destination) },
                         icon = {
                             Icon(
-                                imageVector = if (isSelected) destination.selectedIcon else destination.unselectedIcon,
-                                contentDescription = stringResource(destination.textRes),
+                                imageVector = if (isSelected) {
+                                    destination.selectedIcon
+                                } else {
+                                    destination.unselectedIcon
+                                },
+                                contentDescription = stringResource(destination.textRes)
                             )
                         },
                         label = { Text(stringResource(destination.textRes)) },
-                        navigationSuiteType = navSuiteType,
+                        navigationSuiteType = navSuiteType
                     )
                 }
             },
             navigationSuiteType = navSuiteType,
             navigationSuiteColors = NavigationSuiteDefaults.colors(
                 shortNavigationBarContainerColor = MaterialTheme.colorScheme.surface,
-                navigationBarContainerColor = MaterialTheme.colorScheme.surface,
+                navigationBarContainerColor = MaterialTheme.colorScheme.surface
             ),
             state = scaffoldState,
             navigationItemVerticalArrangement = Arrangement.Center,
-            content = content,
+            content = content
         )
     }
 }

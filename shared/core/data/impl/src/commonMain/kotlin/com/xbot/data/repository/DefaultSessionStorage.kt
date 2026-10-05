@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultSessionStorage(
-    private val dataStore: Lazy<DataStore<Preferences>>
-) : SessionStorage {
+internal class DefaultSessionStorage(private val dataStore: Lazy<DataStore<Preferences>>) :
+    SessionStorage {
 
     private object Keys {
         val token = stringPreferencesKey("session_access_token")
@@ -31,10 +30,8 @@ internal class DefaultSessionStorage(
         }
     }
 
-    override suspend fun getToken(): BearerTokens? {
-        return tokenFlow.firstOrNull()?.let { token ->
-            BearerTokens(token, null)
-        }
+    override suspend fun getToken(): BearerTokens? = tokenFlow.firstOrNull()?.let { token ->
+        BearerTokens(token, null)
     }
 
     override suspend fun clearToken() {

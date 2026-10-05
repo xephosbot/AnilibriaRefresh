@@ -16,5 +16,5 @@ data class FranchiseDto(
     @SerialName("total_duration") val totalDuration: String? = null,
     @SerialName("total_duration_in_seconds") val totalDurationInSeconds: Long? = null,
     @SerialName("image") val image: ImageDto,
-    @SerialName("franchise_releases") val franchiseReleases: List<FranchiseWithReleaseDto>? = null,
+    @SerialName("franchise_releases") val franchiseReleases: List<FranchiseWithReleaseDto>? = null
 )

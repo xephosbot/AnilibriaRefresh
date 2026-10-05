@@ -48,35 +48,29 @@ internal class DefaultCatalogApi(private val requester: HttpRequester) : Catalog
         }
     }
 
-    override suspend fun getCatalogAgeRatings(): Either<AppError, List<AgeRatingDto>> = requester.request {
-        get("anime/catalog/references/age-ratings")
-    }
+    override suspend fun getCatalogAgeRatings(): Either<AppError, List<AgeRatingDto>> =
+        requester.request { get("anime/catalog/references/age-ratings") }
 
-    override suspend fun getCatalogGenres(): Either<AppError, List<GenreDto>> = requester.request {
-        get("anime/catalog/references/genres")
-    }
+    override suspend fun getCatalogGenres(): Either<AppError, List<GenreDto>> =
+        requester.request { get("anime/catalog/references/genres") }
 
-    override suspend fun getCatalogProductionStatuses(): Either<AppError, List<ProductionStatusDto>> = requester.request {
-        get("anime/catalog/references/production-statuses")
-    }
+    // A parameterless signature has no wrap point; it is one character over the limit.
+    @Suppress("ktlint:standard:max-line-length")
+    override suspend fun getCatalogProductionStatuses(): Either<AppError, List<ProductionStatusDto>> =
+        requester.request { get("anime/catalog/references/production-statuses") }
 
-    override suspend fun getCatalogPublishStatuses(): Either<AppError, List<PublishStatusDto>> = requester.request {
-        get("anime/catalog/references/publish-statuses")
-    }
+    override suspend fun getCatalogPublishStatuses(): Either<AppError, List<PublishStatusDto>> =
+        requester.request { get("anime/catalog/references/publish-statuses") }
 
-    override suspend fun getCatalogSeasons(): Either<AppError, List<SeasonDto>> = requester.request {
-        get("anime/catalog/references/seasons")
-    }
+    override suspend fun getCatalogSeasons(): Either<AppError, List<SeasonDto>> =
+        requester.request { get("anime/catalog/references/seasons") }
 
-    override suspend fun getCatalogSortingTypes(): Either<AppError, List<SortingTypeDto>> = requester.request {
-        get("anime/catalog/references/sorting")
-    }
+    override suspend fun getCatalogSortingTypes(): Either<AppError, List<SortingTypeDto>> =
+        requester.request { get("anime/catalog/references/sorting") }
 
-    override suspend fun getCatalogReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> = requester.request {
-        get("anime/catalog/references/types")
-    }
+    override suspend fun getCatalogReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> =
+        requester.request { get("anime/catalog/references/types") }
 
-    override suspend fun getCatalogYears(): Either<AppError, List<Int>> = requester.request {
-        get("anime/catalog/references/years")
-    }
+    override suspend fun getCatalogYears(): Either<AppError, List<Int>> =
+        requester.request { get("anime/catalog/references/years") }
 }

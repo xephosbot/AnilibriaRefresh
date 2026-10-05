@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.Settings: ImageVector
         }
         _settingsFilled =
             Builder(
-                    name = "SettingsFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "SettingsFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.Settings: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(433.0f, 880.0f)
                         quadTo(406.0f, 880.0f, 386.5f, 862.0f)
@@ -122,7 +122,7 @@ val AnilibertyIcons.Outlined.Settings: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -132,7 +132,7 @@ val AnilibertyIcons.Outlined.Settings: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(433.0f, 880.0f)
                         quadTo(406.0f, 880.0f, 386.5f, 862.0f)
@@ -280,7 +280,6 @@ val AnilibertyIcons.Outlined.Settings: ImageVector
                 .build()
         return _settingsOutlined!!
     }
-
 
 private var _settingsFilled: ImageVector? = null
 private var _settingsOutlined: ImageVector? = null

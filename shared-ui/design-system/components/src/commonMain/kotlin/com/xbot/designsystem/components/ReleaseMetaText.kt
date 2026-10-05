@@ -61,8 +61,11 @@ fun ReleaseMetaText(
                     append(stringResource(type.stringRes))
                     append(" \u2022 ")
                 }
+
                 else -> release.episodesCount?.let { episodesCount ->
-                    append(stringResource(Res.string.episode_abbreviation, episodesCount.toString()))
+                    append(
+                        stringResource(Res.string.episode_abbreviation, episodesCount.toString())
+                    )
                     append(" \u2022 ")
                 }
             }
@@ -80,7 +83,7 @@ fun ReleaseMetaText(
         inlineContent = mapOf(AGE_RATING_PILL_TAG to inlineAgeRatingPill),
         style = style,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

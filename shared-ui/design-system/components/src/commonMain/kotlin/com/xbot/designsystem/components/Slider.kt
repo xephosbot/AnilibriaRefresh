@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
 import com.xbot.formatters.format
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +42,7 @@ fun RangeSlider(
     ) {
         Text(
             text = valueRange.start.roundToInt().toString(),
-            modifier = Modifier.semantics { contentDescription = "Minimum Value" },
+            modifier = Modifier.semantics { contentDescription = "Minimum Value" }
         )
 
         Spacer(Modifier.width(8.dp))
@@ -66,10 +66,10 @@ fun RangeSlider(
                             Text("%.0f".format(sliderPosition.start))
                         }
                     },
-                    interactionSource = startInteractionSource,
+                    interactionSource = startInteractionSource
                 ) {
                     SliderDefaults.Thumb(
-                        interactionSource = startInteractionSource,
+                        interactionSource = startInteractionSource
                     )
                 }
             },
@@ -79,25 +79,25 @@ fun RangeSlider(
                         PlainTooltip(
                             modifier = Modifier
                                 .sizeIn(45.dp, 25.dp)
-                                .wrapContentWidth(),
+                                .wrapContentWidth()
                         ) {
                             Text("%.0f".format(sliderPosition.endInclusive))
                         }
                     },
-                    interactionSource = endInteractionSource,
+                    interactionSource = endInteractionSource
                 ) {
                     SliderDefaults.Thumb(
-                        interactionSource = endInteractionSource,
+                        interactionSource = endInteractionSource
                     )
                 }
-            },
+            }
         )
 
         Spacer(Modifier.width(8.dp))
 
         Text(
             text = valueRange.endInclusive.roundToInt().toString(),
-            modifier = Modifier.semantics { contentDescription = "Maximum Value" },
+            modifier = Modifier.semantics { contentDescription = "Maximum Value" }
         )
     }
 }

@@ -18,12 +18,12 @@ val AnilibertyIcons.YouTubeLogo: ImageVector
         }
         _youTubeLogo =
             Builder(
-                    name = "YouTube Logo",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 24.0f,
-                    viewportHeight = 24.0f,
-                )
+                name = "YouTube Logo",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.YouTubeLogo: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(23.498f, 6.186f)
                         arcTo(3.016f, 3.016f, 0.0f, false, false, 21.376f, 4.05f)

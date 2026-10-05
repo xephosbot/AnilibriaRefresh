@@ -1,0 +1,35 @@
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.xbot.navigation.ExternalUriHandler
+import com.xbot.sharedapp.di.initKoin
+import java.awt.Desktop
+import window.ProvidePlatformWindowInsets
+import window.enableEdgeToEdge
+
+fun main(args: Array<String>) {
+    if (System.getProperty("os.name").contains("Mac")) {
+        Desktop.getDesktop().setOpenURIHandler { event ->
+            ExternalUriHandler.onNewUri(event.uri.toString())
+        }
+    } else {
+        ExternalUriHandler.onNewUri(args.getOrNull(0).toString())
+    }
+
+    application {
+        initKoin()
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Aniliberty JVM"
+        ) {
+            SideEffect {
+                enableEdgeToEdge()
+            }
+
+            ProvidePlatformWindowInsets {
+                MainView()
+            }
+        }
+    }
+}

@@ -2,47 +2,48 @@ package com.xbot.data.repository
 
 import arrow.core.Either
 import arrow.core.raise.either
+import com.xbot.common.error.AppError
 import com.xbot.data.mapper.toDayOfWeek
 import com.xbot.data.mapper.toDomain
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.enums.Season
 import com.xbot.network.api.ReleasesApi
 import com.xbot.network.api.ScheduleApi
 import com.xbot.network.models.dto.ScheduleDto
+import kotlin.time.Clock
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.core.annotation.Singleton
-import kotlin.time.Clock
 
 @Singleton
 internal class DefaultScheduleRepository(
     private val scheduleApi: ScheduleApi,
-    private val releasesApi: ReleasesApi,
+    private val releasesApi: ReleasesApi
 ) : ScheduleRepository {
     override suspend fun getScheduleNow(): Either<AppError, List<Schedule>> = scheduleApi
         .getScheduleNow()
         .map { schedule -> schedule["today"]?.mapNotNull(ScheduleDto::toDomain) ?: emptyList() }
 
-    override suspend fun getScheduleWeek(): Either<AppError, Map<DayOfWeek, List<Schedule>>> = scheduleApi
-        .getScheduleWeek()
-        .map { schedule ->
-            schedule
-                .groupBy(
-                    keySelector = { schedule ->
-                        schedule.release.publishDay!!.toDayOfWeek()
-                    },
-                    valueTransform = ScheduleDto::toDomain,
-                )
-                .mapValues { it.value.filterNotNull() }
-                .let { map ->
-                    map.entries
-                        .sortedBy { it.key }
-                        .associateBy({ it.key }) { it.value }
-                }
-        }
+    override suspend fun getScheduleWeek(): Either<AppError, Map<DayOfWeek, List<Schedule>>> =
+        scheduleApi
+            .getScheduleWeek()
+            .map { schedule ->
+                schedule
+                    .groupBy(
+                        keySelector = { schedule ->
+                            schedule.release.publishDay!!.toDayOfWeek()
+                        },
+                        valueTransform = ScheduleDto::toDomain
+                    )
+                    .mapValues { it.value.filterNotNull() }
+                    .let { map ->
+                        map.entries
+                            .sortedBy { it.key }
+                            .associateBy({ it.key }) { it.value }
+                    }
+            }
 
     override suspend fun getCurrentDay(): Either<AppError, LocalDate> = either {
         Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date

@@ -1,9 +1,9 @@
 package com.xbot.formatters
 
 import androidx.compose.ui.text.intl.Locale
+import java.time.format.TextStyle
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.toJavaDayOfWeek
-import java.time.format.TextStyle
 
 actual fun DayOfWeek.getName(locale: Locale, style: DayOfWeekStyle): String {
     val textStyle = when (style) {

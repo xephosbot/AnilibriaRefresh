@@ -21,7 +21,7 @@ import kotlinx.serialization.Transient
 data class HomeScreenState(
     @Transient val releasesFeed: ReleasesFeed = ReleasesFeed(),
     @Transient val scheduleWeek: ScheduleWeek = ScheduleWeek(),
-    val currentBestType: BestType = BestType.Now,
+    val currentBestType: BestType = BestType.Now
 )
 
 @Serializable
@@ -33,7 +33,7 @@ data class ReleasesFeed(
     val bestNow: AsyncResult<AppError, List<Release>> = AsyncResult.Loading,
     val bestAllTime: AsyncResult<AppError, List<Release>> = AsyncResult.Loading,
     val recommendedFranchises: AsyncResult<AppError, List<Franchise>> = AsyncResult.Loading,
-    val genres: AsyncResult<AppError, List<Genre>> = AsyncResult.Loading,
+    val genres: AsyncResult<AppError, List<Genre>> = AsyncResult.Loading
 )
 
 data class ScheduleWeek(

@@ -14,8 +14,15 @@ import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogQuery
 
 interface CatalogRepository {
-    fun getCatalogReleases(search: String? = null, filters: CatalogQuery? = null): PagingSource<Int, Release>
-    suspend fun getCatalogReleases(search: String? = null, filters: CatalogQuery? = null, limit: Int): Either<AppError, List<Release>>
+    fun getCatalogReleases(
+        search: String? = null,
+        filters: CatalogQuery? = null
+    ): PagingSource<Int, Release>
+    suspend fun getCatalogReleases(
+        search: String? = null,
+        filters: CatalogQuery? = null,
+        limit: Int
+    ): Either<AppError, List<Release>>
     suspend fun getCatalogAgeRatings(): Either<AppError, List<AgeRating>>
     suspend fun getCatalogGenres(): Either<AppError, List<Genre>>
     suspend fun getCatalogProductionStatuses(): Either<AppError, List<ProductionStatus>>

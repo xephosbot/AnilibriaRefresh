@@ -13,17 +13,19 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultReleasesApi(private val requester: HttpRequester) : ReleasesApi {
-    override suspend fun getLatestReleases(limit: Int): Either<AppError, List<ReleaseDto>> = requester.request {
-        get("anime/releases/latest") {
-            parameter("limit", limit)
+    override suspend fun getLatestReleases(limit: Int): Either<AppError, List<ReleaseDto>> =
+        requester.request {
+            get("anime/releases/latest") {
+                parameter("limit", limit)
+            }
         }
-    }
 
-    override suspend fun getRandomReleases(limit: Int): Either<AppError, List<ReleaseDto>> = requester.request {
-        get("anime/releases/random") {
-            parameter("limit", limit)
+    override suspend fun getRandomReleases(limit: Int): Either<AppError, List<ReleaseDto>> =
+        requester.request {
+            get("anime/releases/random") {
+                parameter("limit", limit)
+            }
         }
-    }
 
     override suspend fun getReleasesList(
         ids: List<Int>?,
@@ -39,15 +41,20 @@ internal class DefaultReleasesApi(private val requester: HttpRequester) : Releas
         }
     }
 
-    override suspend fun getRelease(aliasOrId: String): Either<AppError, ReleaseDto> = requester.request {
-        get("anime/releases/${aliasOrId}")
-    }
+    override suspend fun getRelease(aliasOrId: String): Either<AppError, ReleaseDto> =
+        requester.request {
+            get("anime/releases/$aliasOrId")
+        }
 
-    override suspend fun getReleaseMembers(aliasOrId: String): Either<AppError, List<ReleaseMemberDto>> = requester.request {
+    override suspend fun getReleaseMembers(
+        aliasOrId: String
+    ): Either<AppError, List<ReleaseMemberDto>> = requester.request {
         get("anime/releases/$aliasOrId/members")
     }
 
-    override suspend fun getReleaseEpisodesTimecodes(aliasOrId: String): Either<AppError, List<EpisodeTimecodeDto>> = requester.request {
+    override suspend fun getReleaseEpisodesTimecodes(
+        aliasOrId: String
+    ): Either<AppError, List<EpisodeTimecodeDto>> = requester.request {
         get("anime/releases/$aliasOrId/episodes/timecodes")
     }
 }

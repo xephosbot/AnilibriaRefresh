@@ -21,7 +21,9 @@ internal fun rememberNavigationState(
     serializersModule: SerializersModule
 ): NavigationState {
     val topLevelRoute = rememberSerializable(
-        startRoute, topLevelRoutes, serializersModule,
+        startRoute,
+        topLevelRoutes,
+        serializersModule,
         configuration = SavedStateConfiguration { this.serializersModule = serializersModule },
         serializer = MutableStateSerializer(PolymorphicSerializer(NavKey::class))
     ) {
@@ -49,15 +51,15 @@ internal fun rememberNavigationState(
 @Composable
 internal inline fun <reified T : NavKey> rememberNavBackStack(
     configuration: SavedStateConfiguration,
-    vararg elements: T,
+    vararg elements: T
 ): NavBackStack<T> {
     require(configuration.serializersModule != SavedStateConfiguration.DEFAULT.serializersModule) {
         "You must pass a `SavedStateConfiguration.serializersModule` configured to handle " +
-                "`NavKey` open polymorphism. Define it with: `polymorphic(NavKey::class) { ... }`"
+            "`NavKey` open polymorphism. Define it with: `polymorphic(NavKey::class) { ... }`"
     }
     return rememberSerializable(
         configuration = configuration,
-        serializer = NavBackStackSerializer(PolymorphicSerializer(T::class)),
+        serializer = NavBackStackSerializer(PolymorphicSerializer(T::class))
     ) {
         NavBackStack(*elements)
     }

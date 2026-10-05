@@ -74,14 +74,14 @@ if (System.getProperty("os.name").contains("Mac")) {
     project.afterEvaluate {
         listOf(
             "createDistributableImpl",
-            "createReleaseDistributableImpl",
+            "createReleaseDistributableImpl"
         ).forEach { name ->
             tasks.named<AbstractJPackageTask>(name) {
                 configureMacOSPackageTask(
                     packageName = packageName,
                     iconFile = iconFile,
                     destinationDir = destinationDir,
-                    replaceIconFile = true,
+                    replaceIconFile = true
                 )
             }
         }
@@ -92,7 +92,7 @@ fun Task.configureMacOSPackageTask(
     packageName: Property<String>,
     iconFile: RegularFileProperty,
     destinationDir: DirectoryProperty,
-    replaceIconFile: Boolean = false,
+    replaceIconFile: Boolean = false
 ) {
     val assetsCarFile = project.file("src/main/resources/icons/Assets.car")
     inputs.file(assetsCarFile)
@@ -122,7 +122,7 @@ fun Task.configureMacOSPackageTask(
             overwrite = true
         )
         if (replaceIconFile) {
-            val oldIconFile = bundleResourceDir.resolve("${packageName}.icns")
+            val oldIconFile = bundleResourceDir.resolve("$packageName.icns")
             oldIconFile.renameTo(bundleResourceDir.resolve(iconFile.get().asFile.name))
         }
     }

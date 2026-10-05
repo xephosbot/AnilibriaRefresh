@@ -146,7 +146,9 @@ private fun MultiChoiceChipGroupPreview() {
                         Modifier.size(FilterChipDefaults.IconSize)
                     )
                 }
-            } else null
+            } else {
+                null
+            }
         )
     }
 }
@@ -176,7 +178,9 @@ private fun SingleChoiceChipGroupPreview() {
                         Modifier.size(FilterChipDefaults.IconSize)
                     )
                 }
-            } else null
+            } else {
+                null
+            }
         )
     }
 }
@@ -185,7 +189,9 @@ private fun SingleChoiceChipGroupPreview() {
 interface ChipGroupScope : FlowRowScope
 
 @OptIn(ExperimentalLayoutApi::class)
-internal class DefaultChipGroupScope(scope: FlowRowScope) : ChipGroupScope, FlowRowScope by scope
+internal class DefaultChipGroupScope(scope: FlowRowScope) :
+    ChipGroupScope,
+    FlowRowScope by scope
 
 object ChipGroupDefaults {
     val ChipSpacing = 8.dp

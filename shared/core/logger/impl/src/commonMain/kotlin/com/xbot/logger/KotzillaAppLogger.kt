@@ -19,7 +19,8 @@ internal class KotzillaAppLogger : AppLogger {
         Logger.withTag("App").e(throwable) { message ?: throwable.message.orEmpty() }
 
         KotzillaCore.getDefaultInstanceOrNull()?.let { core ->
-            val title = (message ?: throwable.message ?: throwable::class.simpleName ?: "Error").take(256)
+            val title = (message ?: throwable.message ?: throwable::class.simpleName ?: "Error")
+                .take(256)
             val description = throwable.stackTraceToString().take(256).ifBlank { title }
             core.createIssue(title, description)
             core.logError(title, throwable)

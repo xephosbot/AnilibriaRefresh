@@ -107,7 +107,7 @@ com/xbot/<feature>/
 
 **Rules:**
 
-- Platform-specific code (`expect`/`actual`) mirrors the same package path in `androidMain`/`iosMain`/`jvmMain`, e.g. `screen/player/PictureInPicture.android.kt`.
+- Platform-specific code (`expect`/`actual`) mirrors the same package path in `androidMain`/`iosMain`/`jvmMain`, e.g. `screen/player/PictureInPictureController.android.kt`.
 - No `ui/`, `util/` or `utils/` folders. Helpers live next to the screen that uses them; shared ones go to `component/`.
 - Composables used only as navigation scaffolding (e.g. a list-detail `detailPlaceholder`) belong in `component/`.
 - Everything in `impl` is `internal` except the Koin module value (`val <feature>FeatureModule`).
@@ -381,6 +381,13 @@ Compose modules additionally apply `compose.compiler` + `compose.multiplatform` 
 - **Desktop**: `./gradlew :jvm-app:run`
 - **iOS**: Standard Xcode build workflow. The `Compile Kotlin Framework` phase runs `./gradlew :shared-ui:embedAndSignAppleFrameworkForXcode`; for a Kotlin-only check use `./gradlew :shared-ui:linkDebugFrameworkIosSimulatorArm64`. See `ios-app/AGENTS.md`.
 - **Quick compile check of one module**: `./gradlew :<module path>:compileKotlinJvm`.
+
+### Formatting & static analysis
+
+- **Format**: `./gradlew spotlessApply` — Spotless + ktlint (`android_studio` style, rules in `.editorconfig`). Run it before committing; `spotlessCheck` verifies.
+- **Static analysis**: `./gradlew :detekt` — one root-level run over every module's `src/`, config in `config/detekt/detekt.yml`.
+- **Baseline**: existing detekt findings live in the single `config/detekt/baseline.xml`. Fix new findings instead of re-baselining; regenerate with `./gradlew :detektBaseline` only when deliberately accepting debt.
+- Suppress a ktlint rule locally with `@Suppress("ktlint:standard:<rule>")` and a comment saying why (e.g. Swift-facing `MainViewController`, KMP actual files named after their common file).
 
 ## Development Notes
 

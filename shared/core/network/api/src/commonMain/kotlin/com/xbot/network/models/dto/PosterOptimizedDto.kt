@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PosterOptimizedDto(
     @SerialName("src") val src: String?,
-    @SerialName("thumbnail") val thumbnail: String?,
+    @SerialName("thumbnail") val thumbnail: String?
 )

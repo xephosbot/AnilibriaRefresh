@@ -8,9 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Immutable
-data class Margins(
-    val horizontal: Dp
-)
+data class Margins(val horizontal: Dp)
 
 @Stable
 fun Margins.asPaddingValues(): PaddingValues = PaddingValues(horizontal = horizontal)

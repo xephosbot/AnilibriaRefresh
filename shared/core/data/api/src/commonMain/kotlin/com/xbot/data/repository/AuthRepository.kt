@@ -11,5 +11,9 @@ interface AuthRepository {
     suspend fun logout(): Either<AppError, Unit>
     suspend fun socialLogin(provider: SocialType): Either<AppError, Unit>
     suspend fun forgotPassword(email: String): Either<AppError, Unit>
-    suspend fun resetPassword(token: String, password: String, passwordConfirmation: String): Either<AppError, Unit>
+    suspend fun resetPassword(
+        token: String,
+        password: String,
+        passwordConfirmation: String
+    ): Either<AppError, Unit>
 }

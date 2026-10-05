@@ -1,8 +1,8 @@
 package com.xbot.title.navigation
 
+import com.xbot.domain.models.Release
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
-import com.xbot.domain.models.Release
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 

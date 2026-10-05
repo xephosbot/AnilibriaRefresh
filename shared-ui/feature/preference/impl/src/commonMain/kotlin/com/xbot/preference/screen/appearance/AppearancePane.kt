@@ -1,0 +1,232 @@
+package com.xbot.preference.screen.appearance
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledTonalToggleButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
+import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
+import com.xbot.designsystem.components.ExperimentalPill
+import com.xbot.designsystem.components.PreferenceItem
+import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
+import com.xbot.designsystem.components.SwitchPreferenceItem
+import com.xbot.designsystem.components.section
+import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.utils.AnilibertyPreview
+import com.xbot.domain.models.enums.ThemeOption
+import com.xbot.formatters.stringRes
+import com.xbot.preference.appearance.AppearanceScreenAction
+import com.xbot.preference.appearance.AppearanceScreenState
+import com.xbot.preference.appearance.AppearanceViewModel
+import com.xbot.resources.Res
+import com.xbot.resources.preference_appearance_dynamic_theme_description
+import com.xbot.resources.preference_appearance_dynamic_theme_title
+import com.xbot.resources.preference_appearance_expressive_color_description
+import com.xbot.resources.preference_appearance_expressive_color_title
+import com.xbot.resources.preference_appearance_pure_black_description
+import com.xbot.resources.preference_appearance_pure_black_title
+import com.xbot.resources.preference_appearance_theme_description
+import com.xbot.resources.preference_appearance_theme_title
+import com.xbot.resources.preference_appearance_title
+import io.kotzilla.sdk.compose.TrackScreen
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
+
+@TrackScreen
+@Composable
+internal fun AppearancePane(
+    modifier: Modifier = Modifier,
+    viewModel: AppearanceViewModel = koinViewModel(),
+    onBackClick: () -> Unit
+) {
+    val state by viewModel.collectAsState()
+
+    AppearanceScreenContent(
+        modifier = modifier,
+        state = state,
+        onAction = viewModel::onAction,
+        onBackClick = onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun AppearanceScreenContent(
+    modifier: Modifier = Modifier,
+    state: AppearanceScreenState,
+    onAction: (AppearanceScreenAction) -> Unit,
+    onBackClick: () -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    Scaffold(
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            LargeFlexibleTopAppBar(
+                title = {
+                    Text(stringResource(Res.string.preference_appearance_title))
+                },
+                navigationIcon = {
+                    FilledTonalIconButton(
+                        modifier = Modifier.padding(start = 6.dp),
+                        onClick = onBackClick,
+                        shapes = IconButtonDefaults.shapes(),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
+                    ) {
+                        Icon(
+                            imageVector = AnilibertyIcons.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            PreferenceItem(
+                modifier = Modifier.section(0, 4),
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_theme_title))
+                },
+                supportingContent = {
+                    Column {
+                        Text(stringResource(Res.string.preference_appearance_theme_description))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        SingleChoiceConnectedButtonGroup(
+                            modifier = Modifier.fillMaxWidth(),
+                            items = ThemeOption.entries,
+                            selectedItem = state.themeOption
+                        ) { selected, option ->
+                            FilledTonalToggleButton(
+                                modifier = Modifier.weight(1f),
+                                checked = selected,
+                                onCheckedChange = {
+                                    onAction(AppearanceScreenAction.OnThemeOptionChange(option))
+                                },
+                                shapes = ConnectedButtonGroupDefaults.connectedButtonShapes(
+                                    index = ThemeOption.entries.indexOf(option),
+                                    count = ThemeOption.entries.size
+                                ),
+                                contentPadding = ButtonDefaults.ExtraSmallContentPadding
+                            ) {
+                                Text(text = stringResource(option.stringRes))
+                            }
+                        }
+                    }
+                }
+            )
+
+            // Dynamic Theme
+            SwitchPreferenceItem(
+                modifier = Modifier.section(1, 4),
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_dynamic_theme_title))
+                },
+                supportingContent = {
+                    Text(stringResource(Res.string.preference_appearance_dynamic_theme_description))
+                },
+                checked = state.isDynamicTheme,
+                onCheckedChange = { onAction(AppearanceScreenAction.OnDynamicThemeChange(it)) }
+            )
+
+            // Pure Black
+            SwitchPreferenceItem(
+                modifier = Modifier.section(2, 4),
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_pure_black_title))
+                },
+                supportingContent = {
+                    Text(stringResource(Res.string.preference_appearance_pure_black_description))
+                },
+                checked = state.isPureBlack,
+                onCheckedChange = { onAction(AppearanceScreenAction.OnPureBlackChange(it)) }
+            )
+
+            // Expressive color scheme
+            SwitchPreferenceItem(
+                modifier = Modifier.section(3, 4),
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_expressive_color_title))
+                },
+                supportingContent = {
+                    Text(
+                        stringResource(
+                            Res.string.preference_appearance_expressive_color_description
+                        )
+                    )
+                },
+                checked = state.isExpressiveColor,
+                badges = { ExperimentalPill() },
+                onCheckedChange = { onAction(AppearanceScreenAction.OnExpressiveColorChange(it)) }
+            )
+        }
+    }
+}
+
+@AnilibertyPreview
+@Composable
+private fun AppearancePanePreview() {
+    var state by remember { mutableStateOf(AppearanceScreenState()) }
+
+    AppearanceScreenContent(
+        state = state,
+        onAction = { action ->
+            state = when (action) {
+                is AppearanceScreenAction.OnThemeOptionChange -> state.copy(
+                    themeOption = action.option
+                )
+
+                is AppearanceScreenAction.OnDynamicThemeChange -> state.copy(
+                    isDynamicTheme = action.enabled
+                )
+
+                is AppearanceScreenAction.OnPureBlackChange -> state.copy(
+                    isPureBlack = action.enabled
+                )
+
+                is AppearanceScreenAction.OnExpressiveColorChange -> state.copy(
+                    isExpressiveColor = action.enabled
+                )
+            }
+        },
+        onBackClick = {}
+    )
+}

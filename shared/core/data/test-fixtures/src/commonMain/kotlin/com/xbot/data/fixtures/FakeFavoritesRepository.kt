@@ -3,10 +3,10 @@ package com.xbot.data.fixtures
 import androidx.paging.PagingSource
 import arrow.core.Either
 import arrow.core.right
+import com.xbot.common.error.AppError
 import com.xbot.data.repository.FavoritesRepository
 import com.xbot.domain.fixtures.GenreFixtures
 import com.xbot.domain.fixtures.ReleaseFixtures
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -20,13 +20,14 @@ import kotlinx.coroutines.flow.asStateFlow
 class FakeFavoritesRepository : FavoritesRepository {
     private val favorites = MutableStateFlow(listOf(1, 2, 3))
 
-    override suspend fun getFavoriteIds(): Either<AppError, List<Int>> {
-        return favorites.value.right()
-    }
+    override suspend fun getFavoriteIds(): Either<AppError, List<Int>> = favorites.value.right()
 
-    override fun getFavoriteReleases(filters: FavoriteFilters): PagingSource<Int, Release> {
-        return FakePagingSource(ReleaseFixtures.all.filter { favorites.value.contains(it.id) })
-    }
+    override fun getFavoriteReleases(filters: FavoriteFilters): PagingSource<Int, Release> =
+        FakePagingSource(
+            ReleaseFixtures.all.filter {
+                favorites.value.contains(it.id)
+            }
+        )
 
     override suspend fun addToFavorites(releaseIds: List<Int>): Either<AppError, Unit> {
         val current = favorites.value.toMutableList()
@@ -42,27 +43,20 @@ class FakeFavoritesRepository : FavoritesRepository {
         return Unit.right()
     }
 
-    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRating>> {
-        return AgeRating.entries.right()
-    }
+    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRating>> =
+        AgeRating.entries.right()
 
-    override suspend fun getFavoriteGenres(): Either<AppError, List<Genre>> {
-        return GenreFixtures.all.right()
-    }
+    override suspend fun getFavoriteGenres(): Either<AppError, List<Genre>> =
+        GenreFixtures.all.right()
 
-    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<SortingType>> {
-        return SortingType.entries.right()
-    }
+    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<SortingType>> =
+        SortingType.entries.right()
 
-    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseType>> {
-        return ReleaseType.entries.right()
-    }
+    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseType>> =
+        ReleaseType.entries.right()
 
-    override suspend fun getFavoriteYears(): Either<AppError, List<Int>> {
-        return (2010..2024).toList().right()
-    }
+    override suspend fun getFavoriteYears(): Either<AppError, List<Int>> =
+        (2010..2024).toList().right()
 
-    override fun observeFavorites(): Flow<List<Int>> {
-        return favorites.asStateFlow()
-    }
+    override fun observeFavorites(): Flow<List<Int>> = favorites.asStateFlow()
 }

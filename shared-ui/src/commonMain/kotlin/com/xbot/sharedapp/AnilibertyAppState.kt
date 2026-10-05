@@ -27,9 +27,9 @@ internal class AnilibertyAppState(
     private val getPureBlackUseCase: GetPureBlackUseCase,
     private val getExpressiveColorUseCase: GetExpressiveColorUseCase,
     private val getAuthStateUseCase: GetAuthStateUseCase,
-    coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope
 ) : AppState {
-    //TODO: remove it
+    // TODO: remove it
     override val isOffline: Boolean get() = false
 
     override var themeState: AppThemeState by mutableStateOf(AppThemeState())
@@ -86,23 +86,21 @@ fun rememberAnilibertyAppState(
     getPureBlackUseCase: GetPureBlackUseCase = koinInject(),
     getExpressiveColorUseCase: GetExpressiveColorUseCase = koinInject(),
     getAuthStateUseCase: GetAuthStateUseCase = koinInject(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-): AppState {
-    return remember(
-        getThemeOptionUseCase,
-        getDynamicThemeUseCase,
-        getPureBlackUseCase,
-        getExpressiveColorUseCase,
-        getAuthStateUseCase,
-        coroutineScope
-    ) {
-        AnilibertyAppState(
-            getThemeOptionUseCase = getThemeOptionUseCase,
-            getDynamicThemeUseCase = getDynamicThemeUseCase,
-            getPureBlackUseCase = getPureBlackUseCase,
-            getExpressiveColorUseCase = getExpressiveColorUseCase,
-            getAuthStateUseCase = getAuthStateUseCase,
-            coroutineScope = coroutineScope
-        )
-    }
+    coroutineScope: CoroutineScope = rememberCoroutineScope()
+): AppState = remember(
+    getThemeOptionUseCase,
+    getDynamicThemeUseCase,
+    getPureBlackUseCase,
+    getExpressiveColorUseCase,
+    getAuthStateUseCase,
+    coroutineScope
+) {
+    AnilibertyAppState(
+        getThemeOptionUseCase = getThemeOptionUseCase,
+        getDynamicThemeUseCase = getDynamicThemeUseCase,
+        getPureBlackUseCase = getPureBlackUseCase,
+        getExpressiveColorUseCase = getExpressiveColorUseCase,
+        getAuthStateUseCase = getAuthStateUseCase,
+        coroutineScope = coroutineScope
+    )
 }

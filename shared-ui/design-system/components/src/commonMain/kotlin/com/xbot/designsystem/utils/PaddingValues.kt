@@ -10,23 +10,25 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 @Immutable
-private class UnionPaddingValues(private val first: PaddingValues, private val second: PaddingValues) :
-    PaddingValues {
-    override fun calculateBottomPadding(): Dp {
-        return maxOf(first.calculateBottomPadding(), second.calculateBottomPadding())
-    }
+private class UnionPaddingValues(
+    private val first: PaddingValues,
+    private val second: PaddingValues
+) : PaddingValues {
+    override fun calculateBottomPadding(): Dp =
+        maxOf(first.calculateBottomPadding(), second.calculateBottomPadding())
 
-    override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
-        return maxOf(first.calculateLeftPadding(layoutDirection), second.calculateLeftPadding(layoutDirection))
-    }
+    override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp = maxOf(
+        first.calculateLeftPadding(layoutDirection),
+        second.calculateLeftPadding(layoutDirection)
+    )
 
-    override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
-        return maxOf(first.calculateRightPadding(layoutDirection), second.calculateRightPadding(layoutDirection))
-    }
+    override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp = maxOf(
+        first.calculateRightPadding(layoutDirection),
+        second.calculateRightPadding(layoutDirection)
+    )
 
-    override fun calculateTopPadding(): Dp {
-        return maxOf(first.calculateTopPadding(), second.calculateTopPadding())
-    }
+    override fun calculateTopPadding(): Dp =
+        maxOf(first.calculateTopPadding(), second.calculateTopPadding())
 
     override fun equals(other: Any?): Boolean {
         if (other !is UnionPaddingValues) return false
@@ -55,9 +57,8 @@ private class LimitPaddingValues(val padding: PaddingValues, val sides: WindowIn
         }
     }
 
-    override fun calculateTopPadding(): Dp {
-        return if (sides.hasAny(WindowInsetsSides.Top)) padding.calculateTopPadding() else 0.dp
-    }
+    override fun calculateTopPadding(): Dp =
+        if (sides.hasAny(WindowInsetsSides.Top)) padding.calculateTopPadding() else 0.dp
 
     override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
         val layoutDirectionSide = if (layoutDirection == LayoutDirection.Ltr) {
@@ -73,9 +74,8 @@ private class LimitPaddingValues(val padding: PaddingValues, val sides: WindowIn
         }
     }
 
-    override fun calculateBottomPadding(): Dp {
-        return if (sides.hasAny(WindowInsetsSides.Bottom)) padding.calculateBottomPadding() else 0.dp
-    }
+    override fun calculateBottomPadding(): Dp =
+        if (sides.hasAny(WindowInsetsSides.Bottom)) padding.calculateBottomPadding() else 0.dp
 
     override fun equals(other: Any?): Boolean {
         if (other !is LimitPaddingValues) return false
@@ -91,5 +91,7 @@ private class LimitPaddingValues(val padding: PaddingValues, val sides: WindowIn
     override fun toString(): String = "($padding only $sides)"
 }
 
-infix fun PaddingValues.union(paddingValues: PaddingValues): PaddingValues = UnionPaddingValues(this, paddingValues)
-infix fun PaddingValues.only(sides: WindowInsetsSides): PaddingValues = LimitPaddingValues(this, sides)
+infix fun PaddingValues.union(paddingValues: PaddingValues): PaddingValues =
+    UnionPaddingValues(this, paddingValues)
+infix fun PaddingValues.only(sides: WindowInsetsSides): PaddingValues =
+    LimitPaddingValues(this, sides)

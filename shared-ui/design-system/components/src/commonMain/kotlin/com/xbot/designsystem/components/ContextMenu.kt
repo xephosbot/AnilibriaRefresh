@@ -36,7 +36,7 @@ fun ContextMenu(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     menuContent: @Composable () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val isDesktop = !LocalIsSinglePane.current
 
@@ -45,7 +45,7 @@ fun ContextMenu(
 
         if (isDesktop) {
             CompositionLocalProvider(
-                LocalContextMenuItemOverride provides DefaultContextMenuItemOverride,
+                LocalContextMenuItemOverride provides DefaultContextMenuItemOverride
             ) {
                 DropdownMenu(
                     expanded = showMenu,
@@ -79,11 +79,11 @@ fun ContextMenu(
 
         if (sheetVisible) {
             CompositionLocalProvider(
-                LocalContextMenuItemOverride provides MobileContextMenuItemOverride,
+                LocalContextMenuItemOverride provides MobileContextMenuItemOverride
             ) {
                 ModalBottomSheet(
                     onDismissRequest = onDismiss,
-                    sheetState = sheetState,
+                    sheetState = sheetState
                 ) {
                     menuContent()
                     Spacer(Modifier.height(16.dp))
@@ -98,14 +98,14 @@ fun ContextMenuItem(
     label: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     with(LocalContextMenuItemOverride.current) {
         ContextMenuItemOverrideScope(
             label = label,
             modifier = modifier,
             icon = icon,
-            onClick = onClick,
+            onClick = onClick
         ).ContextMenuItem()
     }
 }
@@ -120,7 +120,7 @@ class ContextMenuItemOverrideScope(
     val label: String,
     val modifier: Modifier,
     val icon: ImageVector?,
-    val onClick: () -> Unit,
+    val onClick: () -> Unit
 )
 
 internal val LocalContextMenuItemOverride = compositionLocalOf<ContextMenuItemOverride> {

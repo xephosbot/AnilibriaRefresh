@@ -9,5 +9,5 @@ data class User(
     val nickname: String?,
     val avatar: Poster?,
     val isBanned: Boolean,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime
 )

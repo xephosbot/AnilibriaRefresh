@@ -18,12 +18,12 @@ val AnilibertyIcons.ArrowDropUp: ImageVector
         }
         _arrowDropUp =
             Builder(
-                    name = "ArrowDropUp",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "ArrowDropUp",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.ArrowDropUp: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(328.0f, 560.0f)
                         quadTo(319.0f, 560.0f, 313.5f, 554.0f)

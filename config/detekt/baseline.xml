@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:TitleDetailsPane.kt:@OptIn(ExperimentalMaterial3ExpressiveApi::class) @Composable private fun TitleDetails</ID>
+    <ID>DestructuringDeclarationWithTooManyEntries:ReleaseListItem.kt:val ( headlineMeasurable, supportingMeasurable, leadingMeasurable, tagsMeasurable ) = measurables</ID>
+    <ID>EmptyFunctionBlock:FavoriteScreen.kt:{ }</ID>
+    <ID>EmptyFunctionBlock:PictureInPictureController.android.kt:PictureInPictureControllerStub${}</ID>
+    <ID>ForbiddenComment:AnilibertyAppState.kt:AnilibertyAppState$// TODO: remove it</ID>
+    <ID>ForbiddenComment:AnilibertyFcmService.kt:AnilibertyFcmService$// TODO: Persist the token and forward it to the backend once the API is available.</ID>
+    <ID>ForbiddenComment:AnilibertyNavGraph.kt:// TODO: Uncomment when Google finishes the Levitate strategy</ID>
+    <ID>ForbiddenComment:Feed.kt:// TODO: key = items.itemKey(),</ID>
+    <ID>ForbiddenComment:HomeScreenAction.kt:HomeScreenAction.ShowErrorMessage$// TODO: Remove once Paging 3.5.0 stable ships asState()</ID>
+    <ID>ForbiddenComment:HomeViewModel.kt:HomeViewModel$// TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()</ID>
+    <ID>ForbiddenComment:LoginScreen.kt:// TODO: Handle forgot password</ID>
+    <ID>ForbiddenComment:SearchViewModel.kt:SearchViewModel$// TODO: Move inside SearchScreenState once Paging 3.5.0 stable ships asState()</ID>
+    <ID>ForbiddenComment:TeamRoleDto.kt:TeamRoleDto$// TODO: make it typed enum</ID>
+    <ID>ForbiddenComment:Theme.kt:// TODO: Revert to expressive after negative corner size exception fixed</ID>
+    <ID>FunctionNaming:Main.ios.kt:@Suppress("ktlint:standard:function-naming") fun MainViewController: UIViewController</ID>
+    <ID>MagicNumber:DefaultGetRecommendedGenresUseCase.kt:DefaultGetRecommendedGenresUseCase$10</ID>
+    <ID>MagicNumber:DefaultGetRecommendedReleasesUseCase.kt:DefaultGetRecommendedReleasesUseCase$10</ID>
+    <ID>MagicNumber:DefaultGetScheduleWeekUseCase.kt:DefaultGetScheduleWeekUseCase$6</ID>
+    <ID>MagicNumber:DefaultScheduleRepository.kt:DefaultScheduleRepository$10</ID>
+    <ID>MagicNumber:FakeCatalogRepository.kt:FakeCatalogRepository$1990</ID>
+    <ID>MagicNumber:FakeCatalogRepository.kt:FakeCatalogRepository$2024</ID>
+    <ID>MagicNumber:FakeCollectionsRepository.kt:FakeCollectionsRepository$2000</ID>
+    <ID>MagicNumber:FakeCollectionsRepository.kt:FakeCollectionsRepository$2024</ID>
+    <ID>MagicNumber:FakeFavoritesRepository.kt:FakeFavoritesRepository$2010</ID>
+    <ID>MagicNumber:FakeFavoritesRepository.kt:FakeFavoritesRepository$2024</ID>
+    <ID>MagicNumber:FakeScheduleRepository.kt:FakeScheduleRepository$2024</ID>
+    <ID>MagicNumber:NetworkModule.kt:NetworkModule$10_000</ID>
+    <ID>MagicNumber:NetworkModule.kt:NetworkModule$5_000</ID>
+    <ID>MagicNumber:NetworkRetry.kt:408</ID>
+    <ID>MagicNumber:NetworkRetry.kt:429</ID>
+    <ID>MagicNumber:NetworkRetry.kt:500</ID>
+    <ID>MagicNumber:NetworkRetry.kt:599</ID>
+    <ID>MagicNumber:PictureInPictureController.android.kt:1000f</ID>
+    <ID>MagicNumber:PictureInPictureController.ios.kt:PictureInPictureControllerImpl$14L</ID>
+    <ID>MagicNumber:PublishDayDto.kt:PublishDayDto.FRIDAY$5</ID>
+    <ID>MagicNumber:PublishDayDto.kt:PublishDayDto.SATURDAY$6</ID>
+    <ID>MagicNumber:PublishDayDto.kt:PublishDayDto.SUNDAY$7</ID>
+    <ID>MagicNumber:PublishDayDto.kt:PublishDayDto.THURSDAY$4</ID>
+    <ID>MagicNumber:PublishDayDto.kt:PublishDayDto.WEDNESDAY$3</ID>
+    <ID>MagicNumber:Releases.kt:100</ID>
+    <ID>MagicNumber:Releases.kt:3</ID>
+    <ID>MagicNumber:Releases.kt:50</ID>
+    <ID>MagicNumber:Releases.kt:80</ID>
+    <ID>MagicNumber:VideoPlayerController.kt:1000f</ID>
+    <ID>MatchingDeclarationName:LocaleManager.android.kt:LocalAppLanguage</ID>
+    <ID>MatchingDeclarationName:LocaleManager.ios.kt:LocalAppLanguage</ID>
+    <ID>MatchingDeclarationName:Polymorphic.kt:PolymorphicSerializerConfig&lt;T : Any&gt;</ID>
+    <ID>MatchingDeclarationName:TitleNavigation.kt:TitleRoute : NavKey</ID>
+    <ID>MaxLineLength:AppError.kt:AppError.ServerError$/** HTTP error response from the server. [message] is the human-readable message parsed from the response body, if any. */</ID>
+    <ID>MayBeConstant:CircleContentItem.kt:private val SubtitleAlpha = 0.6f</ID>
+    <ID>ReturnCount:AnilibertyTabBarController.kt:AnilibertyTabBarController$private fun keepComposeAboveTabContent</ID>
+    <ID>ReturnCount:EnumSerializer.kt:EnumSerializer$override fun deserialize: T?</ID>
+    <ID>ReturnCount:ImageUrlProviderImpl.kt:ImageUrlProviderImpl$override fun getFullUrl: String?</ID>
+    <ID>ReturnCount:MainActivity.kt:MainActivity$private fun askNotificationPermission</ID>
+    <ID>ReturnCount:MainActivity.kt:MainActivity$private fun handleIntent</ID>
+    <ID>ReturnCount:NotificationHelper.kt:NotificationHelper$fun showNotification</ID>
+    <ID>ReturnCount:ThrowableExtensions.ios.kt:internal actual fun Throwable.isNoConnectionException: Boolean</ID>
+    <ID>ThrowingExceptionsWithoutMessageOrCause:ModalScrollableBottomSheet.kt:IllegalArgumentException()</ID>
+    <ID>TooGenericExceptionCaught:CommonPagingSource.kt:CommonPagingSource$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HttpClientExtensions.kt:e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:PictureInPictureController.android.kt:PictureInPictureControllerImpl$e: Exception</ID>
+    <ID>TooManyFunctions:EnumMapper.kt:com.xbot.data.mapper.EnumMapper.kt</ID>
+    <ID>TooManyFunctions:Feed.kt:com.xbot.designsystem.components.Feed.kt</ID>
+    <ID>TooManyFunctions:SearchViewModel.kt:SearchViewModel : ViewModelOrbitContainerHost</ID>
+    <ID>TooManyFunctions:VideoPlayerController.kt:com.xbot.player.screen.player.VideoPlayerController.kt</ID>
+    <ID>UnusedParameter:AnilibertyFcmService.kt:AnilibertyFcmService$token: String</ID>
+    <ID>UnusedParameter:DonatePane.kt:viewModel: DonateViewModel = koinViewModel()</ID>
+    <ID>UnusedParameter:DurationExt.kt:locale: Locale = Locale.current</ID>
+    <ID>UnusedParameter:FavoriteScreen.kt:modifier: Modifier = Modifier</ID>
+    <ID>UnusedParameter:Feed.kt:noinline key: ((index: Int) -&gt; Any)? = items.itemKey()</ID>
+    <ID>UnusedParameter:HistoryPane.kt:viewModel: HistoryViewModel = koinViewModel()</ID>
+    <ID>UnusedParameter:LargeReleaseCard.kt:width: Dp</ID>
+    <ID>UnusedParameter:TeamPane.kt:viewModel: TeamViewModel = koinViewModel()</ID>
+    <ID>UnusedParameter:TitleDetailsPane.kt:onAction: (TitleScreenAction) -&gt; Unit</ID>
+  </CurrentIssues>
+</SmellBaseline>

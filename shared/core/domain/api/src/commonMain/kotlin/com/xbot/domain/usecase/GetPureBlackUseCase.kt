@@ -1,7 +1,7 @@
 package com.xbot.domain.usecase
 
-import kotlinx.coroutines.flow.Flow
 import kotlin.native.HiddenFromObjC
+import kotlinx.coroutines.flow.Flow
 
 @HiddenFromObjC
 fun interface GetPureBlackUseCase {

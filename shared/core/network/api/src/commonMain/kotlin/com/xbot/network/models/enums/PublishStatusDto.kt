@@ -7,12 +7,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = PublishStatusDto.Companion.Serializer::class)
 enum class PublishStatusDto(val value: String) {
-    @SerialName("IS_ONGOING") IS_ONGOING("IS_ONGOING"),
-    @SerialName("IS_NOT_ONGOING") IS_NOT_ONGOING("IS_NOT_ONGOING");
+    @SerialName("IS_ONGOING")
+    IS_ONGOING("IS_ONGOING"),
+
+    @SerialName("IS_NOT_ONGOING")
+    IS_NOT_ONGOING("IS_NOT_ONGOING");
 
     override fun toString(): String = value
 
     companion object {
-        object Serializer : KSerializer<PublishStatusDto?> by EnumSerializer.create<PublishStatusDto>()
+        object Serializer :
+            KSerializer<PublishStatusDto?> by EnumSerializer.create<PublishStatusDto>()
     }
 }

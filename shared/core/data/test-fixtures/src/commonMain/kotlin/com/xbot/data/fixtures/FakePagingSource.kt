@@ -5,12 +5,11 @@ import androidx.paging.PagingState
 import com.xbot.domain.models.Release
 
 class FakePagingSource(private val data: List<Release>) : PagingSource<Int, Release>() {
-    override fun getRefreshKey(state: PagingState<Int, Release>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Release>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Release> {
         val page = params.key ?: 0

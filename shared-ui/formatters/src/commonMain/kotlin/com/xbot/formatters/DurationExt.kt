@@ -11,12 +11,15 @@ fun Duration.toLocalizedString(): String {
     return toLocalizedString(locale)
 }
 
-fun Duration.toLocalizedString(locale: Locale = Locale.current): String {
-    return toComponents { hours, minutes, seconds, _ ->
-        if (hours > 0) {
-            "%02d:%02d:%02d".format(hours, minutes, seconds)
-        } else {
-            "%02d:%02d".format(minutes, seconds)
-        }
+fun Duration.toLocalizedString(locale: Locale = Locale.current): String = toComponents {
+        hours,
+        minutes,
+        seconds,
+        _
+    ->
+    if (hours > 0) {
+        "%02d:%02d:%02d".format(hours, minutes, seconds)
+    } else {
+        "%02d:%02d".format(minutes, seconds)
     }
 }

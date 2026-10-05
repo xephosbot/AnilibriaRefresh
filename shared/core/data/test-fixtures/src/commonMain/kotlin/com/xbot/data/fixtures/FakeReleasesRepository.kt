@@ -3,26 +3,25 @@ package com.xbot.data.fixtures
 import androidx.paging.PagingSource
 import arrow.core.Either
 import arrow.core.right
+import com.xbot.common.error.AppError
 import com.xbot.data.repository.ReleasesRepository
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseMember
 
 class FakeReleasesRepository : ReleasesRepository {
-    override suspend fun getLatestReleases(limit: Int): Either<AppError, List<Release>> {
-        return ReleaseFixtures.list(limit).right()
-    }
+    override suspend fun getLatestReleases(limit: Int): Either<AppError, List<Release>> =
+        ReleaseFixtures.list(limit).right()
 
-    override suspend fun getRandomReleases(limit: Int): Either<AppError, List<Release>> {
-        return ReleaseFixtures.all.shuffled().take(limit).right()
-    }
+    override suspend fun getRandomReleases(limit: Int): Either<AppError, List<Release>> =
+        ReleaseFixtures.all.shuffled().take(limit).right()
 
-    override fun getReleasesList(ids: List<Int>?, aliases: List<String>?): PagingSource<Int, Release> {
-        return FakePagingSource(ReleaseFixtures.all)
-    }
+    override fun getReleasesList(
+        ids: List<Int>?,
+        aliases: List<String>?
+    ): PagingSource<Int, Release> = FakePagingSource(ReleaseFixtures.all)
 
     override suspend fun getRelease(aliasOrId: String): Either<AppError, ReleaseDetails> {
         val id = aliasOrId.toIntOrNull()
@@ -34,14 +33,13 @@ class FakeReleasesRepository : ReleasesRepository {
         return createReleaseDetails(release = release).right()
     }
 
-    override suspend fun getReleaseMembers(aliasOrId: String): Either<AppError, List<ReleaseMember>> {
-        return emptyList<ReleaseMember>().right()
-    }
+    override suspend fun getReleaseMembers(
+        aliasOrId: String
+    ): Either<AppError, List<ReleaseMember>> = emptyList<ReleaseMember>().right()
 
-    override suspend fun searchReleases(query: String): Either<AppError, List<Release>> {
-        return ReleaseFixtures.all.filter {
-            it.name.contains(query, ignoreCase = true) || 
-            (it.englishName?.contains(query, ignoreCase = true) == true)
+    override suspend fun searchReleases(query: String): Either<AppError, List<Release>> =
+        ReleaseFixtures.all.filter {
+            it.name.contains(query, ignoreCase = true) ||
+                (it.englishName?.contains(query, ignoreCase = true) == true)
         }.right()
-    }
 }

@@ -49,29 +49,28 @@ internal class DefaultFavoritesApi(private val requester: HttpRequester) : Favor
         }
     }
 
-    override suspend fun addToFavorites(
-        releaseIds: List<Int>
-    ): Either<AppError, List<Int>> = requester.request {
-        post("accounts/users/me/favorites") {
-            requiresAuth()
-            setBody(releaseIds.map { mapOf("release_id" to it) })
+    override suspend fun addToFavorites(releaseIds: List<Int>): Either<AppError, List<Int>> =
+        requester.request {
+            post("accounts/users/me/favorites") {
+                requiresAuth()
+                setBody(releaseIds.map { mapOf("release_id" to it) })
+            }
         }
-    }
 
-    override suspend fun removeFromFavorites(
-        releaseIds: List<Int>
-    ): Either<AppError, List<Int>> = requester.request {
-        delete("accounts/users/me/favorites") {
-            requiresAuth()
-            setBody(releaseIds.map { mapOf("release_id" to it) })
+    override suspend fun removeFromFavorites(releaseIds: List<Int>): Either<AppError, List<Int>> =
+        requester.request {
+            delete("accounts/users/me/favorites") {
+                requiresAuth()
+                setBody(releaseIds.map { mapOf("release_id" to it) })
+            }
         }
-    }
 
-    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRatingDto>> = requester.request {
-        get("accounts/users/me/favorites/references/age-ratings") {
-            requiresAuth()
+    override suspend fun getFavoriteAgeRatings(): Either<AppError, List<AgeRatingDto>> =
+        requester.request {
+            get("accounts/users/me/favorites/references/age-ratings") {
+                requiresAuth()
+            }
         }
-    }
 
     override suspend fun getFavoriteGenres(): Either<AppError, List<GenreDto>> = requester.request {
         get("accounts/users/me/favorites/references/genres") {
@@ -79,17 +78,19 @@ internal class DefaultFavoritesApi(private val requester: HttpRequester) : Favor
         }
     }
 
-    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<FavoriteSortingTypeDto>> = requester.request {
-        get("accounts/users/me/favorites/references/sorting") {
-            requiresAuth()
+    override suspend fun getFavoriteSortingTypes(): Either<AppError, List<FavoriteSortingTypeDto>> =
+        requester.request {
+            get("accounts/users/me/favorites/references/sorting") {
+                requiresAuth()
+            }
         }
-    }
 
-    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> = requester.request {
-        get("accounts/users/me/favorites/references/types") {
-            requiresAuth()
+    override suspend fun getFavoriteReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> =
+        requester.request {
+            get("accounts/users/me/favorites/references/types") {
+                requiresAuth()
+            }
         }
-    }
 
     override suspend fun getFavoriteYears(): Either<AppError, List<Int>> = requester.request {
         get("accounts/users/me/favorites/references/years") {

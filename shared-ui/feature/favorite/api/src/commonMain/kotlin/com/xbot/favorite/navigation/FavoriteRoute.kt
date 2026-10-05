@@ -1,9 +1,9 @@
 package com.xbot.favorite.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.xbot.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.Favorite
+import com.xbot.navigation.TopLevelNavKey
 import com.xbot.resources.Res
 import com.xbot.resources.tab_favorite
 import kotlinx.serialization.Serializable

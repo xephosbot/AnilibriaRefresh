@@ -73,7 +73,7 @@ fun Feed(
         horizontalArrangement = horizontalArrangement,
         flingBehavior = flingBehavior,
         userScrollEnabled = userScrollEnabled,
-        overscrollEffect = overscrollEffect,
+        overscrollEffect = overscrollEffect
     ) {
         feedScope.items.forEach { feedItem ->
             items(
@@ -84,7 +84,9 @@ fun Feed(
                     { index ->
                         feedItem.span.invoke(this, index)
                     }
-                } else null,
+                } else {
+                    null
+                },
                 itemContent = { index ->
                     feedItem.itemContent(this, index)
                 }
@@ -275,13 +277,13 @@ inline fun <T> FeedScope.horizontalItems(
     noinline contentType: (item: T) -> Any? = { null },
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
-    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
 ) = row {
     val padding = LocalMargins.current.asPaddingValues()
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
-        contentPadding = contentPadding + padding,
+        contentPadding = contentPadding + padding
     ) {
         items(
             items = items,
@@ -299,7 +301,7 @@ inline fun <T> FeedScope.horizontalSnappableItems(
     noinline contentType: (item: T) -> Any? = { null },
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
-    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
 ) = row {
     val state = rememberLazyListState()
     val snappingLayout = remember(state) { SnapLayoutInfoProvider(state, SnapPosition.Start) }
@@ -310,7 +312,7 @@ inline fun <T> FeedScope.horizontalSnappableItems(
         state = state,
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
         contentPadding = contentPadding + padding,
-        flingBehavior = flingBehavior,
+        flingBehavior = flingBehavior
     ) {
         items(
             items = items,
@@ -328,13 +330,13 @@ inline fun <T> FeedScope.horizontalItemsIndexed(
     noinline contentType: (index: Int, item: T) -> Any? = { _, _ -> null },
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
-    crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit
 ) = row {
     val padding = LocalMargins.current.asPaddingValues()
 
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
-        contentPadding = contentPadding + padding,
+        contentPadding = contentPadding + padding
     ) {
         itemsIndexed(
             items = items,
@@ -351,7 +353,7 @@ inline fun <K, V> FeedScope.horizontalItems(
     itemSpacing: Dp = 12.dp,
     contentPadding: PaddingValues = PaddingValues(),
     crossinline stickyHeader: @Composable (K) -> Unit,
-    crossinline itemContent: @Composable LazyItemScope.(V) -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(V) -> Unit
 ) = row {
     val padding = LocalMargins.current.asPaddingValues()
 
@@ -360,7 +362,7 @@ inline fun <K, V> FeedScope.horizontalItems(
         contentPadding = contentPadding + padding,
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
         stickyHeader = { stickyHeader(it) },
-        itemContent = { itemContent(it) },
+        itemContent = { itemContent(it) }
     )
 }
 
@@ -376,7 +378,7 @@ inline fun <T> FeedScope.horizontalPagerItems(
     reverseLayout: Boolean = false,
     isAutoScrollActive: Boolean = true,
     snapPosition: SnapPosition = SnapPosition.Start,
-    crossinline pagerContent: @Composable PagerScope.(index: Int, item: T) -> Unit,
+    crossinline pagerContent: @Composable PagerScope.(index: Int, item: T) -> Unit
 ) = row {
     val performAutoScroll = shouldPerformAutoScroll(state.interactionSource)
 
@@ -420,16 +422,18 @@ inline fun <T : Any> FeedScope.pagingItems(
     items: LazyPagingItems<T>,
     loadingPlaceholderCount: Int = 0,
     noinline key: ((index: Int) -> Any)? = items.itemKey(),
-    crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit,
+    crossinline itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit
 ) {
-    val isLoading = (items.loadState.refresh is LoadState.Loading || items.loadState.refresh is LoadState.Error) && items.itemCount == 0
+    val refresh = items.loadState.refresh
+    val isLoading = items.itemCount == 0 &&
+        (refresh is LoadState.Loading || refresh is LoadState.Error)
     val count = if (isLoading) loadingPlaceholderCount else items.itemCount
 
     items(
         count = count,
-        //TODO: key = items.itemKey(),
-        //key = if (isLoading) null else key,
-        contentType = if (isLoading) { _ -> null } else items.itemContentType { "Paging Items" },
+        // TODO: key = items.itemKey(),
+        // key = if (isLoading) null else key,
+        contentType = if (isLoading) { _ -> null } else items.itemContentType { "Paging Items" }
     ) { index ->
         val item = if (isLoading) null else items[index]
         itemContent(index, item)

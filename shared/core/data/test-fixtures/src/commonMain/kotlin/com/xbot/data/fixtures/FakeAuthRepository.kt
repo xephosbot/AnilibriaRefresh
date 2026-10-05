@@ -2,8 +2,8 @@ package com.xbot.data.fixtures
 
 import arrow.core.Either
 import arrow.core.right
-import com.xbot.data.repository.AuthRepository
 import com.xbot.common.error.AppError
+import com.xbot.data.repository.AuthRepository
 import com.xbot.domain.models.enums.SocialType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,11 +30,11 @@ class FakeAuthRepository : AuthRepository {
         return Unit.right()
     }
 
-    override suspend fun forgotPassword(email: String): Either<AppError, Unit> {
-        return Unit.right()
-    }
+    override suspend fun forgotPassword(email: String): Either<AppError, Unit> = Unit.right()
 
-    override suspend fun resetPassword(token: String, password: String, passwordConfirmation: String): Either<AppError, Unit> {
-        return Unit.right()
-    }
+    override suspend fun resetPassword(
+        token: String,
+        password: String,
+        passwordConfirmation: String
+    ): Either<AppError, Unit> = Unit.right()
 }

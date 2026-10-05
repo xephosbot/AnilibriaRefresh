@@ -1,11 +1,11 @@
 package com.xbot.home.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.Home
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
 import com.xbot.navigation.TopLevelNavKey
-import com.xbot.designsystem.icons.AnilibertyIcons
-import com.xbot.designsystem.icons.Home
 import com.xbot.resources.Res
 import com.xbot.resources.tab_home
 import kotlinx.serialization.Serializable

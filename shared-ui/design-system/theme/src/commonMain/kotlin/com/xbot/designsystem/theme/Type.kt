@@ -19,7 +19,6 @@ import com.xbot.resources.notosans_varialbe_italic
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
 
-
 // Default Material 3 typography values
 internal val baseline = Typography()
 
@@ -39,7 +38,7 @@ internal fun AnilibertyTypography() = Typography(
     bodySmall = baseline.bodySmall.applyBodyFontFamily(),
     labelLarge = baseline.labelLarge.applyBodyFontFamily(),
     labelMedium = baseline.labelMedium.applyBodyFontFamily(),
-    labelSmall = baseline.labelSmall.applyBodyFontFamily(),
+    labelSmall = baseline.labelSmall.applyBodyFontFamily()
 )
 
 @Composable
@@ -50,12 +49,12 @@ private fun TextStyle.applyDisplayFontFamily() = copy(
         alignment = LineHeightStyle.Alignment.Center,
         trim = LineHeightStyle.Trim.Both
     ),
-    baselineShift = BaselineShift(-0.3f),
+    baselineShift = BaselineShift(-0.3f)
 )
 
 @Composable
 private fun TextStyle.applyBodyFontFamily() = copy(
-    fontFamily = NotoSansFontFamily(),
+    fontFamily = NotoSansFontFamily()
 )
 
 @Composable
@@ -77,7 +76,7 @@ private fun NotoSansFontFamily() = FontFamily(
     FontVariable(Res.font.notosans_varialbe_italic, 600, 87.5f, FontStyle.Italic),
     FontVariable(Res.font.notosans_varialbe_italic, 700, 87.5f, FontStyle.Italic),
     FontVariable(Res.font.notosans_varialbe_italic, 800, 87.5f, FontStyle.Italic),
-    FontVariable(Res.font.notosans_varialbe_italic, 900, 87.5f, FontStyle.Italic),
+    FontVariable(Res.font.notosans_varialbe_italic, 900, 87.5f, FontStyle.Italic)
 )
 
 @Composable
@@ -85,7 +84,7 @@ private fun BebesNeueFontFamily() = FontFamily(
     Font(Res.font.bebesneue_thin, FontWeight.Thin),
     Font(Res.font.bebesneue_light, FontWeight.Light),
     Font(Res.font.bebesneue_regular, FontWeight.Normal),
-    Font(Res.font.bebesneue_bold, FontWeight.Bold),
+    Font(Res.font.bebesneue_bold, FontWeight.Bold)
 )
 
 @Composable
@@ -93,13 +92,13 @@ private fun FontVariable(
     resource: FontResource,
     weight: Int,
     width: Float,
-    style: FontStyle = FontStyle.Normal,
+    style: FontStyle = FontStyle.Normal
 ) = Font(
     resource = resource,
     weight = FontWeight(weight),
     style = style,
     variationSettings = FontVariation.Settings(
         FontVariation.weight(weight),
-        FontVariation.width(width),
+        FontVariation.width(width)
     )
 )

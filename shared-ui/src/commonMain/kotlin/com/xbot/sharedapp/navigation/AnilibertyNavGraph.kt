@@ -48,13 +48,10 @@ import soup.compose.material.motion.animation.materialFadeThroughOut
 @OptIn(
     ExperimentalAnimationApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
-    KoinExperimentalAPI::class,
+    KoinExperimentalAPI::class
 )
 @Composable
-internal fun AnilibertyNavGraph(
-    modifier: Modifier = Modifier,
-    navigator: Navigator,
-) {
+internal fun AnilibertyNavGraph(modifier: Modifier = Modifier, navigator: Navigator) {
     val dragToResizeState = rememberDragToResizeState(dockedEdge = DockedEdge.Bottom)
     val scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
         .copy(
@@ -65,8 +62,8 @@ internal fun AnilibertyNavGraph(
         directive = scaffoldDirective,
         adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Hide
-        ),
-        //TODO: Uncomment when Google finishes the Levitate strategy
+        )
+        // TODO: Uncomment when Google finishes the Levitate strategy
         /*adaptStrategies = SupportingPaneScaffoldDefaults.adaptStrategies(
             supportingPaneAdaptStrategy = AdaptStrategy.Levitate(
                 alignment = Alignment.BottomCenter,
@@ -75,7 +72,7 @@ internal fun AnilibertyNavGraph(
         ),*/
     )
     val listDetailSceneStrategy = rememberListDetailSceneStrategy<NavKey>(
-        directive = scaffoldDirective,
+        directive = scaffoldDirective
     )
     val dialogStrategy = remember { DialogSceneStrategy<NavKey>() }
 
@@ -85,7 +82,11 @@ internal fun AnilibertyNavGraph(
         snackbarContent = { message ->
             Snackbar(
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(
+                            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                        )
+                    )
                     .padding(16.dp),
                 action = (message as? SnackbarMessage.WithAction)?.let { msg ->
                     {
@@ -93,11 +94,11 @@ internal fun AnilibertyNavGraph(
                             Text(stringResource(msg.actionLabel))
                         }
                     }
-                },
+                }
             ) {
                 Text(stringResource(message.text))
             }
-        },
+        }
     )
 
     SharedTransitionLayout {
@@ -121,7 +122,7 @@ internal fun AnilibertyNavGraph(
                 },
                 entryDecorators = listOf(
                     rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberSharedViewModelStoreNavEntryDecorator(),
+                    rememberSharedViewModelStoreNavEntryDecorator()
                 ),
                 sceneStrategies = listOf(
                     supportingPaneSceneStrategy,

@@ -43,5 +43,5 @@ data class ReleaseDto(
     @SerialName("torrents") val torrents: List<TorrentDto>? = null,
     @SerialName("full_season_is_released") val fullSeasonIsReleased: Boolean? = null,
     @SerialName("published_release_episode") val newReleaseEpisode: EpisodeDto? = null,
-    @SerialName("next_release_episode_number") val nextReleaseEpisodeNumber: Int? = null,
+    @SerialName("next_release_episode_number") val nextReleaseEpisodeNumber: Int? = null
 )

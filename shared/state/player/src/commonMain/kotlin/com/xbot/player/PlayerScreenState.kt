@@ -10,7 +10,7 @@ import kotlinx.serialization.Transient
 data class PlayerScreenState(
     @Transient val episodes: AsyncResult<AppError, List<Episode>> = AsyncResult.Loading,
     @Transient val currentEpisode: Episode? = null,
-    val quality: VideoQuality = VideoQuality.FHD,
+    val quality: VideoQuality = VideoQuality.FHD
 ) {
     val availableQualities: List<VideoQuality>
         get() = currentEpisode?.availableQualities ?: emptyList()
@@ -32,10 +32,8 @@ internal val Episode.availableQualities: List<VideoQuality>
         if (!hls1080.isNullOrEmpty()) add(VideoQuality.FHD)
     }
 
-internal fun Episode.getVideoUri(quality: VideoQuality): String? {
-    return when (quality) {
-        VideoQuality.SD -> hls480
-        VideoQuality.HD -> hls720
-        VideoQuality.FHD -> hls1080
-    }
+internal fun Episode.getVideoUri(quality: VideoQuality): String? = when (quality) {
+    VideoQuality.SD -> hls480
+    VideoQuality.HD -> hls720
+    VideoQuality.FHD -> hls1080
 }

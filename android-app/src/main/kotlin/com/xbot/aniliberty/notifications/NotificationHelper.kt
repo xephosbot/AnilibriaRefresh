@@ -23,7 +23,7 @@ object NotificationHelper {
     fun createNotificationChannels(context: Context) {
         val channel = NotificationChannelCompat.Builder(
             context.getString(R.string.notification_channel_release_id),
-            NotificationManagerCompat.IMPORTANCE_DEFAULT,
+            NotificationManagerCompat.IMPORTANCE_DEFAULT
         )
             .setName(context.getString(R.string.notification_channel_release_name))
             .setDescription(context.getString(R.string.notification_channel_release_description))
@@ -36,7 +36,7 @@ object NotificationHelper {
         context: Context,
         title: String?,
         message: String?,
-        releaseId: String? = null,
+        releaseId: String? = null
     ) {
         if (title.isNullOrBlank() && message.isNullOrBlank()) return
 
@@ -45,9 +45,11 @@ object NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
                 context,
-                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
-        ) return
+        ) {
+            return
+        }
 
         val channelId = context.getString(R.string.notification_channel_release_id)
         val notificationId = notificationCounter.incrementAndGet()
@@ -68,14 +70,14 @@ object NotificationHelper {
     private fun buildContentIntent(
         context: Context,
         releaseId: String?,
-        requestCode: Int,
+        requestCode: Int
     ): PendingIntent {
         val intent = if (releaseId != null) {
             Intent(
                 Intent.ACTION_VIEW,
                 DEEP_LINK_RELEASE_PATTERN.format(releaseId).toUri(),
                 context,
-                MainActivity::class.java,
+                MainActivity::class.java
             )
         } else {
             Intent(context, MainActivity::class.java)
@@ -87,7 +89,7 @@ object NotificationHelper {
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 }

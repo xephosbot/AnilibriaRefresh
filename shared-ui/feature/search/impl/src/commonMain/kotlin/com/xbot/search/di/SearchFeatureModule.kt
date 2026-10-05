@@ -8,11 +8,11 @@ import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.viewmodel.SharedViewModelStoreNavEntryDecorator
-import com.xbot.search.SearchFilterPane
-import com.xbot.search.SearchResultPane
 import com.xbot.search.navigation.SearchFiltersRoute
 import com.xbot.search.navigation.SearchRoute
 import com.xbot.search.navigation.navigateToSearchFilters
+import com.xbot.search.screen.filters.SearchFilterPane
+import com.xbot.search.screen.results.SearchResultPane
 import com.xbot.title.navigation.navigateToTitle
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -45,8 +45,8 @@ val searchFeatureModule = module {
         )
     }
     navigation<SearchFiltersRoute>(
-        metadata = SupportingPaneSceneStrategy.supportingPane(SearchRoute)
-            + SharedViewModelStoreNavEntryDecorator.parent(SearchRoute.toString())
+        metadata = SupportingPaneSceneStrategy.supportingPane(SearchRoute) +
+            SharedViewModelStoreNavEntryDecorator.parent(SearchRoute.toString())
     ) {
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
@@ -54,7 +54,7 @@ val searchFeatureModule = module {
             showBackButton = true,
             onBackClick = lifecycleOwner.dropUnlessResumed {
                 navigator.navigateBack()
-            },
+            }
         )
     }
 }

@@ -1,6 +1,4 @@
 plugins {
-    // this is necessary to avoid the plugins to be loaded multiple times
-    // in each subproject's classloader
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.multiplatform.library) apply false
@@ -13,4 +11,33 @@ plugins {
     alias(libs.plugins.koin.compiler) apply false
     alias(libs.plugins.kotzilla) apply false
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.detekt)
+}
+
+spotless {
+    kotlin {
+        target("**/src/**/*.kt")
+        targetExclude("**/build/**")
+        ktlint(libs.versions.ktlint.get())
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        targetExclude("**/build/**")
+        ktlint(libs.versions.ktlint.get())
+    }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(file("config/detekt/detekt.yml"))
+    baseline = file("config/detekt/baseline.xml")
+    basePath.set(projectDir)
+    parallel = true
+    source.setFrom(
+        fileTree(projectDir) {
+            include("**/src/**/*.kt")
+            exclude("**/build/**")
+        }
+    )
 }

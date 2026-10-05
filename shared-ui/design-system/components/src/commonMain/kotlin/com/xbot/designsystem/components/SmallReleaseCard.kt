@@ -46,7 +46,7 @@ fun SmallReleaseCard(
     shapes: MorphableShapes = ExpressiveReleaseCardItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
-    onClick: (Release) -> Unit,
+    onClick: (Release) -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -84,7 +84,8 @@ fun SmallReleaseCard(
                 }
             ),
         targetState = release,
-        label = "ReleaseCardItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
+        label = "ReleaseCardItem Crossfade to " +
+            if (release == null) "Loading" else "Loaded Release"
     ) { state ->
         when (state) {
             null -> SmallReleaseCardPlaceholder(modifier)
@@ -94,10 +95,7 @@ fun SmallReleaseCard(
 }
 
 @Composable
-private fun SmallReleaseCardContent(
-    modifier: Modifier = Modifier,
-    release: Release,
-) {
+private fun SmallReleaseCardContent(modifier: Modifier = Modifier, release: Release) {
     Box(
         modifier = modifier
             .width(ReleaseCardWidth)
@@ -108,7 +106,7 @@ private fun SmallReleaseCardContent(
             modifier = Modifier
                 .fillMaxSize()
                 .scrim(edgeHeightRatio = 1.0f),
-            poster = release.poster,
+            poster = release.poster
         )
         Text(
             modifier = Modifier
@@ -124,9 +122,7 @@ private fun SmallReleaseCardContent(
 }
 
 @Composable
-private fun SmallReleaseCardPlaceholder(
-    modifier: Modifier = Modifier,
-) {
+private fun SmallReleaseCardPlaceholder(modifier: Modifier = Modifier) {
     val shimmer = LocalShimmer.current
 
     Box(
@@ -135,7 +131,7 @@ private fun SmallReleaseCardPlaceholder(
             .aspectRatio(7f / 10f)
             .scrim(edgeHeightRatio = 1.0f)
             .shimmer(shimmer)
-            .background(Color.LightGray),
+            .background(Color.LightGray)
     )
 }
 
@@ -153,16 +149,14 @@ private fun SmallReleaseCardPreview() {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseCardItemDefaults {
     @Composable
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = MaterialTheme.shapes.large,
-            pressedShape = MaterialTheme.shapes.small,
-            selectedShape = MaterialTheme.shapes.small,
-            focusedShape = MaterialTheme.shapes.large,
-            hoveredShape = MaterialTheme.shapes.large,
-            draggedShape = MaterialTheme.shapes.small
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = MaterialTheme.shapes.large,
+        pressedShape = MaterialTheme.shapes.small,
+        selectedShape = MaterialTheme.shapes.small,
+        focusedShape = MaterialTheme.shapes.large,
+        hoveredShape = MaterialTheme.shapes.large,
+        draggedShape = MaterialTheme.shapes.small
+    )
 }
 
 private val ReleaseCardWidth = 132.dp

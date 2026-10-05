@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.Pause: ImageVector
         }
         _pauseFilled =
             Builder(
-                    name = "PauseFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "PauseFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.Pause: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(640.0f, 760.0f)
                         quadTo(607.0f, 760.0f, 583.5f, 736.5f)
@@ -78,7 +78,7 @@ val AnilibertyIcons.Outlined.Pause: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -88,7 +88,7 @@ val AnilibertyIcons.Outlined.Pause: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(600.0f, 760.0f)
                         quadTo(567.0f, 760.0f, 543.5f, 736.5f)
@@ -147,7 +147,6 @@ val AnilibertyIcons.Outlined.Pause: ImageVector
                 .build()
         return _pauseOutlined!!
     }
-
 
 private var _pauseFilled: ImageVector? = null
 private var _pauseOutlined: ImageVector? = null

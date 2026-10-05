@@ -7,8 +7,5 @@ import kotlin.native.HiddenFromObjC
 
 @HiddenFromObjC
 fun interface GetCatalogReleasesPagerUseCase {
-    operator fun invoke(
-        search: String?,
-        filters: CatalogQuery?
-    ): Pager<Int, Release>
+    operator fun invoke(search: String?, filters: CatalogQuery?): Pager<Int, Release>
 }

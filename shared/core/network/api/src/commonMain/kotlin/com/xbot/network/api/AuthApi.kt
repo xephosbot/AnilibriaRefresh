@@ -14,5 +14,9 @@ interface AuthApi {
     suspend fun socialLogin(provider: SocialTypeDto): Either<AppError, SocialAuthResponse>
     suspend fun socialAuthenticate(state: String): Either<AppError, AuthResponse>
     suspend fun forgotPassword(email: String): Either<AppError, Unit>
-    suspend fun resetPassword(token: String, password: String, passwordConfirmation: String): Either<AppError, Unit>
+    suspend fun resetPassword(
+        token: String,
+        password: String,
+        passwordConfirmation: String
+    ): Either<AppError, Unit>
 }

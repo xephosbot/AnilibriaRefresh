@@ -11,7 +11,7 @@ fun rememberNavigator(
     startRoute: TopLevelNavKey,
     topLevelRoutes: Set<TopLevelNavKey>,
     serializersModule: SerializersModule,
-    onInterceptNavigation: (NavKey) -> NavKey = { it },
+    onInterceptNavigation: (NavKey) -> NavKey = { it }
 ): Navigator {
     val navigationState = rememberNavigationState(startRoute, topLevelRoutes, serializersModule)
     val currentOnInterceptNavigation by rememberUpdatedState(onInterceptNavigation)
@@ -32,7 +32,7 @@ fun rememberNavigator(
 
 internal class AnilibertyNavigator(
     val state: NavigationState,
-    val navigationInterceptor: (NavKey) -> NavKey,
+    val navigationInterceptor: (NavKey) -> NavKey
 ) : Navigator {
 
     override val currentTopLevelDestination: TopLevelNavKey
@@ -56,6 +56,7 @@ internal class AnilibertyNavigator(
             is TopLevelNavKey -> {
                 state.topLevelRoute = targetKey
             }
+
             else -> {
                 state.backStacks[state.topLevelRoute]?.add(targetKey)
             }

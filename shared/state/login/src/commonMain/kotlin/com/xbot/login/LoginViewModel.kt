@@ -16,22 +16,24 @@ class LoginViewModel(
     private val getAuthState: GetAuthStateUseCase,
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), OrbitContainerHost<LoginScreenState, LoginScreenState, LoginScreenSideEffect> {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel(),
+    OrbitContainerHost<LoginScreenState, LoginScreenState, LoginScreenSideEffect> {
 
-    override val container: OrbitContainer<LoginScreenState, LoginScreenState, LoginScreenSideEffect> = orbitContainer(
-        initialState = LoginScreenState(),
-        savedStateHandle = savedStateHandle,
-        serializer = LoginScreenState.serializer(),
-    ) {
-        startObservingAuth()
-    }
+    override val container:
+        OrbitContainer<LoginScreenState, LoginScreenState, LoginScreenSideEffect> = orbitContainer(
+            initialState = LoginScreenState(),
+            savedStateHandle = savedStateHandle,
+            serializer = LoginScreenState.serializer()
+        ) {
+            startObservingAuth()
+        }
 
     private fun startObservingAuth() = intent {
         getAuthState().collect { authState ->
             reduce {
                 state.copy(
-                    isSuccess = authState is AuthState.Authenticated,
+                    isSuccess = authState is AuthState.Authenticated
                 )
             }
         }

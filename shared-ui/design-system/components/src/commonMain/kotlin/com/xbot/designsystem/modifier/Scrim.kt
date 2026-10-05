@@ -10,11 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.xbot.designsystem.modifier.scrimInternal
 
-fun Modifier.scrim(
-    edgeHeight: Dp,
-    opacity: Float = 0.8f,
-    bottomEdge: Boolean = true
-): Modifier = scrimInternal(opacity, bottomEdge) { size -> edgeHeight.toPx() }
+fun Modifier.scrim(edgeHeight: Dp, opacity: Float = 0.8f, bottomEdge: Boolean = true): Modifier =
+    scrimInternal(opacity, bottomEdge) { size -> edgeHeight.toPx() }
 
 fun Modifier.scrim(
     edgeHeightRatio: Float = 0.5f,

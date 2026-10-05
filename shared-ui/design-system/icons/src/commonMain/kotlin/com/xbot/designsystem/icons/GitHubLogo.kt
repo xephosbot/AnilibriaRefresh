@@ -18,12 +18,12 @@ val AnilibertyIcons.GitHubLogo: ImageVector
         }
         _gitHubLogo =
             Builder(
-                    name = "GitHub Logo",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 24.0f,
-                    viewportHeight = 24.0f,
-                )
+                name = "GitHub Logo",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.GitHubLogo: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(12.0f, 0.297f)
                         curveTo(5.37f, 0.297f, 0.0f, 5.67f, 0.0f, 12.297f)

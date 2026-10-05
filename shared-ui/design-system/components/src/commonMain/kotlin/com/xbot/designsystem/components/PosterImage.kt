@@ -37,14 +37,14 @@ fun PosterImage(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholder: Painter? = null,
+    placeholder: Painter? = null
 ) {
     val shimmer = LocalShimmer.current
     var isLoading by remember(poster) { mutableStateOf(poster != null) }
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
@@ -71,13 +71,13 @@ fun PosterImage(
         AnimatedVisibility(
             visible = isLoading,
             enter = fadeIn(),
-            exit = fadeOut(),
+            exit = fadeOut()
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .shimmer(shimmer)
-                    .background(Color.LightGray),
+                    .background(Color.LightGray)
             )
         }
     }

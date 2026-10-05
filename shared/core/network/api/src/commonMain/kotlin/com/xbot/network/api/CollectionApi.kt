@@ -22,7 +22,8 @@ interface CollectionApi {
         ageRatings: List<AgeRatingDto>? = null
     ): Either<AppError, PaginatedResponse<ReleaseDto>>
     suspend fun addToCollections(
-        collections: Map<Int, CollectionTypeDto> // releaseId to collectionType
+        // releaseId to collectionType
+        collections: Map<Int, CollectionTypeDto>
     ): Either<AppError, Map<Int, CollectionTypeDto>>
     suspend fun removeFromCollections(
         releaseIds: List<Int>

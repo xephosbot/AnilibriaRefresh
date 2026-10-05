@@ -1,14 +1,13 @@
 package com.xbot.domain.fixtures
 
 import com.xbot.common.DispatcherProvider
+import kotlin.native.HiddenFromObjC
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlin.native.HiddenFromObjC
 
 @HiddenFromObjC
-class TestDispatcherProvider(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
-) : DispatcherProvider {
+class TestDispatcherProvider(private val dispatcher: CoroutineDispatcher = Dispatchers.Main) :
+    DispatcherProvider {
     override val main: CoroutineDispatcher get() = dispatcher
     override val io: CoroutineDispatcher get() = dispatcher
     override val default: CoroutineDispatcher get() = dispatcher

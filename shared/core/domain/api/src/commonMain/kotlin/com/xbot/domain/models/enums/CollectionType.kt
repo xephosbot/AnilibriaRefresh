@@ -5,5 +5,5 @@ enum class CollectionType {
     WATCHED,
     WATCHING,
     POSTPONED,
-    ABANDONED;
+    ABANDONED
 }

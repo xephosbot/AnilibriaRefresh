@@ -36,7 +36,7 @@ fun <K, V> LazyColumnWithStickyHeader(
     userScrollEnabled: Boolean = true,
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     stickyHeader: @Composable (K) -> Unit,
-    itemContent: @Composable LazyItemScope.(V) -> Unit,
+    itemContent: @Composable LazyItemScope.(V) -> Unit
 ) {
     val itemsWithKeys = remember(items) {
         items.flatMap { entry -> entry.value.map { entry.key to it } }
@@ -52,7 +52,7 @@ fun <K, V> LazyColumnWithStickyHeader(
             },
             content = {
                 stickyHeader(it.key)
-            },
+            }
         )
         LazyColumn(
             modifier = modifier.fillMaxHeight(),
@@ -63,10 +63,10 @@ fun <K, V> LazyColumnWithStickyHeader(
             horizontalAlignment = horizontalAlignment,
             flingBehavior = flingBehavior,
             userScrollEnabled = userScrollEnabled,
-            overscrollEffect = overscrollEffect,
+            overscrollEffect = overscrollEffect
         ) {
             itemsIndexed(
-                items = itemsWithKeys,
+                items = itemsWithKeys
             ) { index, (_, value) ->
                 itemContent(value)
             }

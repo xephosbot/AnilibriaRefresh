@@ -1,7 +1,9 @@
 package utils
 
 enum class Platform {
-    Windows, Linux, MacOS;
+    Windows,
+    Linux,
+    MacOS;
 
     companion object {
         fun getCurrent(): Platform {

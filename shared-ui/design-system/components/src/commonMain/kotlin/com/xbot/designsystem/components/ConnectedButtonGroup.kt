@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButtonShapes
-import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +31,7 @@ fun <T> SingleChoiceConnectedButtonGroup(
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         items.forEach { item ->
             itemContent(item == selectedItem, item)
@@ -47,7 +47,7 @@ private fun SingleChoiceConnectedButtonGroupPreview() {
 
     SingleChoiceConnectedButtonGroup(
         items = items,
-        selectedItem = selectedItem,
+        selectedItem = selectedItem
     ) { selected, item ->
         FilledTonalToggleButton(
             checked = selected,
@@ -56,7 +56,7 @@ private fun SingleChoiceConnectedButtonGroupPreview() {
                 index = items.indexOf(item),
                 count = items.size
             ),
-            contentPadding = ButtonDefaults.ExtraSmallContentPadding,
+            contentPadding = ButtonDefaults.ExtraSmallContentPadding
         ) {
             Text(text = item)
         }
@@ -68,14 +68,9 @@ object ConnectedButtonGroupDefaults {
     val Spacing = 2.dp
 
     @Composable
-    fun connectedButtonShapes(
-        index: Int,
-        count: Int,
-    ): ToggleButtonShapes {
-        return when (index) {
-            0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-            count - 1 -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-            else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-        }
+    fun connectedButtonShapes(index: Int, count: Int): ToggleButtonShapes = when (index) {
+        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+        count - 1 -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
     }
 }

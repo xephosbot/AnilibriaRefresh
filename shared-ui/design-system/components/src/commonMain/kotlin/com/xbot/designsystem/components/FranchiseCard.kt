@@ -66,7 +66,7 @@ fun FranchiseCard(
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
     shapes: MorphableShapes = ExpressiveFranchiseCardDefaults.shapes(),
-    interactionSource: MutableInteractionSource? = null,
+    interactionSource: MutableInteractionSource? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -87,10 +87,11 @@ fun FranchiseCard(
     Crossfade(
         modifier = modifier,
         targetState = franchise,
-        label = "FranchiseCard Crossfade to ${if (franchise == null) "Loading" else "Loaded"}",
+        label = "FranchiseCard Crossfade to ${if (franchise == null) "Loading" else "Loaded"}"
     ) { state ->
         when (state) {
             null -> FranchiseCardPlaceholder()
+
             else -> FranchiseCardContent(
                 state,
                 Modifier
@@ -117,10 +118,7 @@ fun FranchiseCard(
 }
 
 @Composable
-private fun FranchiseCardContent(
-    franchise: Franchise,
-    modifier: Modifier = Modifier
-) {
+private fun FranchiseCardContent(franchise: Franchise, modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .width(FranchiseCardWidth)
@@ -133,7 +131,7 @@ private fun FranchiseCardContent(
                 .then(modifier)
                 .fadedEdge(
                     startFraction = 0.25f,
-                    endFraction = 1.0f,
+                    endFraction = 1.0f
                 )
         ) {
             PosterImage(
@@ -156,7 +154,7 @@ private fun FranchiseCardContent(
                 text = franchise.localizedName(),
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                    minFontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                    minFontSize = MaterialTheme.typography.headlineSmall.fontSize
                 ),
                 style = MaterialTheme.typography.headlineLarge
                     .copy(
@@ -164,7 +162,7 @@ private fun FranchiseCardContent(
                         hyphens = Hyphens.Auto
                     ),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
 
             Spacer(Modifier.height(12.dp))
@@ -189,13 +187,19 @@ private fun FranchiseCardContent(
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         Text(
-                            text = stringResource(Res.string.franchise_seasons_count, franchise.totalReleases),
+                            text = stringResource(
+                                Res.string.franchise_seasons_count,
+                                franchise.totalReleases
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = stringResource(Res.string.franchise_episodes_count, franchise.totalEpisodes ?: 0),
+                            text = stringResource(
+                                Res.string.franchise_episodes_count,
+                                franchise.totalEpisodes ?: 0
+                            ),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -212,12 +216,13 @@ private fun OverlappingReleases(
     maxVisible: Int = 2,
     size: Dp = 64.dp,
     overlap: Dp = 32.dp,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest
 ) {
     val displayCount = minOf(releases.size, maxVisible)
     val extraCount = releases.size - displayCount
     val totalWidth =
-        size * displayCount - overlap * (displayCount - 1) + if (extraCount > 0) size - overlap else 0.dp
+        size * displayCount - overlap * (displayCount - 1) +
+            if (extraCount > 0) size - overlap else 0.dp
 
     Box(modifier = Modifier.width(totalWidth).height(size)) {
         for (i in 0 until displayCount) {
@@ -259,9 +264,7 @@ private fun OverlappingReleases(
 }
 
 @Composable
-private fun FranchiseCardPlaceholder(
-    modifier: Modifier = Modifier
-) {
+private fun FranchiseCardPlaceholder(modifier: Modifier = Modifier) {
     val shimmer = LocalShimmer.current
     Box(
         modifier = Modifier
@@ -310,12 +313,10 @@ private fun FranchiseCardPlaceholder(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveFranchiseCardDefaults {
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = MaterialShapes.Circle,
-            pressedShape = MaterialShapes.Cookie12Sided
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = MaterialShapes.Circle,
+        pressedShape = MaterialShapes.Cookie12Sided
+    )
 }
 
 @AnilibertyPreview

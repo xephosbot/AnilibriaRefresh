@@ -17,12 +17,11 @@ internal data class NativeTabBarState(
     val topLevelRoute: TopLevelNavKey?,
     val tabBarVisible: Boolean,
     val tabTitles: Map<TopLevelNavKey, String>,
-    val themeOption: ThemeOption,
+    val themeOption: ThemeOption
 )
 
-internal class NativeTabBarChrome(
-    private val controller: AnilibertyTabBarController,
-) : NavigationChrome {
+internal class NativeTabBarChrome(private val controller: AnilibertyTabBarController) :
+    NavigationChrome {
 
     @Composable
     override fun Content(navigator: Navigator, content: @Composable () -> Unit) {
@@ -43,7 +42,7 @@ internal class NativeTabBarChrome(
             topLevelRoute = navigator.currentTopLevelDestination,
             tabBarVisible = navigator.currentDestination?.hidesNavigationBar != true,
             tabTitles = TopLevelRoutes.associateWith { stringResource(it.textRes) },
-            themeOption = LocalAppState.current.themeState.themeOption,
+            themeOption = LocalAppState.current.themeState.themeOption
         )
         SideEffect { controller.applyState(state) }
     }

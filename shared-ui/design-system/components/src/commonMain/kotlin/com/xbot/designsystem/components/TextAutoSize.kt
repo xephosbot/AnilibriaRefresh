@@ -44,6 +44,7 @@ fun TextAutoSize(
 ) {
     val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
     var hasVisualOverflow by remember { mutableStateOf(false) }
+
     @Suppress("NAME_SHADOWING")
     val overflow = remember(hasVisualOverflow) {
         if (hasVisualOverflow) overflow else TextOverflow.Clip
@@ -72,6 +73,6 @@ fun TextAutoSize(
         softWrap = softWrap,
         maxLines = maxLines,
         minLines = minLines,
-        autoSize = autoSize,
+        autoSize = autoSize
     )
 }

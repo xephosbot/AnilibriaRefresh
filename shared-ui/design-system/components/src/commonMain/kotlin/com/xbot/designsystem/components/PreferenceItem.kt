@@ -49,7 +49,7 @@ fun PreferenceItem(
     colors: ListItemColors = ExpressivePreferenceItemDefaults.colors(),
     shapes: ListItemShapes = ExpressivePreferenceItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
-    onClick: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null
 ) {
     val validOnClick = onClick ?: {}
     val enabled = onClick != null
@@ -61,7 +61,11 @@ fun PreferenceItem(
         enabled = enabled,
         leadingContent = leadingContent?.let { content ->
             {
-                Box(Modifier.padding(horizontal = ExpressivePreferenceItemDefaults.LeadingContentPadding)) {
+                Box(
+                    Modifier.padding(
+                        horizontal = ExpressivePreferenceItemDefaults.LeadingContentPadding
+                    )
+                ) {
                     content()
                 }
             }
@@ -85,7 +89,7 @@ fun SwitchPreferenceItem(
     supportingContent: @Composable (() -> Unit)? = null,
     leadingContent: @Composable (() -> Unit)? = null,
     badges: @Composable (() -> Unit)? = null,
-    selected: Boolean = false,
+    selected: Boolean = false
 ) {
     PreferenceItem(
         modifier = modifier,
@@ -162,13 +166,13 @@ fun ExperimentalPill(
 fun PreferenceSectionHeader(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = ExpressivePreferenceItemDefaults.sectionHeaderPadding(),
+    contentPadding: PaddingValues = ExpressivePreferenceItemDefaults.sectionHeaderPadding()
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(contentPadding)
-            .semantics { heading() },
+            .semantics { heading() }
     ) {
         ProvideTextStyle(MaterialTheme.typography.labelMedium) {
             title()
@@ -190,14 +194,12 @@ object ExpressivePreferenceItemDefaults {
     fun shapes(
         shape: Shape = RoundedCornerShape(0.dp),
         pressedShape: Shape = MaterialTheme.shapes.large,
-        selectedShape: Shape = MaterialTheme.shapes.large,
-    ): ListItemShapes {
-        return ListItemDefaults.shapes(
-            shape = shape,
-            pressedShape = pressedShape,
-            selectedShape = selectedShape,
-        )
-    }
+        selectedShape: Shape = MaterialTheme.shapes.large
+    ): ListItemShapes = ListItemDefaults.shapes(
+        shape = shape,
+        pressedShape = pressedShape,
+        selectedShape = selectedShape
+    )
 
     @Composable
     fun colors(
@@ -206,28 +208,26 @@ object ExpressivePreferenceItemDefaults {
         supportingContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
         selectedContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
         selectedContentColor: Color = contentColorFor(selectedContainerColor)
-    ): ListItemColors {
-        return ListItemDefaults.colors(
-            containerColor = containerColor,
-            contentColor = contentColor,
-            leadingContentColor = contentColor,
-            overlineContentColor = contentColor,
-            supportingContentColor = supportingContentColor,
-            trailingContentColor = contentColor,
-            disabledContainerColor = containerColor,
-            disabledContentColor = contentColor,
-            disabledLeadingContentColor = contentColor,
-            disabledOverlineContentColor = contentColor,
-            disabledSupportingContentColor = supportingContentColor,
-            disabledTrailingContentColor = contentColor,
-            selectedContainerColor = selectedContainerColor,
-            selectedContentColor = selectedContentColor,
-            selectedLeadingContentColor = selectedContentColor,
-            selectedOverlineContentColor = selectedContentColor,
-            selectedSupportingContentColor = selectedContentColor.copy(alpha = 0.7f),
-            selectedTrailingContentColor = selectedContentColor
-        )
-    }
+    ): ListItemColors = ListItemDefaults.colors(
+        containerColor = containerColor,
+        contentColor = contentColor,
+        leadingContentColor = contentColor,
+        overlineContentColor = contentColor,
+        supportingContentColor = supportingContentColor,
+        trailingContentColor = contentColor,
+        disabledContainerColor = containerColor,
+        disabledContentColor = contentColor,
+        disabledLeadingContentColor = contentColor,
+        disabledOverlineContentColor = contentColor,
+        disabledSupportingContentColor = supportingContentColor,
+        disabledTrailingContentColor = contentColor,
+        selectedContainerColor = selectedContainerColor,
+        selectedContentColor = selectedContentColor,
+        selectedLeadingContentColor = selectedContentColor,
+        selectedOverlineContentColor = selectedContentColor,
+        selectedSupportingContentColor = selectedContentColor.copy(alpha = 0.7f),
+        selectedTrailingContentColor = selectedContentColor
+    )
 }
 
 @AnilibertyPreview

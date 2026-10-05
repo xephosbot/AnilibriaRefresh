@@ -11,14 +11,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class,)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AnilibertyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     amoled: Boolean = false,
     expressiveColor: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val colorScheme = rememberColorScheme(darkTheme, dynamicColor, amoled, expressiveColor)
     val margins = remember { Margins(horizontal = 16.dp) }
@@ -33,10 +33,10 @@ fun AnilibertyTheme(
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
             shapes = Shapes,
-            //TODO: Revert to expressive after negative corner size exception fixed
+            // TODO: Revert to expressive after negative corner size exception fixed
             motionScheme = MotionScheme.standard(),
             typography = AnilibertyTypography(),
-            content = content,
+            content = content
         )
     }
 }

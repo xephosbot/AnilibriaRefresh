@@ -7,8 +7,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = ColorDepthDto.Companion.Serializer::class)
 enum class ColorDepthDto(val value: String) {
-    @SerialName("8bit") Depth8BIT("8bit"),
-    @SerialName("10Bit") Depth10BIT("10Bit"), ;
+    @SerialName("8bit")
+    Depth8BIT("8bit"),
+
+    @SerialName("10Bit")
+    Depth10BIT("10Bit") ;
 
     override fun toString(): String = value
 

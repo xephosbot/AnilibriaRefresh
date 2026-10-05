@@ -24,13 +24,15 @@ internal class DefaultViewsApi(private val requester: HttpRequester) : ViewsApi 
     ): Either<AppError, List<TimecodeApi>> = requester.request {
         post("accounts/users/me/views/timecodes") {
             requiresAuth()
-            setBody(timecodes.map { (episodeId, time, isWatched) ->
-                mapOf(
-                    "release_episode_id" to episodeId,
-                    "time" to time,
-                    "is_watched" to isWatched
-                )
-            })
+            setBody(
+                timecodes.map { (episodeId, time, isWatched) ->
+                    mapOf(
+                        "release_episode_id" to episodeId,
+                        "time" to time,
+                        "is_watched" to isWatched
+                    )
+                }
+            )
         }
     }
 

@@ -4,20 +4,20 @@ import arrow.core.Either
 import arrow.core.raise.context.bind
 import arrow.core.raise.context.either
 import arrow.fx.coroutines.parZip
+import com.xbot.common.error.AppError
 import com.xbot.data.repository.CatalogRepository
 import com.xbot.data.repository.ScheduleRepository
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.SortingType
 import com.xbot.domain.models.filters.CatalogQuery
-import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
+import org.koin.core.annotation.Factory
 
 @Factory
 @HiddenFromObjC
 internal class DefaultGetBestReleasesInCurrentSeasonUseCase(
     private val catalogRepository: CatalogRepository,
-    private val scheduleRepository: ScheduleRepository,
+    private val scheduleRepository: ScheduleRepository
 ) : GetBestReleasesInCurrentSeasonUseCase {
     override suspend fun invoke(): Either<AppError, List<Release>> = either {
         val (currentSeason, currentYear) = parZip(

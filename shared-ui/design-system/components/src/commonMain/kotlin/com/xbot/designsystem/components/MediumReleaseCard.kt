@@ -84,14 +84,15 @@ fun MediumReleaseCard(
                 if (onContextClick != null) {
                     Modifier.contextClickable(
                         enabled = release != null,
-                        onClick = onContextClick,
+                        onClick = onContextClick
                     )
                 } else {
                     Modifier
                 }
             ),
         targetState = release,
-        label = "ReleaseCardItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
+        label = "ReleaseCardItem Crossfade to " +
+            if (release == null) "Loading" else "Loaded Release"
     ) { state ->
         when (state) {
             null -> MediumReleaseCardPlaceholder(modifier, content)
@@ -121,7 +122,7 @@ private fun MediumReleaseCardContent(
                 text = release.localizedName(),
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                    minFontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                    minFontSize = MaterialTheme.typography.headlineSmall.fontSize
                 ),
                 style = MaterialTheme.typography.headlineLarge
                     .copy(
@@ -129,7 +130,7 @@ private fun MediumReleaseCardContent(
                         hyphens = Hyphens.Auto
                     ),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         },
         content = {
@@ -147,7 +148,7 @@ private fun MediumReleaseCardLayout(
 ) {
     Column(
         modifier = modifier.widthIn(max = ReleaseCardWidth),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Box(
             modifier = Modifier
@@ -160,7 +161,7 @@ private fun MediumReleaseCardLayout(
                     .height(ReleaseCardPosterHeight)
                     .fadedEdge(
                         startFraction = 0.25f,
-                        endFraction = 0.75f,
+                        endFraction = 0.75f
                     )
             ) {
                 poster()
@@ -174,7 +175,7 @@ private fun MediumReleaseCardLayout(
         }
         Column(
             modifier = Modifier.clip(MaterialTheme.shapes.extraSmall),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             content()
         }
@@ -198,7 +199,7 @@ private fun MediumReleaseCardPlaceholder(
                     .background(Color.LightGray)
                     .fadedEdge(
                         startFraction = 0f,
-                        endFraction = 1f,
+                        endFraction = 1f
                     )
             )
         },
@@ -212,16 +213,14 @@ private fun MediumReleaseCardPlaceholder(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveMediumReleaseCardDefaults {
     @Composable
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = MaterialTheme.shapes.large,
-            pressedShape = MaterialTheme.shapes.small,
-            selectedShape = MaterialTheme.shapes.small,
-            focusedShape = MaterialTheme.shapes.large,
-            hoveredShape = MaterialTheme.shapes.large,
-            draggedShape = MaterialTheme.shapes.small
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = MaterialTheme.shapes.large,
+        pressedShape = MaterialTheme.shapes.small,
+        selectedShape = MaterialTheme.shapes.small,
+        focusedShape = MaterialTheme.shapes.large,
+        hoveredShape = MaterialTheme.shapes.large,
+        draggedShape = MaterialTheme.shapes.small
+    )
 }
 
 @AnilibertyPreview
@@ -229,7 +228,7 @@ object ExpressiveMediumReleaseCardDefaults {
 private fun MediumReleaseCardPreview() {
     MediumReleaseCard(
         release = ReleaseFixtures.all[0],
-        onClick = {},
+        onClick = {}
     ) {
         EpisodeListItem(
             episode = EpisodeFixtures.all.first(),

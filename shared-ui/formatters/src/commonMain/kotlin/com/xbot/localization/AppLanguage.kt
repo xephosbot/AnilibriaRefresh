@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.LayoutDirection
 
 enum class AppLanguage(
     val isoCode: String,
-    val layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+    val layoutDirection: LayoutDirection = LayoutDirection.Ltr
 ) {
     English("en"),
     Russian("ru");
@@ -13,8 +13,7 @@ enum class AppLanguage(
         get() = layoutDirection == LayoutDirection.Rtl
 
     companion object {
-        fun getByIsoCode(isoCode: String): AppLanguage {
-            return entries.find { it.isoCode.equals(isoCode, ignoreCase = true) } ?: English
-        }
+        fun getByIsoCode(isoCode: String): AppLanguage =
+            entries.find { it.isoCode.equals(isoCode, ignoreCase = true) } ?: English
     }
 }

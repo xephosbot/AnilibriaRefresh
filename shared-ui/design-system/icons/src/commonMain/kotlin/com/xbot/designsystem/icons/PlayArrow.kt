@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.PlayArrow: ImageVector
         }
         _playArrowFilled =
             Builder(
-                    name = "PlayArrowFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "PlayArrowFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.PlayArrow: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(320.0f, 687.0f)
                         lineTo(320.0f, 273.0f)
@@ -69,7 +69,7 @@ val AnilibertyIcons.Outlined.PlayArrow: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -79,7 +79,7 @@ val AnilibertyIcons.Outlined.PlayArrow: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(320.0f, 687.0f)
                         lineTo(320.0f, 273.0f)
@@ -112,7 +112,6 @@ val AnilibertyIcons.Outlined.PlayArrow: ImageVector
                 .build()
         return _playArrowOutlined!!
     }
-
 
 private var _playArrowFilled: ImageVector? = null
 private var _playArrowOutlined: ImageVector? = null

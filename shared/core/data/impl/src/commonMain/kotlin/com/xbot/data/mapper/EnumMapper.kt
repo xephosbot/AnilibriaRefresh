@@ -1,13 +1,5 @@
 package com.xbot.data.mapper
 
-import com.xbot.network.models.enums.AgeRatingDto
-import com.xbot.network.models.enums.MemberRoleDto
-import com.xbot.network.models.enums.ProductionStatusDto
-import com.xbot.network.models.enums.PublishDayDto
-import com.xbot.network.models.enums.PublishStatusDto
-import com.xbot.network.models.enums.ReleaseTypeDto
-import com.xbot.network.models.enums.SeasonDto
-import com.xbot.network.models.enums.SortingTypeDto
 import com.xbot.domain.models.enums.AgeRating
 import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ProductionStatus
@@ -16,7 +8,15 @@ import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.enums.Season
 import com.xbot.domain.models.enums.SocialType
 import com.xbot.domain.models.enums.SortingType
+import com.xbot.network.models.enums.AgeRatingDto
+import com.xbot.network.models.enums.MemberRoleDto
+import com.xbot.network.models.enums.ProductionStatusDto
+import com.xbot.network.models.enums.PublishDayDto
+import com.xbot.network.models.enums.PublishStatusDto
+import com.xbot.network.models.enums.ReleaseTypeDto
+import com.xbot.network.models.enums.SeasonDto
 import com.xbot.network.models.enums.SocialTypeDto
+import com.xbot.network.models.enums.SortingTypeDto
 import kotlinx.datetime.DayOfWeek
 
 internal fun AgeRatingDto.toDomain(): AgeRating = when (this) {

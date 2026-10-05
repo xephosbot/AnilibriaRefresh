@@ -24,7 +24,7 @@ fun <T : Any, M : Any> rememberSnackbarSceneDecoratorStrategy(
     alignment: Alignment = Alignment.BottomCenter,
     enterTransition: EnterTransition = SnackbarSceneDecoratorDefaults.enterTransition(),
     exitTransition: ExitTransition = SnackbarSceneDecoratorDefaults.exitTransition(),
-    snackbarContent: @Composable (M) -> Unit,
+    snackbarContent: @Composable (M) -> Unit
 ): SnackbarSceneDecoratorStrategy<T, M> =
     remember(component, alignment, enterTransition, exitTransition, snackbarContent) {
         SnackbarSceneDecoratorStrategy(
@@ -32,7 +32,7 @@ fun <T : Any, M : Any> rememberSnackbarSceneDecoratorStrategy(
             alignment = alignment,
             enterTransition = enterTransition,
             exitTransition = exitTransition,
-            snackbarContent = snackbarContent,
+            snackbarContent = snackbarContent
         )
     }
 
@@ -46,7 +46,7 @@ class SnackbarSceneDecoratorStrategy<T : Any, M : Any>(
     private val alignment: Alignment,
     private val enterTransition: EnterTransition,
     private val exitTransition: ExitTransition,
-    private val snackbarContent: @Composable (M) -> Unit,
+    private val snackbarContent: @Composable (M) -> Unit
 ) : SceneDecoratorStrategy<T> {
     override fun SceneDecoratorStrategyScope<T>.decorateScene(scene: Scene<T>): Scene<T> =
         SnackbarDecoratingScene(
@@ -55,7 +55,7 @@ class SnackbarSceneDecoratorStrategy<T : Any, M : Any>(
             alignment = alignment,
             enterTransition = enterTransition,
             exitTransition = exitTransition,
-            snackbarContent = snackbarContent,
+            snackbarContent = snackbarContent
         )
 }
 
@@ -65,7 +65,7 @@ private class SnackbarDecoratingScene<T : Any, M : Any>(
     private val alignment: Alignment,
     private val enterTransition: EnterTransition,
     private val exitTransition: ExitTransition,
-    private val snackbarContent: @Composable (M) -> Unit,
+    private val snackbarContent: @Composable (M) -> Unit
 ) : Scene<T> {
     override val key: Any = scene::class to scene.key
     override val entries: List<NavEntry<T>> = scene.entries
@@ -77,7 +77,7 @@ private class SnackbarDecoratingScene<T : Any, M : Any>(
             alignment = alignment,
             animationEnterTransition = enterTransition,
             animationExitTransition = exitTransition,
-            snackbarContent = snackbarContent,
+            snackbarContent = snackbarContent
         ) {
             scene.content()
         }
@@ -89,14 +89,14 @@ private class SnackbarDecoratingScene<T : Any, M : Any>(
  * with a scale from 0.8 to 1 using the [MaterialTheme.motionScheme] fast effects/spatial specs.
  */
 object SnackbarSceneDecoratorDefaults {
-    private const val InitialScale = 0.8f
+    private const val INITIAL_SCALE = 0.8f
 
     @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     @Composable
     fun enterTransition(): EnterTransition {
         val motionScheme = MaterialTheme.motionScheme
         return fadeIn(animationSpec = motionScheme.fastEffectsSpec()) +
-            scaleIn(animationSpec = motionScheme.fastSpatialSpec(), initialScale = InitialScale)
+            scaleIn(animationSpec = motionScheme.fastSpatialSpec(), initialScale = INITIAL_SCALE)
     }
 
     @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -104,6 +104,6 @@ object SnackbarSceneDecoratorDefaults {
     fun exitTransition(): ExitTransition {
         val motionScheme = MaterialTheme.motionScheme
         return fadeOut(animationSpec = motionScheme.fastEffectsSpec()) +
-            scaleOut(animationSpec = motionScheme.fastSpatialSpec(), targetScale = InitialScale)
+            scaleOut(animationSpec = motionScheme.fastSpatialSpec(), targetScale = INITIAL_SCALE)
     }
 }

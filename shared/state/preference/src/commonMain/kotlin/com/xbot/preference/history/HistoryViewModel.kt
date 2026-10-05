@@ -8,8 +8,8 @@ import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 @KoinViewModel
-class HistoryViewModel(
-    private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), OrbitContainerHost<Unit, Unit, Nothing> {
+class HistoryViewModel(private val savedStateHandle: SavedStateHandle) :
+    ViewModel(),
+    OrbitContainerHost<Unit, Unit, Nothing> {
     override val container: OrbitContainer<Unit, Unit, Nothing> = orbitContainer(Unit)
 }

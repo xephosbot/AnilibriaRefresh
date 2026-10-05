@@ -9,9 +9,7 @@ import io.github.ajiekcx.declarativeSnackbar.core.SnackbarMessage as SnackbarEnv
 annotation class SnackbarDsl
 
 @SnackbarDsl
-class SnackbarMessageBuilder internal constructor(
-    private val text: StringResource,
-) {
+class SnackbarMessageBuilder internal constructor(private val text: StringResource) {
     private var actionLabel: StringResource? = null
     private var onAction: (() -> Unit)? = null
     private var duration: SnackbarDuration? = null
@@ -35,7 +33,7 @@ class SnackbarMessageBuilder internal constructor(
                 onAction = {
                     userAction()
                     onActionPerformed()
-                },
+                }
             )
         } else {
             SnackbarMessage.Plain(text)
@@ -50,7 +48,7 @@ class SnackbarMessageBuilder internal constructor(
 
 fun SnackbarComponent<SnackbarMessage>.show(
     text: StringResource,
-    block: SnackbarMessageBuilder.() -> Unit = {},
+    block: SnackbarMessageBuilder.() -> Unit = {}
 ) {
     show(SnackbarMessageBuilder(text).apply(block).build(onActionPerformed = ::hide))
 }

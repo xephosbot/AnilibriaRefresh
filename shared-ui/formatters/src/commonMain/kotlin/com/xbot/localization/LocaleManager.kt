@@ -52,7 +52,7 @@ fun ProvideAppLocale(content: @Composable () -> Unit) {
     CompositionLocalProvider(
         LocalAppLanguage provides isoCode,
         LocalLayoutDirection provides language.layoutDirection,
-        LocalComposeEnvironment provides environment,
+        LocalComposeEnvironment provides environment
     ) {
         content()
     }
@@ -71,7 +71,7 @@ private class AppComposeEnvironment(private val languageCode: String) : ComposeE
                 script = default.script,
                 region = default.region,
                 theme = default.theme,
-                density = default.density,
+                density = default.density
             )
         }
     }

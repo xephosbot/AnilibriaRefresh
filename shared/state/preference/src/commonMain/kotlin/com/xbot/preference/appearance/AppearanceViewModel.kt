@@ -25,14 +25,16 @@ class AppearanceViewModel(
     private val updateThemeOptionUseCase: UpdateThemeOptionUseCase,
     private val updateDynamicThemeUseCase: UpdateDynamicThemeUseCase,
     private val updatePureBlackUseCase: UpdatePureBlackUseCase,
-    private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase,
-) : ViewModel(), OrbitContainerHost<AppearanceScreenState, AppearanceScreenState, Nothing> {
+    private val updateExpressiveColorUseCase: UpdateExpressiveColorUseCase
+) : ViewModel(),
+    OrbitContainerHost<AppearanceScreenState, AppearanceScreenState, Nothing> {
 
-    override val container: OrbitContainer<AppearanceScreenState, AppearanceScreenState, Nothing> = orbitContainer(
-        initialState = AppearanceScreenState()
-    ) {
-        startObservingAppearance()
-    }
+    override val container: OrbitContainer<AppearanceScreenState, AppearanceScreenState, Nothing> =
+        orbitContainer(
+            initialState = AppearanceScreenState()
+        ) {
+            startObservingAppearance()
+        }
 
     private fun startObservingAppearance() = intent {
         combine(
@@ -55,9 +57,14 @@ class AppearanceViewModel(
     fun onAction(action: AppearanceScreenAction) {
         when (action) {
             is AppearanceScreenAction.OnThemeOptionChange -> onThemeOptionChange(action.option)
+
             is AppearanceScreenAction.OnDynamicThemeChange -> onDynamicThemeChange(action.enabled)
+
             is AppearanceScreenAction.OnPureBlackChange -> onPureBlackChange(action.enabled)
-            is AppearanceScreenAction.OnExpressiveColorChange -> onExpressiveColorChange(action.enabled)
+
+            is AppearanceScreenAction.OnExpressiveColorChange -> onExpressiveColorChange(
+                action.enabled
+            )
         }
     }
 

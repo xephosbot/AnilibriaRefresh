@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.VolunteerActivism: ImageVector
         }
         _volunteerActivismFilled =
             Builder(
-                    name = "VolunteerActivismFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "VolunteerActivismFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.VolunteerActivism: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(535.0f, 873.0f)
                         quadTo(546.0f, 876.0f, 560.5f, 875.5f)

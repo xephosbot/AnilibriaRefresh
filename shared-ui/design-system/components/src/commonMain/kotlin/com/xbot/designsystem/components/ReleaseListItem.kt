@@ -54,7 +54,7 @@ fun ReleaseListItem(
     shapes: MorphableShapes = ExpressiveReleaseListItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
-    onClick: (Release) -> Unit = {},
+    onClick: (Release) -> Unit = {}
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -97,7 +97,8 @@ fun ReleaseListItem(
     ) {
         Crossfade(
             targetState = release,
-            label = "ReleaseListItem Crossfade to ${if (release == null) "Loading" else "Loaded Release"}",
+            label = "ReleaseListItem Crossfade to " +
+                if (release == null) "Loading" else "Loaded Release"
         ) { state ->
             when (state) {
                 null -> LoadingReleaseListItem()
@@ -108,22 +109,19 @@ fun ReleaseListItem(
 }
 
 @Composable
-private fun ReleaseListItemContent(
-    release: Release,
-    modifier: Modifier = Modifier,
-) {
+private fun ReleaseListItemContent(release: Release, modifier: Modifier = Modifier) {
     ListItemLayout(
         modifier = modifier.height(ReleaseItemContainerHeight),
         headlineContent = {
             Text(
                 text = release.localizedName(),
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         },
         supportingContent = {
             Text(
                 text = release.description?.lines()?.joinToString(" ").orEmpty(),
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         },
         leadingContent = {
@@ -131,14 +129,12 @@ private fun ReleaseListItemContent(
         },
         tags = {
             ReleaseMetaText(release = release)
-        },
+        }
     )
 }
 
 @Composable
-private fun LoadingReleaseListItem(
-    modifier: Modifier = Modifier,
-) {
+private fun LoadingReleaseListItem(modifier: Modifier = Modifier) {
     val shimmer = LocalShimmer.current
 
     ListItemLayout(
@@ -151,7 +147,7 @@ private fun LoadingReleaseListItem(
                     .height(16.dp)
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.small)
-                    .background(Color.LightGray),
+                    .background(Color.LightGray)
             )
         },
         supportingContent = {
@@ -159,21 +155,21 @@ private fun LoadingReleaseListItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.extraSmall)
-                    .background(Color.LightGray),
+                    .background(Color.LightGray)
             )
         },
         leadingContent = {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray),
+                    .background(Color.LightGray)
             )
         },
         tags = {
             val tagsCount = 3
             Row(
                 horizontalArrangement = Arrangement.spacedBy(ReleaseItemTagsSpacing),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 repeat(tagsCount) { index ->
                     Box(
@@ -181,12 +177,12 @@ private fun LoadingReleaseListItem(
                             .height(16.dp)
                             .weight(1f)
                             .clip(MaterialTheme.shapes.extraSmall)
-                            .background(Color.LightGray),
+                            .background(Color.LightGray)
                     )
                     if (index != tagsCount - 1) Text("•")
                 }
             }
-        },
+        }
     )
 }
 
@@ -196,24 +192,24 @@ private fun ListItemLayout(
     headlineContent: @Composable () -> Unit,
     supportingContent: @Composable () -> Unit,
     leadingContent: @Composable () -> Unit,
-    tags: @Composable () -> Unit,
+    tags: @Composable () -> Unit
 ) {
     val headlineBox = @Composable {
         ProvideTextStyle(
             value = MaterialTheme.typography.bodyLarge,
-            content = headlineContent,
+            content = headlineContent
         )
     }
     val supportingBox = @Composable {
         ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
-            Box(modifier = Modifier.graphicsLayer { alpha = DescriptionAlpha }) {
+            Box(modifier = Modifier.graphicsLayer { alpha = DESCRIPTION_ALPHA }) {
                 supportingContent.invoke()
             }
         }
     }
     val tagsBox = @Composable {
         ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
-            Box(modifier = Modifier.graphicsLayer { alpha = SubtitleAlpha }) {
+            Box(modifier = Modifier.graphicsLayer { alpha = SUBTITLE_ALPHA }) {
                 tags.invoke()
             }
         }
@@ -221,8 +217,14 @@ private fun ListItemLayout(
 
     Layout(
         modifier = modifier,
-        contents = listOf(headlineBox, supportingBox, leadingContent, tagsBox),
-    ) { (headlineMeasurable, supportingMeasurable, leadingMeasurable, tagsMeasurable), constraints ->
+        contents = listOf(headlineBox, supportingBox, leadingContent, tagsBox)
+    ) { measurables, constraints ->
+        val (
+            headlineMeasurable,
+            supportingMeasurable,
+            leadingMeasurable,
+            tagsMeasurable
+        ) = measurables
         val containerHeight = if (constraints.hasBoundedHeight) {
             constraints.maxHeight
         } else {
@@ -236,8 +238,8 @@ private fun ListItemLayout(
                     minWidth = leadingWidth,
                     maxWidth = leadingWidth,
                     minHeight = 0,
-                    maxHeight = containerHeight,
-                ),
+                    maxHeight = containerHeight
+                )
             )
 
         val leadingPadding = ReleaseItemContainerPaddingHorizontal.roundToPx()
@@ -251,8 +253,8 @@ private fun ListItemLayout(
             .measure(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
-                    minHeight = 0,
-                ),
+                    minHeight = 0
+                )
             )
 
         val spacing = ReleaseItemContentSpacingVertical.roundToPx()
@@ -266,8 +268,8 @@ private fun ListItemLayout(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
                     minHeight = 0,
-                    maxHeight = headlineHeight,
-                ),
+                    maxHeight = headlineHeight
+                )
             )
 
         val headlineOffset = verticalPadding
@@ -280,8 +282,8 @@ private fun ListItemLayout(
                 constraints = constraints.copy(
                     maxWidth = contentWidth,
                     minHeight = 0,
-                    maxHeight = supportingHeight,
-                ),
+                    maxHeight = supportingHeight
+                )
             )
 
         val layoutWidth = if (constraints.hasBoundedWidth) {
@@ -296,23 +298,23 @@ private fun ListItemLayout(
 
         layout(
             width = layoutWidth,
-            height = containerHeight,
+            height = containerHeight
         ) {
             leadingPlaceable.placeRelative(
                 x = 0,
-                y = 0,
+                y = 0
             )
             headlinePlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = headlineOffset,
+                y = headlineOffset
             )
             tagsPlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = tagsOffset,
+                y = tagsOffset
             )
             supportingPlaceable.placeRelative(
                 x = leadingWidth + leadingPadding,
-                y = tagsOffset + tagsPlaceable.height + spacing,
+                y = tagsOffset + tagsPlaceable.height + spacing
             )
         }
     }
@@ -321,16 +323,14 @@ private fun ListItemLayout(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveReleaseListItemDefaults {
     @Composable
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = RoundedCornerShape(0.dp),
-            pressedShape = MaterialTheme.shapes.large,
-            selectedShape = MaterialTheme.shapes.large,
-            focusedShape = MaterialTheme.shapes.large,
-            hoveredShape = MaterialTheme.shapes.medium,
-            draggedShape = MaterialTheme.shapes.large
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = RoundedCornerShape(0.dp),
+        pressedShape = MaterialTheme.shapes.large,
+        selectedShape = MaterialTheme.shapes.large,
+        focusedShape = MaterialTheme.shapes.large,
+        hoveredShape = MaterialTheme.shapes.medium,
+        draggedShape = MaterialTheme.shapes.large
+    )
 }
 
 private val ReleaseItemContainerPaddingVertical = 12.dp
@@ -338,8 +338,8 @@ private val ReleaseItemContainerPaddingHorizontal = 16.dp
 private val ReleaseItemContainerHeight = 160.dp
 private val ReleaseItemContentSpacingVertical = 4.dp
 private val ReleaseItemTagsSpacing = 8.dp
-private const val SubtitleAlpha = 0.6f
-private const val DescriptionAlpha = 0.8f
+private const val SUBTITLE_ALPHA = 0.6f
+private const val DESCRIPTION_ALPHA = 0.8f
 
 @AnilibertyPreview
 @Composable

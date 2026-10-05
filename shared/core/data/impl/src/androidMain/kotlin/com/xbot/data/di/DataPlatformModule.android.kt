@@ -10,7 +10,6 @@ import org.koin.core.scope.Scope
 actual class DataPlatformModule {
 
     @Singleton
-    internal actual fun provideDataStoreDir(scope: Scope): DataStoreDirWrapper {
-        return DataStoreDirWrapper(scope.androidContext().filesDir.toOkioPath())
-    }
+    internal actual fun provideDataStoreDir(scope: Scope): DataStoreDirWrapper =
+        DataStoreDirWrapper(scope.androidContext().filesDir.toOkioPath())
 }

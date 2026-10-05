@@ -7,10 +7,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = SeasonDto.Companion.Serializer::class)
 enum class SeasonDto(val value: String) {
-    @SerialName("winter") WINTER("winter"),
-    @SerialName("spring") SPRING("spring"),
-    @SerialName("summer") SUMMER("summer"),
-    @SerialName("autumn") AUTUMN("autumn");
+    @SerialName("winter")
+    WINTER("winter"),
+
+    @SerialName("spring")
+    SPRING("spring"),
+
+    @SerialName("summer")
+    SUMMER("summer"),
+
+    @SerialName("autumn")
+    AUTUMN("autumn");
 
     override fun toString(): String = value
 

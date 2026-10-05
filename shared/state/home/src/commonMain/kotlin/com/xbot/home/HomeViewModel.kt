@@ -35,24 +35,26 @@ class HomeViewModel(
     private val getRecommendedGenres: GetRecommendedGenresUseCase,
     private val getScheduleForToday: GetScheduleForTodayUseCase,
     private val getScheduleWeek: GetScheduleWeekUseCase,
-    private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), OrbitContainerHost<HomeScreenState, HomeScreenState, HomeScreenSideEffect> {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel(),
+    OrbitContainerHost<HomeScreenState, HomeScreenState, HomeScreenSideEffect> {
 
-    override val container: OrbitContainer<HomeScreenState, HomeScreenState, HomeScreenSideEffect> = orbitContainer(
-        initialState = HomeScreenState(),
-        savedStateHandle = savedStateHandle,
-        serializer = HomeScreenState.serializer(),
-    ) {
-        coroutineScope {
-            launch { loadBestReleasesInCurrentSeason() }
-            launch { loadBestReleasesForAllTime() }
-            launch { loadRecommendedFranchises() }
-            launch { loadRecommendedReleases() }
-            launch { loadRecommendedGenres() }
-            launch { loadScheduleForToday() }
-            launch { loadScheduleWeek() }
+    override val container: OrbitContainer<HomeScreenState, HomeScreenState, HomeScreenSideEffect> =
+        orbitContainer(
+            initialState = HomeScreenState(),
+            savedStateHandle = savedStateHandle,
+            serializer = HomeScreenState.serializer()
+        ) {
+            coroutineScope {
+                launch { loadBestReleasesInCurrentSeason() }
+                launch { loadBestReleasesForAllTime() }
+                launch { loadRecommendedFranchises() }
+                launch { loadRecommendedReleases() }
+                launch { loadRecommendedGenres() }
+                launch { loadScheduleForToday() }
+                launch { loadScheduleWeek() }
+            }
         }
-    }
 
     private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
 

@@ -54,6 +54,11 @@ orbit-mvi = "12.0.1"
 connectivity = "2.5.2"
 declarative-snackbar = "0.2.1"
 
+# Code quality
+spotless = "8.10.3"
+ktlint = "1.8.0"
+detekt = "2.0.0-alpha.6"
+
 # Testing
 junit4 = "4.13.2"
 androidx-test-core = "1.7.0"
@@ -194,3 +199,7 @@ compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-m
 # Koin
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
+
+# Code quality
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }

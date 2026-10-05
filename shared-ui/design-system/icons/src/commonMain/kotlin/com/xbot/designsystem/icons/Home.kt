@@ -22,7 +22,7 @@ val AnilibertyIcons.Filled.Home: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.Home: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(160.0f, 760.0f)
                         lineTo(160.0f, 400.0f)
@@ -81,7 +81,7 @@ val AnilibertyIcons.Outlined.Home: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -91,7 +91,7 @@ val AnilibertyIcons.Outlined.Home: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(240.0f, 760.0f)
                         lineTo(360.0f, 760.0f)
@@ -164,7 +164,6 @@ val AnilibertyIcons.Outlined.Home: ImageVector
                 .build()
         return _homeOutlined!!
     }
-
 
 private var _homeFilled: ImageVector? = null
 private var _homeOutlined: ImageVector? = null

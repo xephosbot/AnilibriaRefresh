@@ -1,14 +1,13 @@
 package com.xbot.domain.usecase
 
 import com.xbot.data.repository.AppearanceRepository
-import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
+import org.koin.core.annotation.Factory
 
 @Factory
 @HiddenFromObjC
-internal class DefaultUpdateDynamicThemeUseCase(
-    private val repository: AppearanceRepository
-) : UpdateDynamicThemeUseCase {
+internal class DefaultUpdateDynamicThemeUseCase(private val repository: AppearanceRepository) :
+    UpdateDynamicThemeUseCase {
     override suspend fun invoke(enabled: Boolean) {
         repository.setDynamicTheme(enabled)
     }

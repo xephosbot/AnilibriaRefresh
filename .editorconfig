@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+ktlint_code_style = android_studio
+ktlint_function_naming_ignore_when_annotated_with = Composable
+
+# Icons use the generated `_Icon` lazy-cache pattern without a matching public property.
+[shared-ui/design-system/icons/**.kt]
+ktlint_standard_backing-property-naming = disabled

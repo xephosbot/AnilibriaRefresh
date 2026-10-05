@@ -99,7 +99,7 @@ internal class AnilibertyTabBarController :
 
     override fun tabBarController(
         tabBarController: UITabBarController,
-        shouldSelectTab: UITab,
+        shouldSelectTab: UITab
     ): Boolean {
         routesByIdentifier[shouldSelectTab.identifier]?.let { route ->
             onTabSelected?.invoke(route)
@@ -157,13 +157,13 @@ internal class AnilibertyTabBarController :
     private fun buildTabs(): List<UITab> = topLevelRoutes.map { route ->
         val symbolName = route.sfSymbolName ?: run {
             Logger.w { "No SF Symbol mapped for ${route.tabIdentifier}, using a generic icon" }
-            FallbackSfSymbolName
+            FALLBACK_SF_SYMBOL_NAME
         }
         val tab = UITab(
             title = "",
             image = UIImage.systemImageNamed(symbolName),
             identifier = route.tabIdentifier,
-            viewControllerProvider = { PassthroughViewController() },
+            viewControllerProvider = { PassthroughViewController() }
         )
         tabsByIdentifier[route.tabIdentifier] = tab
         tab
@@ -198,7 +198,7 @@ internal class AnilibertyTabBarController :
             maxOf(0.0, contentTop - inheritedTop),
             0.0,
             maxOf(0.0, contentBottom - inheritedBottom),
-            0.0,
+            0.0
         )
     }
 

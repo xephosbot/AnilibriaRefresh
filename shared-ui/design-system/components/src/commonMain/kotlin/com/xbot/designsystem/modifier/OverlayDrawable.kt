@@ -29,7 +29,8 @@ fun Modifier.overlayDrawable(
             size
         }
         val layerBounds = Rect(
-            offset.x.toPx(), offset.y.toPx(),
+            offset.x.toPx(),
+            offset.y.toPx(),
             offset.x.toPx() + painterSize.width,
             offset.y.toPx() + painterSize.height
         )

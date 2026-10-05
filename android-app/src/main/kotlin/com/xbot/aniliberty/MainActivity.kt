@@ -84,8 +84,10 @@ class MainActivity : AppCompatActivity() {
     private fun onNotificationPermissionResult(isGranted: Boolean) {
         when {
             isGranted -> toast(R.string.notification_permission_granted)
+
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) ->
                 toast(R.string.notification_permission_denied)
+
             else -> toast(R.string.notification_permission_open_settings)
         }
     }
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
         return ContextCompat.checkSelfPermission(
             this,
-            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -110,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(
             ObjectAnimator.ofFloat(splashScreenView, View.ALPHA, 1f, 0f),
-            ObjectAnimator.ofFloat(iconView, View.ALPHA, 1f, 0f),
+            ObjectAnimator.ofFloat(iconView, View.ALPHA, 1f, 0f)
         )
         animatorSet.duration = SPLASHSCREEN_ALPHA_ANIMATION_DURATION
         animatorSet.interpolator = accelerateInterpolator

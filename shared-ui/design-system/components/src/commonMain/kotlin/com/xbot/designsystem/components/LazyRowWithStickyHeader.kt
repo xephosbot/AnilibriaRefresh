@@ -29,12 +29,13 @@ fun <K, V> LazyRowWithStickyHeader(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     stickyEdgePadding: Dp = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
     reverseLayout: Boolean = false,
-    horizontalArrangement: Arrangement.Horizontal = if (!reverseLayout) Arrangement.Start else Arrangement.End,
+    horizontalArrangement: Arrangement.Horizontal =
+        if (!reverseLayout) Arrangement.Start else Arrangement.End,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     stickyHeader: @Composable (K) -> Unit,
-    itemContent: @Composable LazyItemScope.(V) -> Unit,
+    itemContent: @Composable LazyItemScope.(V) -> Unit
 ) {
     val itemsWithKeys = remember(items) {
         items.flatMap { entry -> entry.value.map { entry.key to it } }
@@ -50,7 +51,7 @@ fun <K, V> LazyRowWithStickyHeader(
             },
             content = {
                 stickyHeader(it.key)
-            },
+            }
         )
 
         LazyRow(
@@ -61,10 +62,10 @@ fun <K, V> LazyRowWithStickyHeader(
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             flingBehavior = flingBehavior,
-            userScrollEnabled = userScrollEnabled,
+            userScrollEnabled = userScrollEnabled
         ) {
             itemsIndexed(
-                items = itemsWithKeys,
+                items = itemsWithKeys
             ) { index, (_, value) ->
                 itemContent(value)
             }

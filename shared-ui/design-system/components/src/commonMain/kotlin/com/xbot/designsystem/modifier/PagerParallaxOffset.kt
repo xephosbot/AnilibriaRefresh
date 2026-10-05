@@ -33,7 +33,6 @@ fun Modifier.fadeWithParallax(state: PagerState, page: Int) = this
         alpha = (2f - pageOffset.absoluteValue * PARALLAX_MULTIPLIER * 2f) / 2f
     }
 
-internal fun PagerState.offsetForPage(page: Int) =
-    (currentPage - page) + currentPageOffsetFraction
+internal fun PagerState.offsetForPage(page: Int) = (currentPage - page) + currentPageOffsetFraction
 
 private const val PARALLAX_MULTIPLIER = 1.5f

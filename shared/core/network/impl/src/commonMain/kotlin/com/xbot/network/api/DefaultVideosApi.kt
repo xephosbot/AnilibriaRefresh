@@ -10,9 +10,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultVideosApi(private val requester: HttpRequester) : VideosApi {
-    override suspend fun getVideos(limit: Int): Either<AppError, List<VideoDto>> = requester.request {
-        get("media/videos") {
-            parameter("limit", limit)
+    override suspend fun getVideos(limit: Int): Either<AppError, List<VideoDto>> =
+        requester.request {
+            get("media/videos") {
+                parameter("limit", limit)
+            }
         }
-    }
 }

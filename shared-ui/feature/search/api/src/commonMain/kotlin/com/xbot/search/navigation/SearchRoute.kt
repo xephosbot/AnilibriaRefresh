@@ -1,15 +1,15 @@
 package com.xbot.search.navigation
 
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.Search
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.Navigator
 import com.xbot.navigation.TopLevelNavKey
-import kotlinx.serialization.Serializable
-import androidx.compose.ui.graphics.vector.ImageVector
-import org.jetbrains.compose.resources.StringResource
 import com.xbot.resources.Res
 import com.xbot.resources.fab_search
-import com.xbot.designsystem.icons.AnilibertyIcons
-import com.xbot.designsystem.icons.Search
+import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.StringResource
 
 @Serializable
 data object SearchRoute : TopLevelNavKey {

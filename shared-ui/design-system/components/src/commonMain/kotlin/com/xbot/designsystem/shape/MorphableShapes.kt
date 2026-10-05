@@ -36,7 +36,7 @@ interface MorphableShapes {
         selected: Boolean = false,
         hovered: Boolean = false,
         focused: Boolean = false,
-        dragged: Boolean = false,
+        dragged: Boolean = false
     ): Shape
 }
 
@@ -48,7 +48,7 @@ fun MorphableShapes(
     selectedShape: Shape = shape,
     hoveredShape: Shape = shape,
     focusedShape: Shape = shape,
-    draggedShape: Shape = shape,
+    draggedShape: Shape = shape
 ): MorphableShapes = ShapesByInteraction(
     shape = shape,
     pressedShape = pressedShape,
@@ -56,7 +56,7 @@ fun MorphableShapes(
     selectedShape = selectedShape,
     hoveredShape = hoveredShape,
     focusedShape = focusedShape,
-    draggedShape = draggedShape,
+    draggedShape = draggedShape
 )
 
 /**
@@ -72,7 +72,7 @@ fun MorphableShapes(
     selectedShape: RoundedPolygon = shape,
     hoveredShape: RoundedPolygon = shape,
     focusedShape: RoundedPolygon = shape,
-    draggedShape: RoundedPolygon = shape,
+    draggedShape: RoundedPolygon = shape
 ): MorphableShapes = PolygonShapes(
     shape = shape,
     pressedShape = pressedShape,
@@ -80,7 +80,7 @@ fun MorphableShapes(
     selectedShape = selectedShape,
     hoveredShape = hoveredShape,
     focusedShape = focusedShape,
-    draggedShape = draggedShape,
+    draggedShape = draggedShape
 )
 
 /**
@@ -99,7 +99,7 @@ fun rememberMorphableShape(
     selected: Boolean = false,
     hovered: Boolean = false,
     focused: Boolean = false,
-    dragged: Boolean = false,
+    dragged: Boolean = false
 ): Shape = when (shapes) {
     is PolygonShapes -> {
         val targetIndex = shapes.resolveIndex(pressed, checked, selected, hovered, focused, dragged)
@@ -117,13 +117,14 @@ fun rememberMorphableShape(
         // layer instead of recomposing on every frame.
         remember(shapes) { MorphNShape(shapes.morph) { weights.map { it.value } } }
     }
+
     else -> {
         val targetShape = shapes.resolveShape(pressed, checked, selected, hovered, focused, dragged)
         if (targetShape is CornerBasedShape) {
             key(shapes) {
                 rememberAnimatedShape(
                     currentShape = targetShape,
-                    animationSpec = animationSpec,
+                    animationSpec = animationSpec
                 )
             }
         } else {
@@ -139,7 +140,7 @@ private data class ShapesByInteraction(
     val selectedShape: Shape,
     val hoveredShape: Shape,
     val focusedShape: Shape,
-    val draggedShape: Shape,
+    val draggedShape: Shape
 ) : MorphableShapes {
 
     override fun resolveShape(
@@ -148,7 +149,7 @@ private data class ShapesByInteraction(
         selected: Boolean,
         hovered: Boolean,
         focused: Boolean,
-        dragged: Boolean,
+        dragged: Boolean
     ): Shape = when {
         pressed -> pressedShape
         checked -> checkedShape
@@ -167,13 +168,19 @@ private data class PolygonShapes(
     val selectedShape: RoundedPolygon,
     val hoveredShape: RoundedPolygon,
     val focusedShape: RoundedPolygon,
-    val draggedShape: RoundedPolygon,
+    val draggedShape: RoundedPolygon
 ) : MorphableShapes {
 
     // The distinct polygons participating in the morph; states pointing at the same instance
     // share a weight.
     val polygons: List<RoundedPolygon> = listOf(
-        shape, pressedShape, checkedShape, selectedShape, hoveredShape, focusedShape, draggedShape
+        shape,
+        pressedShape,
+        checkedShape,
+        selectedShape,
+        hoveredShape,
+        focusedShape,
+        draggedShape
     ).distinct()
 
     // Built lazily and reused: matching the polygons is the expensive part of a morph.
@@ -185,7 +192,7 @@ private data class PolygonShapes(
         selected: Boolean,
         hovered: Boolean,
         focused: Boolean,
-        dragged: Boolean,
+        dragged: Boolean
     ): Int = polygons.indexOf(
         when {
             pressed -> pressedShape
@@ -204,7 +211,7 @@ private data class PolygonShapes(
         selected: Boolean,
         hovered: Boolean,
         focused: Boolean,
-        dragged: Boolean,
+        dragged: Boolean
     ): Shape {
         val index = resolveIndex(pressed, checked, selected, hovered, focused, dragged)
         val weights = List(polygons.size) { if (it == index) 1f else 0f }
@@ -212,10 +219,8 @@ private data class PolygonShapes(
     }
 }
 
-private class MorphNShape(
-    private val morph: MorphN,
-    private val weights: () -> List<Float>,
-) : Shape {
+private class MorphNShape(private val morph: MorphN, private val weights: () -> List<Float>) :
+    Shape {
     private val matrix = Matrix()
     private val path = Path()
 

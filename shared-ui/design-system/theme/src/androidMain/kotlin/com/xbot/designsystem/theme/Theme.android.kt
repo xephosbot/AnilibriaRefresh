@@ -47,7 +47,7 @@ internal actual fun rememberColorScheme(
             isAmoled = amoled,
             style = style,
             contrastLevel = contrastLevel.toDouble(),
-            specVersion = ColorSpec.SpecVersion.SPEC_2025,
+            specVersion = ColorSpec.SpecVersion.SPEC_2025
         ) { colorScheme ->
             colorScheme.copy(
                 surfaceContainer = if (amoled && darkTheme) {

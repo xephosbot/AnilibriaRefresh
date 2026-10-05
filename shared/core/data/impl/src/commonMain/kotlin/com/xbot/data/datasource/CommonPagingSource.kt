@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import arrow.core.Either
 import com.xbot.common.error.AppError
-import kotlinx.coroutines.CancellationException
 import kotlin.math.max
+import kotlinx.coroutines.CancellationException
 
 /**
  * Paging3 bridge that speaks Arrow [Either] internally and only crosses into Paging's
@@ -36,7 +36,7 @@ import kotlin.math.max
  */
 internal class CommonPagingSource<T : Any>(
     private val pageSize: Int = DEFAULT_PAGE_SIZE,
-    private val loadPage: suspend (page: Int, limit: Int) -> Either<AppError, PaginatedResponse<T>>,
+    private val loadPage: suspend (page: Int, limit: Int) -> Either<AppError, PaginatedResponse<T>>
 ) : PagingSource<Int, T>() {
 
     init {
@@ -70,9 +70,9 @@ internal class CommonPagingSource<T : Any>(
                         prevKey = prevKey,
                         nextKey = nextKey,
                         itemsBefore = itemsBefore,
-                        itemsAfter = itemsAfter,
+                        itemsAfter = itemsAfter
                     )
-                },
+                }
             )
         } catch (e: CancellationException) {
             throw e
@@ -88,10 +88,7 @@ internal class CommonPagingSource<T : Any>(
 
     override val jumpingSupported: Boolean = true
 
-    data class PaginatedResponse<T>(
-        val items: List<T>,
-        val total: Int,
-    )
+    data class PaginatedResponse<T>(val items: List<T>, val total: Int)
 
     companion object {
         /** Default page size used when callers don't override. Matches the API's canonical page window. */
