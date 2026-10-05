@@ -12,7 +12,6 @@ import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
+import androidx.core.view.WindowCompat
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import com.xbot.navigation.ExternalUriHandler
 import com.xbot.sharedapp.rememberAnilibertyAppState
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
         askNotificationPermission()
 
-        enableEdgeToEdge()
+        WindowCompat.enableEdgeToEdge(window)
         setContent {
             val appState = rememberAnilibertyAppState()
             val isReady = appState.isReady
