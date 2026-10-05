@@ -19,11 +19,12 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultCollectionApi(private val requester: HttpRequester) : CollectionApi {
-    override suspend fun getCollectionIds(): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
-        get("accounts/users/me/collections/ids") {
-            requiresAuth()
+    override suspend fun getCollectionIds(): Either<AppError, Map<Int, CollectionTypeDto>> =
+        requester.request {
+            get("accounts/users/me/collections/ids") {
+                requiresAuth()
+            }
         }
-    }
 
     override suspend fun getCollectionReleases(
         page: Int,
@@ -48,42 +49,51 @@ internal class DefaultCollectionApi(private val requester: HttpRequester) : Coll
         }
     }
 
-    override suspend fun addToCollections(collections: Map<Int, CollectionTypeDto>): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
+    override suspend fun addToCollections(
+        collections: Map<Int, CollectionTypeDto>
+    ): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
         post("accounts/users/me/collections") {
             requiresAuth()
-            setBody(collections.map { (releaseId, collectionType) ->
-                mapOf(
-                    "release_id" to releaseId,
-                    "type_of_collection" to collectionType
-                )
-            })
+            setBody(
+                collections.map { (releaseId, collectionType) ->
+                    mapOf(
+                        "release_id" to releaseId,
+                        "type_of_collection" to collectionType
+                    )
+                }
+            )
         }
     }
 
-    override suspend fun removeFromCollections(releaseIds: List<Int>): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
+    override suspend fun removeFromCollections(
+        releaseIds: List<Int>
+    ): Either<AppError, Map<Int, CollectionTypeDto>> = requester.request {
         delete("accounts/users/me/collections") {
             requiresAuth()
             setBody(releaseIds.map { mapOf("release_id" to it) })
         }
     }
 
-    override suspend fun getCollectionAgeRatings(): Either<AppError, List<AgeRatingDto>> = requester.request {
-        get("accounts/users/me/collections/references/age-ratings") {
-            requiresAuth()
+    override suspend fun getCollectionAgeRatings(): Either<AppError, List<AgeRatingDto>> =
+        requester.request {
+            get("accounts/users/me/collections/references/age-ratings") {
+                requiresAuth()
+            }
         }
-    }
 
-    override suspend fun getCollectionGenres(): Either<AppError, List<GenreDto>> = requester.request {
-        get("accounts/users/me/collections/references/genres") {
-            requiresAuth()
+    override suspend fun getCollectionGenres(): Either<AppError, List<GenreDto>> =
+        requester.request {
+            get("accounts/users/me/collections/references/genres") {
+                requiresAuth()
+            }
         }
-    }
 
-    override suspend fun getCollectionReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> = requester.request {
-        get("accounts/users/me/collections/references/types") {
-            requiresAuth()
+    override suspend fun getCollectionReleaseTypes(): Either<AppError, List<ReleaseTypeDto>> =
+        requester.request {
+            get("accounts/users/me/collections/references/types") {
+                requiresAuth()
+            }
         }
-    }
 
     override suspend fun getCollectionYears(): Either<AppError, List<Int>> = requester.request {
         get("accounts/users/me/collections/references/years") {

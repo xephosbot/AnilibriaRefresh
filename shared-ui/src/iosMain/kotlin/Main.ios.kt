@@ -8,6 +8,8 @@ import com.xbot.sharedapp.navigation.LocalNavigationChrome
 import org.koin.mp.KoinPlatform
 import platform.UIKit.UIViewController
 
+// Called from Swift as Main_iosKt.MainViewController().
+@Suppress("ktlint:standard:function-naming")
 fun MainViewController(): UIViewController {
     if (KoinPlatform.getKoinOrNull() == null) {
         initKoin()

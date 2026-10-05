@@ -10,11 +10,14 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultEpisodesApi(private val requester: HttpRequester) : EpisodesApi {
-    override suspend fun getEpisode(episodeId: Int): Either<AppError, EpisodeWithReleaseDto> = requester.request {
-        get("anime/releases/episodes/${episodeId}")
-    }
+    override suspend fun getEpisode(episodeId: Int): Either<AppError, EpisodeWithReleaseDto> =
+        requester.request {
+            get("anime/releases/episodes/$episodeId")
+        }
 
-    override suspend fun getEpisodeTimecode(releaseEpisodeId: String): Either<AppError, EpisodeTimecodeDto> = requester.request {
-        get("anime/releases/episodes/${releaseEpisodeId}/timecode")
+    override suspend fun getEpisodeTimecode(
+        releaseEpisodeId: String
+    ): Either<AppError, EpisodeTimecodeDto> = requester.request {
+        get("anime/releases/episodes/$releaseEpisodeId/timecode")
     }
 }

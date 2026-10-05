@@ -79,7 +79,7 @@ fun MediumSplitButton(
     trailingContent: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
     colors: ButtonColors = com.xbot.designsystem.components.SplitButtonDefaults.colors(),
-    spacing: Dp = SplitButtonDefaults.Spacing,
+    spacing: Dp = SplitButtonDefaults.Spacing
 ) {
     SplitButtonLayout(
         leadingButton = {
@@ -116,7 +116,7 @@ fun MediumSplitButton(
                 colors = colors,
                 contentPadding = SplitButtonDefaults
                     .trailingButtonContentPaddingFor(SplitButtonDefaults.MediumContainerHeight),
-                content = trailingContent,
+                content = trailingContent
             )
         },
         modifier = modifier,
@@ -133,7 +133,7 @@ fun MediumSplitButton(
     trailingContent: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
     colors: ButtonColors = com.xbot.designsystem.components.SplitButtonDefaults.colors(),
-    spacing: Dp = SplitButtonDefaults.Spacing,
+    spacing: Dp = SplitButtonDefaults.Spacing
 ) {
     SplitButtonLayout(
         leadingButton = {
@@ -183,7 +183,7 @@ private fun SplitButtonLayout(
     leadingButton: @Composable () -> Unit,
     trailingButton: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    spacing: Dp = SplitButtonDefaults.Spacing,
+    spacing: Dp = SplitButtonDefaults.Spacing
 ) {
     Layout(
         {
@@ -191,12 +191,12 @@ private fun SplitButtonLayout(
             // Enforce it on the parent instead
             CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
                 Box(
-                    modifier = Modifier.layoutId(LeadingButtonLayoutId),
+                    modifier = Modifier.layoutId(LEADING_BUTTON_LAYOUT_ID),
                     contentAlignment = Alignment.Center,
                     content = { leadingButton() }
                 )
                 Box(
-                    modifier = Modifier.layoutId(TrailingButtonLayoutId),
+                    modifier = Modifier.layoutId(TRAILING_BUTTON_LAYOUT_ID),
                     contentAlignment = Alignment.Center,
                     content = { trailingButton() }
                 )
@@ -207,7 +207,7 @@ private fun SplitButtonLayout(
             val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
             val trailingMeasurable = measurables
-                .fastFirst { it.layoutId == TrailingButtonLayoutId }
+                .fastFirst { it.layoutId == TRAILING_BUTTON_LAYOUT_ID }
 
             val trailingPlaceable = trailingMeasurable.measure(
                 looseConstraints.copy(
@@ -221,7 +221,7 @@ private fun SplitButtonLayout(
                     .coerceAtLeast(0)
 
             val leadingPlaceable = measurables
-                .fastFirst { it.layoutId == LeadingButtonLayoutId }
+                .fastFirst { it.layoutId == LEADING_BUTTON_LAYOUT_ID }
                 .measure(
                     looseConstraints.copy(
                         minWidth = availableForLeading,
@@ -263,7 +263,11 @@ private fun SplitButtonPreview() {
         leadingContent = {
             Icon(
                 modifier = Modifier
-                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                    .size(
+                        SplitButtonDefaults.leadingButtonIconSizeFor(
+                            SplitButtonDefaults.MediumContainerHeight
+                        )
+                    ),
                 imageVector = com.xbot.designsystem.icons.AnilibertyIcons.Filled.PlayArrow,
                 contentDescription = null
             )
@@ -276,7 +280,11 @@ private fun SplitButtonPreview() {
         trailingContent = {
             Icon(
                 modifier = Modifier
-                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                    .size(
+                        SplitButtonDefaults.trailingButtonIconSizeFor(
+                            SplitButtonDefaults.MediumContainerHeight
+                        )
+                    ),
                 imageVector = com.xbot.designsystem.icons.AnilibertyIcons.ArrowDropDown,
                 contentDescription = null
             )
@@ -295,10 +303,10 @@ object SplitButtonDefaults {
         containerColor = containerColor,
         contentColor = contentColor,
         disabledContainerColor = disabledContainerColor,
-        disabledContentColor = disabledContentColor,
+        disabledContentColor = disabledContentColor
     )
 
-    //Temporary fix
+    // Temporary fix
     @Composable
     @ExperimentalMaterial3ExpressiveApi
     fun TrailingButton(
@@ -306,13 +314,17 @@ object SplitButtonDefaults {
         onCheckedChange: (Boolean) -> Unit,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
-        shapes: SplitButtonShapes = SplitButtonDefaults.trailingButtonShapesFor(SplitButtonDefaults.SmallContainerHeight),
+        shapes: SplitButtonShapes = SplitButtonDefaults.trailingButtonShapesFor(
+            SplitButtonDefaults.SmallContainerHeight
+        ),
         colors: ButtonColors = ButtonDefaults.buttonColors(),
         elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
         border: BorderStroke? = null,
-        contentPadding: PaddingValues = SplitButtonDefaults.trailingButtonContentPaddingFor(SplitButtonDefaults.SmallContainerHeight),
+        contentPadding: PaddingValues = SplitButtonDefaults.trailingButtonContentPaddingFor(
+            SplitButtonDefaults.SmallContainerHeight
+        ),
         interactionSource: MutableInteractionSource? = null,
-        content: @Composable RowScope.() -> Unit,
+        content: @Composable RowScope.() -> Unit
     ) {
         @Suppress("NAME_SHADOWING")
         val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -337,7 +349,7 @@ object SplitButtonDefaults {
                             drawOutline(
                                 outline = shape.createOutline(size, layoutDirection, density),
                                 color = contentColor,
-                                alpha = SplitButtonDefaults.TrailingButtonStateLayerAlpha,
+                                alpha = SplitButtonDefaults.TrailingButtonStateLayerAlpha
                             )
                         }
                     }
@@ -348,23 +360,23 @@ object SplitButtonDefaults {
             contentColor = contentColor,
             shadowElevation = elevation?.shadowElevation(enabled, interactionSource)?.value ?: 0.dp,
             border = border,
-            interactionSource = interactionSource,
+            interactionSource = interactionSource
         ) {
             ProvideContentColorTextStyle(
                 contentColor = contentColor,
-                textStyle = MaterialTheme.typography.labelLarge,
+                textStyle = MaterialTheme.typography.labelLarge
             ) {
                 Row(
                     Modifier
                         .defaultMinSize(
                             minWidth = 48.dp,
-                            minHeight = SplitButtonDefaults.SmallContainerHeight,
+                            minHeight = SplitButtonDefaults.SmallContainerHeight
                         )
                         .then(Modifier)
                         .padding(contentPadding),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
-                    content = content,
+                    content = content
                 )
             }
         }
@@ -377,14 +389,16 @@ private fun shapeByInteraction(
     shapes: SplitButtonShapes,
     pressed: Boolean,
     checked: Boolean,
-    animationSpec: FiniteAnimationSpec<Float>,
+    animationSpec: FiniteAnimationSpec<Float>
 ): Shape {
     val shape =
         if (pressed) {
             shapes.pressedShape ?: shapes.shape
         } else if (checked) {
             shapes.checkedShape ?: shapes.shape
-        } else shapes.shape
+        } else {
+            shapes.shape
+        }
 
     if (shapes.hasRoundedCornerShapes) {
         return rememberAnimatedShape(shape as RoundedCornerShape, animationSpec)
@@ -401,5 +415,5 @@ private val SplitButtonShapes.hasRoundedCornerShapes: Boolean
         return shape is RoundedCornerShape
     }
 
-private const val LeadingButtonLayoutId = "LeadingButton"
-private const val TrailingButtonLayoutId = "TrailingButton"
+private const val LEADING_BUTTON_LAYOUT_ID = "LeadingButton"
+private const val TRAILING_BUTTON_LAYOUT_ID = "TrailingButton"

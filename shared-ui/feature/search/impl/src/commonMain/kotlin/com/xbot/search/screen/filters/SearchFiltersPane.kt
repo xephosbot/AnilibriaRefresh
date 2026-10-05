@@ -79,11 +79,11 @@ import com.xbot.search.SearchScreenSideEffect
 import com.xbot.search.SearchScreenState
 import com.xbot.search.SearchViewModel
 import io.kotzilla.sdk.compose.TrackScreen
+import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import kotlin.math.roundToInt
 
 @TrackScreen
 @Composable
@@ -91,7 +91,7 @@ internal fun SearchFilterPane(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = koinViewModel(),
     showBackButton: Boolean,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val state by viewModel.collectAsState()
 
@@ -123,7 +123,7 @@ private fun SearchFilterPaneContent(
     state: SearchScreenState,
     showBackButton: Boolean,
     onAction: (SearchScreenAction) -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -135,7 +135,9 @@ private fun SearchFilterPaneContent(
                             modifier = Modifier.padding(start = 6.dp),
                             onClick = onBackClick,
                             shapes = IconButtonDefaults.shapes(),
-                            colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                MaterialTheme.colorScheme.surfaceContainerHighest
+                            )
                         ) {
                             Icon(
                                 imageVector = AnilibertyIcons.ArrowBack,
@@ -144,10 +146,12 @@ private fun SearchFilterPaneContent(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         FiltersScreenContent(
             modifier = modifier,
@@ -224,13 +228,13 @@ private fun FiltersScreenContent(
     onYearsRangeChange: (IntRange) -> Unit,
     ageRatings: List<AgeRating>,
     selectedAgeRatings: List<AgeRating>,
-    onAgeRatingClick: (AgeRating) -> Unit,
+    onAgeRatingClick: (AgeRating) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(contentPadding),
+            .padding(contentPadding)
     ) {
         PreferenceItem(
             modifier = Modifier.section(0, 8),
@@ -258,9 +262,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -294,9 +304,15 @@ private fun FiltersScreenContent(
                                 label = { Text(item.name) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -330,9 +346,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -366,9 +388,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -402,9 +430,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -438,9 +472,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -467,7 +507,7 @@ private fun FiltersScreenContent(
                             onValueChange = {
                                 onYearsRangeChange(it.toIntRange())
                             },
-                            valueRange = years.toFloatRange(),
+                            valueRange = years.toFloatRange()
                         )
                     }
                 }
@@ -500,9 +540,15 @@ private fun FiltersScreenContent(
                                 label = { Text(stringResource(item.stringRes)) },
                                 leadingIcon = if (selected) {
                                     {
-                                        Icon(AnilibertyIcons.Check, null, Modifier.size(FilterChipDefaults.IconSize))
+                                        Icon(
+                                            AnilibertyIcons.Check,
+                                            null,
+                                            Modifier.size(FilterChipDefaults.IconSize)
+                                        )
                                     }
-                                } else null
+                                } else {
+                                    null
+                                }
                             )
                         }
                     }
@@ -513,13 +559,11 @@ private fun FiltersScreenContent(
     }
 }
 
-private fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> {
-    return start.toFloat()..endInclusive.toFloat()
-}
+private fun IntRange.toFloatRange(): ClosedFloatingPointRange<Float> =
+    start.toFloat()..endInclusive.toFloat()
 
-private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange {
-    return start.roundToInt()..endInclusive.roundToInt()
-}
+private fun ClosedFloatingPointRange<Float>.toIntRange(): IntRange =
+    start.roundToInt()..endInclusive.roundToInt()
 
 @AnilibertyPreview
 @Composable
@@ -530,7 +574,7 @@ private fun SearchFilterPanePreview(
         state = state,
         showBackButton = true,
         onAction = {},
-        onBackClick = {},
+        onBackClick = {}
     )
 }
 

@@ -6,5 +6,5 @@ enum class MemberRole {
     VOICING,
     EDITING,
     DECORATING,
-    TRANSLATING;
+    TRANSLATING
 }

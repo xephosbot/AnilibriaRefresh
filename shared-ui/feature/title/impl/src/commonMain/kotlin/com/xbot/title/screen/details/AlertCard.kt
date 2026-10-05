@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun AlertCard(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
+internal fun AlertCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -31,10 +28,7 @@ internal fun AlertCard(
 }
 
 @Composable
-internal fun NotificationCard(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
+internal fun NotificationCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(

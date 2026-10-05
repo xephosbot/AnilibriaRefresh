@@ -4,15 +4,17 @@ import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.PluralStringResource
 import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun stringResource(res: StringResource): String = when (res) {
     is StringResource.String -> res.text
+
     is StringResource.Text -> {
         stringResource(res.resource, *res.formatArgs)
     }
+
     is StringResource.Plural -> {
         pluralStringResource(res.resource, res.quantity, *res.formatArgs)
     }
@@ -20,6 +22,7 @@ fun stringResource(res: StringResource): String = when (res) {
 
 suspend fun getString(res: StringResource): String = when (res) {
     is StringResource.String -> res.text
+
     is StringResource.Text -> {
         if (res.formatArgs.isEmpty()) {
             getString(res.resource)
@@ -27,6 +30,7 @@ suspend fun getString(res: StringResource): String = when (res) {
             getString(res.resource, *res.formatArgs)
         }
     }
+
     is StringResource.Plural -> {
         if (res.formatArgs.isEmpty()) {
             getPluralString(res.resource, res.quantity)
@@ -38,10 +42,10 @@ suspend fun getString(res: StringResource): String = when (res) {
 
 sealed interface StringResource {
     data class String(val text: kotlin.String) : StringResource
-    
+
     class Text(
         val resource: org.jetbrains.compose.resources.StringResource,
-        vararg val formatArgs: Any,
+        vararg val formatArgs: Any
     ) : StringResource {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -65,7 +69,7 @@ sealed interface StringResource {
     class Plural(
         val resource: PluralStringResource,
         val quantity: Int,
-        vararg val formatArgs: Any,
+        vararg val formatArgs: Any
     ) : StringResource {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

@@ -14,11 +14,10 @@ import org.koin.core.annotation.Singleton
 class DataModule {
 
     @Singleton
-    internal fun createDataStore(
-        cacheDir: DataStoreDirWrapper,
-    ): DataStore<Preferences> = PreferenceDataStoreFactory.createWithPath(
-        produceFile = { cacheDir.path.resolve(dataStoreFileName) }
-    )
+    internal fun createDataStore(cacheDir: DataStoreDirWrapper): DataStore<Preferences> =
+        PreferenceDataStoreFactory.createWithPath(
+            produceFile = { cacheDir.path.resolve(DATA_STORE_FILE_NAME) }
+        )
 }
 
-private const val dataStoreFileName = "app.preferences_pb"
+private const val DATA_STORE_FILE_NAME = "app.preferences_pb"

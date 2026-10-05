@@ -7,26 +7,26 @@ import com.xbot.resources.error_connection
 import com.xbot.resources.error_http
 import com.xbot.resources.error_unknown
 
-fun Throwable.localizedMessage(): StringResource {
-    return when (this) {
-        is AppError.ServerError -> {
-            val message = this.message
-            if (!message.isNullOrBlank()) {
-                StringResource.String(message)
-            } else {
-                StringResource.Text(Res.string.error_http, this.code)
-            }
+fun Throwable.localizedMessage(): StringResource = when (this) {
+    is AppError.ServerError -> {
+        val message = this.message
+        if (!message.isNullOrBlank()) {
+            StringResource.String(message)
+        } else {
+            StringResource.Text(Res.string.error_http, this.code)
         }
-        is AppError.ConnectionError -> StringResource.Text(Res.string.error_connection)
-        else -> {
-            val message = findRecursiveMessage(this) ?: "Empty message"
-            val rootCause = generateSequence(this) { it.cause }.last()
+    }
 
-            val errorName = this::class.simpleName ?: "Unknown"
-            val causeName = rootCause::class.simpleName ?: "Unknown"
+    is AppError.ConnectionError -> StringResource.Text(Res.string.error_connection)
 
-            StringResource.Text(Res.string.error_unknown, errorName, causeName, message)
-        }
+    else -> {
+        val message = findRecursiveMessage(this) ?: "Empty message"
+        val rootCause = generateSequence(this) { it.cause }.last()
+
+        val errorName = this::class.simpleName ?: "Unknown"
+        val causeName = rootCause::class.simpleName ?: "Unknown"
+
+        StringResource.Text(Res.string.error_unknown, errorName, causeName, message)
     }
 }
 

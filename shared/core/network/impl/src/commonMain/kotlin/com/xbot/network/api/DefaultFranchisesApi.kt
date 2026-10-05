@@ -14,18 +14,21 @@ internal class DefaultFranchisesApi(private val requester: HttpRequester) : Fran
         get("anime/franchises")
     }
 
-    override suspend fun getFranchise(franchiseId: String): Either<AppError, FranchiseDto> = requester.request {
-        get("anime/franchises/${franchiseId}")
-    }
-
-    override suspend fun getFranchisesRandom(limit: Int): Either<AppError, List<FranchiseDto>> = requester.request {
-        get("anime/franchises/random") {
-            parameter("limit", limit)
+    override suspend fun getFranchise(franchiseId: String): Either<AppError, FranchiseDto> =
+        requester.request {
+            get("anime/franchises/$franchiseId")
         }
-    }
 
-    override suspend fun getFranchisesByRelease(releaseId: Int): Either<AppError, List<FranchiseDto>> = requester.request {
-        get("anime/franchises/release/${releaseId}")
-    }
+    override suspend fun getFranchisesRandom(limit: Int): Either<AppError, List<FranchiseDto>> =
+        requester.request {
+            get("anime/franchises/random") {
+                parameter("limit", limit)
+            }
+        }
 
+    override suspend fun getFranchisesByRelease(
+        releaseId: Int
+    ): Either<AppError, List<FranchiseDto>> = requester.request {
+        get("anime/franchises/release/$releaseId")
+    }
 }

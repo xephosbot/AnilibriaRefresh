@@ -9,14 +9,13 @@ import com.xbot.resources.label_schedule_now
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun Schedule.toEpisode(): Episode {
-    return when (val type = this.type) {
-        is ScheduleType.Released -> type.episode
-        is ScheduleType.Upcoming -> Episode(
-            id = this.release.id.toString(),
-            ordinal = type.episodeOrdinal,
-            name = stringResource(Res.string.label_schedule_now),
-            updatedAt = null
-        )
-    }
+internal fun Schedule.toEpisode(): Episode = when (val type = this.type) {
+    is ScheduleType.Released -> type.episode
+
+    is ScheduleType.Upcoming -> Episode(
+        id = this.release.id.toString(),
+        ordinal = type.episodeOrdinal,
+        name = stringResource(Res.string.label_schedule_now),
+        updatedAt = null
+    )
 }

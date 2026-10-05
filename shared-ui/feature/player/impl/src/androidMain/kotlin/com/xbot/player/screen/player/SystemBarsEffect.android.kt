@@ -44,7 +44,8 @@ actual fun SystemBarsEffect() {
             val controller = WindowCompat.getInsetsController(window, view)
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 controller.hide(WindowInsetsCompat.Type.systemBars())
-                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                controller.systemBarsBehavior =
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             } else {
                 controller.show(WindowInsetsCompat.Type.systemBars())
             }
@@ -58,8 +59,7 @@ private fun findWindow(context: Context, view: View): Window? {
     if (dialogWindowProvider != null) {
         return dialogWindowProvider.window
     }
-    
+
     // Fallback to Activity window
     return context.findActivity<Activity>().window
 }
-

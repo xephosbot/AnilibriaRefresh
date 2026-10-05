@@ -52,37 +52,40 @@ class SearchViewModel(
     private val getCatalogSeasons: GetCatalogSeasonsUseCase,
     private val getCatalogSortingTypes: GetCatalogSortingTypesUseCase,
     private val getCatalogYears: GetCatalogYearsUseCase,
-    private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), OrbitContainerHost<SearchScreenState, SearchScreenState, SearchScreenSideEffect> {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel(),
+    OrbitContainerHost<SearchScreenState, SearchScreenState, SearchScreenSideEffect> {
 
-    override val container: OrbitContainer<SearchScreenState, SearchScreenState, SearchScreenSideEffect> = orbitContainer(
-        initialState = SearchScreenState(),
-        savedStateHandle = savedStateHandle,
-        serializer = SearchScreenState.serializer()
-    ) {
-        coroutineScope {
-            launch { loadGenres() }
-            launch { loadReleaseTypes() }
-            launch { loadPublishStatuses() }
-            launch { loadProductionStatuses() }
-            launch { loadSortingTypes() }
-            launch { loadSeasons() }
-            launch { loadAgeRatings() }
-            launch { loadYears() }
+    override val container:
+        OrbitContainer<SearchScreenState, SearchScreenState, SearchScreenSideEffect> =
+        orbitContainer(
+            initialState = SearchScreenState(),
+            savedStateHandle = savedStateHandle,
+            serializer = SearchScreenState.serializer()
+        ) {
+            coroutineScope {
+                launch { loadGenres() }
+                launch { loadReleaseTypes() }
+                launch { loadPublishStatuses() }
+                launch { loadProductionStatuses() }
+                launch { loadSortingTypes() }
+                launch { loadSeasons() }
+                launch { loadAgeRatings() }
+                launch { loadYears() }
+            }
         }
-    }
 
     // TODO: Move inside SearchScreenState once Paging 3.5.0 stable ships asState()
     @OptIn(FlowPreview::class)
     val searchResult: Flow<PagingData<Release>> = combine(
         container.stateFlow.map { it.query }.distinctUntilChanged().debounce(500L),
-        container.stateFlow.map { it.filters }.distinctUntilChanged(),
+        container.stateFlow.map { it.filters }.distinctUntilChanged()
     ) { query, filters ->
         query to filters
     }.flatMapLatest { (query, filters) ->
         getCatalogReleasesPager(
             search = query,
-            filters = filters.takeIf { it.hasActiveFilters }?.toCatalogQuery(),
+            filters = filters.takeIf { it.hasActiveFilters }?.toCatalogQuery()
         ).flow
     }.cachedIn(viewModelScope)
 
@@ -172,15 +175,26 @@ class SearchViewModel(
     fun onAction(action: SearchScreenAction) {
         when (action) {
             is SearchScreenAction.QueryChanged -> updateQuery(action.query)
+
             is SearchScreenAction.ToggleGenre -> toggleGenre(action.genre)
-            is SearchScreenAction.ToggleProductionStatus -> toggleProductionStatus(action.productionStatus)
+
+            is SearchScreenAction.ToggleProductionStatus ->
+                toggleProductionStatus(action.productionStatus)
+
             is SearchScreenAction.TogglePublishStatus -> togglePublishStatus(action.publishStatus)
+
             is SearchScreenAction.ToggleReleaseType -> toggleReleaseType(action.releaseType)
+
             is SearchScreenAction.ToggleSeason -> toggleSeason(action.season)
+
             is SearchScreenAction.UpdateSortingType -> updateSortingType(action.sortingType)
+
             is SearchScreenAction.UpdateYearsRange -> updateYearsRange(action.years)
+
             is SearchScreenAction.ToggleAgeRating -> toggleAgeRating(action.ageRating)
+
             is SearchScreenAction.ShowErrorMessage -> showErrorMessage(action.error, action.onRetry)
+
             is SearchScreenAction.Refresh -> refresh()
         }
     }
@@ -189,36 +203,40 @@ class SearchViewModel(
         reduce { state.copy(query = query) }
     }
 
-    private fun toggleGenre(genre: Genre) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedGenres = state.filters.selectedGenres.toggle(genre))) }
+    private fun updateFilters(transform: SearchFiltersState.() -> SearchFiltersState) = intent {
+        reduce { state.copy(filters = state.filters.transform()) }
     }
 
-    private fun toggleProductionStatus(productionStatus: ProductionStatus) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedProductionStatuses = state.filters.selectedProductionStatuses.toggle(productionStatus))) }
+    private fun toggleGenre(genre: Genre) = updateFilters {
+        copy(selectedGenres = selectedGenres.toggle(genre))
     }
 
-    private fun togglePublishStatus(publishStatus: PublishStatus) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedPublishStatuses = state.filters.selectedPublishStatuses.toggle(publishStatus))) }
+    private fun toggleProductionStatus(productionStatus: ProductionStatus) = updateFilters {
+        copy(selectedProductionStatuses = selectedProductionStatuses.toggle(productionStatus))
     }
 
-    private fun toggleReleaseType(releaseType: ReleaseType) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedReleaseTypes = state.filters.selectedReleaseTypes.toggle(releaseType))) }
+    private fun togglePublishStatus(publishStatus: PublishStatus) = updateFilters {
+        copy(selectedPublishStatuses = selectedPublishStatuses.toggle(publishStatus))
     }
 
-    private fun toggleSeason(season: Season) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedSeasons = state.filters.selectedSeasons.toggle(season))) }
+    private fun toggleReleaseType(releaseType: ReleaseType) = updateFilters {
+        copy(selectedReleaseTypes = selectedReleaseTypes.toggle(releaseType))
     }
 
-    private fun updateSortingType(sortingType: SortingType) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedSortingType = sortingType)) }
+    private fun toggleSeason(season: Season) = updateFilters {
+        copy(selectedSeasons = selectedSeasons.toggle(season))
     }
 
-    private fun updateYearsRange(years: IntRange) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedYears = years)) }
+    private fun updateSortingType(sortingType: SortingType) = updateFilters {
+        copy(selectedSortingType = sortingType)
     }
 
-    private fun toggleAgeRating(ageRating: AgeRating) = intent {
-        reduce { state.copy(filters = state.filters.copy(selectedAgeRatings = state.filters.selectedAgeRatings.toggle(ageRating))) }
+    private fun updateYearsRange(years: IntRange) = updateFilters {
+        copy(selectedYears = years)
+    }
+
+    private fun toggleAgeRating(ageRating: AgeRating) = updateFilters {
+        copy(selectedAgeRatings = selectedAgeRatings.toggle(ageRating))
     }
 
     private fun showErrorMessage(error: Throwable, onRetry: () -> Unit) = intent {

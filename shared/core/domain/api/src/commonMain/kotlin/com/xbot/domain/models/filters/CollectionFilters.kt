@@ -10,5 +10,5 @@ data class CollectionFilters(
     val genres: List<Genre>,
     val types: List<ReleaseType>,
     val years: ClosedRange<Int>,
-    val ageRatings: List<AgeRating>,
+    val ageRatings: List<AgeRating>
 )

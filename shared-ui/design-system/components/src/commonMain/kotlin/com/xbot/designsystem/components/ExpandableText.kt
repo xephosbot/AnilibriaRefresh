@@ -48,7 +48,7 @@ fun ExpandableText(
     showMoreStyle: SpanStyle = SpanStyle(fontWeight = FontWeight.W500),
     showLessText: String = " Show Less",
     showLessStyle: SpanStyle = showMoreStyle,
-    textAlign: TextAlign? = null,
+    textAlign: TextAlign? = null
 ) {
     // State variables to track the expanded state, clickable state, and last character index.
     var isExpanded by remember { mutableStateOf(false) }
@@ -56,11 +56,12 @@ fun ExpandableText(
     var lastCharIndex by remember { mutableStateOf(0) }
 
     // Box composable containing the Text composable.
-    Box(modifier = Modifier
-        .clickable(clickable) {
-            isExpanded = !isExpanded
-        }
-        .then(modifier)
+    Box(
+        modifier = Modifier
+            .clickable(clickable) {
+                isExpanded = !isExpanded
+            }
+            .then(modifier)
     ) {
         // Text composable with buildAnnotatedString to handle "Show More" and "Show Less" buttons.
         Text(
@@ -96,7 +97,7 @@ fun ExpandableText(
                 }
             },
             style = style,
-            textAlign = textAlign,
+            textAlign = textAlign
         )
     }
 }

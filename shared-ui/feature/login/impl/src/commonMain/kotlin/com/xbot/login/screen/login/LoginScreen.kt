@@ -87,7 +87,7 @@ internal fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onRegistrationClick: () -> Unit,
+    onRegistrationClick: () -> Unit
 ) {
     val state by viewModel.collectAsState()
 
@@ -96,6 +96,7 @@ internal fun LoginScreen(
             is LoginScreenSideEffect.ShowErrorMessage -> {
                 GlobalSnackbarComponent.show(sideEffect.error.localizedMessage())
             }
+
             is LoginScreenSideEffect.LoginSuccess -> {
                 GlobalSnackbarComponent.show(StringResource.Text(Res.string.login_success_message))
                 onBackClick()
@@ -107,7 +108,7 @@ internal fun LoginScreen(
         modifier = modifier,
         state = state,
         onAction = viewModel::onAction,
-        onRegistrationClick = onRegistrationClick,
+        onRegistrationClick = onRegistrationClick
     )
 }
 
@@ -117,7 +118,7 @@ internal fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginScreenState,
     onAction: (LoginScreenAction) -> Unit,
-    onRegistrationClick: () -> Unit,
+    onRegistrationClick: () -> Unit
 ) {
     val usernameState = rememberTextFieldState(state.username)
     val passwordState = rememberTextFieldState(state.password)
@@ -201,7 +202,7 @@ internal fun LoginScreenContent(
                     onKeyboardAction = {
                         focusManager.moveFocus(FocusDirection.Down)
                     },
-                    lineLimits = TextFieldLineLimits.SingleLine,
+                    lineLimits = TextFieldLineLimits.SingleLine
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -214,7 +215,11 @@ internal fun LoginScreenContent(
                     trailingIcon = {
                         IconButton(onClick = { isPasswordObfuscated = !isPasswordObfuscated }) {
                             Icon(
-                                imageVector = if (isPasswordObfuscated) AnilibertyIcons.Outlined.Favorite else AnilibertyIcons.Filled.Favorite,
+                                imageVector = if (isPasswordObfuscated) {
+                                    AnilibertyIcons.Outlined.Favorite
+                                } else {
+                                    AnilibertyIcons.Filled.Favorite
+                                },
                                 contentDescription = null
                             )
                         }
@@ -228,16 +233,20 @@ internal fun LoginScreenContent(
                     onKeyboardAction = {
                         focusManager.clearFocus()
                     },
-                    textObfuscationMode = if (isPasswordObfuscated) TextObfuscationMode.Visible else TextObfuscationMode.Hidden
+                    textObfuscationMode = if (isPasswordObfuscated) {
+                        TextObfuscationMode.Visible
+                    } else {
+                        TextObfuscationMode.Hidden
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextButton(
                     onClick = {
-                        //TODO: Handle forgot password
+                        // TODO: Handle forgot password
                         onAction(LoginScreenAction.Logout)
-                    },
+                    }
                 ) {
                     Text(stringResource(Res.string.login_forgot_password))
                 }

@@ -1,0 +1,15 @@
+package com.xbot.player.screen.player
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
+
+@Composable
+actual fun rememberPictureInPictureController(
+    player: VideoPlayerState
+): PictureInPictureController = object : PictureInPictureController {
+    override val isInPictureInPictureMode: Boolean = false
+    override val isTransitioningToPip: Boolean = false
+    override fun enterPictureInPictureMode() = Unit
+    override val modifier: Modifier = Modifier
+}

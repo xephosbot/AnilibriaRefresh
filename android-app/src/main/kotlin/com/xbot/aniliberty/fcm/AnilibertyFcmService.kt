@@ -24,7 +24,7 @@ class AnilibertyFcmService : FirebaseMessagingService() {
             context = applicationContext,
             title = title,
             message = body,
-            releaseId = releaseId,
+            releaseId = releaseId
         )
     }
 

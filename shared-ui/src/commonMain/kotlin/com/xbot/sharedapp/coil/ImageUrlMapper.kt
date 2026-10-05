@@ -6,10 +6,8 @@ import coil3.request.Options
 import coil3.toUri
 import com.xbot.network.utils.ImageUrlProvider
 
-internal class ImageUrlMapper(
-    private val imageUrlProvider: ImageUrlProvider
-) : Mapper<String, Uri> {
-    override fun map(data: String, options: Options): Uri? {
-        return imageUrlProvider.getFullUrl(data)?.toUri()
-    }
+internal class ImageUrlMapper(private val imageUrlProvider: ImageUrlProvider) :
+    Mapper<String, Uri> {
+    override fun map(data: String, options: Options): Uri? =
+        imageUrlProvider.getFullUrl(data)?.toUri()
 }

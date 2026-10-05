@@ -33,7 +33,7 @@ val AnilibertyIcons.ArrowBack: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(313.0f, 520.0f)
                         lineTo(509.0f, 716.0f)

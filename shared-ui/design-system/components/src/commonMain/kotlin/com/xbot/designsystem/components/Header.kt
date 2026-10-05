@@ -32,7 +32,7 @@ fun Header(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = LocalMargins.current.asPaddingValues(),
-    onClick: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null
 ) {
     Header(
         title = title,
@@ -42,7 +42,11 @@ fun Header(
             {
                 FilledTonalIconButton(
                     modifier = Modifier
-                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+                        .size(
+                            IconButtonDefaults.smallContainerSize(
+                                IconButtonDefaults.IconButtonWidthOption.Narrow
+                            )
+                        ),
                     onClick = onClick,
                     shapes = IconButtonDefaults.shapes()
                 ) {
@@ -53,7 +57,9 @@ fun Header(
                     )
                 }
             }
-        } else null
+        } else {
+            null
+        }
     )
 }
 
@@ -63,19 +69,19 @@ fun Header(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = LocalMargins.current.horizontal),
-    content: @Composable (RowScope.() -> Unit)?,
+    content: @Composable (RowScope.() -> Unit)?
 ) {
     Box(
         Modifier.padding(
             top = 24.dp,
-            bottom = 16.dp,
+            bottom = 16.dp
         )
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(contentPadding),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             ProvideTextStyle(MaterialTheme.typography.titleLarge) {
                 title()

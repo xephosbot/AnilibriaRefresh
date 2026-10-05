@@ -19,16 +19,19 @@ class PlayerViewModel(
     @Provided private val releaseId: String,
     @Provided private val initialEpisodeOrdinal: Int,
     private val getReleaseUseCase: GetReleaseUseCase,
-    private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), OrbitContainerHost<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel(),
+    OrbitContainerHost<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> {
 
-    override val container: OrbitContainer<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> = orbitContainer(
-        initialState = PlayerScreenState(),
-        savedStateHandle = savedStateHandle,
-        serializer = PlayerScreenState.serializer(),
-    ) {
-        loadTitleDetails()
-    }
+    override val container:
+        OrbitContainer<PlayerScreenState, PlayerScreenState, PlayerScreenSideEffect> =
+        orbitContainer(
+            initialState = PlayerScreenState(),
+            savedStateHandle = savedStateHandle,
+            serializer = PlayerScreenState.serializer()
+        ) {
+            loadTitleDetails()
+        }
 
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
@@ -75,7 +78,7 @@ class PlayerViewModel(
         reduce {
             state.copy(
                 currentEpisode = episode,
-                quality = newQuality,
+                quality = newQuality
             )
         }
     }

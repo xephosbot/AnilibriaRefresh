@@ -11,9 +11,7 @@ fun Episode.localizedName(): String? {
     return localizedName(locale)
 }
 
-fun Episode.localizedName(locale: Locale = Locale.current): String? {
-    return when (locale.language) {
-        "ru" -> name
-        else -> englishName
-    }
+fun Episode.localizedName(locale: Locale = Locale.current): String? = when (locale.language) {
+    "ru" -> name
+    else -> englishName
 }

@@ -21,7 +21,7 @@ actual class DataPlatformModule {
             inDomain = NSUserDomainMask,
             appropriateForURL = null,
             create = false,
-            error = null,
+            error = null
         )
         return DataStoreDirWrapper(requireNotNull(documentDirectory).path!!.toPath())
     }

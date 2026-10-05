@@ -10,8 +10,6 @@ import org.koin.core.scope.Scope
 internal inline fun <reified T> koinLazyInject(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope()
-): Lazy<T> {
-    return remember(qualifier, scope) {
-        scope.inject(qualifier)
-    }
+): Lazy<T> = remember(qualifier, scope) {
+    scope.inject(qualifier)
 }

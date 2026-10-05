@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OtpResponse(
     @SerialName("otp") val otp: OtpDto,
-    @SerialName("remaining_time") val remainingTime: Int,
+    @SerialName("remaining_time") val remainingTime: Int
 )

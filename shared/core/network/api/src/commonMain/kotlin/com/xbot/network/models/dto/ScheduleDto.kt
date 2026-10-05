@@ -8,5 +8,5 @@ data class ScheduleDto(
     @SerialName("release") val release: ReleaseDto,
     @SerialName("full_season_is_released") val fullSeasonIsReleased: Boolean,
     @SerialName("published_release_episode") val publishedReleaseEpisode: EpisodeDto?,
-    @SerialName("next_release_episode_number") val nextReleaseEpisodeNumber: Int?,
+    @SerialName("next_release_episode_number") val nextReleaseEpisodeNumber: Int?
 )

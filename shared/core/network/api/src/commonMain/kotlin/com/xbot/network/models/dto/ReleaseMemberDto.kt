@@ -10,5 +10,5 @@ data class ReleaseMemberDto(
     @SerialName("role") val role: MemberRoleDto?,
     @SerialName("nickname") val nickname: String?,
     @SerialName("user") val user: UserDto?,
-    @SerialName("external_url") val externalUrl: String? = null,
+    @SerialName("external_url") val externalUrl: String? = null
 )

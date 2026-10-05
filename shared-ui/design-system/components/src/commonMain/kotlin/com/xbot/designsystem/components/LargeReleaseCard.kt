@@ -54,7 +54,10 @@ fun LargeReleaseCard(
     release: Release?,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = LocalMargins.current.horizontal + 8.dp),
+    contentPadding: PaddingValues = PaddingValues(
+        horizontal =
+            LocalMargins.current.horizontal + 8.dp
+    ),
     content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
     Crossfade(targetState = release != null) { isLoaded ->
@@ -71,7 +74,7 @@ fun LargeReleaseCard(
         } else {
             LargeReleaseCardPlaceholder(
                 modifier = modifier,
-                contentPadding = contentPadding,
+                contentPadding = contentPadding
             )
         }
     }
@@ -102,7 +105,7 @@ private fun LargeReleaseCardContent(
                 text = release.localizedName(),
                 autoSize = TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.displayMedium.fontSize,
-                    minFontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                    minFontSize = MaterialTheme.typography.headlineLarge.fontSize
                 ),
                 style = MaterialTheme.typography.displayMedium
                     .copy(
@@ -114,7 +117,7 @@ private fun LargeReleaseCardContent(
                     else -> TextAlign.Center
                 },
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
             release.description?.let { description ->
                 Text(
@@ -139,7 +142,7 @@ private fun LargeReleaseCardLayout(
     contentModifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     poster: @Composable () -> Unit,
-    content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit,
+    content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit
 ) {
     BoxWithConstraints {
         val height = calculateContainerHeight(maxWidth)
@@ -159,7 +162,7 @@ private fun LargeReleaseCardLayout(
                     .matchParentSize()
                     .fadedEdge(
                         startFraction = 0.25f,
-                        endFraction = 0.75f,
+                        endFraction = 0.75f
                     )
             ) {
                 poster()
@@ -180,7 +183,7 @@ private fun LargeReleaseCardLayout(
 @Composable
 private fun LargeReleaseCardPlaceholder(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues,
+    contentPadding: PaddingValues
 ) {
     val shimmer = LocalShimmer.current
 
@@ -203,7 +206,7 @@ private fun LargeReleaseCardPlaceholder(
 @Composable
 private fun LargeReleaseCardPreview() {
     LargeReleaseCard(
-        release = ReleaseFixtures.all[3],
+        release = ReleaseFixtures.all[3]
     ) {
         MediumSplitButton(
             onLeadingClick = {
@@ -239,10 +242,14 @@ private fun LargeReleaseCardPreview() {
 internal fun calculateContainerHeight(width: Dp): Dp {
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val rawHeight = when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)
-                && windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND) -> width * 4f / 7f
+        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+            windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND) ->
+            width *
+                4f /
+                7f
 
         windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> width * 2.75f / 7f
+
         else -> width * 10f / 7f
     }
 
@@ -257,8 +264,12 @@ internal fun calculateContainerHeight(width: Dp): Dp {
 internal fun calculateContentWidth(width: Dp): Dp {
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     return when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> 500.dp
+        windowSizeClass.isWidthAtLeastBreakpoint(
+            WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
+        ) -> 500.dp
+
         windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> width * 0.6f
+
         else -> width
     }
 }

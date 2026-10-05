@@ -3,9 +3,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.xbot.navigation.ExternalUriHandler
 import com.xbot.sharedapp.di.initKoin
+import java.awt.Desktop
 import window.ProvidePlatformWindowInsets
 import window.enableEdgeToEdge
-import java.awt.Desktop
 
 fun main(args: Array<String>) {
     if (System.getProperty("os.name").contains("Mac")) {
@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Aniliberty JVM",
+            title = "Aniliberty JVM"
         ) {
             SideEffect {
                 enableEdgeToEdge()

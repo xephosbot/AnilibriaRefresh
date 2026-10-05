@@ -1,3 +1,6 @@
+// Named after the common LocaleManager.kt it implements, not after its single declaration.
+@file:Suppress("ktlint:standard:filename")
+
 package com.xbot.localization
 
 import androidx.compose.runtime.Composable

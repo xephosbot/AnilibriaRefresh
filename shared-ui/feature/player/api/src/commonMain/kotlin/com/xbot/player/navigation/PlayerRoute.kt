@@ -5,10 +5,7 @@ import com.xbot.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PlayerRoute(
-    val releaseId: Int,
-    val episodeOrdinal: Int,
-) : NavKey {
+data class PlayerRoute(val releaseId: Int, val episodeOrdinal: Int) : NavKey {
     override val hidesNavigationBar: Boolean get() = true
 }
 

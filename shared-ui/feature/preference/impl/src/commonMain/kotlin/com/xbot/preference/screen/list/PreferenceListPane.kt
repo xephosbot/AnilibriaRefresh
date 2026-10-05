@@ -48,7 +48,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun PreferenceListPane(
     selectedRoute: PreferenceOptionRoute?,
     modifier: Modifier = Modifier,
-    onPreferenceClick: (PreferenceOptionRoute) -> Unit = {},
+    onPreferenceClick: (PreferenceOptionRoute) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -63,17 +63,17 @@ internal fun PreferenceListPane(
                 scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer
                 )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         PreferenceList(
             sections = PreferenceSections,
             selectedRoute = selectedRoute,
             onPreferenceClick = onPreferenceClick,
-            contentPadding = innerPadding,
+            contentPadding = innerPadding
         )
     }
 }
@@ -84,26 +84,34 @@ private fun PreferenceList(
     selectedRoute: PreferenceOptionRoute?,
     onPreferenceClick: (PreferenceOptionRoute) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = contentPadding,
+        contentPadding = contentPadding
     ) {
         sections.forEachIndexed { sectionIndex, section ->
             item(
                 key = section.title.key,
-                contentType = PreferenceListContentType.Header,
+                contentType = PreferenceListContentType.Header
             ) {
                 PreferenceSectionHeader(
-                    modifier = Modifier.padding(top = if (sectionIndex > 0) SectionSpacing else 0.dp),
-                    title = { Text(text = stringResource(section.title)) },
+                    modifier = Modifier.padding(
+                        top = if (sectionIndex >
+                            0
+                        ) {
+                            SectionSpacing
+                        } else {
+                            0.dp
+                        }
+                    ),
+                    title = { Text(text = stringResource(section.title)) }
                 )
             }
             itemsIndexed(
                 items = section.routes,
                 key = { _, route -> route.title.key },
-                contentType = { _, _ -> PreferenceListContentType.Item },
+                contentType = { _, _ -> PreferenceListContentType.Item }
             ) { index, route ->
                 PreferenceItem(
                     modifier = Modifier.section(index, section.routes.size),
@@ -139,7 +147,7 @@ private fun PreferenceList(
 @Immutable
 private data class PreferenceSection(
     val title: StringResource,
-    val routes: List<PreferenceOptionRoute>,
+    val routes: List<PreferenceOptionRoute>
 )
 
 private enum class PreferenceListContentType { Header, Item, Spacer }
@@ -154,8 +162,8 @@ private val PreferenceSections: List<PreferenceSection> = listOf(
             PreferenceTeamRoute,
             PreferenceDonateRoute,
             PreferenceAppearanceRoute,
-            PreferenceLanguageRoute,
-        ),
+            PreferenceLanguageRoute
+        )
     ),
     PreferenceSection(
         title = Res.string.preference_section_links,
@@ -163,9 +171,9 @@ private val PreferenceSections: List<PreferenceSection> = listOf(
             TelegramRoute,
             DiscordRoute,
             YouTubeRoute,
-            GitHubRoute,
-        ),
-    ),
+            GitHubRoute
+        )
+    )
 )
 
 @AnilibertyPreview

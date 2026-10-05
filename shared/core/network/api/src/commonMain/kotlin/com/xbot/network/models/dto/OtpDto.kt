@@ -8,5 +8,5 @@ data class OtpDto(
     @SerialName("code") val code: String,
     @SerialName("user_id") val userId: Int,
     @SerialName("device_id") val deviceId: String,
-    @SerialName("expired_at") val expiredAt: String,
+    @SerialName("expired_at") val expiredAt: String
 )

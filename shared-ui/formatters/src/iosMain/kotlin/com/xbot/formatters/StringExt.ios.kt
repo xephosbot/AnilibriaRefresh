@@ -5,7 +5,7 @@ import platform.Foundation.stringWithFormat
 
 actual fun String.format(vararg args: Any?): String {
     if (args.isEmpty()) return this
-    
+
     var result = this
     args.forEach { arg ->
         val pattern = "%[\\d|.]*[sdf]|[%][@]".toRegex()

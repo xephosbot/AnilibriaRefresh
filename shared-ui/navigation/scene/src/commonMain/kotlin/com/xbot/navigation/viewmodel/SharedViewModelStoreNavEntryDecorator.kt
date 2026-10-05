@@ -16,7 +16,6 @@ package com.xbot.navigation.viewmodel
  * limitations under the License.
  */
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidedValue
@@ -47,12 +46,12 @@ fun <T : Any> rememberSharedViewModelStoreNavEntryDecorator(
     viewModelStoreOwner: ViewModelStoreOwner =
         checkNotNull(LocalViewModelStoreOwner.current) {
             "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-        },
+        }
 ): SharedViewModelStoreNavEntryDecorator<T> {
     val viewModelStoreProvider = rememberViewModelStoreProvider(viewModelStoreOwner)
     return remember(viewModelStoreOwner) {
         SharedViewModelStoreNavEntryDecorator(
-            viewModelStoreProvider,
+            viewModelStoreProvider
         )
     }
 }
@@ -83,10 +82,11 @@ class SharedViewModelStoreNavEntryDecorator<T : Any>(
             rememberViewModelStoreOwner(
                 localContentKey,
                 viewModelStoreProvider,
-                savedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
+                savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
             )
 
-        val localValues: MutableList<ProvidedValue<*>> = mutableListOf(LocalViewModelStoreOwner provides localOwner)
+        val localValues: MutableList<ProvidedValue<*>> =
+            mutableListOf(LocalViewModelStoreOwner provides localOwner)
 
         // If the entry indicates it has a parent, also provide its parent's ViewModelStore
         val parentContentKey = entry.metadata[ParentKey]
@@ -94,7 +94,7 @@ class SharedViewModelStoreNavEntryDecorator<T : Any>(
             val parentOwner = rememberViewModelStoreOwner(
                 parentContentKey,
                 viewModelStoreProvider,
-                savedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
+                savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
             )
 
             localValues.add(LocalSharedViewModelStoreOwner provides parentOwner)
@@ -102,7 +102,7 @@ class SharedViewModelStoreNavEntryDecorator<T : Any>(
         CompositionLocalProvider(
             values = localValues.toTypedArray()
         ) { entry.Content() }
-    },
+    }
 ) {
     companion object {
         /**
@@ -118,4 +118,6 @@ class SharedViewModelStoreNavEntryDecorator<T : Any>(
 }
 
 val LocalSharedViewModelStoreOwner =
-    staticCompositionLocalOf<ViewModelStoreOwner> { error("No LocalSharedViewModelStoreOwner provided!") }
+    staticCompositionLocalOf<ViewModelStoreOwner> {
+        error("No LocalSharedViewModelStoreOwner provided!")
+    }

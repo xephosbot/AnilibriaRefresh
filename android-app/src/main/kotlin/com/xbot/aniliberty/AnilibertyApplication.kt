@@ -37,9 +37,8 @@ class AnilibertyApplication : Application() {
         }
     }
 
-    private fun isDebuggable(): Boolean {
-        return (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-    }
+    private fun isDebuggable(): Boolean =
+        (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     private companion object {
         const val FCM_LOG_TAG = "FCM"

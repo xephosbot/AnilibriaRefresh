@@ -2,29 +2,25 @@ package com.xbot.data.fixtures
 
 import arrow.core.Either
 import arrow.core.right
+import com.xbot.common.error.AppError
 import com.xbot.data.repository.FranchisesRepository
 import com.xbot.domain.fixtures.franchiseMocks
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Release
 
 class FakeFranchisesRepository : FranchisesRepository {
-    override suspend fun getFranchises(): Either<AppError, List<Franchise>> {
-        return franchiseMocks.right()
-    }
+    override suspend fun getFranchises(): Either<AppError, List<Franchise>> = franchiseMocks.right()
 
     override suspend fun getFranchise(franchiseId: String): Either<AppError, Franchise> {
         val franchise = franchiseMocks.find { it.id == franchiseId } ?: franchiseMocks.first()
         return franchise.right()
     }
 
-    override suspend fun getRandomFranchises(limit: Int): Either<AppError, List<Franchise>> {
-        return franchiseMocks.shuffled().take(limit).right()
-    }
+    override suspend fun getRandomFranchises(limit: Int): Either<AppError, List<Franchise>> =
+        franchiseMocks.shuffled().take(limit).right()
 
-    override suspend fun getReleaseFranchises(releaseId: Int): Either<AppError, List<Franchise>> {
-        return franchiseMocks.right()
-    }
+    override suspend fun getReleaseFranchises(releaseId: Int): Either<AppError, List<Franchise>> =
+        franchiseMocks.right()
 
     override suspend fun getFranchiseReleases(aliasOrId: String): Either<AppError, List<Release>> {
         val releaseId = aliasOrId.toIntOrNull()

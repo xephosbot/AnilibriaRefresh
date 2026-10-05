@@ -54,7 +54,7 @@ fun GenreItem(
     genre: Genre?,
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Crossfade(
         targetState = genre,
@@ -69,7 +69,7 @@ fun GenreItem(
                 image = {
                     PosterImage(
                         modifier = Modifier.fillMaxSize(),
-                        poster = state.image,
+                        poster = state.image
                     )
                 },
                 title = {
@@ -98,7 +98,7 @@ fun MemberItem(
     releaseMember: ReleaseMember?,
     modifier: Modifier = Modifier,
     onContextClick: (() -> Unit)? = null,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Crossfade(
         targetState = releaseMember,
@@ -114,7 +114,7 @@ fun MemberItem(
                     PosterImage(
                         modifier = Modifier.fillMaxSize(),
                         poster = state.avatar,
-                        placeholder = painterResource(Res.drawable.placeholder_profile),
+                        placeholder = painterResource(Res.drawable.placeholder_profile)
                     )
                 },
                 title = {
@@ -139,9 +139,7 @@ fun MemberItem(
 }
 
 @Composable
-private fun CircleContentPlaceholder(
-    modifier: Modifier = Modifier
-) {
+private fun CircleContentPlaceholder(modifier: Modifier = Modifier) {
     val shimmer = LocalShimmer.current
     CircleContentItem(
         onClick = {},
@@ -187,7 +185,7 @@ fun CircleContentItem(
     image: @Composable BoxScope.() -> Unit,
     title: @Composable () -> Unit,
     subtitle: @Composable () -> Unit,
-    interactionSource: MutableInteractionSource? = null,
+    interactionSource: MutableInteractionSource? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -283,13 +281,11 @@ private fun CircleContentPlaceholderPreview() {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object CircleContentItemDefaults {
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = MaterialShapes.Circle,
-            pressedShape = MaterialShapes.Cookie7Sided,
-            hoveredShape = MaterialShapes.Pill,
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = MaterialShapes.Circle,
+        pressedShape = MaterialShapes.Cookie7Sided,
+        hoveredShape = MaterialShapes.Pill
+    )
 }
 
 private val PosterSize = 100.dp

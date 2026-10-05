@@ -21,9 +21,10 @@ internal class DefaultTorrentsApi(private val requester: HttpRequester) : Torren
         }
     }
 
-    override suspend fun getTorrent(hashOrId: String): Either<AppError, TorrentDto> = requester.request {
-        get("anime/torrents/$hashOrId")
-    }
+    override suspend fun getTorrent(hashOrId: String): Either<AppError, TorrentDto> =
+        requester.request {
+            get("anime/torrents/$hashOrId")
+        }
 
     override suspend fun getTorrentFile(
         hashOrId: String,
@@ -34,19 +35,18 @@ internal class DefaultTorrentsApi(private val requester: HttpRequester) : Torren
         }
     }
 
-    override suspend fun getReleaseTorrents(releaseId: Int): Either<AppError, List<TorrentDto>> = requester.request {
-        get("anime/torrents/release/$releaseId")
-    }
-
-    override suspend fun getTorrentsRss(
-        limit: Int?,
-        pk: String?
-    ): Either<AppError, String> = requester.request {
-        get("anime/torrents/rss") {
-            limit?.let { parameter("limit", it) }
-            pk?.let { parameter("pk", it) }
+    override suspend fun getReleaseTorrents(releaseId: Int): Either<AppError, List<TorrentDto>> =
+        requester.request {
+            get("anime/torrents/release/$releaseId")
         }
-    }
+
+    override suspend fun getTorrentsRss(limit: Int?, pk: String?): Either<AppError, String> =
+        requester.request {
+            get("anime/torrents/rss") {
+                limit?.let { parameter("limit", it) }
+                pk?.let { parameter("pk", it) }
+            }
+        }
 
     override suspend fun getReleaseTorrentsRss(
         releaseId: Int,

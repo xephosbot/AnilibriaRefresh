@@ -2,12 +2,12 @@ package com.xbot.domain.fixtures
 
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.Poster
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 fun createEpisode(
     id: String = "1",

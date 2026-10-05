@@ -19,7 +19,7 @@ data class AppThemeState(
     val themeOption: ThemeOption = ThemeOption.System,
     val isDynamicTheme: Boolean = false,
     val isPureBlack: Boolean = false,
-    val isExpressiveColor: Boolean = false,
+    val isExpressiveColor: Boolean = false
 ) {
     val isDarkTheme
         @Composable get() = when (themeOption) {

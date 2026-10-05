@@ -3,8 +3,8 @@ package com.xbot.domain.usecase
 import arrow.core.Either
 import com.xbot.common.error.AppError
 import com.xbot.domain.models.Schedule
-import kotlinx.datetime.LocalDate
 import kotlin.native.HiddenFromObjC
+import kotlinx.datetime.LocalDate
 
 @HiddenFromObjC
 fun interface GetScheduleWeekUseCase {

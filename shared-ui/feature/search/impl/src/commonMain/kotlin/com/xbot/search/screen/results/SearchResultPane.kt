@@ -83,7 +83,7 @@ internal fun SearchResultPane(
     viewModel: SearchViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onFiltersClick: () -> Unit,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val state by viewModel.collectAsState()
     val searchResult = viewModel.searchResult.collectAsLazyPagingItems()
@@ -119,7 +119,7 @@ private fun SearchResultPaneContent(
     onAction: (SearchScreenAction) -> Unit,
     onBackClick: () -> Unit,
     onFiltersClick: () -> Unit,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val searchFieldState = rememberTextFieldState(state.query)
 
@@ -186,7 +186,7 @@ private fun SearchResultPaneContent(
                                 )
                             }
                         }
-                    },
+                    }
                 )
 
                 if (state.filters.hasActiveFilters) {
@@ -217,7 +217,9 @@ private fun SearchResultPaneContent(
                         }
                         state.filters.selectedPublishStatuses.forEach { status ->
                             AssistChip(
-                                onClick = { onAction(SearchScreenAction.TogglePublishStatus(status)) },
+                                onClick = {
+                                    onAction(SearchScreenAction.TogglePublishStatus(status))
+                                },
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -229,7 +231,9 @@ private fun SearchResultPaneContent(
                         }
                         state.filters.selectedProductionStatuses.forEach { status ->
                             AssistChip(
-                                onClick = { onAction(SearchScreenAction.ToggleProductionStatus(status)) },
+                                onClick = {
+                                    onAction(SearchScreenAction.ToggleProductionStatus(status))
+                                },
                                 label = { Text(stringResource(status.stringRes)) },
                                 trailingIcon = {
                                     Icon(
@@ -269,14 +273,14 @@ private fun SearchResultPaneContent(
                 HorizontalDivider()
             }
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         SearchResultContent(
             modifier = modifier,
             items = searchResult,
             state = feedState,
             contentPadding = innerPadding,
-            onReleaseClick = onReleaseClick,
+            onReleaseClick = onReleaseClick
         )
     }
 }
@@ -287,7 +291,7 @@ private fun SearchResultContent(
     items: LazyPagingItems<Release>,
     state: LazyGridState,
     contentPadding: PaddingValues,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
     val columnsCount = remember {
@@ -299,21 +303,27 @@ private fun SearchResultContent(
             modifier = modifier.shimmerUpdater(shimmer),
             columns = GridCells.Adaptive(400.dp),
             contentPadding = contentPadding.union(WindowInsets.ime.asPaddingValues()),
-            state = state,
+            state = state
         ) {
             header(
-                title = { Text(text = stringResource(Res.string.label_search_results)) },
+                title = { Text(text = stringResource(Res.string.label_search_results)) }
             )
-            
+
             pagingItems(
                 items = items,
-                loadingPlaceholderCount = 10,
+                loadingPlaceholderCount = 10
             ) { index, release ->
                 ReleaseListItem(
                     modifier = Modifier
-                        .section(index, items.itemCount.takeIf { it > 0 } ?: 10, columnsCount.value),
+                        .section(
+                            index,
+                            items.itemCount.takeIf {
+                                it > 0
+                            } ?: 10,
+                            columnsCount.value
+                        ),
                     release = release,
-                    onClick = onReleaseClick,
+                    onClick = onReleaseClick
                 )
             }
         }

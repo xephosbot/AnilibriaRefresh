@@ -13,12 +13,13 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultOtpApi(private val requester: HttpRequester) : OtpApi {
-    override suspend fun getOtp(deviceId: String): Either<AppError, OtpResponse> = requester.request {
-        post("accounts/otp/get") {
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("device_id" to deviceId))
+    override suspend fun getOtp(deviceId: String): Either<AppError, OtpResponse> =
+        requester.request {
+            post("accounts/otp/get") {
+                contentType(ContentType.Application.Json)
+                setBody(mapOf("device_id" to deviceId))
+            }
         }
-    }
 
     override suspend fun acceptOtp(code: Int): Either<AppError, Unit> = requester.request {
         post("accounts/otp/accept") {

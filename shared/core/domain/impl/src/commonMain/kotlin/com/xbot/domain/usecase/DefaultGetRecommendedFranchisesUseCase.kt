@@ -4,11 +4,11 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import arrow.fx.coroutines.parMap
-import com.xbot.data.repository.FranchisesRepository
 import com.xbot.common.error.AppError
+import com.xbot.data.repository.FranchisesRepository
 import com.xbot.domain.models.Franchise
-import org.koin.core.annotation.Factory
 import kotlin.native.HiddenFromObjC
+import org.koin.core.annotation.Factory
 
 @Factory
 @HiddenFromObjC

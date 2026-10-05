@@ -16,5 +16,5 @@ data class CatalogQuery(
     val sortingTypes: List<SortingType> = emptyList(),
     val ageRatings: List<AgeRating> = emptyList(),
     val publishStatuses: List<PublishStatus> = emptyList(),
-    val productionStatuses: List<ProductionStatus> = emptyList(),
+    val productionStatuses: List<ProductionStatus> = emptyList()
 )

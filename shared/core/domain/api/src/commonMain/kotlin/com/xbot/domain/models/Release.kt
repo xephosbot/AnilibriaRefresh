@@ -17,7 +17,7 @@ data class Release(
     val episodesCount: Int?,
     val episodeDuration: Int?,
     val favoritesCount: Int,
-    val poster: Poster?,
+    val poster: Poster?
 )
 
 data class ReleaseDetails(
@@ -29,5 +29,5 @@ data class ReleaseDetails(
     val availabilityStatus: AvailabilityStatus,
     val genres: List<Genre>,
     val releaseMembers: List<ReleaseMember>,
-    val episodes: List<Episode>,
+    val episodes: List<Episode>
 )

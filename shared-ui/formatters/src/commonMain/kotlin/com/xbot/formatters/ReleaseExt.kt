@@ -11,9 +11,7 @@ fun Release.localizedName(): String {
     return localizedName(locale)
 }
 
-fun Release.localizedName(locale: Locale = Locale.current): String {
-    return when (locale.language) {
-        "ru" -> name
-        else -> if (englishName != null) englishName!! else name
-    }
+fun Release.localizedName(locale: Locale = Locale.current): String = when (locale.language) {
+    "ru" -> name
+    else -> if (englishName != null) englishName!! else name
 }

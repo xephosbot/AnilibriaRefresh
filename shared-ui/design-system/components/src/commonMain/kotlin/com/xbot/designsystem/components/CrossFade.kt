@@ -16,7 +16,7 @@ fun <T : Any> TypedCrossFade(
     modifier: Modifier = Modifier,
     animationSpec: FiniteAnimationSpec<Float>? = null,
     label: String = "Crossfade",
-    content: @Composable (T) -> Unit,
+    content: @Composable (T) -> Unit
 ) {
     val transition = updateTransition(targetState, label)
     transition.Crossfade(

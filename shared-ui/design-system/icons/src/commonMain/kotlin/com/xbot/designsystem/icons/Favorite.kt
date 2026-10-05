@@ -18,12 +18,12 @@ val AnilibertyIcons.Filled.Favorite: ImageVector
         }
         _favoriteFilled =
             Builder(
-                    name = "FavoriteFilled",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "FavoriteFilled",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Filled.Favorite: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(480.0f, 813.0f)
                         quadTo(466.0f, 813.0f, 451.5f, 808.0f)
@@ -72,7 +72,7 @@ val AnilibertyIcons.Outlined.Favorite: ImageVector
                 defaultWidth = 24.0.dp,
                 defaultHeight = 24.0.dp,
                 viewportWidth = 960.0f,
-                viewportHeight = 960.0f,
+                viewportHeight = 960.0f
             )
                 .apply {
                     path(
@@ -82,7 +82,7 @@ val AnilibertyIcons.Outlined.Favorite: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(480.0f, 813.0f)
                         quadTo(466.0f, 813.0f, 451.5f, 808.0f)
@@ -157,7 +157,6 @@ val AnilibertyIcons.Outlined.Favorite: ImageVector
                 .build()
         return _favoriteOutlined!!
     }
-
 
 private var _favoriteFilled: ImageVector? = null
 private var _favoriteOutlined: ImageVector? = null

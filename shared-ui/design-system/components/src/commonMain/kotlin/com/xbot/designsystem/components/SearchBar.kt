@@ -99,13 +99,13 @@ fun TopSearchInputField(
             interactionSource = interactionSource,
             placeholder = placeholder,
             leadingIcon =
-            leadingIcon?.let { leading ->
-                { Box(Modifier.offset(x = SearchBarIconOffsetX)) { leading() } }
-            },
+                leadingIcon?.let { leading ->
+                    { Box(Modifier.offset(x = SearchBarIconOffsetX)) { leading() } }
+                },
             trailingIcon =
-            trailingIcon?.let { trailing ->
-                { Box(Modifier.offset(x = -SearchBarIconOffsetX)) { trailing() } }
-            },
+                trailingIcon?.let { trailing ->
+                    { Box(Modifier.offset(x = -SearchBarIconOffsetX)) { trailing() } }
+                },
             prefix = prefix,
             suffix = suffix,
             colors = colors,

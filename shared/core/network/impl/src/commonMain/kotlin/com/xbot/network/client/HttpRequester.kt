@@ -11,10 +11,10 @@ import org.koin.core.annotation.Factory
 @Factory
 internal class HttpRequester(
     private val client: Lazy<HttpClient>,
-    private val logger: Lazy<AppLogger>,
+    private val logger: Lazy<AppLogger>
 ) {
     suspend inline fun <reified T> request(
-        noinline block: suspend HttpClient.() -> HttpResponse,
+        noinline block: suspend HttpClient.() -> HttpResponse
     ): Either<AppError, T> = either {
         client.value.request<T>(block)
     }.onLeft { reportIfUnknown(it) }

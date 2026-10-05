@@ -1,0 +1,16 @@
+# Overrides on top of detekt's default config (buildUponDefaultConfig = true).
+# Existing findings live in each module's detekt-baseline.xml.
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+
+complexity:
+  LongMethod:
+    ignoreAnnotated: ['Composable']
+  LongParameterList:
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    ignoreAnnotated: ['Composable', 'Preview']

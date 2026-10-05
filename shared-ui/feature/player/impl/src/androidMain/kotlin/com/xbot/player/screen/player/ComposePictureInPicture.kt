@@ -47,7 +47,8 @@ internal class BoundsTracker {
 internal class ComposePictureInPicture(
     private val activity: ComponentActivity,
     executor: Executor
-) : BasicPictureInPicture(activity, executor), AutoCloseable {
+) : BasicPictureInPicture(activity, executor),
+    AutoCloseable {
 
     private val boundsChangedListener: BoundsTracker.OnBoundsChangedListener =
         BoundsTracker.OnBoundsChangedListener { newBounds ->

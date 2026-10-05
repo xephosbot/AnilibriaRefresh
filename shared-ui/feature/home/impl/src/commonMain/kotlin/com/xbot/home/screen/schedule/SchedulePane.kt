@@ -59,6 +59,8 @@ import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule
 import io.kotzilla.sdk.compose.TrackScreen
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -68,8 +70,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -83,7 +83,7 @@ internal fun SchedulePane(
     viewModel: HomeViewModel = koinViewModel(),
     showBackButton: Boolean,
     onReleaseClick: (Release) -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val state by viewModel.collectAsState()
 
@@ -104,7 +104,7 @@ internal fun SchedulePane(
         state = state,
         showBackButton = showBackButton,
         onReleaseClick = onReleaseClick,
-        onBackClick = onBackClick,
+        onBackClick = onBackClick
     )
 }
 
@@ -119,7 +119,7 @@ private fun SchedulePaneContent(
     state: HomeScreenState,
     showBackButton: Boolean,
     onReleaseClick: (Release) -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -135,7 +135,9 @@ private fun SchedulePaneContent(
                             modifier = Modifier.padding(start = 6.dp),
                             onClick = onBackClick,
                             shapes = IconButtonDefaults.shapes(),
-                            colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                MaterialTheme.colorScheme.surfaceContainerHighest
+                            )
                         ) {
                             Icon(
                                 imageVector = AnilibertyIcons.ArrowBack,
@@ -145,10 +147,12 @@ private fun SchedulePaneContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         ScheduleContent(
             scheduleWeek = state.scheduleWeek,
@@ -164,7 +168,7 @@ private fun ScheduleContent(
     modifier: Modifier = Modifier,
     scheduleWeek: ScheduleWeek,
     contentPadding: PaddingValues,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val shimmer = rememberShimmer(ShimmerBounds.Window)
 
@@ -191,7 +195,7 @@ private fun ScheduleContent(
                 MediumReleaseCard(
                     modifier = Modifier.fillMaxWidth(),
                     release = schedule?.release,
-                    onClick = { schedule?.release?.let(onReleaseClick) },
+                    onClick = { schedule?.release?.let(onReleaseClick) }
                 ) {
                     schedule?.let {
                         EpisodeListItem(
@@ -210,7 +214,7 @@ private fun DateItem(
     date: LocalDate,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
+    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor)
 ) {
     Column(
         modifier = modifier

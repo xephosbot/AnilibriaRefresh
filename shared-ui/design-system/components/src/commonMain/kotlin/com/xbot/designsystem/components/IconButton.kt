@@ -38,7 +38,7 @@ fun LabeledIconButton(
         containerColor = MaterialTheme.colorScheme.surfaceBright,
         contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
     ),
-    interactionSource: MutableInteractionSource? = null,
+    interactionSource: MutableInteractionSource? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -86,26 +86,22 @@ fun LabeledIconButton(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveIconButtonDefaults {
     @Composable
-    fun smallShapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = IconButtonDefaults.smallRoundShape,
-            pressedShape = IconButtonDefaults.smallPressedShape,
-            selectedShape = IconButtonDefaults.smallSquareShape,
-            focusedShape = IconButtonDefaults.smallRoundShape,
-            hoveredShape = IconButtonDefaults.smallRoundShape,
-            draggedShape = IconButtonDefaults.smallPressedShape
-        )
-    }
+    fun smallShapes(): MorphableShapes = MorphableShapes(
+        shape = IconButtonDefaults.smallRoundShape,
+        pressedShape = IconButtonDefaults.smallPressedShape,
+        selectedShape = IconButtonDefaults.smallSquareShape,
+        focusedShape = IconButtonDefaults.smallRoundShape,
+        hoveredShape = IconButtonDefaults.smallRoundShape,
+        draggedShape = IconButtonDefaults.smallPressedShape
+    )
 
     @Composable
-    fun largeShapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = IconButtonDefaults.largeRoundShape,
-            pressedShape = IconButtonDefaults.largePressedShape,
-            selectedShape = IconButtonDefaults.largeSquareShape,
-            focusedShape = IconButtonDefaults.largeRoundShape,
-            hoveredShape = IconButtonDefaults.largeRoundShape,
-            draggedShape = IconButtonDefaults.largePressedShape
-        )
-    }
+    fun largeShapes(): MorphableShapes = MorphableShapes(
+        shape = IconButtonDefaults.largeRoundShape,
+        pressedShape = IconButtonDefaults.largePressedShape,
+        selectedShape = IconButtonDefaults.largeSquareShape,
+        focusedShape = IconButtonDefaults.largeRoundShape,
+        hoveredShape = IconButtonDefaults.largeRoundShape,
+        draggedShape = IconButtonDefaults.largePressedShape
+    )
 }

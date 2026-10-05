@@ -20,11 +20,12 @@ internal class DefaultGenresApi(private val requester: HttpRequester) : GenresAp
         get("anime/genres/$genreId")
     }
 
-    override suspend fun getRandomGenres(limit: Int): Either<AppError, List<GenreDto>> = requester.request {
-        get("anime/genres/random") {
-            parameter("limit", limit)
+    override suspend fun getRandomGenres(limit: Int): Either<AppError, List<GenreDto>> =
+        requester.request {
+            get("anime/genres/random") {
+                parameter("limit", limit)
+            }
         }
-    }
 
     override suspend fun getGenreReleases(
         genreId: Int,

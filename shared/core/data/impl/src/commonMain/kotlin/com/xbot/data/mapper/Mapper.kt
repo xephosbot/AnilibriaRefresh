@@ -18,13 +18,13 @@ import com.xbot.network.models.dto.ProfileDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.dto.ReleaseMemberDto
 import com.xbot.network.models.dto.ScheduleDto
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 internal fun GenreDto.toDomain() = Genre(
     id = id,
@@ -38,7 +38,7 @@ internal fun GenreDto.toDomain() = Genre(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     }
 )
@@ -62,7 +62,7 @@ internal fun ReleaseDto.toDomain() = Release(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     }
 )
@@ -80,7 +80,7 @@ internal fun ReleaseDto.toReleaseDetails() = ReleaseDetails(
     },
     genres = genres?.map(GenreDto::toDomain) ?: emptyList(),
     releaseMembers = members?.map(ReleaseMemberDto::toDomain) ?: emptyList(),
-    episodes = episodes?.map(EpisodeDto::toDomain) ?: emptyList(),
+    episodes = episodes?.map(EpisodeDto::toDomain) ?: emptyList()
 )
 
 @OptIn(ExperimentalTime::class)
@@ -97,7 +97,7 @@ internal fun EpisodeDto.toDomain() = Episode(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     },
     hls480 = hls480,
@@ -122,7 +122,7 @@ internal fun ReleaseMemberDto.toDomain() = ReleaseMember(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     }
 )
@@ -141,7 +141,7 @@ internal fun ProfileDto.toDomain() = User(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     },
     isBanned = isBanned,
@@ -187,8 +187,8 @@ internal fun FranchiseDto.toDomain() = Franchise(
 
         Poster(
             src = src,
-            thumbnail = thumbnail,
+            thumbnail = thumbnail
         )
     },
-    franchiseReleases = franchiseReleases?.map { it.release.toDomain() },
+    franchiseReleases = franchiseReleases?.map { it.release.toDomain() }
 )

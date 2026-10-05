@@ -15,7 +15,7 @@ internal fun VideoPlayerLayout(
     controls: @Composable () -> Unit,
     surfaceScale: ContentScale = ContentScale.Fit,
     coverSurfaceColor: Color = Color.Black,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     VideoPlayerSurface(
         playerState = player,

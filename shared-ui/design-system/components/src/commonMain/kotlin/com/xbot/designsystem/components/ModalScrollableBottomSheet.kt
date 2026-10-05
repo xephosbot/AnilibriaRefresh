@@ -26,11 +26,13 @@ fun ModalScrollableBottomSheet(
         derivedStateOf {
             when (scrollableState) {
                 is LazyListState ->
-                    scrollableState.firstVisibleItemIndex == 0 && scrollableState.firstVisibleItemScrollOffset == 0
+                    scrollableState.firstVisibleItemIndex == 0 &&
+                        scrollableState.firstVisibleItemScrollOffset == 0
+
                 is ScrollState -> scrollableState.value == 0
+
                 else -> throw IllegalArgumentException()
             }
-
         }
     }
     val sheetState = rememberBottomSheetState(

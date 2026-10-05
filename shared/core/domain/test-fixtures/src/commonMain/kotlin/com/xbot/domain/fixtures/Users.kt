@@ -2,9 +2,9 @@ package com.xbot.domain.fixtures
 
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.User
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 
 val userMock = User(
     id = 12345,

@@ -1,9 +1,7 @@
 package com.xbot.common.error
 
-sealed class AppError(
-    override val message: String? = null,
-    override val cause: Throwable? = null,
-) : Exception(message, cause) {
+sealed class AppError(override val message: String? = null, override val cause: Throwable? = null) :
+    Exception(message, cause) {
 
     /** HTTP error response from the server. [message] is the human-readable message parsed from the response body, if any. */
     data class ServerError(val code: Int, override val message: String?) : AppError(message)

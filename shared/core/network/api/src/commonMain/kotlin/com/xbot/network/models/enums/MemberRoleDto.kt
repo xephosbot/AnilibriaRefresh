@@ -7,12 +7,23 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = MemberRoleDto.Companion.Serializer::class)
 enum class MemberRoleDto(val value: String) {
-    @SerialName("poster") POSTER("poster"),
-    @SerialName("timing") TIMING("timing"),
-    @SerialName("voicing") VOICING("voicing"),
-    @SerialName("editing") EDITING("editing"),
-    @SerialName("decorating") DECORATING("decorating"),
-    @SerialName("translating") TRANSLATING("translating");
+    @SerialName("poster")
+    POSTER("poster"),
+
+    @SerialName("timing")
+    TIMING("timing"),
+
+    @SerialName("voicing")
+    VOICING("voicing"),
+
+    @SerialName("editing")
+    EDITING("editing"),
+
+    @SerialName("decorating")
+    DECORATING("decorating"),
+
+    @SerialName("translating")
+    TRANSLATING("translating");
 
     override fun toString(): String = value
 

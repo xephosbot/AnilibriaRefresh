@@ -20,17 +20,19 @@ class TitleViewModel(
     @Provided private val aliasOrId: String,
     @Provided private val initialRelease: Release? = null,
     private val getRelease: GetReleaseUseCase,
-    private val getFranchiseReleases: GetFranchiseReleasesUseCase,
-) : ViewModel(), OrbitContainerHost<TitleScreenState, TitleScreenState, TitleScreenSideEffect> {
+    private val getFranchiseReleases: GetFranchiseReleasesUseCase
+) : ViewModel(),
+    OrbitContainerHost<TitleScreenState, TitleScreenState, TitleScreenSideEffect> {
 
-    override val container: OrbitContainer<TitleScreenState, TitleScreenState, TitleScreenSideEffect> = orbitContainer(
-        initialState = TitleScreenState(initialRelease = initialRelease)
-    ) {
-        coroutineScope {
-            launch { loadDetails() }
-            launch { loadRelatedReleases() }
+    override val container:
+        OrbitContainer<TitleScreenState, TitleScreenState, TitleScreenSideEffect> = orbitContainer(
+            initialState = TitleScreenState(initialRelease = initialRelease)
+        ) {
+            coroutineScope {
+                launch { loadDetails() }
+                launch { loadRelatedReleases() }
+            }
         }
-    }
 
     private suspend fun loadDetails() = subIntent {
         asyncLoad(

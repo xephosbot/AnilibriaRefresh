@@ -9,5 +9,5 @@ data class FranchiseWithReleaseDto(
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("release_id") val releaseId: Int,
     @SerialName("franchise_id") val franchiseId: String,
-    @SerialName("release") val release: ReleaseDto,
+    @SerialName("release") val release: ReleaseDto
 )

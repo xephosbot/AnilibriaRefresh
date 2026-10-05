@@ -13,9 +13,7 @@ import com.xbot.resources.preference_select_item_placeholder
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun PreferenceDetailPlaceholder(
-    modifier: Modifier = Modifier,
-) {
+internal fun PreferenceDetailPlaceholder(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()

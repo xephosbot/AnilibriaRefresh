@@ -29,9 +29,9 @@ internal class DefaultAuthRepository(
 
     override suspend fun logout(): Either<AppError, Unit> = either {
         val result = authApi.logout()
-        
+
         tokenStorage.clearToken()
-        
+
         result.bind()
     }
 

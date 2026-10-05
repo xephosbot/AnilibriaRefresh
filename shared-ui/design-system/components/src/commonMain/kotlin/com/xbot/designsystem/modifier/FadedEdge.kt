@@ -17,7 +17,7 @@ fun Modifier.fadedEdge(
     startHeight: Dp,
     endHeight: Dp,
     opacity: Float = 1.0f,
-    bottomEdge: Boolean = true,
+    bottomEdge: Boolean = true
 ): Modifier = fadedEdgeInternal(
     opacity = opacity,
     bottomEdge = bottomEdge

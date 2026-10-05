@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultAppearanceRepository(
-    private val dataStore: Lazy<DataStore<Preferences>>
-) : AppearanceRepository {
+internal class DefaultAppearanceRepository(private val dataStore: Lazy<DataStore<Preferences>>) :
+    AppearanceRepository {
 
     private object Keys {
         val themeOption = stringPreferencesKey("theme_option")

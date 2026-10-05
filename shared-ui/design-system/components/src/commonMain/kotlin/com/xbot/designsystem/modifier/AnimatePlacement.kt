@@ -21,35 +21,35 @@ import androidx.compose.ui.unit.round
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-fun Modifier.animatePlacement(
-    animationSpec: AnimationSpec<IntOffset>? = null
-): Modifier = composed {
-    val effectiveAnimationSpec = animationSpec ?: MaterialTheme.motionScheme.defaultSpatialSpec()
+fun Modifier.animatePlacement(animationSpec: AnimationSpec<IntOffset>? = null): Modifier =
+    composed {
+        val effectiveAnimationSpec = animationSpec
+            ?: MaterialTheme.motionScheme.defaultSpatialSpec()
 
-    val scope = rememberCoroutineScope()
-    var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
-    var animatable by remember {
-        mutableStateOf<Animatable<IntOffset, AnimationVector2D>?>(null)
-    }
-    this
-        .onPlaced {
-            // Calculate the position in the parent layout
-            targetOffset = it.positionInParent().round()
+        val scope = rememberCoroutineScope()
+        var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
+        var animatable by remember {
+            mutableStateOf<Animatable<IntOffset, AnimationVector2D>?>(null)
         }
-        .offset {
-            // Animate to the new target offset when alignment changes.
-            val anim =
-                animatable
-                    ?: Animatable(targetOffset, IntOffset.VectorConverter).also {
-                        animatable = it
-                    }
-            if (anim.targetValue != targetOffset) {
-                scope.launch {
-                    anim.animateTo(targetOffset, effectiveAnimationSpec)
-                }
+        this
+            .onPlaced {
+                // Calculate the position in the parent layout
+                targetOffset = it.positionInParent().round()
             }
-            // Offset the child in the opposite direction to the targetOffset, and slowly catch
-            // up to zero offset via an animation to achieve an overall animated movement.
-            animatable?.let { it.value - targetOffset } ?: IntOffset.Zero
-        }
-}
+            .offset {
+                // Animate to the new target offset when alignment changes.
+                val anim =
+                    animatable
+                        ?: Animatable(targetOffset, IntOffset.VectorConverter).also {
+                            animatable = it
+                        }
+                if (anim.targetValue != targetOffset) {
+                    scope.launch {
+                        anim.animateTo(targetOffset, effectiveAnimationSpec)
+                    }
+                }
+                // Offset the child in the opposite direction to the targetOffset, and slowly catch
+                // up to zero offset via an animation to achieve an overall animated movement.
+                animatable?.let { it.value - targetOffset } ?: IntOffset.Zero
+            }
+    }

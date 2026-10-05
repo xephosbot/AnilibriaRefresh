@@ -10,16 +10,16 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AutoScrollSideEffect(
     autoScrollDurationMillis: Long,
     pagerState: PagerState,
     doAutoScroll: Boolean,
-    onAutoScrollChange: (isAutoScrollActive: Boolean) -> Unit = {},
+    onAutoScrollChange: (isAutoScrollActive: Boolean) -> Unit = {}
 ) {
     if (autoScrollDurationMillis == Long.MAX_VALUE || autoScrollDurationMillis < 0) {
         return
@@ -33,7 +33,9 @@ fun AutoScrollSideEffect(
                 while (true) {
                     yield()
                     delay(autoScrollDurationMillis.milliseconds)
-                    pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
+                    pagerState.animateScrollToPage(
+                        (pagerState.currentPage + 1) % pagerState.pageCount
+                    )
                 }
             }
         }
@@ -42,9 +44,7 @@ fun AutoScrollSideEffect(
 }
 
 @Composable
-fun shouldPerformAutoScroll(
-    interactionSource: InteractionSource,
-): Boolean {
+fun shouldPerformAutoScroll(interactionSource: InteractionSource): Boolean {
     val pagerIsPressed by interactionSource.collectIsPressedAsState()
     val pagerIsDragged by interactionSource.collectIsDraggedAsState()
 

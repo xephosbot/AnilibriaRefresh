@@ -10,7 +10,6 @@ import org.koin.core.scope.Scope
 actual class DataPlatformModule {
 
     @Singleton
-    internal actual fun provideDataStoreDir(scope: Scope): DataStoreDirWrapper {
-        return DataStoreDirWrapper(File(System.getProperty("java.io.tmpdir")).absolutePath.toPath())
-    }
+    internal actual fun provideDataStoreDir(scope: Scope): DataStoreDirWrapper =
+        DataStoreDirWrapper(File(System.getProperty("java.io.tmpdir")).absolutePath.toPath())
 }

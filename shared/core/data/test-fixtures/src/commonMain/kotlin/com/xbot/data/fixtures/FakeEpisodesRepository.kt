@@ -2,9 +2,9 @@ package com.xbot.data.fixtures
 
 import arrow.core.Either
 import arrow.core.right
+import com.xbot.common.error.AppError
 import com.xbot.data.repository.EpisodesRepository
 import com.xbot.domain.fixtures.EpisodeFixtures
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Episode
 
 class FakeEpisodesRepository : EpisodesRepository {
@@ -13,7 +13,6 @@ class FakeEpisodesRepository : EpisodesRepository {
         return episode.right()
     }
 
-    override suspend fun getEpisodesByRelease(releaseId: Int): Either<AppError, List<Episode>> {
-        return EpisodeFixtures.all.right()
-    }
+    override suspend fun getEpisodesByRelease(releaseId: Int): Either<AppError, List<Episode>> =
+        EpisodeFixtures.all.right()
 }

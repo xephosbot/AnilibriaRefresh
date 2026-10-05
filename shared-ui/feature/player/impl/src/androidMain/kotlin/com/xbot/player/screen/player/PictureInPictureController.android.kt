@@ -33,11 +33,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.xbot.sharedui.feature.player.impl.R
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
-import kotlinx.coroutines.flow.combine
 import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.combine
 
 @Composable
-actual fun rememberPictureInPictureController(player: VideoPlayerState): PictureInPictureController {
+actual fun rememberPictureInPictureController(
+    player: VideoPlayerState
+): PictureInPictureController {
     if (LocalInspectionMode.current) {
         return PictureInPictureControllerStub()
     }
@@ -58,7 +60,7 @@ actual fun rememberPictureInPictureController(player: VideoPlayerState): Picture
             LaunchedEffect(impl, player) {
                 combine(
                     snapshotFlow { player.isPlaying },
-                    snapshotFlow { player.aspectRatio },
+                    snapshotFlow { player.aspectRatio }
                 ) { _, _ ->
                     impl.updateParams()
                 }.collect { }
@@ -112,8 +114,9 @@ actual fun rememberPictureInPictureController(player: VideoPlayerState): Picture
 @RequiresApi(Build.VERSION_CODES.O)
 internal class PictureInPictureControllerImpl(
     private val activity: ComponentActivity,
-    private val playerState: VideoPlayerState,
-) : PictureInPictureController, OnPictureInPictureEventListener {
+    private val playerState: VideoPlayerState
+) : PictureInPictureController,
+    OnPictureInPictureEventListener {
 
     private val mainExecutor = ContextCompat.getMainExecutor(activity)
     private val paramsExecutor = Executors.newSingleThreadExecutor()
@@ -131,19 +134,20 @@ internal class PictureInPictureControllerImpl(
         delegate.setBoundsTracker(boundsTracker)
     }
 
-    override fun onPictureInPictureEvent(
-        event: Event,
-        config: Configuration?
-    ) {
+    override fun onPictureInPictureEvent(event: Event, config: Configuration?) {
         Log.d(LOG_TAG, "Event: $event, config: $config")
         when (event) {
             Event.ENTERED -> {
                 isInPictureInPictureMode = true
                 isTransitioningToPip = false
             }
+
             Event.EXITED -> isInPictureInPictureMode = false
+
             Event.ENTER_ANIMATION_START -> isTransitioningToPip = true
+
             Event.ENTER_ANIMATION_END -> isTransitioningToPip = false
+
             else -> {}
         }
     }
@@ -199,10 +203,7 @@ private class PictureInPictureControllerStub : PictureInPictureController {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun buildRemoteActions(
-    isPlaying: Boolean,
-    context: Context
-): List<RemoteAction> {
+private fun buildRemoteActions(isPlaying: Boolean, context: Context): List<RemoteAction> {
     val actions = mutableListOf<RemoteAction>()
 
     actions.add(
@@ -257,21 +258,19 @@ private fun buildRemoteAction(
     requestCode: Int,
     controlType: Int,
     context: Context
-): RemoteAction {
-    return RemoteAction(
-        Icon.createWithResource(context, iconResId),
-        title,
-        title,
-        PendingIntent.getBroadcast(
-            context,
-            requestCode,
-            Intent(ACTION_BROADCAST_CONTROL)
-                .setPackage(context.packageName)
-                .putExtra(EXTRA_CONTROL_TYPE, controlType),
-            PendingIntent.FLAG_IMMUTABLE
-        )
+): RemoteAction = RemoteAction(
+    Icon.createWithResource(context, iconResId),
+    title,
+    title,
+    PendingIntent.getBroadcast(
+        context,
+        requestCode,
+        Intent(ACTION_BROADCAST_CONTROL)
+            .setPackage(context.packageName)
+            .putExtra(EXTRA_CONTROL_TYPE, controlType),
+        PendingIntent.FLAG_IMMUTABLE
     )
-}
+)
 
 private fun VideoPlayerState.seekForward(amount: Long) {
     val durationSec = metadata.duration ?: 0

@@ -20,7 +20,8 @@ sealed interface AsyncResult<out E, out T> {
     data object Loading : AsyncResult<Nothing, Nothing>
 }
 
-fun <T> AsyncResult<*, T>.getOrElse(default: () -> T): T = (this as? AsyncResult.Success<T>)?.data ?: default()
+fun <T> AsyncResult<*, T>.getOrElse(default: () -> T): T =
+    (this as? AsyncResult.Success<T>)?.data ?: default()
 
 fun <T> AsyncResult<*, T>.getOrNull(): T? = (this as? AsyncResult.Success<T>)?.data
 
@@ -40,7 +41,7 @@ inline fun <E, T, R> AsyncResult<E, T>.map(transform: (T) -> R): AsyncResult<E, 
 @HiddenFromObjC
 fun <E, T> Either<E, T>.toAsyncResult(): AsyncResult<E, T> = fold(
     ifLeft = { AsyncResult.Error(it) },
-    ifRight = { AsyncResult.Success(it) },
+    ifRight = { AsyncResult.Success(it) }
 )
 
 /**
@@ -50,7 +51,7 @@ fun <E, T> Either<E, T>.toAsyncResult(): AsyncResult<E, T> = fold(
 inline fun <E, T, R> AsyncResult<E, T>.fold(
     onLoading: () -> R,
     onError: (E) -> R,
-    onSuccess: (T) -> R,
+    onSuccess: (T) -> R
 ): R = when (this) {
     AsyncResult.Loading -> onLoading()
     is AsyncResult.Error -> onError(error)

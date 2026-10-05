@@ -19,15 +19,13 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultAuthApi(private val requester: HttpRequester) : AuthApi {
-    override suspend fun login(
-        login: String,
-        password: String
-    ): Either<AppError, LoginResponse> = requester.request {
-        post("accounts/users/auth/login") {
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("login" to login, "password" to password))
+    override suspend fun login(login: String, password: String): Either<AppError, LoginResponse> =
+        requester.request {
+            post("accounts/users/auth/login") {
+                contentType(ContentType.Application.Json)
+                setBody(mapOf("login" to login, "password" to password))
+            }
         }
-    }
 
     override suspend fun logout(): Either<AppError, LogoutResponse> = requester.request {
         post("accounts/users/auth/logout") {
@@ -35,15 +33,18 @@ internal class DefaultAuthApi(private val requester: HttpRequester) : AuthApi {
         }
     }
 
-    override suspend fun socialLogin(provider: SocialTypeDto): Either<AppError, SocialAuthResponse> = requester.request {
+    override suspend fun socialLogin(
+        provider: SocialTypeDto
+    ): Either<AppError, SocialAuthResponse> = requester.request {
         get("accounts/users/auth/social/$provider/login")
     }
 
-    override suspend fun socialAuthenticate(state: String): Either<AppError, AuthResponse> = requester.request {
-        get("accounts/users/auth/social/authenticate") {
-            parameter("state", state)
+    override suspend fun socialAuthenticate(state: String): Either<AppError, AuthResponse> =
+        requester.request {
+            get("accounts/users/auth/social/authenticate") {
+                parameter("state", state)
+            }
         }
-    }
 
     override suspend fun forgotPassword(email: String): Either<AppError, Unit> = requester.request {
         get("accounts/users/auth/password/forget") {

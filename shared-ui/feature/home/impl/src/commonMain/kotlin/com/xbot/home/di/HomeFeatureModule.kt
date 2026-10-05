@@ -5,11 +5,11 @@ import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrate
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
-import com.xbot.home.screen.feed.FeedPane
-import com.xbot.home.screen.schedule.SchedulePane
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
 import com.xbot.home.navigation.navigateToSchedule
+import com.xbot.home.screen.feed.FeedPane
+import com.xbot.home.screen.schedule.SchedulePane
 import com.xbot.login.navigation.navigateToLogin
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
@@ -52,8 +52,8 @@ val homeFeatureModule = module {
         )
     }
     navigation<ScheduleRoute>(
-        metadata = SupportingPaneSceneStrategy.supportingPane(HomeRoute)
-            + SharedViewModelStoreNavEntryDecorator.parent(HomeRoute.toString())
+        metadata = SupportingPaneSceneStrategy.supportingPane(HomeRoute) +
+            SharedViewModelStoreNavEntryDecorator.parent(HomeRoute.toString())
     ) {
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current

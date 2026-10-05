@@ -49,45 +49,44 @@ class MorphN(private val shapes: List<RoundedPolygon>) {
      *   time. The cubics are the weighted average of the matched cubics, normalized by the sum of
      *   the weights, so the weights only need to be non-negative and sum to a positive value.
      */
-    fun asCubics(progress: List<Float>): List<Cubic> {
-        return buildList {
-            // The first/last mechanism here ensures that the final anchor point in the shape
-            // exactly matches the first anchor point. There can be rendering artifacts introduced
-            // by those points being slightly off, even by much less than a pixel
-            var firstCubic: Cubic? = null
-            var lastCubic: Cubic? = null
-            val sp = progress.sum()
-            require(progress.size == shapes.size)
-            require(sp > 0f)
+    fun asCubics(progress: List<Float>): List<Cubic> = buildList {
+        // The first/last mechanism here ensures that the final anchor point in the shape
+        // exactly matches the first anchor point. There can be rendering artifacts introduced
+        // by those points being slightly off, even by much less than a pixel
+        var firstCubic: Cubic? = null
+        var lastCubic: Cubic? = null
+        val sp = progress.sum()
+        require(progress.size == shapes.size)
+        require(sp > 0f)
 
-            for (i in morphMatch.indices) {
-                val cubic =
-                    Cubic(
-                        FloatArray(8) {
-                            morphMatch[i]
-                                .mapIndexed { shapeIx, cubic ->
-                                    cubic.points[it] * progress[shapeIx]
-                                }
-                                .sum() / sp
-                        }
-                    )
-                if (firstCubic == null) firstCubic = cubic
-                if (lastCubic != null) add(lastCubic)
-                lastCubic = cubic
-            }
-            if (lastCubic != null && firstCubic != null)
-                add(
-                    Cubic(
-                        lastCubic.anchor0X,
-                        lastCubic.anchor0Y,
-                        lastCubic.control0X,
-                        lastCubic.control0Y,
-                        lastCubic.control1X,
-                        lastCubic.control1Y,
-                        firstCubic.anchor0X,
-                        firstCubic.anchor0Y
-                    )
+        for (i in morphMatch.indices) {
+            val cubic =
+                Cubic(
+                    FloatArray(8) {
+                        morphMatch[i]
+                            .mapIndexed { shapeIx, cubic ->
+                                cubic.points[it] * progress[shapeIx]
+                            }
+                            .sum() / sp
+                    }
                 )
+            if (firstCubic == null) firstCubic = cubic
+            if (lastCubic != null) add(lastCubic)
+            lastCubic = cubic
+        }
+        if (lastCubic != null && firstCubic != null) {
+            add(
+                Cubic(
+                    lastCubic.anchor0X,
+                    lastCubic.anchor0Y,
+                    lastCubic.control0X,
+                    lastCubic.control0Y,
+                    lastCubic.control1X,
+                    lastCubic.control1Y,
+                    firstCubic.anchor0X,
+                    firstCubic.anchor0Y
+                )
+            )
         }
     }
 
@@ -155,14 +154,17 @@ class MorphN(private val shapes: List<RoundedPolygon>) {
                 // 'ends' are ending progress values of current measured cubics in [0,1] range
                 val ends =
                     (0 until n).map {
-                        if (indices[it] == bss[it].size) 1f
-                        else {
+                        if (indices[it] == bss[it].size) {
+                            1f
+                        } else {
                             val p = beziers[it]!!.endOutlineProgress
-                            if (it == 0) p
-                            else
+                            if (it == 0) {
+                                p
+                            } else {
                                 doubleMappers[it - 1].mapBack(
                                     positiveModulo(p + polygonCutPoints[it - 1], 1f)
                                 )
+                            }
                         }
                     }
                 val minEnd = ends.min()
@@ -175,12 +177,14 @@ class MorphN(private val shapes: List<RoundedPolygon>) {
                 for (ix in 0 until n) {
                     if (ends[ix] > minEnd + AngleEpsilon) {
                         val cutPoint =
-                            if (ix == 0) minEnd
-                            else
+                            if (ix == 0) {
+                                minEnd
+                            } else {
                                 positiveModulo(
                                     doubleMappers[ix - 1].map(minEnd) - polygonCutPoints[ix - 1],
                                     1f
                                 )
+                            }
 
                         val (b1, b2) = beziers[ix]!!.cutAtProgress(cutPoint)
                         addToRet.add(b1.cubic)
@@ -222,7 +226,7 @@ internal fun MorphN.toPath(progress: List<Float>, path: Path = Path()): Path {
             cubic.control1X,
             cubic.control1Y,
             cubic.anchor1X,
-            cubic.anchor1Y,
+            cubic.anchor1Y
         )
     }
     path.close()

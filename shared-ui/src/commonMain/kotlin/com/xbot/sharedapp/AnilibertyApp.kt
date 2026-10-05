@@ -24,9 +24,7 @@ import com.xbot.sharedapp.navigation.LocalNavigationChrome
 import io.ktor.client.HttpClient
 
 @Composable
-internal fun AnilibertyApp(
-    appState: AppState = rememberAnilibertyAppState(),
-) {
+internal fun AnilibertyApp(appState: AppState = rememberAnilibertyAppState()) {
     val imageUrlProvider = koinLazyInject<ImageUrlProvider>()
     val httpClient = koinLazyInject<HttpClient>()
 
@@ -54,7 +52,7 @@ internal fun AnilibertyApp(
 
     CompositionLocalProvider(
         LocalAppState provides appState,
-        LocalNavigator provides navigator,
+        LocalNavigator provides navigator
     ) {
         ProvideAppLocale {
             AnilibertyTheme(

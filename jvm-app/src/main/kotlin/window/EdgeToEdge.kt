@@ -38,4 +38,3 @@ private object MacOSWindowInsets : PlatformWindowInsets {
     override val systemBars: PlatformInsets
         get() = PlatformInsets(top = 28)
 }
-

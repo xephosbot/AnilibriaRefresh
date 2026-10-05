@@ -80,9 +80,9 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.domain.models.Episode
 import com.xbot.player.VideoQuality
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
+import kotlin.math.max
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,7 +97,7 @@ internal fun VideoPlayerController(
     onQualityChange: (VideoQuality) -> Unit,
     buffering: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    onClickBack: () -> Unit,
+    onClickBack: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -129,7 +129,7 @@ internal fun VideoPlayerController(
                             }
                         )
                     },
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 ControllerOverlay(
                     isVisible = isControllerVisible,
@@ -172,7 +172,7 @@ private fun PlaylistDrawer(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
     drawerContent: @Composable () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         ModalNavigationDrawer(
@@ -183,7 +183,9 @@ private fun PlaylistDrawer(
                 ModalDrawerSheet(
                     drawerState = drawerState,
                     modifier = Modifier
-                        .windowInsetsPadding(DrawerDefaults.windowInsets.only(WindowInsetsSides.Vertical)),
+                        .windowInsetsPadding(
+                            DrawerDefaults.windowInsets.only(WindowInsetsSides.Vertical)
+                        ),
                     windowInsets = DrawerDefaults.windowInsets.only(WindowInsetsSides.Horizontal)
                 ) {
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
@@ -246,7 +248,7 @@ private fun ControllerOverlay(
     onSeekForward: () -> Unit,
     onOpenPlaylist: () -> Unit,
     onTimeout: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Crossfade(
         targetState = isVisible,
@@ -265,7 +267,7 @@ private fun ControllerOverlay(
                 onSeekBack = onSeekBack,
                 onSeekForward = onSeekForward,
                 onOpenPlaylist = onOpenPlaylist,
-                onTimeout = onTimeout,
+                onTimeout = onTimeout
             )
         }
     }
@@ -283,7 +285,7 @@ private fun AutoHidingController(
     onSeekBack: () -> Unit,
     onSeekForward: () -> Unit,
     onOpenPlaylist: () -> Unit,
-    onTimeout: () -> Unit,
+    onTimeout: () -> Unit
 ) {
     var hideControllerKey by rememberSaveable { mutableIntStateOf(0) }
 
@@ -371,7 +373,7 @@ private fun TimelineControls(
                 playerState.seekTo(playerState.sliderPos)
                 onInteraction()
             },
-            valueRange = 0f..1000f,
+            valueRange = 0f..1000f
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -400,7 +402,7 @@ private fun VideoPlayerTopBar(
     onQualityChange: (VideoQuality) -> Unit,
     onClickBack: () -> Unit,
     onOpenPlaylist: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     var isQualityMenuExpanded by remember { mutableStateOf(false) }
 
@@ -411,7 +413,7 @@ private fun VideoPlayerTopBar(
             IconButton(onClick = onClickBack) {
                 Icon(
                     imageVector = AnilibertyIcons.ArrowBack,
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
         },
@@ -420,7 +422,7 @@ private fun VideoPlayerTopBar(
                 IconButton(onClick = { isQualityMenuExpanded = true }) {
                     Icon(
                         imageVector = AnilibertyIcons.Filled.Settings,
-                        contentDescription = "Quality Settings",
+                        contentDescription = "Quality Settings"
                     )
                 }
                 DropdownMenu(
@@ -432,8 +434,20 @@ private fun VideoPlayerTopBar(
                             text = {
                                 Text(
                                     text = quality.title,
-                                    fontWeight = if (selectedQuality == quality) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (selectedQuality == quality) MaterialTheme.colorScheme.primary else Color.Unspecified
+                                    fontWeight = if (selectedQuality ==
+                                        quality
+                                    ) {
+                                        FontWeight.Bold
+                                    } else {
+                                        FontWeight.Normal
+                                    },
+                                    color = if (selectedQuality ==
+                                        quality
+                                    ) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        Color.Unspecified
+                                    }
                                 )
                             },
                             onClick = {
@@ -448,7 +462,7 @@ private fun VideoPlayerTopBar(
             IconButton(onClick = onOpenPlaylist) {
                 Icon(
                     imageVector = AnilibertyIcons.PlaylistPlay,
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
         },
@@ -467,7 +481,7 @@ private fun VideoPlayerTopBar(
 private fun PlayPauseButton(
     state: VideoPlayerState,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val icon = if (state.isPlaying) {
         AnilibertyIcons.Filled.Pause
@@ -476,7 +490,9 @@ private fun PlayPauseButton(
     }
 
     FilledTonalIconToggleButton(
-        modifier = modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
+        modifier = modifier.size(
+            IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)
+        ),
         checked = state.isPlaying,
         onCheckedChange = { onClick() },
         shapes = IconButtonDefaults.toggleableShapes()
@@ -484,45 +500,43 @@ private fun PlayPauseButton(
         Icon(
             modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun SeekBackButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun SeekBackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     FilledIconButton(
-        modifier = modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+        modifier = modifier.size(
+            IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)
+        ),
         shapes = IconButtonDefaults.shapes(IconButtonDefaults.mediumSquareShape),
-        onClick = onClick,
+        onClick = onClick
     ) {
         Icon(
             modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
             imageVector = AnilibertyIcons.Replay10,
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun SeekForwardButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun SeekForwardButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     FilledIconButton(
-        modifier = modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)),
+        modifier = modifier.size(
+            IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)
+        ),
         shapes = IconButtonDefaults.shapes(IconButtonDefaults.mediumSquareShape),
-        onClick = onClick,
+        onClick = onClick
     ) {
         Icon(
             modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
             imageVector = AnilibertyIcons.Forward10,
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }
@@ -538,9 +552,7 @@ private fun Modifier.symmetricInsetsPadding(): Modifier {
                 return max(left, right)
             }
 
-            override fun getTop(density: Density): Int {
-                return insets.getTop(density)
-            }
+            override fun getTop(density: Density): Int = insets.getTop(density)
 
             override fun getRight(density: Density, layoutDirection: LayoutDirection): Int {
                 val left = insets.getLeft(density, layoutDirection)
@@ -548,9 +560,7 @@ private fun Modifier.symmetricInsetsPadding(): Modifier {
                 return max(left, right)
             }
 
-            override fun getBottom(density: Density): Int {
-                return insets.getBottom(density)
-            }
+            override fun getBottom(density: Density): Int = insets.getBottom(density)
         }
     }
     return this.windowInsetsPadding(symmetricInsets)

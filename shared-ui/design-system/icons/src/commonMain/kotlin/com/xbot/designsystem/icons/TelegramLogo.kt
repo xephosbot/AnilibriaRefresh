@@ -54,7 +54,7 @@ val AnilibertyIcons.TelegramLogo: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _telegramLogo!!
     }
 

@@ -2,6 +2,7 @@ package com.xbot.title.screen.details
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.ResizeMode
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -136,7 +137,7 @@ internal fun TitleDetailsPane(
     viewModel: TitleViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val state by viewModel.collectAsState()
 
@@ -170,7 +171,7 @@ private fun TitleDetailsPaneContent(
     onAction: (TitleScreenAction) -> Unit,
     onBackClick: () -> Unit,
     onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val isSinglePane = LocalIsSinglePane.current
     val gridState = rememberLazyGridState()
@@ -193,7 +194,7 @@ private fun TitleDetailsPaneContent(
                                 Brush.verticalGradient(
                                     listOf(
                                         MaterialTheme.colorScheme.surfaceContainer,
-                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
                                     )
                                 )
                             ),
@@ -210,14 +211,15 @@ private fun TitleDetailsPaneContent(
                             }
                         },
                         actions = {
+                            val checkedColor = MaterialTheme.colorScheme.inverseSurface
                             FilledIconToggleButton(
                                 checked = selected,
                                 onCheckedChange = { selected = it },
                                 shapes = IconButtonDefaults.toggleableShapes(),
                                 colors = IconButtonDefaults.filledIconToggleButtonColors(
-                                    checkedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                    checkedContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.inverseSurface),
-                                ),
+                                    checkedContainerColor = checkedColor,
+                                    checkedContentColor = contentColorFor(checkedColor)
+                                )
                             ) {
                                 Icon(
                                     imageVector = AnilibertyIcons.Filled.Star,
@@ -227,7 +229,9 @@ private fun TitleDetailsPaneContent(
                             FilledIconButton(
                                 onClick = {},
                                 modifier = Modifier.size(
-                                    IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Narrow)
+                                    IconButtonDefaults.smallContainerSize(
+                                        IconButtonDefaults.IconButtonWidthOption.Narrow
+                                    )
                                 ),
                                 shapes = IconButtonDefaults.shapes()
                             ) {
@@ -237,12 +241,13 @@ private fun TitleDetailsPaneContent(
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
+                        colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
                     )
                 },
                 bottomBar = {
                     val details = state.details.getOrNull()
                     val hasEpisodes = details?.episodes?.isNotEmpty() == true
+                    val surfaceContainer = MaterialTheme.colorScheme.surfaceContainer
 
                     Box(
                         modifier = Modifier.windowInsetsPadding(
@@ -254,8 +259,8 @@ private fun TitleDetailsPaneContent(
                                 .background(
                                     Brush.verticalGradient(
                                         listOf(
-                                            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
-                                            MaterialTheme.colorScheme.surfaceContainer,
+                                            surfaceContainer.copy(alpha = 0f),
+                                            surfaceContainer
                                         )
                                     )
                                 )
@@ -269,7 +274,7 @@ private fun TitleDetailsPaneContent(
                                     .sharedBounds(
                                         rememberSharedContentState(key = "watch_button"),
                                         animatedVisibilityScope = this@AnimatedVisibility,
-                                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
+                                        resizeMode = ResizeMode.scaleToBounds()
                                     ),
                                 onClick = {
                                     state.initialRelease?.let { release ->
@@ -294,7 +299,7 @@ private fun TitleDetailsPaneContent(
                     },
                     contentPadding = innerPadding,
                     onPlayClick = onPlayClick,
-                    onReleaseClick = onReleaseClick,
+                    onReleaseClick = onReleaseClick
                 )
             }
         }
@@ -312,7 +317,7 @@ private fun TitleDetails(
     onWatchButtonVisibilityChanged: (Boolean) -> Unit,
     contentPadding: PaddingValues,
     onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit,
+    onReleaseClick: (Release) -> Unit
 ) {
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
@@ -329,14 +334,15 @@ private fun TitleDetails(
             modifier = modifier,
             state = gridState,
             columns = GridCells.Adaptive(400.dp),
-            contentPadding = contentPadding.only(WindowInsetsSides.Bottom),
+            contentPadding = contentPadding.only(WindowInsetsSides.Bottom)
         ) {
             row {
                 LargeReleaseCard(
                     modifier = Modifier.verticalParallax(gridState),
                     contentModifier = Modifier.animateContentSize(),
                     release = state.initialRelease,
-                    contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = PaddingValues(horizontal = horizontalMargin) +
+                        contentPadding.only(WindowInsetsSides.Horizontal)
                 ) {
                     AnimatedVisibility(
                         visible = (state.details.getOrNull()?.genres ?: emptyList()).isNotEmpty(),
@@ -380,7 +386,10 @@ private fun TitleDetails(
             row {
                 val alertText = when (state.details.getOrNull()?.availabilityStatus) {
                     AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
-                    AvailabilityStatus.CopyrightBlocked -> stringResource(Res.string.alert_blocked_copyright)
+
+                    AvailabilityStatus.CopyrightBlocked ->
+                        stringResource(Res.string.alert_blocked_copyright)
+
                     else -> null
                 }
                 AnimatedVisibility(
@@ -391,7 +400,7 @@ private fun TitleDetails(
                     Column {
                         Spacer(Modifier.height(16.dp))
                         AlertCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                            modifier = Modifier.padding(horizontal = horizontalMargin)
                         ) {
                             Text(text = alertText.orEmpty())
                         }
@@ -408,7 +417,7 @@ private fun TitleDetails(
                     Column {
                         Spacer(Modifier.height(16.dp))
                         NotificationCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                            modifier = Modifier.padding(horizontal = horizontalMargin)
                         ) {
                             Text(text = state.details.getOrNull()?.notification.orEmpty())
                         }
@@ -419,11 +428,11 @@ private fun TitleDetails(
             if (state.details.getOrNull()?.releaseMembers?.isNotEmpty() == true) {
                 header(
                     title = { Text(text = stringResource(Res.string.label_members)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                 )
                 horizontalItems(
                     items = state.details.getOrNull()?.releaseMembers ?: emptyList(),
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                 ) { member ->
                     MemberItem(
                         releaseMember = member,
@@ -435,15 +444,15 @@ private fun TitleDetails(
             if (state.relatedReleases.getOrElse { emptyList() }.isNotEmpty()) {
                 header(
                     title = { Text(text = stringResource(Res.string.label_related_releases)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                 )
                 horizontalItems(
                     items = state.relatedReleases.getOrElse { emptyList() },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                 ) { release ->
                     SmallReleaseCard(
                         release = release,
-                        onClick = onReleaseClick,
+                        onClick = onReleaseClick
                     )
                 }
             }
@@ -451,7 +460,7 @@ private fun TitleDetails(
             if ((state.details.getOrNull()?.episodes ?: emptyList()).isNotEmpty()) {
                 header(
                     title = { Text(text = stringResource(Res.string.label_episodes)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
                 )
                 itemsIndexed(
                     state.details.getOrNull()?.episodes ?: emptyList()
@@ -485,10 +494,12 @@ private fun TitleDetails(
                             modifier = Modifier
                                 .section(
                                     index = index,
-                                    itemsCount = (state.details.getOrNull()?.episodes ?: emptyList()).size,
+                                    itemsCount = state.details.getOrNull()?.episodes?.size ?: 0,
                                     columnsCount = columnsCount.value,
                                     sectionSpacing = SectionDefaults.spacing(
-                                        contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+                                        contentPadding = contentPadding.only(
+                                            WindowInsetsSides.Horizontal
+                                        )
                                     )
                                 ),
                             episode = episode,
@@ -510,10 +521,7 @@ private fun TitleDetails(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun WatchButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
+private fun WatchButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier
             .fillMaxWidth()
@@ -565,7 +573,7 @@ private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenSta
         TitleScreenState(
             initialRelease = ReleaseFixtures.frieren,
             details = AsyncResult.Success(createReleaseDetails(release = ReleaseFixtures.frieren)),
-            relatedReleases = AsyncResult.Success(ReleaseFixtures.all),
+            relatedReleases = AsyncResult.Success(ReleaseFixtures.all)
         )
     )
 }

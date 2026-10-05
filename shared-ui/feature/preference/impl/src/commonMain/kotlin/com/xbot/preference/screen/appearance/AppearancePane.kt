@@ -12,13 +12,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,7 +62,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 internal fun AppearancePane(
     modifier: Modifier = Modifier,
     viewModel: AppearanceViewModel = koinViewModel(),
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val state by viewModel.collectAsState()
 
@@ -97,7 +97,9 @@ private fun AppearanceScreenContent(
                         modifier = Modifier.padding(start = 6.dp),
                         onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
-                        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
                     ) {
                         Icon(
                             imageVector = AnilibertyIcons.ArrowBack,
@@ -106,20 +108,24 @@ private fun AppearanceScreenContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
         ) {
             PreferenceItem(
                 modifier = Modifier.section(0, 4),
-                headlineContent = { Text(stringResource(Res.string.preference_appearance_theme_title)) },
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_theme_title))
+                },
                 supportingContent = {
                     Column {
                         Text(stringResource(Res.string.preference_appearance_theme_description))
@@ -132,12 +138,14 @@ private fun AppearanceScreenContent(
                             FilledTonalToggleButton(
                                 modifier = Modifier.weight(1f),
                                 checked = selected,
-                                onCheckedChange = { onAction(AppearanceScreenAction.OnThemeOptionChange(option)) },
+                                onCheckedChange = {
+                                    onAction(AppearanceScreenAction.OnThemeOptionChange(option))
+                                },
                                 shapes = ConnectedButtonGroupDefaults.connectedButtonShapes(
                                     index = ThemeOption.entries.indexOf(option),
                                     count = ThemeOption.entries.size
                                 ),
-                                contentPadding = ButtonDefaults.ExtraSmallContentPadding,
+                                contentPadding = ButtonDefaults.ExtraSmallContentPadding
                             ) {
                                 Text(text = stringResource(option.stringRes))
                             }
@@ -149,8 +157,12 @@ private fun AppearanceScreenContent(
             // Dynamic Theme
             SwitchPreferenceItem(
                 modifier = Modifier.section(1, 4),
-                headlineContent = { Text(stringResource(Res.string.preference_appearance_dynamic_theme_title)) },
-                supportingContent = { Text(stringResource(Res.string.preference_appearance_dynamic_theme_description)) },
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_dynamic_theme_title))
+                },
+                supportingContent = {
+                    Text(stringResource(Res.string.preference_appearance_dynamic_theme_description))
+                },
                 checked = state.isDynamicTheme,
                 onCheckedChange = { onAction(AppearanceScreenAction.OnDynamicThemeChange(it)) }
             )
@@ -158,8 +170,12 @@ private fun AppearanceScreenContent(
             // Pure Black
             SwitchPreferenceItem(
                 modifier = Modifier.section(2, 4),
-                headlineContent = { Text(stringResource(Res.string.preference_appearance_pure_black_title)) },
-                supportingContent = { Text(stringResource(Res.string.preference_appearance_pure_black_description)) },
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_pure_black_title))
+                },
+                supportingContent = {
+                    Text(stringResource(Res.string.preference_appearance_pure_black_description))
+                },
                 checked = state.isPureBlack,
                 onCheckedChange = { onAction(AppearanceScreenAction.OnPureBlackChange(it)) }
             )
@@ -167,8 +183,16 @@ private fun AppearanceScreenContent(
             // Expressive color scheme
             SwitchPreferenceItem(
                 modifier = Modifier.section(3, 4),
-                headlineContent = { Text(stringResource(Res.string.preference_appearance_expressive_color_title)) },
-                supportingContent = { Text(stringResource(Res.string.preference_appearance_expressive_color_description)) },
+                headlineContent = {
+                    Text(stringResource(Res.string.preference_appearance_expressive_color_title))
+                },
+                supportingContent = {
+                    Text(
+                        stringResource(
+                            Res.string.preference_appearance_expressive_color_description
+                        )
+                    )
+                },
                 checked = state.isExpressiveColor,
                 badges = { ExperimentalPill() },
                 onCheckedChange = { onAction(AppearanceScreenAction.OnExpressiveColorChange(it)) }
@@ -186,10 +210,21 @@ private fun AppearancePanePreview() {
         state = state,
         onAction = { action ->
             state = when (action) {
-                is AppearanceScreenAction.OnThemeOptionChange -> state.copy(themeOption = action.option)
-                is AppearanceScreenAction.OnDynamicThemeChange -> state.copy(isDynamicTheme = action.enabled)
-                is AppearanceScreenAction.OnPureBlackChange -> state.copy(isPureBlack = action.enabled)
-                is AppearanceScreenAction.OnExpressiveColorChange -> state.copy(isExpressiveColor = action.enabled)
+                is AppearanceScreenAction.OnThemeOptionChange -> state.copy(
+                    themeOption = action.option
+                )
+
+                is AppearanceScreenAction.OnDynamicThemeChange -> state.copy(
+                    isDynamicTheme = action.enabled
+                )
+
+                is AppearanceScreenAction.OnPureBlackChange -> state.copy(
+                    isPureBlack = action.enabled
+                )
+
+                is AppearanceScreenAction.OnExpressiveColorChange -> state.copy(
+                    isExpressiveColor = action.enabled
+                )
             }
         },
         onBackClick = {}

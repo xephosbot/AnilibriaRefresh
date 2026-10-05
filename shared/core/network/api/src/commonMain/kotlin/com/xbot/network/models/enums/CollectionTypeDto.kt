@@ -5,11 +5,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class CollectionTypeDto(val type: String) {
-    @SerialName("PLANNED") PLANNED("PLANNED"),
-    @SerialName("WATCHED") WATCHED("WATCHED"),
-    @SerialName("WATCHING") WATCHING("WATCHING"),
-    @SerialName("POSTPONED") POSTPONED("POSTPONED"),
-    @SerialName("ABANDONED") ABANDONED("ABANDONED"),;
+    @SerialName("PLANNED")
+    PLANNED("PLANNED"),
+
+    @SerialName("WATCHED")
+    WATCHED("WATCHED"),
+
+    @SerialName("WATCHING")
+    WATCHING("WATCHING"),
+
+    @SerialName("POSTPONED")
+    POSTPONED("POSTPONED"),
+
+    @SerialName("ABANDONED")
+    ABANDONED("ABANDONED") ;
 
     override fun toString(): String = type
 }

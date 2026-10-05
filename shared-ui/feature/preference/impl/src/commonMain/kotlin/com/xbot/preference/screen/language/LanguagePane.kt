@@ -34,10 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @TrackScreen
 @Composable
-internal fun LanguagePane(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-) {
+internal fun LanguagePane(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
     LanguagePaneContent(
         modifier = modifier,
         currentLanguage = LocaleManager.language,
@@ -52,7 +49,7 @@ private fun LanguagePaneContent(
     modifier: Modifier = Modifier,
     currentLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -69,7 +66,9 @@ private fun LanguagePaneContent(
                         modifier = Modifier.padding(start = 6.dp),
                         onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
-                        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
                     ) {
                         Icon(
                             imageVector = AnilibertyIcons.ArrowBack,
@@ -78,10 +77,12 @@ private fun LanguagePaneContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),

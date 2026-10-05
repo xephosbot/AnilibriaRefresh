@@ -10,5 +10,5 @@ data class FavoriteFilters(
     val types: List<ReleaseType>,
     val genres: List<Genre>,
     val sortingTypes: List<SortingType>,
-    val ageRatings: List<AgeRating>,
+    val ageRatings: List<AgeRating>
 )

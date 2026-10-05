@@ -16,12 +16,8 @@ interface ReleasesApi {
         page: Int = 1,
         limit: Int = 15
     ): Either<AppError, PaginatedResponse<ReleaseDto>>
-    suspend fun getRelease(
-        aliasOrId: String
-    ): Either<AppError, ReleaseDto>
-    suspend fun getReleaseMembers(
-        aliasOrId: String
-    ): Either<AppError, List<ReleaseMemberDto>>
+    suspend fun getRelease(aliasOrId: String): Either<AppError, ReleaseDto>
+    suspend fun getReleaseMembers(aliasOrId: String): Either<AppError, List<ReleaseMemberDto>>
     suspend fun getReleaseEpisodesTimecodes(
         aliasOrId: String
     ): Either<AppError, List<EpisodeTimecodeDto>>

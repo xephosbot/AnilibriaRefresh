@@ -29,7 +29,10 @@ import androidx.compose.ui.util.fastMapIndexed
 @Composable
 internal fun DimensionSubcomposeLayout(
     modifier: Modifier = Modifier,
-    contents: List<@Composable @UiComposable () -> Unit>,
+    contents: List<
+        @Composable @UiComposable
+        () -> Unit
+        >,
     dependentContent: @Composable (List<Size>) -> Unit
 ) {
     SubcomposeLayout(
@@ -109,6 +112,6 @@ fun DimensionSubcomposeLayout(
 }
 
 internal sealed interface Slots {
-    data class Main(val id: Int): Slots
-    data object Dependent: Slots
+    data class Main(val id: Int) : Slots
+    data object Dependent : Slots
 }

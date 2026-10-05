@@ -150,7 +150,7 @@ private fun PlayerScreenContent(
                     onClickBack = onBackClick
                 )
             }
-        },
+        }
     )
 }
 
@@ -173,7 +173,7 @@ private class PlayerScreenStateProvider : PreviewParameterProvider<PlayerScreenS
         PlayerScreenState(
             episodes = AsyncResult.Success(EpisodeFixtures.all),
             currentEpisode = EpisodeFixtures.all.first(),
-            quality = VideoQuality.FHD,
+            quality = VideoQuality.FHD
         )
     )
 }

@@ -11,7 +11,7 @@ private fun LifecycleOwner.dropUnlessStateIsAtLeast(
 ): () -> Unit {
     require(state != Lifecycle.State.DESTROYED) {
         "Target state is not allowed to be Lifecycle.State.DESTROYED " +
-                "because callbacks should not be invoked after destruction."
+            "because callbacks should not be invoked after destruction."
     }
 
     return {
@@ -22,11 +22,9 @@ private fun LifecycleOwner.dropUnlessStateIsAtLeast(
 }
 
 @CheckResult
-fun LifecycleOwner.dropUnlessStarted(
-    block: () -> Unit
-): () -> Unit = dropUnlessStateIsAtLeast(Lifecycle.State.STARTED, block)
+fun LifecycleOwner.dropUnlessStarted(block: () -> Unit): () -> Unit =
+    dropUnlessStateIsAtLeast(Lifecycle.State.STARTED, block)
 
 @CheckResult
-fun LifecycleOwner.dropUnlessResumed(
-    block: () -> Unit
-): () -> Unit = dropUnlessStateIsAtLeast(Lifecycle.State.RESUMED, block)
+fun LifecycleOwner.dropUnlessResumed(block: () -> Unit): () -> Unit =
+    dropUnlessStateIsAtLeast(Lifecycle.State.RESUMED, block)

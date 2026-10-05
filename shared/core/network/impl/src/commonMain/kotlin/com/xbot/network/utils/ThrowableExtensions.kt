@@ -14,15 +14,20 @@ import kotlinx.serialization.json.jsonPrimitive
 
 internal suspend fun Throwable.toAppError(): AppError = when {
     this.isNoConnectionException() || this.isTimeoutException() -> AppError.ConnectionError(this)
-    this is ResponseException -> AppError.ServerError(response.status.value, response.parseServerMessage())
+
+    this is ResponseException -> AppError.ServerError(
+        response.status.value,
+        response.parseServerMessage()
+    )
+
     else -> AppError.UnknownError(this)
 }
 
 internal fun Throwable.isTimeoutException(): Boolean {
     val exception = unwrapCancellationException()
     return exception is HttpRequestTimeoutException ||
-            exception is ConnectTimeoutException ||
-            exception is SocketTimeoutException
+        exception is ConnectTimeoutException ||
+        exception is SocketTimeoutException
 }
 
 internal expect fun Throwable.isNoConnectionException(): Boolean

@@ -1,9 +1,6 @@
 package com.xbot.preference.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.xbot.navigation.ExternalUriNavKey
-import com.xbot.navigation.NavKey
-import com.xbot.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.DiscordLogo
 import com.xbot.designsystem.icons.GitHubLogo
@@ -15,6 +12,9 @@ import com.xbot.designsystem.icons.Settings
 import com.xbot.designsystem.icons.TelegramLogo
 import com.xbot.designsystem.icons.VolunteerActivism
 import com.xbot.designsystem.icons.YouTubeLogo
+import com.xbot.navigation.ExternalUriNavKey
+import com.xbot.navigation.NavKey
+import com.xbot.navigation.TopLevelNavKey
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_description
 import com.xbot.resources.preference_appearance_title
@@ -30,8 +30,8 @@ import com.xbot.resources.preference_language_description
 import com.xbot.resources.preference_language_title
 import com.xbot.resources.preference_team_description
 import com.xbot.resources.preference_team_title
-import com.xbot.resources.preference_telegram_title
 import com.xbot.resources.preference_telegram_description
+import com.xbot.resources.preference_telegram_title
 import com.xbot.resources.preference_youtube_description
 import com.xbot.resources.preference_youtube_title
 import com.xbot.resources.tab_preference

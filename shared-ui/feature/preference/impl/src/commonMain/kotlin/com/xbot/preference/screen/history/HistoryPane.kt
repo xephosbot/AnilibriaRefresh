@@ -34,7 +34,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun HistoryPane(
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel(),
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     HistoryPaneContent(
         modifier = modifier,
@@ -44,10 +44,7 @@ internal fun HistoryPane(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun HistoryPaneContent(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-) {
+private fun HistoryPaneContent(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -63,7 +60,9 @@ private fun HistoryPaneContent(
                         modifier = Modifier.padding(start = 6.dp),
                         onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
-                        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
                     ) {
                         Icon(
                             imageVector = AnilibertyIcons.ArrowBack,
@@ -72,10 +71,12 @@ private fun HistoryPaneContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         Box(
             modifier = Modifier

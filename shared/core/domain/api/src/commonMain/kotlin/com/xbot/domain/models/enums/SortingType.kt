@@ -6,5 +6,5 @@ enum class SortingType {
     RATING_DESC,
     RATING_ASC,
     YEAR_DESC,
-    YEAR_ASC,
+    YEAR_ASC
 }

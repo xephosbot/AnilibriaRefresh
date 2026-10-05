@@ -65,7 +65,7 @@ fun EpisodeListItem(
     shapes: MorphableShapes = ExpressiveEpisodeListItemDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     onContextClick: (() -> Unit)? = null,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -114,11 +114,12 @@ fun EpisodeListItem(
             ),
         shape = shape,
         color = containerColor,
-        contentColor = contentColor,
+        contentColor = contentColor
     ) {
         Crossfade(
             targetState = episode,
-            label = "EpisodeListItem Crossfade to ${if (episode == null) "Loading" else "Loaded Episode"}"
+            label = "EpisodeListItem Crossfade to " +
+                if (episode == null) "Loading" else "Loaded Episode"
         ) { state ->
             if (state != null) {
                 EpisodeListItemContent(state)
@@ -130,15 +131,13 @@ fun EpisodeListItem(
 }
 
 @Composable
-private fun EpisodeListItemContent(
-    episode: Episode,
-    modifier: Modifier = Modifier
-) {
+private fun EpisodeListItemContent(episode: Episode, modifier: Modifier = Modifier) {
     ListItemLayout(
         modifier = modifier,
         content = {
             Text(
-                text = stringResource(Res.string.episode_title) + " ${formatOrdinal(episode.ordinal)}",
+                text = stringResource(Res.string.episode_title) +
+                    " ${formatOrdinal(episode.ordinal)}",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 10.sp,
                 color = LocalContentColor.current.copy(alpha = 0.6f),
@@ -176,13 +175,13 @@ private fun EpisodeListItemContent(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(8.dp),
-                            text = duration.toLocalizedString(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White
+                        text = duration.toLocalizedString(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White
                     )
                 }
             }
-        },
+        }
     )
 }
 
@@ -233,7 +232,7 @@ internal fun ListItemLayout(
     modifier: Modifier = Modifier,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Row(
         modifier = modifier
@@ -259,16 +258,14 @@ internal fun ListItemLayout(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressiveEpisodeListItemDefaults {
     @Composable
-    fun shapes(): MorphableShapes {
-        return MorphableShapes(
-            shape = RoundedCornerShape(0.dp),
-            pressedShape = MaterialTheme.shapes.large,
-            selectedShape = MaterialTheme.shapes.large,
-            focusedShape = MaterialTheme.shapes.large,
-            hoveredShape = MaterialTheme.shapes.medium,
-            draggedShape = MaterialTheme.shapes.large
-        )
-    }
+    fun shapes(): MorphableShapes = MorphableShapes(
+        shape = RoundedCornerShape(0.dp),
+        pressedShape = MaterialTheme.shapes.large,
+        selectedShape = MaterialTheme.shapes.large,
+        focusedShape = MaterialTheme.shapes.large,
+        hoveredShape = MaterialTheme.shapes.medium,
+        draggedShape = MaterialTheme.shapes.large
+    )
 
     @Composable
     fun colors(
@@ -299,7 +296,6 @@ private fun EpisodeListItemPreview() {
         episode = EpisodeFixtures.all.first(),
         selected = false,
         onClick = {
-
         }
     )
 }
@@ -313,12 +309,10 @@ private fun EpisodeListItemLoadingPreview() {
     )
 }
 
-private fun formatOrdinal(ordinal: Float): String {
-    return if (ordinal == ordinal.toInt().toFloat()) {
-        ordinal.toInt().toString()
-    } else {
-        ordinal.toString()
-    }
+private fun formatOrdinal(ordinal: Float): String = if (ordinal == ordinal.toInt().toFloat()) {
+    ordinal.toInt().toString()
+} else {
+    ordinal.toString()
 }
 
 private val ListItemContainerHeight = 88.dp

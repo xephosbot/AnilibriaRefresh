@@ -1,13 +1,13 @@
 package com.xbot.formatters
 
 import androidx.compose.ui.text.intl.Locale
+import kotlin.time.ExperimentalTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSLocale
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 actual fun LocalDateTime.format(locale: Locale, format: String): String {

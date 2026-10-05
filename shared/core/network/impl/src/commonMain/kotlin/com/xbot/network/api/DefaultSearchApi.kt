@@ -10,9 +10,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultSearchApi(private val requester: HttpRequester) : SearchApi {
-    override suspend fun searchReleases(query: String): Either<AppError, List<ReleaseDto>> = requester.request {
-        get("app/search/releases") {
-            parameter("query", query)
+    override suspend fun searchReleases(query: String): Either<AppError, List<ReleaseDto>> =
+        requester.request {
+            get("app/search/releases") {
+                parameter("query", query)
+            }
         }
-    }
 }

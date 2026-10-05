@@ -4,5 +4,5 @@ enum class SocialType {
     VK,
     GOOGLE,
     PATREON,
-    DISCORD;
+    DISCORD
 }

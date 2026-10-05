@@ -10,5 +10,5 @@ data class PaginationMetaDto(
     @SerialName("per_page") val perPage: Int,
     @SerialName("current_page") val currentPage: Int,
     @SerialName("total_pages") val totalPages: Int,
-    @SerialName("links") val links: PaginationLinksDto,
+    @SerialName("links") val links: PaginationLinksDto
 )

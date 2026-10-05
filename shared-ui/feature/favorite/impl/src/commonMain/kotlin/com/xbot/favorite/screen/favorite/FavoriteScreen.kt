@@ -7,5 +7,4 @@ import io.kotzilla.sdk.compose.TrackScreen
 @TrackScreen
 @Composable
 internal fun FavoriteScreen(modifier: Modifier = Modifier) {
-
 }

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImageOptimizedDto(
     @SerialName("preview") val preview: String?,
-    @SerialName("thumbnail") val thumbnail: String?,
+    @SerialName("thumbnail") val thumbnail: String?
 )

@@ -3,13 +3,13 @@ package com.xbot.network.client
 import com.xbot.network.utils.isTimeoutException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.HttpRequestRetry
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("FunctionName")
 internal fun HttpClientConfig<*>.NetworkRetry(
-    retryDelay: suspend (Long) -> Unit = { millis -> delay(millis.milliseconds) },
+    retryDelay: suspend (Long) -> Unit = { millis -> delay(millis.milliseconds) }
 ) {
     install(HttpRequestRetry) {
         maxRetries = MAX_RETRIES
@@ -30,7 +30,7 @@ internal fun HttpClientConfig<*>.NetworkRetry(
         exponentialDelay(
             base = RETRY_BACKOFF_FACTOR,
             baseDelayMs = RETRY_BASE_DELAY_MS,
-            randomizationMs = RETRY_JITTER_MS,
+            randomizationMs = RETRY_JITTER_MS
         )
 
         delay(retryDelay)

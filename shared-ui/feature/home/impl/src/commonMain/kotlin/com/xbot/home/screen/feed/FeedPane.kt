@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -28,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -135,15 +135,15 @@ import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
 import io.kotzilla.sdk.compose.TrackScreen
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import kotlin.time.ExperimentalTime
-import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
 
 @OptIn(
     ExperimentalMaterial3AdaptiveApi::class,
@@ -158,7 +158,7 @@ internal fun FeedPane(
     onScheduleClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
-    onProfileClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val items = viewModel.releases.collectAsLazyPagingItems()
     val state by viewModel.collectAsState()
@@ -201,7 +201,7 @@ private fun FeedPaneContent(
     onScheduleClick: () -> Unit,
     onReleaseClick: (Release) -> Unit,
     onEpisodeClick: (Int, Int) -> Unit,
-    onProfileClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val gridState = rememberLazyGridState()
@@ -251,7 +251,7 @@ private fun FeedPaneContent(
                             Brush.verticalGradient(
                                 listOf(
                                     MaterialTheme.colorScheme.surfaceContainer,
-                                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f),
+                                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
                                 )
                             )
                         ),
@@ -300,7 +300,7 @@ private fun FeedPaneContent(
                 }
             },
             floatingActionButtonPosition = FabPosition.Center,
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) { innerPadding ->
             Box {
                 ReleaseFeed(
@@ -312,7 +312,7 @@ private fun FeedPaneContent(
                     onScheduleClick = onScheduleClick,
                     onBestTypeChange = { onAction(HomeScreenAction.UpdateBestType(it)) },
                     onReleaseClick = onReleaseClick,
-                    onEpisodeClick = onEpisodeClick,
+                    onEpisodeClick = onEpisodeClick
                 )
 
                 LoadingIndicator(
@@ -339,7 +339,7 @@ private fun ReleaseFeed(
     onScheduleClick: () -> Unit,
     onBestTypeChange: (BestType) -> Unit,
     onReleaseClick: (Release) -> Unit,
-    onEpisodeClick: (Int, Int) -> Unit,
+    onEpisodeClick: (Int, Int) -> Unit
 ) {
     val recommendedReleases = releasesFeed.recommendedReleases.getOrElse { List(10) { null } }
     val pagerState = rememberPagerState(
@@ -348,7 +348,7 @@ private fun ReleaseFeed(
     val columnsCount = remember {
         derivedStateOf { gridState.layoutInfo.maxSpan }
     }
-    
+
     var activeMenuReleaseId by remember { mutableStateOf<Int?>(null) }
     val horizontalMargin = 16.dp
 
@@ -361,7 +361,7 @@ private fun ReleaseFeed(
         horizontalPagerItems(
             items = releasesFeed.recommendedReleases.getOrElse { List(10) { null } },
             state = pagerState,
-            isAutoScrollActive = activeMenuReleaseId == null,
+            isAutoScrollActive = activeMenuReleaseId == null
         ) { page, release ->
             LargeReleaseCard(
                 modifier = Modifier
@@ -370,9 +370,13 @@ private fun ReleaseFeed(
                 contentModifier = Modifier
                     .fadeWithParallax(pagerState, page),
                 release = release,
-                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal)
+                contentPadding =
+                    PaddingValues(horizontal = horizontalMargin) +
+                        contentPadding.only(WindowInsetsSides.Horizontal)
             ) {
-                val isChecked by rememberUpdatedState(activeMenuReleaseId != null && activeMenuReleaseId == release?.id)
+                val isChecked by rememberUpdatedState(
+                    activeMenuReleaseId != null && activeMenuReleaseId == release?.id
+                )
 
                 ContextMenu(
                     showMenu = isChecked,
@@ -403,7 +407,11 @@ private fun ReleaseFeed(
                         leadingContent = {
                             Icon(
                                 modifier = Modifier
-                                    .size(SplitButtonDefaults.leadingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight)),
+                                    .size(
+                                        SplitButtonDefaults.leadingButtonIconSizeFor(
+                                            SplitButtonDefaults.MediumContainerHeight
+                                        )
+                                    ),
                                 imageVector = AnilibertyIcons.Filled.PlayArrow,
                                 contentDescription = null
                             )
@@ -418,7 +426,11 @@ private fun ReleaseFeed(
 
                             Icon(
                                 modifier = Modifier
-                                    .size(SplitButtonDefaults.trailingButtonIconSizeFor(SplitButtonDefaults.MediumContainerHeight))
+                                    .size(
+                                        SplitButtonDefaults.trailingButtonIconSizeFor(
+                                            SplitButtonDefaults.MediumContainerHeight
+                                        )
+                                    )
                                     .graphicsLayer {
                                         rotationZ = rotation
                                     },
@@ -434,18 +446,18 @@ private fun ReleaseFeed(
         header(
             title = { Text(text = stringResource(Res.string.label_schedule_now)) },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            onClick = onScheduleClick,
+            onClick = onScheduleClick
         )
         horizontalSnappableItems(
             items = releasesFeed.scheduleNow.getOrElse { List(10) { null } },
-            //key = { schedule -> schedule?.release?.id },
+            // key = { schedule -> schedule?.release?.id },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            itemSpacing = 16.dp,
+            itemSpacing = 16.dp
         ) { schedule ->
             MediumReleaseCard(
                 modifier = Modifier,
                 release = schedule?.release,
-                onClick = onReleaseClick,
+                onClick = onReleaseClick
             ) {
                 schedule?.let {
                     val episode = schedule.toEpisode()
@@ -463,7 +475,9 @@ private fun ReleaseFeed(
         row {
             Header(
                 title = { Text(text = stringResource(Res.string.label_best)) },
-                contentPadding = PaddingValues(horizontal = horizontalMargin) + contentPadding.only(WindowInsetsSides.Horizontal),
+                contentPadding =
+                    PaddingValues(horizontal = horizontalMargin) +
+                        contentPadding.only(WindowInsetsSides.Horizontal),
                 content = {
                     val items = remember { BestType.entries }
                     SingleChoiceConnectedButtonGroup(
@@ -478,7 +492,7 @@ private fun ReleaseFeed(
                                 index = items.indexOf(item),
                                 count = items.size
                             ),
-                            contentPadding = ButtonDefaults.ExtraSmallContentPadding,
+                            contentPadding = ButtonDefaults.ExtraSmallContentPadding
                         ) {
                             Text(text = stringResource(item.stringRes))
                         }
@@ -487,8 +501,14 @@ private fun ReleaseFeed(
             )
         }
         horizontalItemsIndexed(
-            items = if (currentBestType == BestType.Now) releasesFeed.bestNow.getOrElse { List(10) { null } } else releasesFeed.bestAllTime.getOrElse { List(10) { null } },
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            items = if (currentBestType ==
+                BestType.Now
+            ) {
+                releasesFeed.bestNow.getOrElse { List(10) { null } }
+            } else {
+                releasesFeed.bestAllTime.getOrElse { List(10) { null } }
+            },
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
         ) { index, release ->
             SmallReleaseCard(
                 modifier = Modifier.badgeOverlay(
@@ -503,18 +523,18 @@ private fun ReleaseFeed(
                     )
                 ),
                 release = release,
-                onClick = onReleaseClick,
+                onClick = onReleaseClick
             )
         }
 
         header(
             title = { Text(text = stringResource(Res.string.label_franchises)) },
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
         )
         horizontalSnappableItems(
             items = releasesFeed.recommendedFranchises.getOrElse { List(10) { null } },
             contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
-            itemSpacing = 16.dp,
+            itemSpacing = 16.dp
         ) { franchise ->
             FranchiseCard(
                 franchise = franchise,
@@ -524,11 +544,11 @@ private fun ReleaseFeed(
 
         header(
             title = { Text(text = stringResource(Res.string.label_genres)) },
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
         )
         horizontalItems(
             items = releasesFeed.genres.getOrElse { List(10) { null } },
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
         ) { genre ->
             GenreItem(
                 genre = genre,
@@ -538,11 +558,11 @@ private fun ReleaseFeed(
 
         header(
             title = { Text(text = stringResource(Res.string.label_updates)) },
-            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal),
+            contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
         )
         pagingItems(
             items = items,
-            loadingPlaceholderCount = 10,
+            loadingPlaceholderCount = 10
         ) { index, release ->
             ReleaseListItem(
                 modifier = Modifier
@@ -555,26 +575,24 @@ private fun ReleaseFeed(
                         )
                     ),
                 release = release,
-                onClick = onReleaseClick,
+                onClick = onReleaseClick
             )
         }
     }
 }
 
 @Composable
-private fun LazyGridState.isScrollingUp(): State<Boolean> {
-    return produceState(initialValue = true) {
-        var lastIndex = 0
-        var lastScroll = Int.MAX_VALUE
-        snapshotFlow {
-            firstVisibleItemIndex to firstVisibleItemScrollOffset
-        }.collect { (currentIndex, currentScroll) ->
-            if (currentIndex != lastIndex || currentScroll != lastScroll) {
-                value = currentIndex < lastIndex ||
-                        (currentIndex == lastIndex && currentScroll < lastScroll)
-                lastIndex = currentIndex
-                lastScroll = currentScroll
-            }
+private fun LazyGridState.isScrollingUp(): State<Boolean> = produceState(initialValue = true) {
+    var lastIndex = 0
+    var lastScroll = Int.MAX_VALUE
+    snapshotFlow {
+        firstVisibleItemIndex to firstVisibleItemScrollOffset
+    }.collect { (currentIndex, currentScroll) ->
+        if (currentIndex != lastIndex || currentScroll != lastScroll) {
+            value = currentIndex < lastIndex ||
+                (currentIndex == lastIndex && currentScroll < lastScroll)
+            lastIndex = currentIndex
+            lastScroll = currentScroll
         }
     }
 }
@@ -594,16 +612,14 @@ private val Int.badgeDrawableRes: DrawableResource
     }
 
 @Composable
-private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier {
-    return if (index < 3) {
-        this.overlayDrawable(
-            resource = index.badgeDrawableRes,
-            brush = brush,
-            offset = DpOffset(x = 70.dp, y = 11.dp)
-        )
-    } else {
-        this
-    }
+private fun Modifier.badgeOverlay(index: Int, brush: Brush): Modifier = if (index < 3) {
+    this.overlayDrawable(
+        resource = index.badgeDrawableRes,
+        brush = brush,
+        offset = DpOffset(x = 70.dp, y = 11.dp)
+    )
+} else {
+    this
 }
 
 @AnilibertyPreview

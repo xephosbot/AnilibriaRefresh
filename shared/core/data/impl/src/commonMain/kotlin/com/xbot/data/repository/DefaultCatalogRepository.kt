@@ -2,10 +2,10 @@ package com.xbot.data.repository
 
 import androidx.paging.PagingSource
 import arrow.core.Either
+import com.xbot.common.error.AppError
 import com.xbot.data.datasource.CommonPagingSource
 import com.xbot.data.mapper.toDomain
 import com.xbot.data.mapper.toDto
-import com.xbot.common.error.AppError
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.AgeRating
@@ -27,34 +27,33 @@ import com.xbot.network.models.enums.SortingTypeDto
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DefaultCatalogRepository(
-    private val catalogApi: CatalogApi
-) : CatalogRepository {
-    override fun getCatalogReleases(search: String?, filters: CatalogQuery?): PagingSource<Int, Release> {
-        return CommonPagingSource(
-            loadPage = { page, limit ->
-                catalogApi.getCatalogReleases(
-                    page = page,
-                    limit = limit,
-                    search = search,
-                    genres = filters?.genres?.map(Genre::id),
-                    types = filters?.types?.map(ReleaseType::toDto),
-                    seasons = filters?.seasons?.map(Season::toDto),
-                    fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
-                    toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
-                    sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
-                    ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
-                    publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
-                    productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
-                ).map { result ->
-                    CommonPagingSource.PaginatedResponse(
-                        items = result.data.map(ReleaseDto::toDomain),
-                        total = result.meta.pagination.total,
-                    )
-                }
+internal class DefaultCatalogRepository(private val catalogApi: CatalogApi) : CatalogRepository {
+    override fun getCatalogReleases(
+        search: String?,
+        filters: CatalogQuery?
+    ): PagingSource<Int, Release> = CommonPagingSource(
+        loadPage = { page, limit ->
+            catalogApi.getCatalogReleases(
+                page = page,
+                limit = limit,
+                search = search,
+                genres = filters?.genres?.map(Genre::id),
+                types = filters?.types?.map(ReleaseType::toDto),
+                seasons = filters?.seasons?.map(Season::toDto),
+                fromYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.start,
+                toYear = filters?.years?.takeIf { it != IntRange.EMPTY }?.endInclusive,
+                sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
+                ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
+                publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
+                productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto)
+            ).map { result ->
+                CommonPagingSource.PaginatedResponse(
+                    items = result.data.map(ReleaseDto::toDomain),
+                    total = result.meta.pagination.total
+                )
             }
-        )
-    }
+        }
+    )
 
     override suspend fun getCatalogReleases(
         search: String?,
@@ -73,7 +72,7 @@ internal class DefaultCatalogRepository(
             sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
             ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
             publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
-            productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto),
+            productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto)
         )
         .map { it.data.map(ReleaseDto::toDomain) }
 

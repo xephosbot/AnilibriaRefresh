@@ -34,7 +34,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun TeamPane(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel = koinViewModel(),
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     TeamPaneContent(
         modifier = modifier,
@@ -44,10 +44,7 @@ internal fun TeamPane(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun TeamPaneContent(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-) {
+private fun TeamPaneContent(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -63,7 +60,9 @@ private fun TeamPaneContent(
                         modifier = Modifier.padding(start = 6.dp),
                         onClick = onBackClick,
                         shapes = IconButtonDefaults.shapes(),
-                        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
                     ) {
                         Icon(
                             imageVector = AnilibertyIcons.ArrowBack,
@@ -72,10 +71,12 @@ private fun TeamPaneContent(
                     }
                 },
                 scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.surfaceContainer
+                )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         Box(
             modifier = Modifier
