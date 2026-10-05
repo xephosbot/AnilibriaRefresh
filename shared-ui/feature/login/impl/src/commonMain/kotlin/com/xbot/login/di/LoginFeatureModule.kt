@@ -7,7 +7,6 @@ import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
 import com.xbot.login.LoginScreen
 import com.xbot.login.navigation.LoginRoute
-import com.xbot.login.navigation.RegistrationRoute
 import com.xbot.login.navigation.navigateToRegistration
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
@@ -21,7 +20,6 @@ import org.koin.dsl.navigation3.navigation
 val loginFeatureModule = module {
     polymorphic<NavKey> {
         subclass(LoginRoute::class)
-        subclass(RegistrationRoute::class)
     }
     navigation<LoginRoute>(
         metadata = DialogSceneStrategy.dialog(DialogProperties(usePlatformDefaultWidth = false))
