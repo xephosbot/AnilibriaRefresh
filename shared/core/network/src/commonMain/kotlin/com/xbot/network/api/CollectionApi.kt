@@ -2,6 +2,7 @@ package com.xbot.network.api
 
 import arrow.core.Either
 import com.xbot.common.error.AppError
+import com.xbot.network.models.dto.CollectionIdDto
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.enums.AgeRatingDto
@@ -18,7 +19,7 @@ import de.jensklingenberg.ktorfit.http.Query
 
 interface CollectionApi {
     @GET("accounts/users/me/collections/ids")
-    suspend fun getCollectionIds(): Either<AppError, Map<Int, CollectionTypeDto>>
+    suspend fun getCollectionIds(): Either<AppError, List<CollectionIdDto>>
 
     @GET("accounts/users/me/collections/releases")
     suspend fun getCollectionReleases(
@@ -35,12 +36,12 @@ interface CollectionApi {
     @POST("accounts/users/me/collections")
     suspend fun addToCollections(
         @Body collections: List<CollectionRequest>
-    ): Either<AppError, Map<Int, CollectionTypeDto>>
+    ): Either<AppError, List<CollectionIdDto>>
 
     @DELETE("accounts/users/me/collections")
     suspend fun removeFromCollections(
         @Body releaseIds: List<ReleaseIdRequest>
-    ): Either<AppError, Map<Int, CollectionTypeDto>>
+    ): Either<AppError, List<CollectionIdDto>>
 
     @GET("accounts/users/me/collections/references/age-ratings")
     suspend fun getCollectionAgeRatings(): Either<AppError, List<AgeRatingDto>>

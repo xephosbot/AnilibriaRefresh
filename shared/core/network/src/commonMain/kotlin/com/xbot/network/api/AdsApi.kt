@@ -6,9 +6,9 @@ import com.xbot.network.models.dto.VastDto
 import de.jensklingenberg.ktorfit.http.GET
 
 interface AdsApi {
-    @GET("ads/vasts")
+    @GET("media/vasts")
     suspend fun getVasts(): Either<AppError, List<VastDto>>
 
-    @GET("ads/vasts/chain")
+    @GET("media/manifest.xml")
     suspend fun getVastsChain(): Either<AppError, String>
 }

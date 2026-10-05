@@ -155,7 +155,7 @@ com/xbot/<feature>/
     - Mappers: `Dto.toDomain()`.
     - Network APIs are Ktorfit interfaces (`@GET`/`@POST`/`@Path`/`@Query`/`@Body`) returning `Either<AppError, T>`; `EitherConverterFactory` maps failures to `AppError`. Implementations are generated (`ktorfit.create{Name}Api()`) and provided in `NetworkModule`. Never hand-write an API implementation.
     - List query params are typed `List<T>?` with an array-style name, e.g. `@Query("f[genres][]")`. The API reads `key[]=a&key[]=b` as an array, but a repeated plain key (`key=a&key=b`) keeps only the last value. JSON bodies are `@Serializable` classes in `network.models.requests`.
-    - Bearer auth is sent only for `accounts/users/me/**` and logout (path check in `NetworkModule`).
+    - Bearer auth is sent only for `accounts/users/me/**`, logout and `anime/releases/{id}/rating` (path check in `NetworkModule`); add new authenticated paths there.
 3. **State** (`:shared:state:*`): Orbit MVI ViewModels.
 4. **UI** (`:shared-ui:*`): Compose screens rendering state, Unidirectional Data Flow.
 

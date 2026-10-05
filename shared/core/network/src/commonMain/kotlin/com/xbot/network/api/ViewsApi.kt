@@ -3,14 +3,23 @@ package com.xbot.network.api
 import arrow.core.Either
 import com.xbot.common.error.AppError
 import com.xbot.network.models.dto.TimecodeApi
+import com.xbot.network.models.dto.ViewHistoryItemDto
 import com.xbot.network.models.requests.EpisodeIdRequest
 import com.xbot.network.models.requests.TimecodeUpdateRequest
+import com.xbot.network.models.responses.PaginatedResponse
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
+import de.jensklingenberg.ktorfit.http.Query
 
 interface ViewsApi {
+    @GET("accounts/users/me/views/history")
+    suspend fun getViewHistory(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Either<AppError, PaginatedResponse<ViewHistoryItemDto>>
+
     @GET("accounts/users/me/views/timecodes")
     suspend fun getTimecodes(): Either<AppError, List<TimecodeApi>>
 

@@ -15,10 +15,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 
-/**
- * The API reads list filters as PHP-style arrays (`ids[]=1&ids[]=2`); a repeated plain key
- * (`ids=1&ids=2`) keeps only the last value. These tests pin the generated Ktorfit requests.
- */
+// The API keeps only the last value of a repeated plain key; lists must go as `key[]`.
 class ListQueryParamsTest {
 
     private var requestedUrl: Url? = null

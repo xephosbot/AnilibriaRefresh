@@ -1,6 +1,3 @@
-# Overrides on top of detekt's default config (buildUponDefaultConfig = true).
-# Existing findings live in each module's detekt-baseline.xml.
-
 naming:
   FunctionNaming:
     ignoreAnnotated: ['Composable']

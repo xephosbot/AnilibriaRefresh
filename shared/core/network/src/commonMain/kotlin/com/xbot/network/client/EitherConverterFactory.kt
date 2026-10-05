@@ -13,10 +13,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.coroutines.CancellationException
 
-/**
- * Lets Ktorfit endpoints return `Either<AppError, T>`: request and body-parsing failures
- * become [Either.Left] instead of exceptions. Unexpected errors are reported to [logger].
- */
 internal class EitherConverterFactory(private val logger: Lazy<AppLogger>) : Converter.Factory {
 
     override fun suspendResponseConverter(
@@ -30,8 +26,6 @@ internal class EitherConverterFactory(private val logger: Lazy<AppLogger>) : Con
     private inner class EitherResponseConverter(private val successType: TypeInfo) :
         Converter.SuspendResponseConverter<HttpResponse, Either<AppError, Any?>> {
 
-        // Any failure (network, HTTP status, body parsing) must become an AppError;
-        // cancellation is rethrown in toLeft().
         @Suppress("TooGenericExceptionCaught")
         override suspend fun convert(result: KtorfitResult): Either<AppError, Any?> =
             when (result) {

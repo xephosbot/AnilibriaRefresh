@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger as KermitLogger
 import com.xbot.logger.AppLogger
 import com.xbot.network.Constants
 import com.xbot.network.api.AdsApi
+import com.xbot.network.api.AppApi
 import com.xbot.network.api.AuthApi
 import com.xbot.network.api.CatalogApi
 import com.xbot.network.api.CollectionApi
@@ -22,6 +23,7 @@ import com.xbot.network.api.TorrentsApi
 import com.xbot.network.api.VideosApi
 import com.xbot.network.api.ViewsApi
 import com.xbot.network.api.createAdsApi
+import com.xbot.network.api.createAppApi
 import com.xbot.network.api.createAuthApi
 import com.xbot.network.api.createCatalogApi
 import com.xbot.network.api.createCollectionApi
@@ -157,6 +159,9 @@ class NetworkModule {
     internal fun provideAdsApi(ktorfit: Ktorfit): AdsApi = ktorfit.createAdsApi()
 
     @Singleton
+    internal fun provideAppApi(ktorfit: Ktorfit): AppApi = ktorfit.createAppApi()
+
+    @Singleton
     internal fun provideAuthApi(ktorfit: Ktorfit): AuthApi = ktorfit.createAuthApi()
 
     @Singleton
@@ -211,8 +216,11 @@ class NetworkModule {
     internal fun provideViewsApi(ktorfit: Ktorfit): ViewsApi = ktorfit.createViewsApi()
 }
 
-// Endpoints scoped to the signed-in user; every other request goes out without a token.
 private fun HttpRequestBuilder.requiresAuth(): Boolean {
     val path = url.encodedPath
-    return "/accounts/users/me/" in path || path.endsWith("/accounts/users/auth/logout")
+    return "/accounts/users/me/" in path ||
+        path.endsWith("/accounts/users/auth/logout") ||
+        ownRatingPath.containsMatchIn(path)
 }
+
+private val ownRatingPath = Regex("""/anime/releases/\d+/rating$""")

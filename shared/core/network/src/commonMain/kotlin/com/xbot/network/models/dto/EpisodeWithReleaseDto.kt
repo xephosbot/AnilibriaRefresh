@@ -19,6 +19,7 @@ data class EpisodeWithReleaseDto(
     @SerialName("youtube_id") val youtubeId: String?,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("sort_order") val sortOrder: Int,
+    @SerialName("release_id") val releaseId: Int? = null,
     @SerialName("name_english") val nameEnglish: String?,
     @SerialName("release") val release: ReleaseDto
 )
