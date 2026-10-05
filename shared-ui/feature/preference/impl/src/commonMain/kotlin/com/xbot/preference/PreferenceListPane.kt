@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -15,19 +13,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.valentinilk.shimmer.ShimmerBounds
-import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.components.PreferenceItem
+import com.xbot.designsystem.components.PreferenceSectionHeader
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ChevronRight
-import com.xbot.designsystem.modifier.ProvideShimmer
-import com.xbot.designsystem.modifier.shimmerUpdater
+import com.xbot.designsystem.icons.OpenInNew
 import com.xbot.designsystem.utils.AnilibertyPreview
-import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.preference.navigation.DiscordRoute
 import com.xbot.preference.navigation.GitHubRoute
@@ -47,16 +43,12 @@ import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class
-)
 @TrackScreen
 @Composable
 internal fun PreferenceListPane(
+    selectedRoute: PreferenceOptionRoute?,
     modifier: Modifier = Modifier,
-    currentDestination: PreferenceOptionRoute?,
-    onDetailClick: (PreferenceOptionRoute) -> Unit,
+    onPreferenceClick: (PreferenceOptionRoute) -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -77,100 +69,110 @@ internal fun PreferenceListPane(
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
-        PreferencesList(
-            preferences = PreferenceListDefaults.sections,
-            currentDestination = currentDestination,
+        PreferenceList(
+            sections = PreferenceSections,
+            selectedRoute = selectedRoute,
+            onPreferenceClick = onPreferenceClick,
             contentPadding = innerPadding,
-            onDetailClick = onDetailClick,
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun PreferencesList(
-    preferences: Map<StringResource, List<PreferenceOptionRoute>>,
-    currentDestination: PreferenceOptionRoute?,
+private fun PreferenceList(
+    sections: List<PreferenceSection>,
+    selectedRoute: PreferenceOptionRoute?,
+    onPreferenceClick: (PreferenceOptionRoute) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues,
-    onDetailClick: (PreferenceOptionRoute) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
-    val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val isSinglePane = LocalIsSinglePane.current
-
-    ProvideShimmer(shimmer) {
-        LazyColumn(
-            modifier = modifier.shimmerUpdater(shimmer),
-            contentPadding = contentPadding,
-        ) {
-            preferences.forEach { (title, items) ->
-                item {
-                    Text(
-                        modifier = Modifier.padding(
-                            horizontal = 24.dp,
-                            vertical = 8.dp,
-                        ),
-                        text = stringResource(title),
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
-                itemsIndexed(items) { index, item ->
-                    val isSelected = item == currentDestination && !isSinglePane
-                    
-                    PreferenceItem(
-                        modifier = Modifier.section(index, items.size),
-                        headlineContent = { Text(text = stringResource(item.title)) },
-                        supportingContent = { Text(text = stringResource(item.description)) },
-                        leadingContent = {
-                            Icon(
-                                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
-                                imageVector = item.icon,
-                                contentDescription = null
-                            )
-                        },
-                        trailingContent = {
-                            if (item !is ExternalUriNavKey) {
-                                Icon(
-                                    imageVector = AnilibertyIcons.ChevronRight,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        selected = isSelected,
-                        onClick = { onDetailClick(item) }
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = contentPadding,
+    ) {
+        sections.forEachIndexed { sectionIndex, section ->
+            item(
+                key = section.title.key,
+                contentType = PreferenceListContentType.Header,
+            ) {
+                PreferenceSectionHeader(
+                    modifier = Modifier.padding(top = if (sectionIndex > 0) SectionSpacing else 0.dp),
+                    title = { Text(text = stringResource(section.title)) },
+                )
             }
+            itemsIndexed(
+                items = section.routes,
+                key = { _, route -> route.title.key },
+                contentType = { _, _ -> PreferenceListContentType.Item },
+            ) { index, route ->
+                PreferenceItem(
+                    modifier = Modifier.section(index, section.routes.size),
+                    headlineContent = { Text(text = stringResource(route.title)) },
+                    supportingContent = { Text(text = stringResource(route.description)) },
+                    leadingContent = {
+                        Icon(
+                            imageVector = route.icon,
+                            contentDescription = null
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            imageVector = if (route is ExternalUriNavKey) {
+                                AnilibertyIcons.OpenInNew
+                            } else {
+                                AnilibertyIcons.ChevronRight
+                            },
+                            contentDescription = null
+                        )
+                    },
+                    selected = route == selectedRoute,
+                    onClick = { onPreferenceClick(route) }
+                )
+            }
+        }
+        item(contentType = PreferenceListContentType.Spacer) {
+            Spacer(modifier = Modifier.height(SectionSpacing))
         }
     }
 }
 
-object PreferenceListDefaults {
-    val sections: Map<StringResource, List<PreferenceOptionRoute>> = mapOf(
-        Res.string.preference_section_main to listOf(
+@Immutable
+private data class PreferenceSection(
+    val title: StringResource,
+    val routes: List<PreferenceOptionRoute>,
+)
+
+private enum class PreferenceListContentType { Header, Item, Spacer }
+
+private val SectionSpacing = 8.dp
+
+private val PreferenceSections: List<PreferenceSection> = listOf(
+    PreferenceSection(
+        title = Res.string.preference_section_main,
+        routes = listOf(
             PreferenceHistoryRoute,
             PreferenceTeamRoute,
             PreferenceDonateRoute,
             PreferenceAppearanceRoute,
-            PreferenceLanguageRoute
+            PreferenceLanguageRoute,
         ),
-        Res.string.preference_section_links to listOf(
+    ),
+    PreferenceSection(
+        title = Res.string.preference_section_links,
+        routes = listOf(
             TelegramRoute,
             DiscordRoute,
             YouTubeRoute,
             GitHubRoute,
-        )
-    )
-}
+        ),
+    ),
+)
 
 @AnilibertyPreview
 @Composable
 private fun PreferenceListPanePreview() {
     PreferenceListPane(
-        currentDestination = null,
-        onDetailClick = {}
+        selectedRoute = PreferenceAppearanceRoute,
+        onPreferenceClick = {}
     )
 }

@@ -3,7 +3,9 @@ package com.xbot.designsystem.components
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +18,7 @@ import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -26,9 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.xbot.designsystem.icons.Check
 import com.xbot.designsystem.icons.Close
+import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibertyPreview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -53,7 +59,13 @@ fun PreferenceItem(
         onClick = validOnClick,
         modifier = modifier,
         enabled = enabled,
-        leadingContent = leadingContent,
+        leadingContent = leadingContent?.let { content ->
+            {
+                Box(Modifier.padding(horizontal = ExpressivePreferenceItemDefaults.LeadingContentPadding)) {
+                    content()
+                }
+            }
+        },
         trailingContent = trailingContent,
         supportingContent = supportingContent,
         colors = colors,
@@ -146,8 +158,34 @@ fun ExperimentalPill(
     }
 }
 
+@Composable
+fun PreferenceSectionHeader(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = ExpressivePreferenceItemDefaults.sectionHeaderPadding(),
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(contentPadding)
+            .semantics { heading() },
+    ) {
+        ProvideTextStyle(MaterialTheme.typography.labelMedium) {
+            title()
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object ExpressivePreferenceItemDefaults {
+    val LeadingContentPadding = 6.dp
+
+    @Composable
+    fun sectionHeaderPadding(): PaddingValues {
+        val horizontal = LocalMargins.current.horizontal + 8.dp
+        return PaddingValues(horizontal = horizontal, vertical = 8.dp)
+    }
+
     @Composable
     fun shapes(
         shape: Shape = RoundedCornerShape(0.dp),

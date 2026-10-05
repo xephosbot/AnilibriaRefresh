@@ -5,6 +5,7 @@ import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
+import com.xbot.designsystem.utils.LocalIsSinglePane
 import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
@@ -14,8 +15,6 @@ import com.xbot.preference.appearance.AppearancePane
 import com.xbot.preference.donate.DonatePane
 import com.xbot.preference.history.HistoryPane
 import com.xbot.preference.language.LanguagePane
-import com.xbot.preference.navigation.DiscordRoute
-import com.xbot.preference.navigation.GitHubRoute
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
@@ -23,7 +22,6 @@ import com.xbot.preference.navigation.PreferenceLanguageRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
-import com.xbot.preference.navigation.YouTubeRoute
 import com.xbot.preference.team.TeamPane
 import com.xbot.preference.ui.PreferenceDetailPlaceholder
 import kotlinx.serialization.modules.subclass
@@ -40,9 +38,6 @@ val preferenceFeatureModule = module {
         subclass(PreferenceDonateRoute::class)
         subclass(PreferenceAppearanceRoute::class)
         subclass(PreferenceLanguageRoute::class)
-        subclass(GitHubRoute::class)
-        subclass(YouTubeRoute::class)
-        subclass(DiscordRoute::class)
     }
     navigation<PreferenceRoute>(
         metadata = ListDetailSceneStrategy.listPane(
@@ -54,9 +49,10 @@ val preferenceFeatureModule = module {
     ) {
         val navigator = LocalNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
+        val isSinglePane = LocalIsSinglePane.current
         PreferenceListPane(
-            currentDestination = navigator.currentDestination as? PreferenceOptionRoute,
-            onDetailClick = { destination ->
+            selectedRoute = if (isSinglePane) null else navigator.currentDestination as? PreferenceOptionRoute,
+            onPreferenceClick = { destination ->
                 lifecycleOwner.dropUnlessResumed {
                     if (destination is ExternalUriNavKey) {
                         navigator.navigate(destination)

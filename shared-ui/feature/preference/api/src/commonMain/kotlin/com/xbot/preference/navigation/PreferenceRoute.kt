@@ -5,9 +5,16 @@ import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.TopLevelNavKey
 import com.xbot.designsystem.icons.AnilibertyIcons
+import com.xbot.designsystem.icons.DiscordLogo
+import com.xbot.designsystem.icons.GitHubLogo
+import com.xbot.designsystem.icons.Groups
+import com.xbot.designsystem.icons.History
+import com.xbot.designsystem.icons.Language
+import com.xbot.designsystem.icons.Palette
 import com.xbot.designsystem.icons.Settings
-import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.icons.TelegramLogo
+import com.xbot.designsystem.icons.VolunteerActivism
+import com.xbot.designsystem.icons.YouTubeLogo
 import com.xbot.resources.Res
 import com.xbot.resources.preference_appearance_description
 import com.xbot.resources.preference_appearance_title
@@ -55,8 +62,7 @@ data object PreferenceHistoryRoute : PreferenceOptionRoute {
         get() = Res.string.preference_history_title
     override val description: StringResource
         get() = Res.string.preference_history_description
-    override val icon: ImageVector
-        get() = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.History
 }
 
 @Serializable
@@ -65,7 +71,7 @@ data object PreferenceTeamRoute : PreferenceOptionRoute {
         get() = Res.string.preference_team_title
     override val description: StringResource
         get() = Res.string.preference_team_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.Groups
 }
 
 @Serializable
@@ -74,7 +80,7 @@ data object PreferenceDonateRoute : PreferenceOptionRoute {
         get() = Res.string.preference_donate_title
     override val description: StringResource
         get() = Res.string.preference_donate_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.Filled.VolunteerActivism
 }
 
 @Serializable
@@ -83,7 +89,7 @@ data object PreferenceAppearanceRoute : PreferenceOptionRoute {
         get() = Res.string.preference_appearance_title
     override val description: StringResource
         get() = Res.string.preference_appearance_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Settings
+    override val icon: ImageVector = AnilibertyIcons.Filled.Palette
 }
 
 @Serializable
@@ -92,7 +98,7 @@ data object PreferenceLanguageRoute : PreferenceOptionRoute {
         get() = Res.string.preference_language_title
     override val description: StringResource
         get() = Res.string.preference_language_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Settings
+    override val icon: ImageVector = AnilibertyIcons.Language
 }
 
 @Serializable
@@ -101,7 +107,7 @@ data object GitHubRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_github_title
     override val description: StringResource
         get() = Res.string.preference_github_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.GitHubLogo
     override val uri: String = "https://github.com/xephosbot/AnilibriaRefresh"
 }
 
@@ -111,7 +117,7 @@ data object YouTubeRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_youtube_title
     override val description: StringResource
         get() = Res.string.preference_youtube_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.YouTubeLogo
     override val uri: String = "https://www.youtube.com/user/anilibriatv"
 }
 
@@ -121,7 +127,7 @@ data object DiscordRoute : PreferenceOptionRoute, ExternalUriNavKey {
         get() = Res.string.preference_discord_title
     override val description: StringResource
         get() = Res.string.preference_discord_description
-    override val icon: ImageVector = AnilibertyIcons.Filled.Star
+    override val icon: ImageVector = AnilibertyIcons.DiscordLogo
     override val uri: String = "https://discord.com/M6yCGeGN9B"
 }
 
