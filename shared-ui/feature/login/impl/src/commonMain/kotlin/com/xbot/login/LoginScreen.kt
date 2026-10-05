@@ -70,12 +70,14 @@ import com.xbot.resources.login_password_label
 import com.xbot.resources.login_sign_in
 import com.xbot.resources.login_success_message
 import com.xbot.resources.login_title
+import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@TrackScreen
 @Composable
 internal fun LoginScreen(
     modifier: Modifier = Modifier,

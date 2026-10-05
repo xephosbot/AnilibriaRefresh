@@ -73,12 +73,14 @@ import com.xbot.resources.label_release_types
 import com.xbot.resources.label_seasons
 import com.xbot.resources.label_sorting_types
 import com.xbot.resources.label_years
+import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.math.roundToInt
 
+@TrackScreen
 @Composable
 internal fun SearchFilterPane(
     modifier: Modifier = Modifier,

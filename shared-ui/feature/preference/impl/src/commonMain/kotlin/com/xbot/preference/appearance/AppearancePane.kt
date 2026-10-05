@@ -49,10 +49,12 @@ import com.xbot.resources.preference_appearance_pure_black_title
 import com.xbot.resources.preference_appearance_theme_description
 import com.xbot.resources.preference_appearance_theme_title
 import com.xbot.resources.preference_appearance_title
+import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 
+@TrackScreen
 @Composable
 internal fun AppearancePane(
     modifier: Modifier = Modifier,

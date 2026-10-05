@@ -205,6 +205,7 @@ kotlin {
 ### Rules
 
 - **Common dependencies** go in the top-level `@OptIn(ExperimentalKotlinGradlePluginApi::class) dependencies { }` block inside `kotlin { }`. This makes them available on all targets.
+    - **Exception — modules that apply the Kotzilla plugin** (`:shared-ui` and `:shared-ui:feature:*:impl`): declare common dependencies in `sourceSets.commonMain.dependencies { }` instead. Kotzilla 3.0.0 reads the module's dependencies when it is applied, which freezes the top-level `dependencies { }` block and fails the build with "The value for property 'implementation' ... is final".
 - **Platform-specific dependencies** go in the corresponding `sourceSets` block:
     - `androidMain.dependencies { }` — Android only (e.g., OkHttp, Brotli decoder, AndroidContextProvider)
     - `iosMain.dependencies { }` — iOS only (e.g., `ktor-client-darwin`)

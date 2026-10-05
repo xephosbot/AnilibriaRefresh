@@ -28,8 +28,10 @@ import com.xbot.localization.AppLanguage
 import com.xbot.localization.LocaleManager
 import com.xbot.resources.Res
 import com.xbot.resources.preference_language_title
+import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.stringResource
 
+@TrackScreen
 @Composable
 internal fun LanguagePane(
     modifier: Modifier = Modifier,

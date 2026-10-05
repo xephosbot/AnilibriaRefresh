@@ -53,6 +53,7 @@ import com.xbot.resources.Res
 import com.xbot.resources.StringResource
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_schedule
+import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -70,6 +71,7 @@ import kotlin.time.ExperimentalTime
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
+@TrackScreen
 @Composable
 internal fun SchedulePane(
     modifier: Modifier = Modifier,

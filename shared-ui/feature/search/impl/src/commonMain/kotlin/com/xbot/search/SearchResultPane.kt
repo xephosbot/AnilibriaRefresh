@@ -65,12 +65,14 @@ import com.xbot.resources.button_filters
 import com.xbot.resources.button_retry
 import com.xbot.resources.label_search_results
 import com.xbot.resources.search_bar_placeholder
+import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@TrackScreen
 @Composable
 internal fun SearchResultPane(
     modifier: Modifier = Modifier,

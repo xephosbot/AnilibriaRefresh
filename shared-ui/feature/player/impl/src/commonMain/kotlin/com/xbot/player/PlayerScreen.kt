@@ -31,10 +31,12 @@ import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.PreviewableVideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerState
 import io.github.kdroidfilter.composemediaplayer.createVideoPlayerState
+import io.kotzilla.sdk.compose.TrackScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@TrackScreen
 @Composable
 internal fun PlayerScreen(
     modifier: Modifier = Modifier,

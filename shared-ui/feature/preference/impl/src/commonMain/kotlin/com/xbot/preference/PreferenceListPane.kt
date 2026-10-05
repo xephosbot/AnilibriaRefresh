@@ -43,6 +43,7 @@ import com.xbot.resources.Res
 import com.xbot.resources.preference_screen_title
 import com.xbot.resources.preference_section_links
 import com.xbot.resources.preference_section_main
+import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -50,6 +51,7 @@ import org.jetbrains.compose.resources.stringResource
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
+@TrackScreen
 @Composable
 internal fun PreferenceListPane(
     modifier: Modifier = Modifier,

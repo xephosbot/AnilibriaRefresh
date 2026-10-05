@@ -1,10 +1,9 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotzilla)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -28,8 +27,7 @@ kotlin {
 
     jvmToolchain(21)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    dependencies {
+    sourceSets.commonMain.dependencies {
         implementation(projects.shared.common)
         implementation(projects.shared.state.player)
         implementation(projects.shared.core.domain.testFixtures)
@@ -54,6 +52,7 @@ kotlin {
         implementation(libs.koin.annotations)
         implementation(libs.kermit)
         implementation(libs.videoplayer.compose)
+        implementation(libs.kotzilla.sdk.compose)
     }
 
     sourceSets {

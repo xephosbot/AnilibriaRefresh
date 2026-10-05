@@ -127,6 +127,7 @@ import com.xbot.resources.label_franchises
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_schedule_now
 import com.xbot.resources.label_updates
+import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -142,6 +143,7 @@ import org.jetbrains.compose.resources.StringResource as JetbrainsStringResource
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
+@TrackScreen
 @Composable
 internal fun FeedPane(
     modifier: Modifier = Modifier,

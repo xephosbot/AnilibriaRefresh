@@ -115,6 +115,7 @@ import com.xbot.resources.label_members
 import com.xbot.resources.label_related_releases
 import com.xbot.title.ui.AlertCard
 import com.xbot.title.ui.NotificationCard
+import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -126,6 +127,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
+@TrackScreen
 @Composable
 internal fun TitleDetailsPane(
     modifier: Modifier = Modifier,

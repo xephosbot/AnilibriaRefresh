@@ -24,9 +24,11 @@ import com.xbot.designsystem.icons.ArrowBack
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.resources.Res
 import com.xbot.resources.preference_donate_title
+import io.kotzilla.sdk.compose.TrackScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+@TrackScreen
 @Composable
 internal fun DonatePane(
     modifier: Modifier = Modifier,

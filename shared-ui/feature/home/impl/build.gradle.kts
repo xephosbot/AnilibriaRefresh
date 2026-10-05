@@ -1,10 +1,9 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.android.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotzilla)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -24,8 +23,7 @@ kotlin {
 
     jvmToolchain(21)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    dependencies {
+    sourceSets.commonMain.dependencies {
         implementation(projects.shared.common)
         implementation(projects.shared.state.home)
         implementation(projects.shared.core.domain.testFixtures)
@@ -50,6 +48,7 @@ kotlin {
         implementation(libs.koin.compose.viewmodel)
         implementation(libs.koin.compose.navigation3)
         implementation(libs.koin.annotations)
+        implementation(libs.kotzilla.sdk.compose)
     }
 }
 
