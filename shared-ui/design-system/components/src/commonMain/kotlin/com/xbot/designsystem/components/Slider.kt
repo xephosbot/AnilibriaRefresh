@@ -53,8 +53,8 @@ fun RangeSlider(
             steps = calculatedSteps,
             onValueChange = onValueChange,
             valueRange = valueRange,
-            startInteractionSource = startInteractionSource,
-            endInteractionSource = endInteractionSource,
+            startThumbInteractionSource = startInteractionSource,
+            endThumbInteractionSource = endInteractionSource,
             startThumb = {
                 Label(
                     label = {

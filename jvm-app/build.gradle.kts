@@ -14,7 +14,8 @@ kotlin {
 dependencies {
     implementation(projects.sharedUi)
     implementation(projects.sharedUi.navigation.api)
-    implementation(compose.desktop.currentOs)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
     implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.koin.core)
     implementation(libs.slf4j)
@@ -72,8 +73,8 @@ val generateAssetsCar = tasks.register<Exec>("generateAssetsCar") {
 if (System.getProperty("os.name").contains("Mac")) {
     project.afterEvaluate {
         listOf(
-            "createDistributable",
-            "createReleaseDistributable",
+            "createDistributableImpl",
+            "createReleaseDistributableImpl",
         ).forEach { name ->
             tasks.named<AbstractJPackageTask>(name) {
                 configureMacOSPackageTask(

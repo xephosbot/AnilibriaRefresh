@@ -8,7 +8,7 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButtonShapes
-import androidx.compose.material3.TonalToggleButton
+import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +49,7 @@ private fun SingleChoiceConnectedButtonGroupPreview() {
         items = items,
         selectedItem = selectedItem,
     ) { selected, item ->
-        TonalToggleButton(
+        FilledTonalToggleButton(
             checked = selected,
             onCheckedChange = { selectedItem = item },
             shapes = ConnectedButtonGroupDefaults.connectedButtonShapes(

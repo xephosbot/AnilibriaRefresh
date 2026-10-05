@@ -28,7 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TonalToggleButton
+import androidx.compose.material3.FilledTonalToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -461,7 +461,7 @@ private fun ReleaseFeed(
                         items = items,
                         selectedItem = currentBestType
                     ) { selected, item ->
-                        TonalToggleButton(
+                        FilledTonalToggleButton(
                             modifier = Modifier.height(ButtonDefaults.ExtraSmallContainerHeight),
                             checked = selected,
                             onCheckedChange = { onBestTypeChange(item) },
