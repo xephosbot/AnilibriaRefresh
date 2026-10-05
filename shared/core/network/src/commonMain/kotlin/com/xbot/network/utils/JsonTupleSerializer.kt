@@ -1,24 +1,25 @@
 package com.xbot.network.utils
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonTransformingSerializer
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 
-internal abstract class JsonTupleSerializer<T> : KSerializer<T> {
-    private val delegate = JsonArray.serializer()
+internal abstract class JsonTupleSerializer<T>(serializer: KSerializer<T>) :
+    JsonTransformingSerializer<T>(serializer) {
 
-    override val descriptor: SerialDescriptor = delegate.descriptor
+    private val names = serializer.descriptor.elementNames.toList()
 
-    protected abstract fun fromTuple(items: List<JsonElement>): T
+    override fun transformDeserialize(element: JsonElement): JsonElement = buildJsonObject {
+        names.zip(element.jsonArray).forEach { (name, value) -> put(name, value) }
+    }
 
-    protected abstract fun toTuple(value: T): List<JsonElement>
-
-    override fun deserialize(decoder: Decoder): T = fromTuple(delegate.deserialize(decoder))
-
-    override fun serialize(encoder: Encoder, value: T) {
-        delegate.serialize(encoder, JsonArray(toTuple(value)))
+    override fun transformSerialize(element: JsonElement): JsonElement = buildJsonArray {
+        names.forEach { add(element.jsonObject[it] ?: JsonNull) }
     }
 }

@@ -1,26 +1,18 @@
 package com.xbot.network.models.dto
 
 import com.xbot.network.utils.JsonTupleSerializer
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KeepGeneratedSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.float
-import kotlinx.serialization.json.jsonPrimitive
 
+@OptIn(ExperimentalSerializationApi::class)
+@KeepGeneratedSerializer
 @Serializable(with = TimecodeApi.Serializer::class)
-data class TimecodeApi(val episodeId: String, val time: Float, val isWatched: Boolean) {
-
-    internal object Serializer : JsonTupleSerializer<TimecodeApi>() {
-        override fun fromTuple(items: List<JsonElement>): TimecodeApi {
-            val (episodeId, time, isWatched) = items.map { it.jsonPrimitive }
-            return TimecodeApi(episodeId.content, time.float, isWatched.boolean)
-        }
-
-        override fun toTuple(value: TimecodeApi): List<JsonElement> = listOf(
-            JsonPrimitive(value.episodeId),
-            JsonPrimitive(value.time),
-            JsonPrimitive(value.isWatched)
-        )
-    }
+data class TimecodeApi(
+    @SerialName("release_episode_id") val episodeId: String,
+    @SerialName("time") val time: Float,
+    @SerialName("is_watched") val isWatched: Boolean
+) {
+    internal object Serializer : JsonTupleSerializer<TimecodeApi>(generatedSerializer())
 }
