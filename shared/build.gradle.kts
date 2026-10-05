@@ -26,10 +26,9 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.shared.common)
-        api(projects.shared.core.domain.api)
-        api(projects.shared.core.domain.impl)
+        api(projects.shared.core.domain)
         api(projects.shared.core.network.impl)
-        api(projects.shared.core.data.impl)
+        api(projects.shared.core.data)
         api(projects.shared.core.logger.api)
         api(projects.shared.core.logger.impl)
         api(projects.shared.state.home)

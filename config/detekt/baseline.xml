@@ -17,9 +17,6 @@
     <ID>ForbiddenComment:TeamRoleDto.kt:TeamRoleDto$// TODO: make it typed enum</ID>
     <ID>ForbiddenComment:Theme.kt:// TODO: Revert to expressive after negative corner size exception fixed</ID>
     <ID>FunctionNaming:Main.ios.kt:@Suppress("ktlint:standard:function-naming") fun MainViewController: UIViewController</ID>
-    <ID>MagicNumber:DefaultGetRecommendedGenresUseCase.kt:DefaultGetRecommendedGenresUseCase$10</ID>
-    <ID>MagicNumber:DefaultGetRecommendedReleasesUseCase.kt:DefaultGetRecommendedReleasesUseCase$10</ID>
-    <ID>MagicNumber:DefaultGetScheduleWeekUseCase.kt:DefaultGetScheduleWeekUseCase$6</ID>
     <ID>MagicNumber:DefaultScheduleRepository.kt:DefaultScheduleRepository$10</ID>
     <ID>MagicNumber:FakeCatalogRepository.kt:FakeCatalogRepository$1990</ID>
     <ID>MagicNumber:FakeCatalogRepository.kt:FakeCatalogRepository$2024</ID>

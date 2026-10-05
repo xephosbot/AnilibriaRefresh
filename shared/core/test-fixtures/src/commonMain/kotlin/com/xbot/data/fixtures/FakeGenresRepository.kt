@@ -1,0 +1,26 @@
+package com.xbot.data.fixtures
+
+import androidx.paging.PagingSource
+import arrow.core.Either
+import arrow.core.right
+import com.xbot.common.error.AppError
+import com.xbot.domain.fixtures.GenreFixtures
+import com.xbot.domain.fixtures.ReleaseFixtures
+import com.xbot.domain.models.Genre
+import com.xbot.domain.models.Release
+import com.xbot.domain.repository.GenresRepository
+
+class FakeGenresRepository : GenresRepository {
+    override suspend fun getGenres(): Either<AppError, List<Genre>> = GenreFixtures.all.right()
+
+    override suspend fun getGenre(genreId: Int): Either<AppError, Genre> {
+        val genre = GenreFixtures.all.find { it.id == genreId } ?: GenreFixtures.all.first()
+        return genre.right()
+    }
+
+    override suspend fun getRandomGenres(limit: Int): Either<AppError, List<Genre>> =
+        GenreFixtures.all.shuffled().take(limit).right()
+
+    override fun getGenreReleases(genreId: Int): PagingSource<Int, Release> =
+        FakePagingSource(ReleaseFixtures.all)
+}

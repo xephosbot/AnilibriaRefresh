@@ -10,12 +10,13 @@ import com.xbot.common.asyncLoad
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetBestReleasesForAllTimeUseCase
 import com.xbot.domain.usecase.GetBestReleasesInCurrentSeasonUseCase
-import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
+import com.xbot.domain.usecase.GetCatalogReleasesUseCase
 import com.xbot.domain.usecase.GetRecommendedFranchisesUseCase
 import com.xbot.domain.usecase.GetRecommendedGenresUseCase
 import com.xbot.domain.usecase.GetRecommendedReleasesUseCase
 import com.xbot.domain.usecase.GetScheduleForTodayUseCase
 import com.xbot.domain.usecase.GetScheduleWeekUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,7 @@ import org.orbitmvi.orbit.viewmodel.orbitContainer
 
 @KoinViewModel
 class HomeViewModel(
-    private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
+    private val getCatalogReleases: GetCatalogReleasesUseCase,
     private val getBestReleasesForAllTime: GetBestReleasesForAllTimeUseCase,
     private val getBestReleasesInCurrentSeason: GetBestReleasesInCurrentSeasonUseCase,
     private val getRecommendedFranchisesUseCase: GetRecommendedFranchisesUseCase,
@@ -56,10 +57,9 @@ class HomeViewModel(
             }
         }
 
-    private val pager: Pager<Int, Release> = getCatalogReleasesPager(null, null)
-
     // TODO: Move inside HomeScreenState once Paging 3.5.0 stable ships asState()
-    val releases: Flow<PagingData<Release>> = pager.flow.cachedIn(viewModelScope)
+    val releases: Flow<PagingData<Release>> = getCatalogReleases(GetCatalogReleasesUseCase.Params())
+        .cachedIn(viewModelScope)
 
     private suspend fun loadBestReleasesInCurrentSeason() = subIntent {
         asyncLoad(

@@ -24,7 +24,7 @@ kotlin {
     jvmToolchain(21)
 
     sourceSets.commonMain.dependencies {
-        implementation(projects.shared.core.domain.testFixtures)
+        implementation(projects.shared.core.testFixtures)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.designSystem.icons)
         implementation(projects.sharedUi.designSystem.components)

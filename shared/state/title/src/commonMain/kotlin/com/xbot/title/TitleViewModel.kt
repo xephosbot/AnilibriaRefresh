@@ -6,6 +6,7 @@ import com.xbot.common.getOrNull
 import com.xbot.domain.models.Release
 import com.xbot.domain.usecase.GetFranchiseReleasesUseCase
 import com.xbot.domain.usecase.GetReleaseUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class TitleViewModel(
 
     private suspend fun loadDetails() = subIntent {
         asyncLoad(
-            request = { getRelease(aliasOrId) },
+            request = { getRelease(GetReleaseUseCase.Params(aliasOrId)) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(
@@ -49,7 +50,7 @@ class TitleViewModel(
 
     private suspend fun loadRelatedReleases() = subIntent {
         asyncLoad(
-            request = { getFranchiseReleases(aliasOrId) },
+            request = { getFranchiseReleases(GetFranchiseReleasesUseCase.Params(aliasOrId)) },
             onError = { error -> showError(error) { refresh() } },
             reducer = {
                 copy(relatedReleases = it)

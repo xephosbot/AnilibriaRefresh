@@ -6,6 +6,7 @@ import com.xbot.domain.models.AuthState
 import com.xbot.domain.usecase.GetAuthStateUseCase
 import com.xbot.domain.usecase.LoginUseCase
 import com.xbot.domain.usecase.LogoutUseCase
+import com.xbot.domain.usecase.invoke
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.OrbitContainer
 import org.orbitmvi.orbit.OrbitContainerHost
@@ -59,7 +60,7 @@ class LoginViewModel(
     private fun login() = intent {
         reduce { state.copy(isLoading = true) }
 
-        loginUseCase(state.username, state.password).fold(
+        loginUseCase(LoginUseCase.Params(login = state.username, password = state.password)).fold(
             ifLeft = {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(LoginScreenSideEffect.ShowErrorMessage(it))

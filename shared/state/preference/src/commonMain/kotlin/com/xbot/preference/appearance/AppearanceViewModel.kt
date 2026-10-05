@@ -10,6 +10,7 @@ import com.xbot.domain.usecase.UpdateDynamicThemeUseCase
 import com.xbot.domain.usecase.UpdateExpressiveColorUseCase
 import com.xbot.domain.usecase.UpdatePureBlackUseCase
 import com.xbot.domain.usecase.UpdateThemeOptionUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.flow.combine
 import org.koin.core.annotation.KoinViewModel
 import org.orbitmvi.orbit.OrbitContainer
@@ -69,18 +70,18 @@ class AppearanceViewModel(
     }
 
     private fun onThemeOptionChange(option: ThemeOption) = intent {
-        updateThemeOptionUseCase(option)
+        updateThemeOptionUseCase(UpdateThemeOptionUseCase.Params(option))
     }
 
     private fun onDynamicThemeChange(enabled: Boolean) = intent {
-        updateDynamicThemeUseCase(enabled)
+        updateDynamicThemeUseCase(UpdateDynamicThemeUseCase.Params(enabled))
     }
 
     private fun onPureBlackChange(enabled: Boolean) = intent {
-        updatePureBlackUseCase(enabled)
+        updatePureBlackUseCase(UpdatePureBlackUseCase.Params(enabled))
     }
 
     private fun onExpressiveColorChange(enabled: Boolean) = intent {
-        updateExpressiveColorUseCase(enabled)
+        updateExpressiveColorUseCase(UpdateExpressiveColorUseCase.Params(enabled))
     }
 }

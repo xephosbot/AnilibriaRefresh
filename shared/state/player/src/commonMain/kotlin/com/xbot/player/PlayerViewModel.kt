@@ -7,6 +7,7 @@ import com.xbot.common.getOrNull
 import com.xbot.common.map
 import com.xbot.domain.models.Episode
 import com.xbot.domain.usecase.GetReleaseUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.Job
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -35,7 +36,7 @@ class PlayerViewModel(
 
     private fun loadTitleDetails(): Job = intent {
         asyncLoad(
-            request = { getReleaseUseCase(releaseId) },
+            request = { getReleaseUseCase(GetReleaseUseCase.Params(releaseId)) },
             onError = { error -> showErrorMessage(error) { loadTitleDetails() } },
             reducer = { details ->
                 val episode = details.map { release ->

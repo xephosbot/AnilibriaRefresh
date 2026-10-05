@@ -36,7 +36,7 @@ kotlin {
         api(libs.androidx.paging.compose)
         implementation(projects.sharedUi.designSystem.theme)
         implementation(projects.sharedUi.designSystem.icons)
-        implementation(projects.shared.core.domain.testFixtures)
+        implementation(projects.shared.core.testFixtures)
         implementation(libs.compose.preview)
         implementation(libs.compose.foundation)
         implementation(libs.kotlinx.datetime)

@@ -40,18 +40,15 @@
 | Module | Contents |
 |---|---|
 | `:shared:common` | Cross-cutting primitives: `AppError`, `AsyncResult`, `AsyncLoad`, `DispatcherProvider`. No Compose. |
-| `:shared:core:domain:api` | Domain models (`domain.models`) and use case interfaces (`domain.usecase`). |
-| `:shared:core:domain:impl` | Use case implementations (`Default{UseCase}`, `internal`, `@Factory`). |
-| `:shared:core:domain:test-fixtures` | Fake domain models for previews and tests (`domain.fixtures`). |
-| `:shared:core:data:api` | Repository interfaces (`data.repository`). Return domain models. |
-| `:shared:core:data:impl` | Repository implementations, data sources, mappers (`Dto.toDomain()`), DataStore, platform modules. |
-| `:shared:core:data:test-fixtures` | Fake DTOs/data for tests (`data.fixtures`). |
+| `:shared:core:domain` | Domain models (`domain.models`), repository interfaces (`domain.repository`), use cases (`domain.usecase`). |
+| `:shared:core:data` | Repository implementations, data sources, mappers (`Dto.toDomain()`), DataStore, platform modules. |
+| `:shared:core:test-fixtures` | Fake domain models (`domain.fixtures`) and fake repositories (`data.fixtures`) for previews and tests. |
 | `:shared:core:network:api` | Ktor API interfaces, DTOs, responses, network enums. |
 | `:shared:core:network:impl` | Ktor client setup and API implementations. Platform engines live here. |
 | `:shared:core:logger:api` / `:impl` | `AppLogger` abstraction; `KotzillaAppLogger` logs via Kermit and reports errors to Kotzilla. |
 | `:shared:state:<feature>` | Screen state holders: `ViewModel`, `*ScreenState`, `*ScreenAction`, `*ScreenSideEffect`. |
 
-**Dependency direction:** `domain:impl → data:api → domain:api`, `data:impl → network:api`. `api` modules never depend on `impl` modules; only the app shell wires `impl` modules together.
+**Dependency direction:** `data → domain`, `data → network:api`. `domain` depends on nothing but `:shared:common`. `api` modules never depend on `impl` modules; only the app shell wires `impl` modules together.
 
 #### 2. Shared UI (`:shared-ui`)
 
@@ -80,11 +77,11 @@ Each feature is split into an `api` module (what other features may see) and an 
 - Navigation keys (`@Serializable` `data object` / `data class` implementing `NavKey`, `TopLevelNavKey` or `ExternalUriNavKey`).
 - `Navigator.navigateTo{Target}()` extension functions — the only way other features navigate here.
 - Keys may carry UI metadata (title, icon, description) as `StringResource` / `ImageVector`. This is intentional: every destination, including list entries and external links, is a node of one navigation graph. Hence `api` may depend on `:shared-ui:resource` and `:shared-ui:design-system:icons`.
-- Typical dependencies: `:shared-ui:navigation:api`, `:shared:core:domain:api` (for keys that carry domain types), `:shared-ui:resource`, `:shared-ui:design-system:icons`.
+- Typical dependencies: `:shared-ui:navigation:api`, `:shared:core:domain` (for keys that carry domain types), `:shared-ui:resource`, `:shared-ui:design-system:icons`.
 
 #### `:feature:<name>:impl`
 
-Dependencies: its own `api`, `:shared:state:<feature>`, `:shared-ui:design-system:*`, `:shared-ui:common`, other features' **`api`** modules only (never another `impl`). `:shared:core:domain:test-fixtures` is allowed for previews.
+Dependencies: its own `api`, `:shared:state:<feature>`, `:shared-ui:design-system:*`, `:shared-ui:common`, other features' **`api`** modules only (never another `impl`). `:shared:core:test-fixtures` is allowed for previews.
 
 **Package layout** (root package `com.xbot.<feature>`):
 
@@ -134,12 +131,28 @@ com/xbot/<feature>/
 
 ### Clean Architecture Layers
 
-1. **Domain** (`:shared:core:domain:*`): Source of truth.
+1. **Domain** (`:shared:core:domain`): Source of truth.
     - Models: data classes (e.g., `Release`, `Episode`).
-    - Use cases: `fun interface {Verb}{Noun}UseCase` with `operator fun invoke(...)` in `api`; `internal class Default{Verb}{Noun}UseCase` annotated `@Factory` in `impl`.
-    - Fallible operations return `Either<AppError, T>`; observable data returns `Flow<T>`.
-2. **Data** (`:shared:core:data:*`, `:shared:core:network:*`): Implementation details.
-    - Repository interfaces in `data:api`, implementations in `data:impl`.
+    - Repository interfaces (`domain.repository`); `data` implements them.
+    - Use cases are concrete `@Factory` classes (no per-use-case interface, no `Default` prefix) that implement one of the base contracts in `domain/usecase/UseCase.kt`:
+        - `EitherUseCase<P, R>` — `suspend`, fallible, returns `Either<AppError, R>`;
+        - `UseCase<P, R>` — `suspend`, plain result (e.g. `Update*` setters returning `Unit`);
+        - `FlowUseCase<P, R>` — non-suspending, returns `Flow<R>` (observed settings, paging).
+    - Input goes in a nested `data class Params` declared inside the use case; use cases without input use `Unit` and are called as `useCase()` via the `invoke()` extensions (import `com.xbot.domain.usecase.invoke`).
+
+    ```kotlin
+    @Factory
+    class GetReleaseUseCase(
+        private val releasesRepository: ReleasesRepository,
+    ) : EitherUseCase<GetReleaseUseCase.Params, ReleaseDetails> {
+        data class Params(val aliasOrId: String)
+
+        override suspend fun invoke(params: Params): Either<AppError, ReleaseDetails> =
+            releasesRepository.getRelease(params.aliasOrId)
+    }
+    ```
+2. **Data** (`:shared:core:data`, `:shared:core:network:*`): Implementation details.
+    - Repository implementations (`Default{Noun}Repository`, `@Singleton`).
     - Mappers: `Dto.toDomain()`.
 3. **State** (`:shared:state:*`): Orbit MVI ViewModels.
 4. **UI** (`:shared-ui:*`): Compose screens rendering state, Unidirectional Data Flow.
@@ -164,7 +177,7 @@ class AppearanceViewModel(
     }
 
     private fun onThemeOptionChange(option: ThemeOption) = intent {
-        updateThemeOptionUseCase(option)
+        updateThemeOptionUseCase(UpdateThemeOptionUseCase.Params(option))
     }
 }
 ```
@@ -181,7 +194,7 @@ class AppearanceViewModel(
 - **States**: `{Feature}ScreenState`.
 - **Actions**: `{Feature}ScreenAction` (sealed interface, entries `On{Something}`).
 - **Side effects**: `{Feature}ScreenSideEffect`.
-- **Use Cases**: `{Verb}{Noun}UseCase`; implementation `Default{Verb}{Noun}UseCase`.
+- **Use Cases**: `{Verb}{Noun}UseCase` — the class itself, no interface or `Default` prefix.
 - **Repositories**: `{Noun}Repository`.
 - **Navigation keys**: `{Feature}Route`, `{Screen}Route`.
 - **Koin modules**: `{Feature}FeatureModule` (DSL `val`, in `impl`), `{Feature}StateModule` / `DomainModule` / `DataModule` (annotated classes).
@@ -222,7 +235,7 @@ navigation<HomeRoute> {
 2. **Stateless Content**: Named `{Screen}ScreenContent` (or a private composable with explicit parameters).
     * Accepts `state`, `onAction` lambda, and specific event callbacks.
     * No ViewModel usage.
-    * Preview friendly (`@AnilibertyPreview`, fixtures from `:shared:core:domain:test-fixtures`).
+    * Preview friendly (`@AnilibertyPreview`, fixtures from `:shared:core:test-fixtures`).
 3. **Adaptive layout decisions are made by the caller.** Screens do not read layout locals such as `LocalIsSinglePane` to decide what to render; the nav entry computes the value (e.g., `selectedRoute = if (isSinglePane) null else …`) and passes it in.
 4. **Parameter order** follows the Compose API guidelines: required parameters, then `modifier: Modifier = Modifier`, then optional parameters, then trailing content lambda.
 5. **Lazy lists**: provide `key` and `contentType` for items. Spacing between groups belongs to the group header/item, not to `Spacer` items between groups (a single trailing `Spacer` is fine).
@@ -351,7 +364,7 @@ Compose modules additionally apply `compose.compiler` + `compose.multiplatform` 
     - `iosMain.dependencies { }` — iOS only (e.g., `ktor-client-darwin`)
     - `jvmMain.dependencies { }` — Desktop only (e.g., `ktor-client-cio`)
 - **Ktor engine** is always platform-specific (`:shared:core:network:impl`): `okhttp` for Android, `darwin` for iOS, `cio` for JVM. Never add an engine to common dependencies.
-- Use `api(...)` only when the dependency's types appear in the module's public API (e.g., `data:api` exposes `domain:api` models); otherwise `implementation(...)`.
+- Use `api(...)` only when the dependency's types appear in the module's public API (e.g., `data` exposes `domain` repository interfaces); otherwise `implementation(...)`.
 - When adding a new library, always add its version to `[versions]` and its coordinates to `[libraries]` in `libs.versions.toml` first, following the existing grouping structure.
 
 ## Configuration

@@ -15,6 +15,7 @@ import com.xbot.domain.usecase.GetDynamicThemeUseCase
 import com.xbot.domain.usecase.GetExpressiveColorUseCase
 import com.xbot.domain.usecase.GetPureBlackUseCase
 import com.xbot.domain.usecase.GetThemeOptionUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch

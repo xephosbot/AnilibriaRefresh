@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -40,4 +42,12 @@ detekt {
             exclude("**/build/**")
         }
     )
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            compilerOptions.optIn.add("kotlin.experimental.ExperimentalObjCRefinement")
+        }
+    }
 }

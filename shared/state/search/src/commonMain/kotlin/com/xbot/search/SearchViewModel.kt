@@ -20,10 +20,11 @@ import com.xbot.domain.usecase.GetCatalogGenresUseCase
 import com.xbot.domain.usecase.GetCatalogProductionStatusesUseCase
 import com.xbot.domain.usecase.GetCatalogPublishStatusesUseCase
 import com.xbot.domain.usecase.GetCatalogReleaseTypesUseCase
-import com.xbot.domain.usecase.GetCatalogReleasesPagerUseCase
+import com.xbot.domain.usecase.GetCatalogReleasesUseCase
 import com.xbot.domain.usecase.GetCatalogSeasonsUseCase
 import com.xbot.domain.usecase.GetCatalogSortingTypesUseCase
 import com.xbot.domain.usecase.GetCatalogYearsUseCase
+import com.xbot.domain.usecase.invoke
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -43,7 +44,7 @@ import org.orbitmvi.orbit.viewmodel.orbitContainer
 @OptIn(ExperimentalCoroutinesApi::class)
 @KoinViewModel
 class SearchViewModel(
-    private val getCatalogReleasesPager: GetCatalogReleasesPagerUseCase,
+    private val getCatalogReleases: GetCatalogReleasesUseCase,
     private val getCatalogAgeRatings: GetCatalogAgeRatingsUseCase,
     private val getCatalogGenres: GetCatalogGenresUseCase,
     private val getCatalogProductionStatuses: GetCatalogProductionStatusesUseCase,
@@ -83,10 +84,12 @@ class SearchViewModel(
     ) { query, filters ->
         query to filters
     }.flatMapLatest { (query, filters) ->
-        getCatalogReleasesPager(
-            search = query,
-            filters = filters.takeIf { it.hasActiveFilters }?.toCatalogQuery()
-        ).flow
+        getCatalogReleases(
+            GetCatalogReleasesUseCase.Params(
+                search = query,
+                filters = filters.takeIf { it.hasActiveFilters }?.toCatalogQuery()
+            )
+        )
     }.cachedIn(viewModelScope)
 
     private suspend fun loadGenres() = subIntent {

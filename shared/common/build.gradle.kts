@@ -29,8 +29,4 @@ kotlin {
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.atomicfu)
     }
-
-    compilerOptions {
-        optIn.add("kotlin.experimental.ExperimentalObjCRefinement")
-    }
 }

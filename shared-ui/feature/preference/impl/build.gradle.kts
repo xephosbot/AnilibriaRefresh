@@ -25,7 +25,7 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         implementation(projects.shared.state.preference)
-        implementation(projects.shared.core.domain.testFixtures)
+        implementation(projects.shared.core.testFixtures)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.resource)
         implementation(projects.sharedUi.designSystem.icons)
