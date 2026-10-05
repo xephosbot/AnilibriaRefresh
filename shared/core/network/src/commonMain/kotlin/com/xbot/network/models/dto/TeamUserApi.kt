@@ -11,6 +11,6 @@ data class TeamUserApi(
     @SerialName("sort_order") val sortOrder: Int,
     @SerialName("is_vacation") val isVacation: Boolean,
     @SerialName("team") val team: TeamDto,
-    @SerialName("user") val user: UserDto,
+    @SerialName("user") val user: UserDto?,
     @SerialName("roles") val roles: List<TeamRoleDto>
 )

@@ -23,7 +23,10 @@ enum class MemberRoleDto(val value: String) {
     DECORATING("decorating"),
 
     @SerialName("translating")
-    TRANSLATING("translating");
+    TRANSLATING("translating"),
+
+    @SerialName("hevc")
+    HEVC("hevc");
 
     override fun toString(): String = value
 

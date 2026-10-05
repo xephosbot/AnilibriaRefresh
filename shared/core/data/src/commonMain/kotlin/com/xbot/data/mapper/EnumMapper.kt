@@ -126,6 +126,7 @@ internal fun MemberRoleDto.toDomain(): MemberRole = when (this) {
     MemberRoleDto.EDITING -> MemberRole.EDITING
     MemberRoleDto.DECORATING -> MemberRole.DECORATING
     MemberRoleDto.TRANSLATING -> MemberRole.TRANSLATING
+    MemberRoleDto.HEVC -> MemberRole.HEVC
 }
 
 internal fun SocialType.toDto(): SocialTypeDto = when (this) {

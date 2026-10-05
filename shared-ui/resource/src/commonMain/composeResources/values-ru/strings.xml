@@ -115,6 +115,7 @@
     <string name="member_role_editing">Редактура</string>
     <string name="member_role_decorating">Оформление</string>
     <string name="member_role_translating">Перевод и адаптация</string>
+    <string name="member_role_hevc">Кодирование HEVC</string>
 
     <!-- Preference Options -->
     <string name="preference_history_title">История</string>

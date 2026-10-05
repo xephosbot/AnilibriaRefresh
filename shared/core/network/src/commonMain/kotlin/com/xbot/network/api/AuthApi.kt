@@ -31,7 +31,7 @@ interface AuthApi {
     @GET("accounts/users/auth/social/authenticate")
     suspend fun socialAuthenticate(@Query("state") state: String): Either<AppError, AuthResponse>
 
-    @GET("accounts/users/auth/password/forget")
+    @POST("accounts/users/auth/password/forget")
     suspend fun forgotPassword(@Body request: ForgotPasswordRequest): Either<AppError, Unit>
 
     @POST("accounts/users/auth/password/reset")

@@ -17,10 +17,8 @@ interface ViewsApi {
     @POST("accounts/users/me/views/timecodes")
     suspend fun updateTimecodes(
         @Body timecodes: List<TimecodeUpdateRequest>
-    ): Either<AppError, List<TimecodeApi>>
+    ): Either<AppError, Unit>
 
     @DELETE("accounts/users/me/views/timecodes")
-    suspend fun deleteTimecodes(
-        @Body episodeIds: List<EpisodeIdRequest>
-    ): Either<AppError, List<TimecodeApi>>
+    suspend fun deleteTimecodes(@Body episodeIds: List<EpisodeIdRequest>): Either<AppError, Unit>
 }

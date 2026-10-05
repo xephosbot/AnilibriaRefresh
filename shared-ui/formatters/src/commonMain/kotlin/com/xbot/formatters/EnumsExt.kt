@@ -17,6 +17,7 @@ import com.xbot.resources.age_rating_18_plus
 import com.xbot.resources.age_rating_6_plus
 import com.xbot.resources.member_role_decorating
 import com.xbot.resources.member_role_editing
+import com.xbot.resources.member_role_hevc
 import com.xbot.resources.member_role_poster
 import com.xbot.resources.member_role_timing
 import com.xbot.resources.member_role_translating
@@ -109,6 +110,7 @@ val MemberRole.stringRes: StringResource
         MemberRole.EDITING -> Res.string.member_role_editing
         MemberRole.DECORATING -> Res.string.member_role_decorating
         MemberRole.TRANSLATING -> Res.string.member_role_translating
+        MemberRole.HEVC -> Res.string.member_role_hevc
     }
 
 val ThemeOption.stringRes: StringResource

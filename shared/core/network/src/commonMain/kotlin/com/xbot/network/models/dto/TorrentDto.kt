@@ -28,6 +28,6 @@ data class TorrentDto(
     @SerialName("description") val description: String? = null,
     @SerialName("created_at") val createdAt: String,
     @SerialName("completed_times") val completedTimes: Int,
-    @SerialName("torrent_members") val torrentMembers: List<ReleaseMemberDto>? = null,
+    @SerialName("torrent_members") val torrentMembers: List<TorrentMemberDto>? = null,
     @SerialName("release") val release: ReleaseDto? = null
 )
