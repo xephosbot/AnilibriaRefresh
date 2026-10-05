@@ -10,11 +10,11 @@ import com.xbot.navigation.ExternalUriNavKey
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.replace
-import com.xbot.preference.PreferenceListPane
-import com.xbot.preference.appearance.AppearancePane
-import com.xbot.preference.donate.DonatePane
-import com.xbot.preference.history.HistoryPane
-import com.xbot.preference.language.LanguagePane
+import com.xbot.preference.screen.list.PreferenceListPane
+import com.xbot.preference.screen.appearance.AppearancePane
+import com.xbot.preference.screen.donate.DonatePane
+import com.xbot.preference.screen.history.HistoryPane
+import com.xbot.preference.screen.language.LanguagePane
 import com.xbot.preference.navigation.PreferenceAppearanceRoute
 import com.xbot.preference.navigation.PreferenceDonateRoute
 import com.xbot.preference.navigation.PreferenceHistoryRoute
@@ -22,8 +22,8 @@ import com.xbot.preference.navigation.PreferenceLanguageRoute
 import com.xbot.preference.navigation.PreferenceOptionRoute
 import com.xbot.preference.navigation.PreferenceRoute
 import com.xbot.preference.navigation.PreferenceTeamRoute
-import com.xbot.preference.team.TeamPane
-import com.xbot.preference.ui.PreferenceDetailPlaceholder
+import com.xbot.preference.screen.team.TeamPane
+import com.xbot.preference.component.PreferenceDetailPlaceholder
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module

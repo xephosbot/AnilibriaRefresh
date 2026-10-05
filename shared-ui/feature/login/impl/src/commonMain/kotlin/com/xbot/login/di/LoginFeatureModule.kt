@@ -5,7 +5,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.scene.DialogSceneStrategy
 import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
-import com.xbot.login.LoginScreen
+import com.xbot.login.screen.login.LoginScreen
 import com.xbot.login.navigation.LoginRoute
 import com.xbot.login.navigation.navigateToRegistration
 import com.xbot.navigation.LocalNavigator

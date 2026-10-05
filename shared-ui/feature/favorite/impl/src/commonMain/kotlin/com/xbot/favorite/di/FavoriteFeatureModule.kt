@@ -2,7 +2,7 @@ package com.xbot.favorite.di
 
 import com.xbot.navigation.NavKey
 import com.xbot.common.serialization.polymorphic
-import com.xbot.favorite.FavoriteScreen
+import com.xbot.favorite.screen.favorite.FavoriteScreen
 import com.xbot.favorite.navigation.FavoriteRoute
 import kotlinx.serialization.modules.subclass
 import org.koin.core.annotation.KoinExperimentalAPI

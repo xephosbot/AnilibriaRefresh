@@ -5,8 +5,8 @@ import androidx.compose.material3.adaptive.navigation3.SupportingPaneSceneStrate
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
-import com.xbot.home.FeedPane
-import com.xbot.home.SchedulePane
+import com.xbot.home.screen.feed.FeedPane
+import com.xbot.home.screen.schedule.SchedulePane
 import com.xbot.home.navigation.HomeRoute
 import com.xbot.home.navigation.ScheduleRoute
 import com.xbot.home.navigation.navigateToSchedule

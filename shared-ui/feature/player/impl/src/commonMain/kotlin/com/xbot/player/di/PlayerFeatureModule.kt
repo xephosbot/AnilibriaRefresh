@@ -7,7 +7,7 @@ import com.xbot.common.lifecycle.dropUnlessResumed
 import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
-import com.xbot.player.PlayerScreen
+import com.xbot.player.screen.player.PlayerScreen
 import com.xbot.player.PlayerViewModel
 import com.xbot.player.navigation.PlayerRoute
 import kotlinx.serialization.modules.subclass

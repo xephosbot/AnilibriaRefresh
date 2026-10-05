@@ -8,8 +8,8 @@ import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
 import com.xbot.navigation.viewmodel.SharedViewModelStoreNavEntryDecorator
-import com.xbot.search.SearchFilterPane
-import com.xbot.search.SearchResultPane
+import com.xbot.search.screen.filters.SearchFilterPane
+import com.xbot.search.screen.results.SearchResultPane
 import com.xbot.search.navigation.SearchFiltersRoute
 import com.xbot.search.navigation.SearchRoute
 import com.xbot.search.navigation.navigateToSearchFilters

@@ -7,7 +7,7 @@ import com.xbot.common.serialization.polymorphic
 import com.xbot.navigation.LocalNavigator
 import com.xbot.navigation.NavKey
 import com.xbot.player.navigation.navigateToPlayer
-import com.xbot.title.TitleDetailsPane
+import com.xbot.title.screen.details.TitleDetailsPane
 import com.xbot.title.TitleViewModel
 import com.xbot.title.navigation.TitleRoute
 import com.xbot.title.navigation.navigateToTitle
