@@ -8,6 +8,9 @@ import com.xbot.domain.models.enums.SocialType
 import com.xbot.domain.repository.AuthRepository
 import com.xbot.network.api.AuthApi
 import com.xbot.network.client.SessionStorage
+import com.xbot.network.models.requests.ForgotPasswordRequest
+import com.xbot.network.models.requests.LoginRequest
+import com.xbot.network.models.requests.ResetPasswordRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Singleton
@@ -22,7 +25,7 @@ internal class DefaultAuthRepository(
         get() = (tokenStorage as DefaultSessionStorage).tokenFlow.map { !it.isNullOrBlank() }
 
     override suspend fun login(login: String, password: String): Either<AppError, Unit> = either {
-        val response = authApi.login(login, password)
+        val response = authApi.login(LoginRequest(login, password))
             .bind()
 
         response.token?.let { tokenStorage.saveToken(it) }
@@ -47,12 +50,12 @@ internal class DefaultAuthRepository(
     }
 
     override suspend fun forgotPassword(email: String): Either<AppError, Unit> = authApi
-        .forgotPassword(email)
+        .forgotPassword(ForgotPasswordRequest(email))
 
     override suspend fun resetPassword(
         token: String,
         password: String,
         passwordConfirmation: String
     ): Either<AppError, Unit> = authApi
-        .resetPassword(token, password, passwordConfirmation)
+        .resetPassword(ResetPasswordRequest(token, password, passwordConfirmation))
 }

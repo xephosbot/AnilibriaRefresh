@@ -46,7 +46,9 @@ internal class DefaultCatalogRepository(private val catalogApi: CatalogApi) : Ca
                 sorting = filters?.sortingTypes?.firstOrNull()?.toDto(),
                 ageRatings = filters?.ageRatings?.map(AgeRating::toDto),
                 publishStatuses = filters?.publishStatuses?.map(PublishStatus::toDto),
-                productionStatuses = filters?.productionStatuses?.map(ProductionStatus::toDto)
+                productionStatuses = filters?.productionStatuses?.map(
+                    ProductionStatus::toDto
+                )
             ).map { result ->
                 CommonPagingSource.PaginatedResponse(
                     items = result.data.map(ReleaseDto::toDomain),

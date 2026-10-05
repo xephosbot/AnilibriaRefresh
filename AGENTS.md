@@ -12,7 +12,7 @@
 - **State management**: Orbit MVI (`OrbitContainerHost` on top of Jetpack `ViewModel`)
 - **DI**: Koin (compiler plugin + annotations in `:shared`, DSL modules in features)
 - **Error handling**: Arrow (`Either<AppError, T>`)
-- **Networking**: Ktor Client
+- **Networking**: Ktor Client + Ktorfit (annotation-based API interfaces, KSP)
 - **Persistence**: DataStore Preferences
 - **Paging**: AndroidX Paging
 - **Image Loading**: Coil 3
@@ -43,12 +43,11 @@
 | `:shared:core:domain` | Domain models (`domain.models`), repository interfaces (`domain.repository`), use cases (`domain.usecase`). |
 | `:shared:core:data` | Repository implementations, data sources, mappers (`Dto.toDomain()`), DataStore, platform modules. |
 | `:shared:core:test-fixtures` | Fake domain models (`domain.fixtures`) and fake repositories (`data.fixtures`) for previews and tests. |
-| `:shared:core:network:api` | Ktor API interfaces, DTOs, responses, network enums. |
-| `:shared:core:network:impl` | Ktor client setup and API implementations. Platform engines live here. |
+| `:shared:core:network` | Ktorfit API interfaces (`network.api`), DTOs, request bodies, responses, network enums, Ktor client setup. Platform engines live here. |
 | `:shared:core:logger:api` / `:impl` | `AppLogger` abstraction; `KotzillaAppLogger` logs via Kermit and reports errors to Kotzilla. |
 | `:shared:state:<feature>` | Screen state holders: `ViewModel`, `*ScreenState`, `*ScreenAction`, `*ScreenSideEffect`. |
 
-**Dependency direction:** `data → domain`, `data → network:api`. `domain` depends on nothing but `:shared:common`. `api` modules never depend on `impl` modules; only the app shell wires `impl` modules together.
+**Dependency direction:** `data → domain`, `data → network`. `domain` depends on nothing but `:shared:common`. `api` modules never depend on `impl` modules; only the app shell wires `impl` modules together.
 
 #### 2. Shared UI (`:shared-ui`)
 
@@ -151,9 +150,12 @@ com/xbot/<feature>/
             releasesRepository.getRelease(params.aliasOrId)
     }
     ```
-2. **Data** (`:shared:core:data`, `:shared:core:network:*`): Implementation details.
+2. **Data** (`:shared:core:data`, `:shared:core:network`): Implementation details.
     - Repository implementations (`Default{Noun}Repository`, `@Singleton`).
     - Mappers: `Dto.toDomain()`.
+    - Network APIs are Ktorfit interfaces (`@GET`/`@POST`/`@Path`/`@Query`/`@Body`) returning `Either<AppError, T>`; `EitherConverterFactory` maps failures to `AppError`. Implementations are generated (`ktorfit.create{Name}Api()`) and provided in `NetworkModule`. Never hand-write an API implementation.
+    - List query params are typed `List<T>?` with an array-style name, e.g. `@Query("f[genres][]")`. The API reads `key[]=a&key[]=b` as an array, but a repeated plain key (`key=a&key=b`) keeps only the last value. JSON bodies are `@Serializable` classes in `network.models.requests`.
+    - Bearer auth is sent only for `accounts/users/me/**` and logout (path check in `NetworkModule`).
 3. **State** (`:shared:state:*`): Orbit MVI ViewModels.
 4. **UI** (`:shared-ui:*`): Compose screens rendering state, Unidirectional Data Flow.
 
@@ -363,7 +365,7 @@ Compose modules additionally apply `compose.compiler` + `compose.multiplatform` 
     - `androidMain.dependencies { }` — Android only (e.g., OkHttp, Brotli decoder, AndroidContextProvider)
     - `iosMain.dependencies { }` — iOS only (e.g., `ktor-client-darwin`)
     - `jvmMain.dependencies { }` — Desktop only (e.g., `ktor-client-cio`)
-- **Ktor engine** is always platform-specific (`:shared:core:network:impl`): `okhttp` for Android, `darwin` for iOS, `cio` for JVM. Never add an engine to common dependencies.
+- **Ktor engine** is always platform-specific (`:shared:core:network`): `okhttp` for Android, `darwin` for iOS, `cio` for JVM. Never add an engine to common dependencies.
 - Use `api(...)` only when the dependency's types appear in the module's public API (e.g., `data` exposes `domain` repository interfaces); otherwise `implementation(...)`.
 - When adding a new library, always add its version to `[versions]` and its coordinates to `[libraries]` in `libs.versions.toml` first, following the existing grouping structure.
 
@@ -378,6 +380,7 @@ Compose modules additionally apply `compose.compiler` + `compose.multiplatform` 
 - **Koin**: 4.2.2 (compiler plugin 1.2.1)
 - **Orbit MVI**: 12.0.1
 - **Ktor**: 3.6.0
+- **Ktorfit**: 2.7.5
 - **Coil**: 3.6.3
 - **Kotzilla**: 3.0.0
 - **Android SDK**: compile/target 37, min 24

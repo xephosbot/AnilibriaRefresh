@@ -6,6 +6,9 @@ naming:
     ignoreAnnotated: ['Composable']
 
 complexity:
+  TooManyFunctions:
+    # Koin @Module classes are flat lists of providers.
+    ignoreAnnotated: ['Module']
   LongMethod:
     ignoreAnnotated: ['Composable']
   LongParameterList:

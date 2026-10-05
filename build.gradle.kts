@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.ksp) apply false
+    alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.koin.compiler) apply false
     alias(libs.plugins.kotzilla) apply false
     alias(libs.plugins.google.services) apply false
@@ -19,15 +20,18 @@ plugins {
 
 spotless {
     kotlin {
-        target("**/src/**/*.kt")
-        targetExclude("**/build/**")
+        target(sourceTree("**/src/**/*.kt"))
         ktlint(libs.versions.ktlint.get())
     }
     kotlinGradle {
-        target("**/*.gradle.kts")
-        targetExclude("**/build/**")
+        target(sourceTree("**/*.gradle.kts"))
         ktlint(libs.versions.ktlint.get())
     }
+}
+
+fun sourceTree(pattern: String) = fileTree(projectDir) {
+    include(pattern)
+    exclude("**/build/**", "**/.gradle/**", "**/.kotlin/**")
 }
 
 detekt {

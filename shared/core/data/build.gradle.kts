@@ -25,7 +25,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.shared.core.domain)
-        implementation(projects.shared.core.network.api)
+        implementation(projects.shared.core.network)
         implementation(projects.shared.common)
         // TODO: временно api вместо implementation — compileSafety не резолвит тип
         //  биндинга, если его нет на classpath точки сборки графа (:shared-ui)

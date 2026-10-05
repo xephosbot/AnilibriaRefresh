@@ -27,7 +27,7 @@ kotlin {
     dependencies {
         api(projects.shared.common)
         api(projects.shared.core.domain)
-        api(projects.shared.core.network.impl)
+        api(projects.shared.core.network)
         api(projects.shared.core.data)
         api(projects.shared.core.logger.api)
         api(projects.shared.core.logger.impl)
