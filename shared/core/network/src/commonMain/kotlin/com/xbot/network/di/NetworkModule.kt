@@ -1,7 +1,6 @@
 package com.xbot.network.di
 
 import co.touchlab.kermit.Logger as KermitLogger
-import com.xbot.logger.AppLogger
 import com.xbot.network.Constants
 import com.xbot.network.api.AdsApi
 import com.xbot.network.api.AppApi
@@ -148,12 +147,11 @@ class NetworkModule {
         }
 
     @Singleton
-    internal fun provideKtorfit(client: HttpClient, logger: Lazy<AppLogger>): Ktorfit =
-        Ktorfit.Builder()
-            .baseUrl(Constants.BASE_URL_API)
-            .httpClient(client)
-            .converterFactories(EitherConverterFactory(logger))
-            .build()
+    internal fun provideKtorfit(client: HttpClient): Ktorfit = Ktorfit.Builder()
+        .baseUrl(Constants.BASE_URL_API)
+        .httpClient(client)
+        .converterFactories(EitherConverterFactory())
+        .build()
 
     @Singleton
     internal fun provideAdsApi(ktorfit: Ktorfit): AdsApi = ktorfit.createAdsApi()

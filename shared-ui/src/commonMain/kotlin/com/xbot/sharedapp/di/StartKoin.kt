@@ -8,6 +8,7 @@ import com.xbot.login.di.loginFeatureModule
 import com.xbot.player.di.playerFeatureModule
 import com.xbot.preference.di.preferenceFeatureModule
 import com.xbot.search.di.searchFeatureModule
+import com.xbot.sharedapp.logging.KotzillaLogWriter
 import com.xbot.title.di.titleFeatureModule
 import io.kotzilla.generated.monitoring
 import org.koin.core.KoinApplication
@@ -28,7 +29,9 @@ fun initKoin(config: KoinConfiguration? = null) {
             titleFeatureModule,
             loginFeatureModule
         )
-        monitoring()
+        monitoring {
+            Logger.addLogWriter(KotzillaLogWriter(kotzilla = this))
+        }
     }
 }
 

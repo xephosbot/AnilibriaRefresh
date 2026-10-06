@@ -1,19 +1,18 @@
 package com.xbot.network.client
 
 import arrow.core.Either
+import co.touchlab.kermit.Logger
 import com.xbot.common.error.AppError
-import com.xbot.logger.AppLogger
 import com.xbot.network.utils.toAppError
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.Converter
 import de.jensklingenberg.ktorfit.converter.KtorfitResult
 import de.jensklingenberg.ktorfit.converter.TypeData
-import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.coroutines.CancellationException
 
-internal class EitherConverterFactory(private val logger: Lazy<AppLogger>) : Converter.Factory {
+internal class EitherConverterFactory : Converter.Factory {
 
     override fun suspendResponseConverter(
         typeData: TypeData,
@@ -42,7 +41,7 @@ internal class EitherConverterFactory(private val logger: Lazy<AppLogger>) : Con
             if (this is CancellationException) throw this
             val error = toAppError()
             if (error is AppError.UnknownError) {
-                logger.value.reportError(error.cause, "Unhandled network error")
+                Logger.withTag("Network").e(error.cause) { "Unhandled network error" }
             }
             return Either.Left(error)
         }

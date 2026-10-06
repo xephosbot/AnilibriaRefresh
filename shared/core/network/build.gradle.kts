@@ -28,7 +28,6 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     dependencies {
         api(projects.shared.common)
-        implementation(projects.shared.core.logger.api)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.encoding)

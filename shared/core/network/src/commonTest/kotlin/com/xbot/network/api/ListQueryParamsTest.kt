@@ -1,6 +1,5 @@
 package com.xbot.network.api
 
-import com.xbot.logger.AppLogger
 import com.xbot.network.client.EitherConverterFactory
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
@@ -34,7 +33,7 @@ class ListQueryParamsTest {
         Ktorfit.Builder()
             .baseUrl("https://example.com/")
             .httpClient(client)
-            .converterFactories(EitherConverterFactory(lazy { NoOpLogger }))
+            .converterFactories(EitherConverterFactory())
             .build()
             .createReleasesApi()
     }
@@ -52,10 +51,5 @@ class ListQueryParamsTest {
         api.getReleasesList(ids = emptyList())
 
         assertNull(requestedUrl?.parameters?.getAll("ids[]"))
-    }
-
-    private object NoOpLogger : AppLogger {
-        override fun log(message: String, tag: String) = Unit
-        override fun reportError(throwable: Throwable, message: String?) = Unit
     }
 }

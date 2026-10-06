@@ -29,8 +29,6 @@ kotlin {
         api(projects.shared.core.domain)
         api(projects.shared.core.network)
         api(projects.shared.core.data)
-        api(projects.shared.core.logger.api)
-        api(projects.shared.core.logger.impl)
         api(projects.shared.state.home)
         api(projects.shared.state.login)
         api(projects.shared.state.player)

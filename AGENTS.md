@@ -44,7 +44,6 @@
 | `:shared:core:data` | Repository implementations, data sources, mappers (`Dto.toDomain()`), DataStore, platform modules. |
 | `:shared:core:test-fixtures` | Fake domain models (`domain.fixtures`) and fake repositories (`data.fixtures`) for previews and tests. |
 | `:shared:core:network` | Ktorfit API interfaces (`network.api`), DTOs, request bodies, responses, network enums, Ktor client setup. Platform engines live here. |
-| `:shared:core:logger:api` / `:impl` | `AppLogger` abstraction; `KotzillaAppLogger` logs via Kermit and reports errors to Kotzilla. |
 | `:shared:state:<feature>` | Screen state holders: `ViewModel`, `*ScreenState`, `*ScreenAction`, `*ScreenSideEffect`. |
 
 **Dependency direction:** `data → domain`, `data → network`. `domain` depends on nothing but `:shared:common`. `api` modules never depend on `impl` modules; only the app shell wires `impl` modules together.
@@ -53,7 +52,7 @@
 
 | Module | Contents |
 |---|---|
-| `:shared-ui` (root) | App shell: `AnilibertyApp`, nav graph, navigation chrome, `initKoin`, Coil setup. iOS framework producer. |
+| `:shared-ui` (root) | App shell: `AnilibertyApp`, nav graph, navigation chrome, `initKoin`, Kotzilla + log writers, Coil setup. iOS framework producer. |
 | `:shared-ui:common` | Compose-side utilities: `dropUnlessResumed`, `polymorphic` serialization helper, `AppState`, clipboard. |
 | `:shared-ui:resource` | Compose Multiplatform resources (`Res`: strings, drawables, fonts). |
 | `:shared-ui:formatters` | Domain → display text (`Release`, `Episode`, dates, durations, `AppError` messages) and localization (`LocaleManager`). |
@@ -274,9 +273,9 @@ private fun AppearanceScreenContent(
 
 Two styles, by layer:
 
-- **`:shared:*` modules (domain, data, network, logger, state)** use the **Koin compiler plugin with annotations**:
+- **`:shared:*` modules (domain, data, network, state)** use the **Koin compiler plugin with annotations**:
     - One `@Module @Configuration @ComponentScan("com.xbot.<package>") class <Name>Module` per module, in a `di` package. `@Configuration` makes it auto-included by `@KoinApplication`.
-    - Classes are annotated directly: `@Factory` (use cases), `@Singleton` (repositories, clients, loggers), `@KoinViewModel` (ViewModels).
+    - Classes are annotated directly: `@Factory` (use cases), `@Singleton` (repositories, clients), `@KoinViewModel` (ViewModels).
     - Apply `alias(libs.plugins.koin.compiler)` and enable `koinCompiler { compileSafety = true }`.
 - **`:shared-ui:feature:*:impl` modules** use the **Koin DSL**:
     - `val <feature>FeatureModule = module { ... }` in `di/<Feature>FeatureModule.kt`.
@@ -411,4 +410,5 @@ Compose modules additionally apply `compose.compiler` + `compose.multiplatform` 
 - **Image Loading**: Use `PosterImage` component (wraps Coil).
 - **Icons**: Use `AnilibertyIcons` from `:shared-ui:design-system:icons` (Material Symbols Rounded; brand logos from Simple Icons). Do not add `material-icons-extended`.
 - **Design System**: Strict usage of `AnilibertyTheme` and components in `:shared-ui:design-system:*`. Horizontal screen margins come from `LocalMargins`.
+- **Logging**: Use Kermit's static logger directly — `Logger.withTag("<Area>").i { … }` / `.e(throwable) { … }`. There is no logger abstraction and nothing to inject. Error-level logs are forwarded to Kotzilla by `KotzillaLogWriter` (app shell, registered in `initKoin` via `monitoring { }`), so report unexpected failures with `Logger.e`. New sinks (e.g. Crashlytics) are added as another `LogWriter` there. Never log tokens, credentials or personal data.
 - **Error Handling**: `AppError` sealed class in `:shared:common` (`ServerError`, `ConnectionError`, `UnknownError`), returned as `Either<AppError, T>` from use cases. ViewModels map errors to UI state/side effects; `:shared-ui:formatters` turns them into user-facing messages.
