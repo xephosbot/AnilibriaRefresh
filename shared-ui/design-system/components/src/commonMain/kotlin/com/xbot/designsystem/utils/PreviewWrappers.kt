@@ -10,8 +10,8 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.theme.AnilibertyTheme
 
-@Preview(uiMode = UI_MODE_NIGHT_NO, name = "Light theme", showBackground = true)
-@Preview(uiMode = UI_MODE_NIGHT_YES, name = "Dark theme", showBackground = true)
+@Preview(uiMode = UI_MODE_NIGHT_NO, locale = "ru", name = "Light theme", showBackground = true)
+@Preview(uiMode = UI_MODE_NIGHT_YES, locale = "ru", name = "Dark theme", showBackground = true)
 @PreviewWrapper(ThemeAndShimmerWrapper::class)
 annotation class AnilibertyPreview
 

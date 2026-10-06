@@ -1,30 +1,36 @@
 package com.xbot.data.mapper
 
 import com.xbot.domain.models.Episode
+import com.xbot.domain.models.EpisodeProgress
+import com.xbot.domain.models.ExternalRating
 import com.xbot.domain.models.Franchise
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Poster
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseDetails
 import com.xbot.domain.models.ReleaseMember
+import com.xbot.domain.models.ReleaseRating
 import com.xbot.domain.models.Schedule
 import com.xbot.domain.models.ScheduleType
 import com.xbot.domain.models.User
 import com.xbot.domain.models.enums.AvailabilityStatus
+import com.xbot.domain.models.enums.CollectionType
 import com.xbot.network.models.dto.EpisodeDto
+import com.xbot.network.models.dto.EpisodeTimecodeDto
+import com.xbot.network.models.dto.ExternalRatingDto
 import com.xbot.network.models.dto.FranchiseDto
 import com.xbot.network.models.dto.GenreDto
 import com.xbot.network.models.dto.ProfileDto
 import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.dto.ReleaseMemberDto
+import com.xbot.network.models.dto.ReleaseRatingDto
 import com.xbot.network.models.dto.ScheduleDto
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 internal fun GenreDto.toDomain() = Genre(
     id = id,
@@ -45,8 +51,10 @@ internal fun GenreDto.toDomain() = Genre(
 
 internal fun ReleaseDto.toDomain() = Release(
     id = id,
+    alias = alias,
     type = type?.toDomain(),
     year = year,
+    season = season?.toDomain(),
     name = name.main,
     englishName = name.english,
     description = description,
@@ -54,6 +62,8 @@ internal fun ReleaseDto.toDomain() = Release(
     episodesCount = episodesTotal,
     episodeDuration = averageDurationOfEpisode,
     favoritesCount = addedInUsersFavorites,
+    isOngoing = isOngoing,
+    isInProduction = isInProduction,
     poster = poster.optimized.let { poster ->
         val src = poster.src
         val thumbnail = poster.thumbnail
@@ -69,21 +79,64 @@ internal fun ReleaseDto.toDomain() = Release(
 
 internal fun ReleaseDto.toReleaseDetails() = ReleaseDetails(
     release = this.toDomain(),
-    season = season?.toDomain(),
-    isOngoing = isOngoing,
+    alternativeNames = name.alternative
+        ?.split(',')
+        ?.map(String::trim)
+        ?.filter(String::isNotEmpty)
+        .orEmpty(),
     publishDay = publishDay!!.toDayOfWeek(),
+    nextEpisodeNumber = nextReleaseEpisodeNumber,
     notification = notification,
     availabilityStatus = when {
         isBlockedByGeo -> AvailabilityStatus.GeoBlocked
         isBlockedByCopyrights -> AvailabilityStatus.CopyrightBlocked
         else -> AvailabilityStatus.Available
     },
+    externalPlayerUrl = externalPlayer?.let { url ->
+        if (url.startsWith("//")) "https:$url" else url
+    },
+    freshAt = freshAt?.parseIsoDateTime(),
     genres = genres?.map(GenreDto::toDomain) ?: emptyList(),
     releaseMembers = members?.map(ReleaseMemberDto::toDomain) ?: emptyList(),
-    episodes = episodes?.map(EpisodeDto::toDomain) ?: emptyList()
+    episodes = episodes?.map(EpisodeDto::toDomain) ?: emptyList(),
+    rating = rating?.toDomain(),
+    shikimoriRating = shikimori?.toDomain(),
+    myAnimeListRating = mal?.toDomain(),
+    collectionCounts = listOfNotNull(
+        addedInWatchingCollection?.let { CollectionType.WATCHING to it },
+        addedInPlannedCollection?.let { CollectionType.PLANNED to it },
+        addedInWatchedCollection?.let { CollectionType.WATCHED to it },
+        addedInPostponedCollection?.let { CollectionType.POSTPONED to it },
+        addedInAbandonedCollection?.let { CollectionType.ABANDONED to it }
+    ).toMap()
 )
 
-@OptIn(ExperimentalTime::class)
+internal fun ReleaseRatingDto.toDomain() = ReleaseRating(
+    average = average,
+    votes = votes,
+    votesByScore = distribution.mapNotNull { (score, votes) ->
+        score.toIntOrNull()?.let { it to votes }
+    }.toMap()
+)
+
+internal fun ExternalRatingDto.toDomain(): ExternalRating? {
+    val rating = rating ?: return null
+    val url = url ?: return null
+    return ExternalRating(rating = rating, votes = votes ?: 0, url = url)
+}
+
+internal fun EpisodeTimecodeDto.toDomain() = EpisodeProgress(
+    episodeId = releaseEpisodeId,
+    position = time.seconds,
+    isWatched = isWatched,
+    updatedAt = updatedAt.parseIsoDateTime()
+)
+
+private fun String.parseIsoDateTime() = Instant.parse(
+    input = this,
+    format = DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET
+).toLocalDateTime(TimeZone.currentSystemDefault())
+
 internal fun EpisodeDto.toDomain() = Episode(
     id = id,
     name = name,
@@ -104,10 +157,7 @@ internal fun EpisodeDto.toDomain() = Episode(
     hls720 = hls720,
     hls1080 = hls1080,
     ordinal = ordinal,
-    updatedAt = Instant.parse(
-        input = updatedAt,
-        format = DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET
-    ).toLocalDateTime(TimeZone.currentSystemDefault())
+    updatedAt = updatedAt.parseIsoDateTime()
 )
 
 internal fun ReleaseMemberDto.toDomain() = ReleaseMember(
@@ -127,7 +177,6 @@ internal fun ReleaseMemberDto.toDomain() = ReleaseMember(
     }
 )
 
-@OptIn(ExperimentalTime::class)
 internal fun ProfileDto.toDomain() = User(
     id = id,
     login = login,
@@ -151,7 +200,6 @@ internal fun ProfileDto.toDomain() = User(
     ).toLocalDateTime(TimeZone.currentSystemDefault())
 )
 
-@OptIn(ExperimentalTime::class)
 internal fun ScheduleDto.toDomain(): Schedule? {
     val published = publishedReleaseEpisode
     val next = nextReleaseEpisodeNumber

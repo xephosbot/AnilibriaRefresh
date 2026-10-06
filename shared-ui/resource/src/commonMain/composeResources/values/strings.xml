@@ -167,4 +167,91 @@
     <string name="login_success_message">Login successful</string>
 
     <string name="message_copied_to_clipboard">Link copied to clipboard</string>
+
+    <string name="release_details_back">Back</string>
+    <string name="release_details_more">More</string>
+    <string name="release_details_copy_link">Copy link</string>
+    <string name="release_details_copy_title">Copy title</string>
+    <string name="release_details_copied">Copied</string>
+    <string name="release_details_part_of">Part %1$d of %2$d</string>
+    <string name="release_details_finished">Finished</string>
+    <string name="release_details_episodes_meta">%1$d ep. × %2$d min</string>
+    <plurals name="release_details_more_names">
+        <item quantity="one">%1$d more name</item>
+        <item quantity="other">%1$d more names</item>
+    </plurals>
+    <string name="release_details_prequel_hint">This is part %1$d of the franchise. The story continues from earlier parts.</string>
+    <string name="release_details_prequel_open">To part %1$d</string>
+    <string name="release_details_blocked_geo_title">Episodes are not available in your region</string>
+    <string name="release_details_blocked_copyright_title">Episodes are blocked by the copyright holder</string>
+    <string name="release_details_blocked_body">You can still watch it in the external player.</string>
+    <string name="release_details_open_external_player">Open external player</string>
+    <string name="release_details_play_continue">Continue</string>
+    <string name="release_details_play_continue_subtitle">Episode %1$s, %2$d min left</string>
+    <string name="release_details_play_start_subtitle">Episode %1$s, %2$d min</string>
+    <string name="release_details_favorite">Favorite</string>
+    <string name="release_details_collection_watching">Watching</string>
+    <string name="release_details_collection_planned">Planned</string>
+    <string name="release_details_collection_watched">Watched</string>
+    <string name="release_details_collection_postponed">On hold</string>
+    <string name="release_details_collection_abandoned">Dropped</string>
+    <string name="release_details_next_episode">Episode %1$d comes out %2$s</string>
+    <string name="release_details_on_monday">on Monday</string>
+    <string name="release_details_on_tuesday">on Tuesday</string>
+    <string name="release_details_on_wednesday">on Wednesday</string>
+    <string name="release_details_on_thursday">on Thursday</string>
+    <string name="release_details_on_friday">on Friday</string>
+    <string name="release_details_on_saturday">on Saturday</string>
+    <string name="release_details_on_sunday">on Sunday</string>
+    <string name="release_details_in_days_hours">in %1$d d %2$d h</string>
+    <string name="release_details_in_hours">in %1$d h</string>
+    <string name="release_details_notify_next_episode">Notify about the next episode</string>
+    <string name="release_details_tab_episodes">Episodes</string>
+    <string name="release_details_tab_about">About</string>
+    <string name="release_details_tab_ratings">Ratings</string>
+    <string name="release_details_resume">Where I left off</string>
+    <string name="release_details_sort_oldest">Oldest first</string>
+    <string name="release_details_sort_newest">Newest first</string>
+    <string name="release_details_episode_number_hint">Ep. no.</string>
+    <string name="release_details_go_to_episode">Go to episode</string>
+    <string name="release_details_episode">Episode %1$s</string>
+    <string name="release_details_special">Special</string>
+    <string name="release_details_stopped_at">Stopped at %1$s</string>
+    <string name="release_details_watched">Watched</string>
+    <string name="release_details_not_watched">Not watched</string>
+    <string name="release_details_synopsis">Synopsis</string>
+    <string name="release_details_read_more">Read more</string>
+    <string name="release_details_show_less">Show less</string>
+    <string name="release_details_franchise">Franchise</string>
+    <string name="release_details_franchise_all">All</string>
+    <plurals name="release_details_franchise_releases">
+        <item quantity="one">%1$d release</item>
+        <item quantity="other">%1$d releases</item>
+    </plurals>
+    <string name="release_details_franchise_years">from %1$d to %2$d</string>
+    <plurals name="release_details_franchise_episodes">
+        <item quantity="one">%1$d episode in total</item>
+        <item quantity="other">%1$d episodes in total</item>
+    </plurals>
+    <string name="release_details_franchise_hours">about %1$d h</string>
+    <string name="release_details_announced">Announced</string>
+    <string name="release_details_details">Details</string>
+    <string name="release_details_total_duration">Total duration</string>
+    <string name="release_details_total_duration_value">≈ %1$s</string>
+    <string name="release_details_last_update">Last update</string>
+    <string name="release_details_trailer">Trailer</string>
+    <string name="release_details_player_not_working">If the player doesn\'t work</string>
+    <string name="release_details_external_player">External player</string>
+    <plurals name="release_details_rating_votes">
+        <item quantity="one">%1$d rating</item>
+        <item quantity="other">%1$d ratings</item>
+    </plurals>
+    <plurals name="release_details_external_votes">
+        <item quantity="one">%1$s vote</item>
+        <item quantity="other">%1$s votes</item>
+    </plurals>
+    <string name="release_details_who_watches">Who\'s watching</string>
+    <string name="release_details_dropped_insight">Only %1$s dropped it. People almost always finish this one.</string>
+    <string name="release_details_hours_minutes">%1$d h %2$d min</string>
+    <string name="release_details_minutes">%1$d min</string>
 </resources>
