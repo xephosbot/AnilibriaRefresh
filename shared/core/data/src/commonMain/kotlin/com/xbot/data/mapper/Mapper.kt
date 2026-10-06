@@ -25,12 +25,12 @@ import com.xbot.network.models.dto.ReleaseDto
 import com.xbot.network.models.dto.ReleaseMemberDto
 import com.xbot.network.models.dto.ReleaseRatingDto
 import com.xbot.network.models.dto.ScheduleDto
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.parse
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.Instant
 
 internal fun GenreDto.toDomain() = Genre(
     id = id,
@@ -79,11 +79,7 @@ internal fun ReleaseDto.toDomain() = Release(
 
 internal fun ReleaseDto.toReleaseDetails() = ReleaseDetails(
     release = this.toDomain(),
-    alternativeNames = name.alternative
-        ?.split(',')
-        ?.map(String::trim)
-        ?.filter(String::isNotEmpty)
-        .orEmpty(),
+    alternativeName = name.alternative?.trim()?.takeIf(String::isNotEmpty),
     publishDay = publishDay!!.toDayOfWeek(),
     nextEpisodeNumber = nextReleaseEpisodeNumber,
     notification = notification,

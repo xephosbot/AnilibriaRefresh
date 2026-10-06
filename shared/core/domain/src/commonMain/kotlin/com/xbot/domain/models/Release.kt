@@ -31,7 +31,7 @@ val Release.isFinished: Boolean
 
 data class ReleaseDetails(
     val release: Release,
-    val alternativeNames: List<String>,
+    val alternativeName: String?,
     val publishDay: DayOfWeek,
     val nextEpisodeNumber: Int?,
     val notification: String?,

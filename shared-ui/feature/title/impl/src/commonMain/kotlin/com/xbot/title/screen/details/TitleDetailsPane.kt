@@ -53,12 +53,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onVisibilityChanged
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -343,7 +346,20 @@ private fun TitleDetails(
                     release = state.initialRelease,
                     contentPadding = PaddingValues(horizontal = horizontalMargin) +
                         contentPadding.only(WindowInsetsSides.Horizontal)
-                ) {
+                ) { contentAlignment ->
+                    state.initialRelease?.description?.let { description ->
+                        Text(
+                            text = description.lines().joinToString(" "),
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = if (contentAlignment == Alignment.Start) {
+                                TextAlign.Start
+                            } else {
+                                TextAlign.Center
+                            },
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     AnimatedVisibility(
                         visible = (state.details.getOrNull()?.genres ?: emptyList()).isNotEmpty(),
                         enter = expandVertically() + fadeIn(),

@@ -54,6 +54,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.DpOffset
@@ -373,7 +375,20 @@ private fun ReleaseFeed(
                 contentPadding =
                     PaddingValues(horizontal = horizontalMargin) +
                         contentPadding.only(WindowInsetsSides.Horizontal)
-            ) {
+            ) { contentAlignment ->
+                release?.description?.let { description ->
+                    Text(
+                        text = description.lines().joinToString(" "),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = if (contentAlignment == Alignment.Start) {
+                            TextAlign.Start
+                        } else {
+                            TextAlign.Center
+                        },
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 val isChecked by rememberUpdatedState(
                     activeMenuReleaseId != null && activeMenuReleaseId == release?.id
                 )

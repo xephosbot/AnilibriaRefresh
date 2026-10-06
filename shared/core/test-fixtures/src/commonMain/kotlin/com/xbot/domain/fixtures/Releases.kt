@@ -60,7 +60,7 @@ fun createRelease(
 
 fun createReleaseDetails(
     release: Release = createRelease(),
-    alternativeNames: List<String> = listOf("Frieren", "Провожающая в последний путь Фрирен"),
+    alternativeName: String? = "Frieren, Провожающая в последний путь Фрирен",
     publishDay: DayOfWeek = DayOfWeek.FRIDAY,
     nextEpisodeNumber: Int? = 29,
     notification: String? = "Episode 29 will be released on October 25",
@@ -100,7 +100,7 @@ fun createReleaseDetails(
     )
 ) = ReleaseDetails(
     release = release,
-    alternativeNames = alternativeNames,
+    alternativeName = alternativeName,
     publishDay = publishDay,
     nextEpisodeNumber = nextEpisodeNumber,
     notification = notification,

@@ -59,7 +59,7 @@ fun LargeReleaseCard(
         horizontal =
             LocalMargins.current.horizontal + 8.dp
     ),
-    content: @Composable (ColumnScope.() -> Unit)? = null
+    content: @Composable (ColumnScope.(contentAlignment: Alignment.Horizontal) -> Unit)? = null
 ) {
     Crossfade(targetState = release != null) { isLoaded ->
         if (isLoaded) {
@@ -87,7 +87,7 @@ private fun LargeReleaseCardContent(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    content: @Composable (ColumnScope.() -> Unit)?
+    content: @Composable (ColumnScope.(contentAlignment: Alignment.Horizontal) -> Unit)?
 ) {
     LargeReleaseCardLayout(
         modifier = Modifier,
@@ -123,19 +123,7 @@ private fun LargeReleaseCardContent(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            release.description?.let { description ->
-                Text(
-                    text = description.lines().joinToString(" "),
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = when (contentAlignment) {
-                        Alignment.Start -> TextAlign.Start
-                        else -> TextAlign.Center
-                    },
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            content?.invoke(this)
+            content?.invoke(this, contentAlignment)
         }
     )
 }
@@ -209,9 +197,22 @@ private fun LargeReleaseCardPlaceholder(
 @AnilibertyPreview
 @Composable
 private fun LargeReleaseCardPreview() {
+    val release = ReleaseFixtures.all[3]
     LargeReleaseCard(
-        release = ReleaseFixtures.all[3]
-    ) {
+        release = release
+    ) { contentAlignment ->
+        release.description?.let { description ->
+            Text(
+                text = description.lines().joinToString(" "),
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = when (contentAlignment) {
+                    Alignment.Start -> TextAlign.Start
+                    else -> TextAlign.Center
+                },
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         MediumSplitButton(
             onLeadingClick = {
                 // Handle leading button click
