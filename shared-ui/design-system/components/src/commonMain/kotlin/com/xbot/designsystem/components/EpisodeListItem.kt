@@ -49,13 +49,13 @@ import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.EpisodeFixtures
 import com.xbot.domain.models.Episode
+import com.xbot.formatters.formatOrdinal
 import com.xbot.formatters.localizedName
 import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.episode_title
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EpisodeListItem(
     episode: Episode?,
@@ -137,7 +137,7 @@ private fun EpisodeListItemContent(episode: Episode, modifier: Modifier = Modifi
         content = {
             Text(
                 text = stringResource(Res.string.episode_title) +
-                    " ${formatOrdinal(episode.ordinal)}",
+                    " ${episode.ordinal.formatOrdinal()}",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 10.sp,
                 color = LocalContentColor.current.copy(alpha = 0.6f),
@@ -307,12 +307,6 @@ private fun EpisodeListItemLoadingPreview() {
         episode = null,
         onClick = {}
     )
-}
-
-private fun formatOrdinal(ordinal: Float): String = if (ordinal == ordinal.toInt().toFloat()) {
-    ordinal.toInt().toString()
-} else {
-    ordinal.toString()
 }
 
 private val ListItemContainerHeight = 88.dp

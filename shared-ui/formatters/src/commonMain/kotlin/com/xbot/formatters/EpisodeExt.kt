@@ -15,3 +15,8 @@ fun Episode.localizedName(locale: Locale = Locale.current): String? = when (loca
     "ru" -> name
     else -> englishName
 }
+
+fun Float.formatOrdinal(): String {
+    val whole = toInt()
+    return if (this == whole.toFloat()) whole.toString() else toString()
+}

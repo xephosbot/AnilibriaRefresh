@@ -2,7 +2,6 @@ package com.xbot.designsystem.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Icon
@@ -27,18 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.VideoLibrary
-import com.xbot.designsystem.modifier.marquee
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.isFinished
 import com.xbot.formatters.stringRes
+import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.episode_abbreviation
 import com.xbot.resources.minutes_abbreviation
 import com.xbot.resources.release_details_episodes_meta
 import com.xbot.resources.release_details_finished
 import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun ReleaseMetaText(
@@ -95,35 +96,41 @@ fun ReleaseMetaText(
 
 @Composable
 private fun releaseMetaParts(release: Release): List<MetaPart> {
-    val type = release.type?.let { type ->
-        MetaPart(text = stringResource(type.stringRes), icon = type.icon, iconTag = TYPE_ICON_TAG)
-    }
     val season = release.season
     val yearAndSeason = MetaPart(
-        text =
-            season?.let { "${stringResource(it.stringRes)} ${release.year}" }
-                ?: release.year.toString(),
+        text = season?.let { "${stringResource(it.stringRes)} ${release.year}" }
+            ?: release.year.toString(),
         icon = season?.icon,
         iconTag = SEASON_ICON_TAG
     )
-    val episodesCount = release.episodesCount
-    val episodeDuration = release.episodeDuration
-    val episodesText = when {
-        episodesCount != null && episodeDuration != null ->
-            stringResource(Res.string.release_details_episodes_meta, episodesCount, episodeDuration)
+    val duration = if (release.type == ReleaseType.MOVIE) {
+        val movie = stringResource(ReleaseType.MOVIE.stringRes)
+        val duration = release.episodeDuration?.minutes?.toLocalizedString()
+        MetaPart(
+            text = listOfNotNull(movie, duration).joinToString(", "),
+            icon = ReleaseType.MOVIE.icon,
+            iconTag = MOVIE_ICON_TAG
+        )
+    } else {
+        val episodesCount = release.episodesCount
+        val episodeDuration = release.episodeDuration
+        val text = when {
+            episodesCount != null && episodeDuration != null ->
+                stringResource(Res.string.release_details_episodes_meta, episodesCount, episodeDuration)
 
-        episodesCount != null ->
-            stringResource(Res.string.episode_abbreviation, episodesCount.toString())
+            episodesCount != null ->
+                stringResource(Res.string.episode_abbreviation, episodesCount.toString())
 
-        episodeDuration != null ->
-            stringResource(Res.string.minutes_abbreviation, episodeDuration.toString())
+            episodeDuration != null ->
+                stringResource(Res.string.minutes_abbreviation, episodeDuration.toString())
 
-        else -> null
+            else -> null
+        }
+        text?.let {
+            MetaPart(text = it, icon = AnilibertyIcons.VideoLibrary, iconTag = EPISODES_ICON_TAG)
+        }
     }
-    val episodes = episodesText?.let {
-        MetaPart(text = it, icon = AnilibertyIcons.VideoLibrary, iconTag = EPISODES_ICON_TAG)
-    }
-    return listOfNotNull(type, yearAndSeason, episodes)
+    return listOfNotNull(yearAndSeason, duration)
 }
 
 private data class MetaPart(
@@ -198,26 +205,9 @@ private fun ReleaseMetaTextPreview() {
     ReleaseMetaText(release = ReleaseFixtures.all[1])
 }
 
-@AnilibertyPreview
-@Composable
-private fun ReleaseMetaTextFinishedPreview() {
-    ReleaseMetaText(release = ReleaseFixtures.all[1].copy(isOngoing = false))
-}
-
-@AnilibertyPreview
-@Composable
-private fun ReleaseMetaTextMarqueePreview() {
-    ReleaseMetaText(
-        modifier = Modifier
-            .width(200.dp)
-            .marquee(),
-        release = ReleaseFixtures.all[1].copy(isOngoing = false)
-    )
-}
-
 private const val AGE_RATING_PILL_TAG = "age_rating_pill"
 private const val FINISHED_PILL_TAG = "finished_pill"
-private const val TYPE_ICON_TAG = "type_icon"
+private const val MOVIE_ICON_TAG = "movie_icon"
 private const val SEASON_ICON_TAG = "season_icon"
 private const val EPISODES_ICON_TAG = "episodes_icon"
 private const val SEPARATOR = " • "
