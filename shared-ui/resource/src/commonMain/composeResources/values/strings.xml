@@ -173,15 +173,12 @@
     <string name="release_details_copy_link">Copy link</string>
     <string name="release_details_copy_title">Copy title</string>
     <string name="release_details_copied">Copied</string>
-    <string name="release_details_part_of">Part %1$d of %2$d</string>
     <string name="release_details_finished">Finished</string>
     <string name="release_details_episodes_meta">%1$d ep. × %2$d min</string>
     <plurals name="release_details_more_names">
         <item quantity="one">%1$d more name</item>
         <item quantity="other">%1$d more names</item>
     </plurals>
-    <string name="release_details_prequel_hint">This is part %1$d of the franchise. The story continues from earlier parts.</string>
-    <string name="release_details_prequel_open">To part %1$d</string>
     <string name="release_details_blocked_geo_title">Episodes are not available in your region</string>
     <string name="release_details_blocked_copyright_title">Episodes are blocked by the copyright holder</string>
     <string name="release_details_blocked_body">You can still watch it in the external player.</string>
@@ -224,16 +221,6 @@
     <string name="release_details_show_less">Show less</string>
     <string name="release_details_franchise">Franchise</string>
     <string name="release_details_franchise_all">All</string>
-    <plurals name="release_details_franchise_releases">
-        <item quantity="one">%1$d release</item>
-        <item quantity="other">%1$d releases</item>
-    </plurals>
-    <string name="release_details_franchise_years">from %1$d to %2$d</string>
-    <plurals name="release_details_franchise_episodes">
-        <item quantity="one">%1$d episode in total</item>
-        <item quantity="other">%1$d episodes in total</item>
-    </plurals>
-    <string name="release_details_franchise_hours">about %1$d h</string>
     <string name="release_details_announced">Announced</string>
     <string name="release_details_details">Details</string>
     <string name="release_details_total_duration">Total duration</string>
@@ -252,6 +239,4 @@
     </plurals>
     <string name="release_details_who_watches">Who\'s watching</string>
     <string name="release_details_dropped_insight">Only %1$s dropped it. People almost always finish this one.</string>
-    <string name="release_details_hours_minutes">%1$d h %2$d min</string>
-    <string name="release_details_minutes">%1$d min</string>
 </resources>

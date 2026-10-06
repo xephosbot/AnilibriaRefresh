@@ -18,12 +18,12 @@ val AnilibertyIcons.PlayCircle: ImageVector
         }
         _playCircle =
             Builder(
-                    name = "PlayCircle",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "PlayCircle",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.PlayCircle: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(426.0f, 630.0f)
                         lineTo(621.0f, 505.0f)

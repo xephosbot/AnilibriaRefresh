@@ -18,12 +18,12 @@ val AnilibertyIcons.Timer: ImageVector
         }
         _timer =
             Builder(
-                    name = "Timer",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "Timer",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Timer: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(400.0f, 120.0f)
                         quadTo(383.0f, 120.0f, 371.5f, 108.5f)

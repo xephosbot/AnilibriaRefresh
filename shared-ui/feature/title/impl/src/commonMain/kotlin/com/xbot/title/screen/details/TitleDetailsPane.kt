@@ -88,8 +88,10 @@ import com.xbot.designsystem.components.row
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
+import com.xbot.designsystem.icons.Copyright
 import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
+import com.xbot.designsystem.icons.PublicOff
 import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
@@ -121,6 +123,8 @@ import com.xbot.title.TitleScreenAction
 import com.xbot.title.TitleScreenSideEffect
 import com.xbot.title.TitleScreenState
 import com.xbot.title.TitleViewModel
+import com.xbot.title.component.AlertCard
+import com.xbot.title.component.NotificationCard
 import io.kotzilla.sdk.compose.TrackScreen
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -400,7 +404,8 @@ private fun TitleDetails(
             }
 
             row {
-                val alertText = when (state.details.getOrNull()?.availabilityStatus) {
+                val availability = state.details.getOrNull()?.availabilityStatus
+                val alertText = when (availability) {
                     AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
 
                     AvailabilityStatus.CopyrightBlocked ->
@@ -416,10 +421,14 @@ private fun TitleDetails(
                     Column {
                         Spacer(Modifier.height(16.dp))
                         AlertCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin)
-                        ) {
-                            Text(text = alertText.orEmpty())
-                        }
+                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                            icon = if (availability == AvailabilityStatus.GeoBlocked) {
+                                AnilibertyIcons.PublicOff
+                            } else {
+                                AnilibertyIcons.Copyright
+                            },
+                            title = alertText.orEmpty()
+                        )
                     }
                 }
             }
@@ -433,10 +442,9 @@ private fun TitleDetails(
                     Column {
                         Spacer(Modifier.height(16.dp))
                         NotificationCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin)
-                        ) {
-                            Text(text = state.details.getOrNull()?.notification.orEmpty())
-                        }
+                            modifier = Modifier.padding(horizontal = horizontalMargin),
+                            text = state.details.getOrNull()?.notification.orEmpty()
+                        )
                     }
                 }
             }

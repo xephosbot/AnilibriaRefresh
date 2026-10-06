@@ -18,12 +18,12 @@ val AnilibertyIcons.ContentCopy: ImageVector
         }
         _contentCopy =
             Builder(
-                    name = "ContentCopy",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "ContentCopy",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.ContentCopy: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(360.0f, 720.0f)
                         quadTo(327.0f, 720.0f, 303.5f, 696.5f)

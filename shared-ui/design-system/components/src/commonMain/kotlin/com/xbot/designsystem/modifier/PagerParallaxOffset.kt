@@ -1,5 +1,6 @@
 package com.xbot.designsystem.modifier
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.Modifier
@@ -14,16 +15,25 @@ fun Modifier.horizontalParallax(state: PagerState, page: Int) = this
         translationX = translation
     }
 
-fun Modifier.verticalParallax(state: LazyGridState) = this
+fun Modifier.verticalParallax(state: LazyGridState) = verticalParallax {
+    if (state.layoutInfo.visibleItemsInfo.isNotEmpty() && state.firstVisibleItemIndex == 0) {
+        state.firstVisibleItemScrollOffset
+    } else {
+        0
+    }
+}
+
+fun Modifier.verticalParallax(state: LazyListState) = verticalParallax {
+    if (state.layoutInfo.visibleItemsInfo.isNotEmpty() && state.firstVisibleItemIndex == 0) {
+        state.firstVisibleItemScrollOffset
+    } else {
+        0
+    }
+}
+
+private fun Modifier.verticalParallax(firstItemScrollOffset: () -> Int) = this
     .graphicsLayer {
-        val firstItemTranslationY = when {
-            state.layoutInfo.visibleItemsInfo.isNotEmpty() && state.firstVisibleItemIndex == 0 ->
-                state.firstVisibleItemScrollOffset * 0.7f
-
-            else -> 0f
-        }
-
-        translationY = firstItemTranslationY
+        translationY = firstItemScrollOffset() * 0.7f
     }
 
 fun Modifier.fadeWithParallax(state: PagerState, page: Int) = this

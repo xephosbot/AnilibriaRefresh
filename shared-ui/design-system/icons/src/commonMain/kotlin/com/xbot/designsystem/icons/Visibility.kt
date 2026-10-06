@@ -18,12 +18,12 @@ val AnilibertyIcons.Visibility: ImageVector
         }
         _visibility =
             Builder(
-                    name = "Visibility",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "Visibility",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Visibility: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(480.0f, 640.0f)
                         quadTo(555.0f, 640.0f, 607.5f, 587.5f)

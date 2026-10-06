@@ -18,12 +18,12 @@ val AnilibertyIcons.Insights: ImageVector
         }
         _insights =
             Builder(
-                    name = "Insights",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 24.0f,
-                    viewportHeight = 24.0f,
-                )
+                name = "Insights",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Insights: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(3.0f, 20.0f)
                         quadTo(2.175f, 20.0f, 1.588f, 19.413f)

@@ -18,12 +18,12 @@ val AnilibertyIcons.Tv: ImageVector
         }
         _tv =
             Builder(
-                    name = "Tv",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 960.0f,
-                    viewportHeight = 960.0f,
-                )
+                name = "Tv",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 960.0f,
+                viewportHeight = 960.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.Tv: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(160.0f, 760.0f)
                         quadTo(127.0f, 760.0f, 103.5f, 736.5f)

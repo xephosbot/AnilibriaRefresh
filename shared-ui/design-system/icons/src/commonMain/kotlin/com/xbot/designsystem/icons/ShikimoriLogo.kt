@@ -18,12 +18,12 @@ val AnilibertyIcons.ShikimoriLogo: ImageVector
         }
         _shikimoriLogo =
             Builder(
-                    name = "ShikimoriLogo",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 24.0f,
-                    viewportHeight = 24.0f,
-                )
+                name = "ShikimoriLogo",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.ShikimoriLogo: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(2.8025f, 0.0025f)
                         curveTo(2.7779f, 0.03f, 2.8332f, 0.1223f, 2.9834f, 0.3f)

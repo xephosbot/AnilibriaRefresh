@@ -1,0 +1,94 @@
+[
+  {
+    "id": 7439,
+    "type": { "value": "TV", "description": "ТВ" },
+    "year": 2018,
+    "name": {
+      "main": "Мастера Меча Онлайн: Алисизация",
+      "english": "Sword Art Online: Alicization",
+      "alternative": "Война в Андерворлде, War of Underworld"
+    },
+    "alias": "sword-art-online-alicization",
+    "season": { "value": "winter", "description": "Осень" },
+    "shikimori": { "id": 11757, "url": "https://shikimori.io/animes/11757", "votes": 128711, "rating": 7.23 },
+    "mal": { "id": 11757, "url": "https://myanimelist.net/anime/11757", "votes": 1934567, "rating": 7.21 },
+    "rating": {
+      "average": 8.25,
+      "votes": 1204,
+      "distribution": { "1": 3, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 600, "9": 400, "10": 201 }
+    },
+    "poster": {
+      "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+      "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+      "optimized": {
+        "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+        "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)"
+      }
+    },
+    "fresh_at": "2019-12-29T23:06:39+00:00",
+    "created_at": "2019-12-29T23:06:39+00:00",
+    "updated_at": "2023-08-20T15:08:20+00:00",
+    "is_ongoing": false,
+    "age_rating": {
+      "value": "R0_PLUS",
+      "label": "16+",
+      "is_adult": false,
+      "description": "Для людей, достигших возраста шестнадцати лет (16+)"
+    },
+    "publish_day": { "value": 1, "description": "Воскресенье" },
+    "description": "Underworld - мир, ранее недоступный человеческому пониманию...",
+    "notification": "Серии выходят по воскресеньям",
+    "episodes_total": 36,
+    "external_player": "//kodik.info/serial/...",
+    "is_in_production": false,
+    "is_blocked_by_geo": false,
+    "is_blocked_by_copyrights": false,
+    "added_in_users_favorites": 25557,
+    "average_duration_of_episode": 25,
+    "added_in_planned_collection": 2457,
+    "added_in_watched_collection": 467,
+    "added_in_watching_collection": 346,
+    "added_in_postponed_collection": 212,
+    "added_in_abandoned_collection": 12,
+    "genres": [
+      {
+        "id": 21,
+        "name": "Комедия",
+        "image": {
+          "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+          "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+          "optimized": {
+            "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+            "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)"
+          }
+        },
+        "total_releases": 10
+      }
+    ],
+    "latest_episode": {
+      "id": "9b5e26ee-598f-4b8b-b77e-188d3e456318",
+      "name": "Пролог",
+      "ordinal": 12.5,
+      "ending": { "start": 6, "stop": 125 },
+      "opening": { "start": 6, "stop": 125 },
+      "preview": {
+        "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+        "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+        "optimized": {
+          "preview": "/...GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)",
+          "thumbnail": "/.../GoH5bzLFS7A21DzacgUApScj7qJY1iMz.(jpg|webp)"
+        }
+      },
+      "hls_480": "string",
+      "hls_720": "string",
+      "hls_1080": "string",
+      "duration": 1432,
+      "rutube_id": "c6cc4d620b1d4338901770a44b3e82f4",
+      "youtube_id": "dQw4w9WgXcQ",
+      "updated_at": "2021-11-25T18:46:30+00:00",
+      "sort_order": 12,
+      "release_id": 9324,
+      "name_english": "Prologue"
+    }
+  }
+]

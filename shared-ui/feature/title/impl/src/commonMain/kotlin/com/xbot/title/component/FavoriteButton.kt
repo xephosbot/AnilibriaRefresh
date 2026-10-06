@@ -2,7 +2,7 @@ package com.xbot.title.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -39,7 +39,10 @@ internal fun FavoriteButton(
     ToggleButton(
         checked = checked,
         onCheckedChange = onCheckedChange,
-        modifier = modifier.size(FavoriteButtonDefaults.Size),
+        modifier = modifier.sizeIn(
+            minWidth = FavoriteButtonDefaults.MinSize,
+            minHeight = FavoriteButtonDefaults.MinSize
+        ),
         enabled = enabled,
         shapes = FavoriteButtonDefaults.Shapes,
         colors = ToggleButtonDefaults.colors(
@@ -48,7 +51,7 @@ internal fun FavoriteButton(
             checkedContainerColor = MaterialTheme.colorScheme.primary,
             checkedContentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        contentPadding = PaddingValues()
+        contentPadding = FavoriteButtonDefaults.ContentPadding
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
@@ -70,7 +73,8 @@ internal fun FavoriteButton(
 }
 
 internal object FavoriteButtonDefaults {
-    val Size = PlayButtonDefaults.Height
+    val MinSize = PlayButtonDefaults.Height
+    val ContentPadding = PaddingValues(horizontal = 8.dp)
     val Shapes = ToggleButtonShapes(
         shape = RoundedCornerShape(20.dp),
         pressedShape = RoundedCornerShape(14.dp),

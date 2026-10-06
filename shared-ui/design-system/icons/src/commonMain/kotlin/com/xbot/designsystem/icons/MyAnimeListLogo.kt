@@ -18,12 +18,12 @@ val AnilibertyIcons.MyAnimeListLogo: ImageVector
         }
         _myAnimeListLogo =
             Builder(
-                    name = "MyAnimeListLogo",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
-                    viewportWidth = 24.0f,
-                    viewportHeight = 24.0f,
-                )
+                name = "MyAnimeListLogo",
+                defaultWidth = 24.0.dp,
+                defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f,
+                viewportHeight = 24.0f
+            )
                 .apply {
                     path(
                         fill = SolidColor(Color(0xFF000000)),
@@ -32,7 +32,7 @@ val AnilibertyIcons.MyAnimeListLogo: ImageVector
                         strokeLineCap = Butt,
                         strokeLineJoin = Miter,
                         strokeLineMiter = 4.0f,
-                        pathFillType = NonZero,
+                        pathFillType = NonZero
                     ) {
                         moveTo(14.921f, 6.479f)
                         curveTo(14.101f, 6.479f, 11.238f, 6.479f, 9.974f, 9.635f)

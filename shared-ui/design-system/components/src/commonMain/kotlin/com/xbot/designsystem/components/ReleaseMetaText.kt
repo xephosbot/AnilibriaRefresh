@@ -38,8 +38,8 @@ import com.xbot.resources.episode_abbreviation
 import com.xbot.resources.minutes_abbreviation
 import com.xbot.resources.release_details_episodes_meta
 import com.xbot.resources.release_details_finished
-import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration.Companion.minutes
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ReleaseMetaText(
@@ -116,7 +116,11 @@ private fun releaseMetaParts(release: Release): List<MetaPart> {
         val episodeDuration = release.episodeDuration
         val text = when {
             episodesCount != null && episodeDuration != null ->
-                stringResource(Res.string.release_details_episodes_meta, episodesCount, episodeDuration)
+                stringResource(
+                    Res.string.release_details_episodes_meta,
+                    episodesCount,
+                    episodeDuration
+                )
 
             episodesCount != null ->
                 stringResource(Res.string.episode_abbreviation, episodesCount.toString())

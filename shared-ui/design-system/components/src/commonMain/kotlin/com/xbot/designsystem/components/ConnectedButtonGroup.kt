@@ -23,7 +23,7 @@ import com.xbot.designsystem.utils.AnilibertyPreview
 @Composable
 fun <T> SingleChoiceConnectedButtonGroup(
     items: List<T>,
-    selectedItem: T,
+    selectedItem: T?,
     modifier: Modifier = Modifier,
     spacing: Dp = ConnectedButtonGroupDefaults.Spacing,
     itemContent: @Composable RowScope.(selected: Boolean, item: T) -> Unit

@@ -173,7 +173,6 @@
     <string name="release_details_copy_link">Скопировать ссылку</string>
     <string name="release_details_copy_title">Скопировать название</string>
     <string name="release_details_copied">Скопировано</string>
-    <string name="release_details_part_of">Часть %1$d из %2$d</string>
     <string name="release_details_finished">Завершён</string>
     <string name="release_details_episodes_meta">%1$d эп. по %2$d мин</string>
     <plurals name="release_details_more_names">
@@ -182,8 +181,6 @@
         <item quantity="many">ещё %1$d названий</item>
         <item quantity="other">ещё %1$d названия</item>
     </plurals>
-    <string name="release_details_prequel_hint">Это %1$d-я часть франшизы. Сюжет продолжает предыдущие части.</string>
-    <string name="release_details_prequel_open">К %1$d части</string>
     <string name="release_details_blocked_geo_title">Серии недоступны в вашем регионе</string>
     <string name="release_details_blocked_copyright_title">Серии заблокированы по запросу правообладателя</string>
     <string name="release_details_blocked_body">Смотреть можно во внешнем плеере.</string>
@@ -226,20 +223,6 @@
     <string name="release_details_show_less">Свернуть</string>
     <string name="release_details_franchise">Франшиза</string>
     <string name="release_details_franchise_all">Все</string>
-    <plurals name="release_details_franchise_releases">
-        <item quantity="one">%1$d релиз</item>
-        <item quantity="few">%1$d релиза</item>
-        <item quantity="many">%1$d релизов</item>
-        <item quantity="other">%1$d релиза</item>
-    </plurals>
-    <string name="release_details_franchise_years">с %1$d по %2$d</string>
-    <plurals name="release_details_franchise_episodes">
-        <item quantity="one">всего %1$d серия</item>
-        <item quantity="few">всего %1$d серии</item>
-        <item quantity="many">всего %1$d серий</item>
-        <item quantity="other">всего %1$d серии</item>
-    </plurals>
-    <string name="release_details_franchise_hours">около %1$d ч</string>
     <string name="release_details_announced">Анонс</string>
     <string name="release_details_details">Подробности</string>
     <string name="release_details_total_duration">Общая длительность</string>
@@ -262,6 +245,4 @@
     </plurals>
     <string name="release_details_who_watches">Кто смотрит</string>
     <string name="release_details_dropped_insight">Бросили всего %1$s. Тайтл почти всегда досматривают.</string>
-    <string name="release_details_hours_minutes">%1$d ч %2$d мин</string>
-    <string name="release_details_minutes">%1$d мин</string>
 </resources>
