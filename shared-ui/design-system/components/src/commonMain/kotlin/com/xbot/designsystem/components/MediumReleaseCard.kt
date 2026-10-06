@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
-import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.modifier.fadingEdge
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibertyPreview
@@ -159,7 +159,7 @@ private fun MediumReleaseCardLayout(
             Box(
                 modifier = Modifier
                     .height(ReleaseCardPosterHeight)
-                    .fadedEdge(
+                    .fadingEdge(
                         startFraction = 0.25f,
                         endFraction = 0.75f
                     )
@@ -197,7 +197,7 @@ private fun MediumReleaseCardPlaceholder(
                     .fillMaxSize()
                     .shimmer(shimmer)
                     .background(Color.LightGray)
-                    .fadedEdge(
+                    .fadingEdge(
                         startFraction = 0f,
                         endFraction = 1f
                     )

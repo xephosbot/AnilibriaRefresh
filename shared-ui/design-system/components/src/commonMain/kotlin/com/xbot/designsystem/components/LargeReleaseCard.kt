@@ -39,7 +39,8 @@ import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.icons.MoreVert
 import com.xbot.designsystem.icons.PlayArrow
 import com.xbot.designsystem.modifier.LocalShimmer
-import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.modifier.fadingEdge
+import com.xbot.designsystem.modifier.marquee
 import com.xbot.designsystem.theme.LocalMargins
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.fixtures.ReleaseFixtures
@@ -99,7 +100,10 @@ private fun LargeReleaseCardContent(
             )
         },
         content = { contentAlignment ->
-            ReleaseMetaText(release = release)
+            ReleaseMetaText(
+                modifier = Modifier.marquee(),
+                release = release
+            )
             TextAutoSize(
                 modifier = Modifier.fillMaxWidth(),
                 text = release.localizedName(),
@@ -160,7 +164,7 @@ private fun LargeReleaseCardLayout(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .fadedEdge(
+                    .fadingEdge(
                         startFraction = 0.25f,
                         endFraction = 0.75f
                     )

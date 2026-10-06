@@ -45,7 +45,7 @@ import androidx.compose.ui.zIndex
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.modifier.LocalShimmer
 import com.xbot.designsystem.modifier.contextClickable
-import com.xbot.designsystem.modifier.fadedEdge
+import com.xbot.designsystem.modifier.fadingEdge
 import com.xbot.designsystem.shape.MorphableShapes
 import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibertyPreview
@@ -129,7 +129,7 @@ private fun FranchiseCardContent(franchise: Franchise, modifier: Modifier = Modi
             modifier = Modifier
                 .size(FranchiseCardWidth)
                 .then(modifier)
-                .fadedEdge(
+                .fadingEdge(
                     startFraction = 0.25f,
                     endFraction = 1.0f
                 )
