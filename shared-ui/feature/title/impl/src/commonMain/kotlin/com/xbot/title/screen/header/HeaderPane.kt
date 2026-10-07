@@ -46,18 +46,18 @@ import com.xbot.title.component.AlertCard
 import com.xbot.title.component.CollectionStatusOrder
 import com.xbot.title.component.FavoriteButton
 import com.xbot.title.component.NotificationCard
-import com.xbot.title.component.PaneSectionScope
+import com.xbot.title.component.PaneHeaderScope
 import com.xbot.title.component.PlayButton
 import com.xbot.title.component.icon
 import com.xbot.title.component.labelRes
-import com.xbot.title.component.rememberPaneSectionScope
+import com.xbot.title.component.rememberPaneHeaderScope
 import com.xbot.title.screen.details2.PlayButtonState
 import com.xbot.title.screen.details2.ReleaseStatusBanner
 import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-context(scope: PaneSectionScope)
+context(scope: PaneHeaderScope)
 internal fun HeaderPane(
     release: Release?,
     alternativeName: String?,
@@ -76,7 +76,7 @@ internal fun HeaderPane(
 
     Column(modifier = modifier) {
         LargeReleaseCard(
-            modifier = Modifier.verticalParallax(scope.listState),
+            modifier = Modifier.verticalParallax(scope.scrollState),
             contentModifier = Modifier.animateContentSize(),
             release = release,
             contentPadding = PaddingValues(horizontal = horizontalMargin) +
@@ -242,7 +242,7 @@ internal fun CollectionStatusGroup(
 @Composable
 private fun HeaderPanePreview() {
     val state = TitleDetailsPreviewDataV2.ongoing
-    with(rememberPaneSectionScope()) {
+    with(rememberPaneHeaderScope()) {
         HeaderPane(
             release = state.release,
             alternativeName = state.releaseDetails?.alternativeName,

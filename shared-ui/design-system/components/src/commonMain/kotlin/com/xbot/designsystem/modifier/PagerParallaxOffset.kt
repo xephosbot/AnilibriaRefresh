@@ -1,5 +1,6 @@
 package com.xbot.designsystem.modifier
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
@@ -30,6 +31,8 @@ fun Modifier.verticalParallax(state: LazyListState) = verticalParallax {
         0
     }
 }
+
+fun Modifier.verticalParallax(state: ScrollState) = verticalParallax { state.value }
 
 private fun Modifier.verticalParallax(firstItemScrollOffset: () -> Int) = this
     .graphicsLayer {

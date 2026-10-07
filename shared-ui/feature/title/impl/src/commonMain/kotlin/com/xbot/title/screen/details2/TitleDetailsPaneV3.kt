@@ -6,8 +6,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,12 +26,18 @@ import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
 import com.xbot.designsystem.theme.AnilibertyTheme
 import com.xbot.designsystem.utils.AnilibertyPreview
+import com.xbot.resources.Res
+import com.xbot.resources.release_details_tab_about
+import com.xbot.resources.release_details_tab_episodes
+import com.xbot.resources.release_details_tab_ratings
+import com.xbot.title.component.PaneSection
 import com.xbot.title.component.SectionPaneScaffold
 import com.xbot.title.component.totalDurationMinutes
 import com.xbot.title.screen.about.AboutPane
 import com.xbot.title.screen.episodes.EpisodesPane
 import com.xbot.title.screen.header.HeaderPane
 import com.xbot.title.screen.rating.RatingsPane
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun TitleDetailsPaneContentV3(
@@ -45,18 +54,14 @@ internal fun TitleDetailsPaneContentV3(
         SectionPaneScaffold(
             directive = directive,
             sections = sections,
-            selectedSection = state.tab.toSection(),
-            onSectionSelect = { section ->
-                section.toTab()?.let { tab -> onAction(TitleDetailsActionV2.OnTabSelect(tab)) }
-            },
+            selectedSection = state.tab,
+            onSectionSelect = { tab -> onAction(TitleDetailsActionV2.OnTabSelect(tab)) },
             modifier = modifier.shimmerUpdater(shimmer),
-            topBar = { TitleTopBar(onBackClick = onBackClick) }
-        ) { section ->
-            val details = state.releaseDetails
-            when (section) {
-                ReleaseSection.Header -> HeaderPane(
+            topBar = { TitleTopBar(onBackClick = onBackClick) },
+            header = {
+                HeaderPane(
                     release = state.release,
-                    alternativeName = details?.alternativeName,
+                    alternativeName = state.releaseDetails?.alternativeName,
                     playButton = state.playButton,
                     isBlocked = state.isBlocked,
                     isFavorite = state.isFavorite,
@@ -71,8 +76,11 @@ internal fun TitleDetailsPaneContentV3(
                         onAction(TitleDetailsActionV2.OnExternalPlayerClick)
                     }
                 )
-
-                ReleaseSection.Episodes -> EpisodesPane(
+            }
+        ) { tab ->
+            val details = state.releaseDetails
+            when (tab) {
+                ReleaseTab.Episodes -> EpisodesPane(
                     episodes = state.sortedEpisodes,
                     episodesProgress = state.episodesProgress,
                     currentProgress = state.currentProgress,
@@ -85,7 +93,7 @@ internal fun TitleDetailsPaneContentV3(
                     }
                 )
 
-                ReleaseSection.About -> if (details != null) {
+                ReleaseTab.About -> if (details != null) {
                     AboutPane(
                         description = details.release.description,
                         franchiseReleases = state.franchiseReleases.getOrNull().orEmpty(),
@@ -112,7 +120,7 @@ internal fun TitleDetailsPaneContentV3(
                     )
                 }
 
-                ReleaseSection.Ratings -> if (details != null) {
+                ReleaseTab.Ratings -> if (details != null) {
                     RatingsPane(
                         rating = details.rating,
                         shikimoriRating = details.shikimoriRating,
@@ -123,6 +131,21 @@ internal fun TitleDetailsPaneContentV3(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun rememberReleaseSections(): List<PaneSection<ReleaseTab>> {
+    val episodesTitle = stringResource(Res.string.release_details_tab_episodes)
+    val aboutTitle = stringResource(Res.string.release_details_tab_about)
+    val ratingsTitle = stringResource(Res.string.release_details_tab_ratings)
+    return remember(episodesTitle, aboutTitle, ratingsTitle) {
+        listOf(
+            PaneSection(ReleaseTab.Episodes, SupportingPaneScaffoldRole.Supporting, episodesTitle),
+            PaneSection(ReleaseTab.About, SupportingPaneScaffoldRole.Main, aboutTitle),
+            PaneSection(ReleaseTab.Ratings, SupportingPaneScaffoldRole.Extra, ratingsTitle)
+        )
     }
 }
 
