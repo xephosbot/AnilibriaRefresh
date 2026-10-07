@@ -1,17 +1,11 @@
-package com.xbot.title.screen.details
+package com.xbot.title.screen.rating
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,132 +18,105 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.xbot.designsystem.components.ExpressiveEpisodeListItemDefaults
-import com.xbot.designsystem.components.MemberItem
-import com.xbot.designsystem.components.PosterImage
-import com.xbot.designsystem.components.PreferenceItem
-import com.xbot.designsystem.components.section
+import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.Insights
 import com.xbot.designsystem.icons.MyAnimeListLogo
 import com.xbot.designsystem.icons.ShikimoriLogo
-import com.xbot.designsystem.shape.rememberMorphableShape
+import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.domain.models.ExternalRating
-import com.xbot.domain.models.Genre
-import com.xbot.domain.models.ReleaseDetails
+import com.xbot.domain.models.ReleaseRating
 import com.xbot.domain.models.enums.CollectionType
 import com.xbot.formatters.formatCompact
 import com.xbot.formatters.formatDecimal
-import com.xbot.formatters.stringRes
-import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
 import com.xbot.resources.release_details_dropped_insight
 import com.xbot.resources.release_details_external_votes
 import com.xbot.resources.release_details_rating_votes
+import com.xbot.resources.release_details_tab_ratings
 import com.xbot.resources.release_details_who_watches
-import kotlin.time.Duration
-import kotlinx.coroutines.launch
+import com.xbot.title.component.CollectionStatusOrder
+import com.xbot.title.component.PaneSectionScope
+import com.xbot.title.component.appLocale
+import com.xbot.title.component.formatGrouped
+import com.xbot.title.component.labelRes
+import com.xbot.title.component.rememberPaneSectionScope
+import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun RatingsPage(
-    details: ReleaseDetails,
-    isActive: Boolean,
-    listState: LazyListState,
-    headerSpacerHeight: Dp,
-    bottomPadding: Dp,
-    onAction: (TitleDetailsActionV2) -> Unit,
+context(scope: PaneSectionScope)
+internal fun RatingsPane(
+    rating: ReleaseRating?,
+    shikimoriRating: ExternalRating?,
+    myAnimeListRating: ExternalRating?,
+    collectionCounts: Map<CollectionType, Int>,
+    onUrlClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var revealed by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(isActive) {
-        if (isActive) revealed = true
+    LaunchedEffect(scope.isActive) {
+        if (scope.isActive) revealed = true
     }
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(bottom = bottomPadding)
+        state = scope.listState,
+        contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
     ) {
-        item(key = HEADER_SPACER_KEY, contentType = HEADER_SPACER_KEY) {
-            Spacer(Modifier.height(headerSpacerHeight))
+        item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {
+            Spacer(Modifier.height(scope.contentPadding.calculateTopPadding()))
         }
-        if (details.rating != null || details.shikimoriRating != null ||
-            details.myAnimeListRating != null
-        ) {
+        if (rating != null || shikimoriRating != null || myAnimeListRating != null) {
+            item(key = "rating_header") {
+                Header(title = {
+                    Text(text = stringResource(Res.string.release_details_tab_ratings))
+                })
+            }
             item(key = "rating") {
                 RatingCard(
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    details = details,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    rating = rating,
+                    shikimoriRating = shikimoriRating,
+                    myAnimeListRating = myAnimeListRating,
                     revealed = revealed,
-                    onUrlClick = { url -> onAction(TitleDetailsActionV2.OnUrlClick(url)) }
+                    onUrlClick = onUrlClick
                 )
             }
         }
-        if (details.collectionCounts.values.sum() > 0) {
+        if (collectionCounts.values.sum() > 0) {
+            item(key = "community_header") {
+                Header(title = {
+                    Text(text = stringResource(Res.string.release_details_who_watches))
+                })
+            }
             item(key = "community") {
-                AboutSection(title = stringResource(Res.string.release_details_who_watches)) {
-                    CommunityCard(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        collections = details.collectionCounts
-                    )
-                }
+                CommunityCard(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    collections = collectionCounts
+                )
             }
         }
     }
@@ -157,7 +124,9 @@ internal fun RatingsPage(
 
 @Composable
 private fun RatingCard(
-    details: ReleaseDetails,
+    rating: ReleaseRating?,
+    shikimoriRating: ExternalRating?,
+    myAnimeListRating: ExternalRating?,
     revealed: Boolean,
     onUrlClick: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -168,7 +137,7 @@ private fun RatingCard(
         color = MaterialTheme.colorScheme.surfaceBright
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            details.rating?.let { rating ->
+            rating?.let { rating ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -184,16 +153,16 @@ private fun RatingCard(
                 }
             }
             val external = listOfNotNull(
-                details.shikimoriRating?.let {
+                shikimoriRating?.let {
                     Triple(AnilibertyIcons.ShikimoriLogo, SHIKIMORI_LABEL, it)
                 },
-                details.myAnimeListRating?.let {
+                myAnimeListRating?.let {
                     Triple(AnilibertyIcons.MyAnimeListLogo, MY_ANIME_LIST_LABEL, it)
                 }
             )
             if (external.isNotEmpty()) {
                 Row(
-                    modifier = Modifier.padding(top = if (details.rating != null) 14.dp else 0.dp),
+                    modifier = Modifier.padding(top = if (rating != null) 14.dp else 0.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     external.forEach { (logo, name, rating) ->
@@ -439,6 +408,22 @@ private fun collectionColors(): Map<CollectionType, Color> {
     )
 }
 
+@AnilibertyPreview
+@Composable
+private fun RatingsPanePreview() {
+    val details = TitleDetailsPreviewDataV2.ongoing.releaseDetails ?: return
+    with(rememberPaneSectionScope()) {
+        RatingsPane(
+            rating = details.rating,
+            shikimoriRating = details.shikimoriRating,
+            myAnimeListRating = details.myAnimeListRating,
+            collectionCounts = details.collectionCounts,
+            onUrlClick = {}
+        )
+    }
+}
+
+private const val TOP_SPACER_KEY = "top_spacer"
 private const val MAX_SCORE = 10
 private const val DROPPED_INSIGHT_THRESHOLD = 0.05
 private const val SHIKIMORI_LABEL = "Shikimori"

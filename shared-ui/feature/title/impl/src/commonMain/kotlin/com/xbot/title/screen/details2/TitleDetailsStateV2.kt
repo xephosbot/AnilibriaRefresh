@@ -1,4 +1,4 @@
-package com.xbot.title.screen.details
+package com.xbot.title.screen.details2
 
 import androidx.compose.runtime.Immutable
 import com.xbot.common.AsyncResult
@@ -22,7 +22,7 @@ import com.xbot.resources.release_details_blocked_geo_title
 import com.xbot.resources.release_details_play_continue
 import com.xbot.resources.release_details_play_continue_subtitle
 import com.xbot.resources.release_details_play_start_subtitle
-import kotlin.time.Duration
+import com.xbot.title.component.watchedFraction
 
 @Immutable
 internal data class TitleDetailsStateV2(
@@ -146,18 +146,6 @@ internal data class PlayButtonState(
     val progress: Float?
 )
 
-internal val Release.totalDurationMinutes: Int?
-    get() = episodeDuration?.let { duration -> episodesCount?.let { it * duration } }
-
-internal val Episode.isSpecial: Boolean
-    get() = ordinal % 1f != 0f
-
-internal fun Episode.watchedFraction(progress: EpisodeProgress?): Float? {
-    val total = duration ?: return null
-    if (progress == null || progress.isWatched || total <= Duration.ZERO) return null
-    return (progress.position / total).toFloat().coerceIn(0f, 1f)
-}
-
 internal enum class ReleaseTab { Episodes, About, Ratings }
 
 internal enum class EpisodesSort { OldestFirst, NewestFirst }
@@ -167,7 +155,7 @@ internal sealed interface TitleDetailsActionV2 {
     data object OnFavoriteToggle : TitleDetailsActionV2
     data class OnCollectionStatusSelect(val status: CollectionType?) : TitleDetailsActionV2
     data class OnTabSelect(val tab: ReleaseTab) : TitleDetailsActionV2
-    data object OnEpisodesSortToggle : TitleDetailsActionV2
+    data class OnEpisodesSortChange(val sort: EpisodesSort) : TitleDetailsActionV2
     data class OnEpisodeClick(val episode: Episode) : TitleDetailsActionV2
     data class OnFranchiseReleaseClick(val release: Release) : TitleDetailsActionV2
     data class OnGenreClick(val genre: Genre) : TitleDetailsActionV2

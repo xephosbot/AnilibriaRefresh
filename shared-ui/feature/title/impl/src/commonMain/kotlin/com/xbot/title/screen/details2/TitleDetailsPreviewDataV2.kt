@@ -1,4 +1,4 @@
-package com.xbot.title.screen.details
+package com.xbot.title.screen.details2
 
 import com.xbot.common.AsyncResult
 import com.xbot.domain.fixtures.GenreFixtures

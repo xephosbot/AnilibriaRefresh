@@ -1,4 +1,4 @@
-package com.xbot.title.screen.details
+package com.xbot.title.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -9,7 +9,11 @@ import com.xbot.designsystem.icons.Cancel
 import com.xbot.designsystem.icons.PauseCircle
 import com.xbot.designsystem.icons.TaskAlt
 import com.xbot.designsystem.icons.Visibility
+import com.xbot.domain.models.Episode
+import com.xbot.domain.models.EpisodeProgress
+import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.CollectionType
+import com.xbot.formatters.formatOrdinal
 import com.xbot.localization.LocalAppLanguage
 import com.xbot.resources.Res
 import com.xbot.resources.release_details_collection_abandoned
@@ -17,8 +21,10 @@ import com.xbot.resources.release_details_collection_planned
 import com.xbot.resources.release_details_collection_postponed
 import com.xbot.resources.release_details_collection_watched
 import com.xbot.resources.release_details_collection_watching
+import com.xbot.resources.release_details_episode
 import kotlin.time.Duration
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 internal val CollectionStatusOrder = listOf(
     CollectionType.WATCHING,
@@ -59,6 +65,22 @@ internal fun Duration.formatPlayback(): String = toComponents { hours, minutes, 
     val mm = minutes.toString().padStart(2, '0')
     val ss = seconds.toString().padStart(2, '0')
     if (hours > 0) "$hours:$mm:$ss" else "$minutes:$ss"
+}
+
+@Composable
+internal fun episodeLabel(ordinal: Float): String =
+    stringResource(Res.string.release_details_episode, ordinal.formatOrdinal())
+
+internal val Release.totalDurationMinutes: Int?
+    get() = episodeDuration?.let { duration -> episodesCount?.let { it * duration } }
+
+internal val Episode.isSpecial: Boolean
+    get() = ordinal % 1f != 0f
+
+internal fun Episode.watchedFraction(progress: EpisodeProgress?): Float? {
+    val total = duration ?: return null
+    if (progress == null || progress.isWatched || total <= Duration.ZERO) return null
+    return (progress.position / total).toFloat().coerceIn(0f, 1f)
 }
 
 private const val DIGIT_GROUP_SIZE = 3

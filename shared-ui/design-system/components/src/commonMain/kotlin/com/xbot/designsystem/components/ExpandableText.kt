@@ -1,7 +1,6 @@
 package com.xbot.designsystem.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.LocalTextStyle
@@ -12,14 +11,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.text.withLink
 
 /**
  * An expandable text component that provides access to truncated text with a dynamic ... Show More/ Show Less button.
@@ -56,13 +55,7 @@ fun ExpandableText(
     var lastCharIndex by remember { mutableStateOf(0) }
 
     // Box composable containing the Text composable.
-    Box(
-        modifier = Modifier
-            .clickable(clickable) {
-                isExpanded = !isExpanded
-            }
-            .then(modifier)
-    ) {
+    Box(modifier = modifier) {
         // Text composable with buildAnnotatedString to handle "Show More" and "Show Less" buttons.
         Text(
             modifier = textModifier
@@ -73,14 +66,24 @@ fun ExpandableText(
                     if (isExpanded) {
                         // Display the full text and "Show Less" button when expanded.
                         append(text)
-                        withStyle(style = showLessStyle) { append(showLessText) }
+                        withLink(
+                            LinkAnnotation.Clickable(
+                                tag = SHOW_LESS_TAG,
+                                styles = TextLinkStyles(style = showLessStyle)
+                            ) { isExpanded = false }
+                        ) { append(showLessText) }
                     } else {
                         // Display truncated text and "Show More" button when collapsed.
                         val adjustText = text.substring(startIndex = 0, endIndex = lastCharIndex)
                             .dropLast(showMoreText.length)
                             .dropLastWhile { it.isWhitespace() || it == '.' }
                         append(adjustText)
-                        withStyle(style = showMoreStyle) { append(showMoreText) }
+                        withLink(
+                            LinkAnnotation.Clickable(
+                                tag = SHOW_MORE_TAG,
+                                styles = TextLinkStyles(style = showMoreStyle)
+                            ) { isExpanded = true }
+                        ) { append(showMoreText) }
                     }
                 } else {
                     // Display the full text when not clickable.
@@ -103,3 +106,6 @@ fun ExpandableText(
 }
 
 const val DEFAULT_MINIMUM_TEXT_LINE = 3
+
+private const val SHOW_MORE_TAG = "show_more"
+private const val SHOW_LESS_TAG = "show_less"
