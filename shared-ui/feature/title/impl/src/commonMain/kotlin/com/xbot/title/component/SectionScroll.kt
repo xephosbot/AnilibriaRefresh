@@ -3,10 +3,25 @@ package com.xbot.title.component
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.TraversableNode
+import androidx.compose.ui.node.findNearestAncestor
+import androidx.compose.ui.node.invalidateMeasurement
+import androidx.compose.ui.unit.Constraints
+
+internal fun Modifier.sectionScroll(state: LazyListState): Modifier =
+    this then SectionScrollElement(LazyListSectionScrollable(state))
+
+internal fun Modifier.sectionScroll(state: LazyGridState): Modifier =
+    this then SectionScrollElement(LazyGridSectionScrollable(state))
+
+internal fun Modifier.sectionScroll(state: ScrollState): Modifier =
+    this then SectionScrollElement(ScrollStateSectionScrollable(state))
 
 internal interface SectionScrollable {
     fun dispatchRawDelta(delta: Float): Float
@@ -14,17 +29,16 @@ internal interface SectionScrollable {
     fun requestScrollToStart()
 }
 
-context(scope: PaneSectionScope)
-internal fun Modifier.sectionScroll(state: LazyListState): Modifier =
-    this then scope.connectScroll(LazyListSectionScrollable(state))
+internal interface SectionPageHost {
+    fun onScrollableAttached(page: Any, scrollable: SectionScrollable)
 
-context(scope: PaneSectionScope)
-internal fun Modifier.sectionScroll(state: LazyGridState): Modifier =
-    this then scope.connectScroll(LazyGridSectionScrollable(state))
+    fun onScrollableDetached(page: Any, scrollable: SectionScrollable)
 
-context(scope: PaneSectionScope)
-internal fun Modifier.sectionScroll(state: ScrollState): Modifier =
-    this then scope.connectScroll(ScrollStateSectionScrollable(state))
+    fun onContentHeightChanged(page: Any, height: Int)
+}
+
+internal fun Modifier.sectionPage(host: SectionPageHost, page: Any): Modifier =
+    this then SectionPageElement(host, page)
 
 private data class LazyListSectionScrollable(val state: LazyListState) : SectionScrollable {
     override fun dispatchRawDelta(delta: Float): Float = state.dispatchRawDelta(delta)
@@ -46,60 +60,77 @@ private data class ScrollStateSectionScrollable(val state: ScrollState) : Sectio
     }
 }
 
-@Stable
-internal class SectionScrollRegistry<K : Any>(
-    private val shouldResetOnAttach: (K) -> Boolean = { false }
-) {
-    private val scrollables = mutableMapOf<K, SectionScrollable>()
+private object SectionPageTraverseKey
 
-    val contentHeights = mutableStateMapOf<K, Int>()
+private data class SectionPageElement(val host: SectionPageHost, val page: Any) :
+    ModifierNodeElement<SectionPageNode>() {
+    override fun create() = SectionPageNode(host, page)
 
-    operator fun get(key: K): SectionScrollable? = scrollables[key]
+    override fun update(node: SectionPageNode) = node.update(host, page)
+}
 
-    fun attach(key: K, scrollable: SectionScrollable) {
-        scrollables[key] = scrollable
-        if (shouldResetOnAttach(key)) scrollable.requestScrollToStart()
+private class SectionPageNode(private var host: SectionPageHost, private var page: Any) :
+    Modifier.Node(),
+    LayoutModifierNode,
+    TraversableNode {
+
+    override val traverseKey: Any = SectionPageTraverseKey
+
+    var scrollable: SectionScrollable? = null
+        set(value) {
+            if (field == value) return
+            field?.let { host.onScrollableDetached(page, it) }
+            field = value
+            value?.let { host.onScrollableAttached(page, it) }
+        }
+
+    fun update(host: SectionPageHost, page: Any) {
+        if (this.host == host && this.page == page) return
+        scrollable?.let { this.host.onScrollableDetached(this.page, it) }
+        this.host = host
+        this.page = page
+        scrollable?.let { host.onScrollableAttached(page, it) }
+        invalidateMeasurement()
     }
 
-    fun detach(key: K, scrollable: SectionScrollable) {
-        if (scrollables[key] == scrollable) scrollables.remove(key)
-    }
-
-    fun reportContentHeight(key: K, height: Int) {
-        if (contentHeights[key] != height) contentHeights[key] = height
+    override fun MeasureScope.measure(
+        measurable: Measurable,
+        constraints: Constraints
+    ): MeasureResult {
+        val placeable = measurable.measure(constraints.copy(minHeight = 0))
+        host.onContentHeightChanged(page, placeable.height)
+        return layout(constraints.maxWidth, constraints.maxHeight) {
+            placeable.place(0, 0)
+        }
     }
 }
 
-internal fun <K : Any> SectionScrollRegistry<K>.connect(
-    key: K,
-    scrollable: SectionScrollable
-): Modifier = SectionScrollElement(this, key, scrollable)
+private data class SectionScrollElement(val scrollable: SectionScrollable) :
+    ModifierNodeElement<SectionScrollNode>() {
+    override fun create() = SectionScrollNode(scrollable)
 
-private data class SectionScrollElement<K : Any>(
-    val registry: SectionScrollRegistry<K>,
-    val key: K,
-    val scrollable: SectionScrollable
-) : ModifierNodeElement<SectionScrollNode<K>>() {
-    override fun create() = SectionScrollNode(registry, key, scrollable)
-
-    override fun update(node: SectionScrollNode<K>) = node.update(registry, key, scrollable)
+    override fun update(node: SectionScrollNode) {
+        node.scrollable = scrollable
+    }
 }
 
-private class SectionScrollNode<K : Any>(
-    private var registry: SectionScrollRegistry<K>,
-    private var key: K,
-    private var scrollable: SectionScrollable
-) : Modifier.Node() {
-    override fun onAttach() = registry.attach(key, scrollable)
+private class SectionScrollNode(scrollable: SectionScrollable) : Modifier.Node() {
+    private var page: SectionPageNode? = null
 
-    override fun onDetach() = registry.detach(key, scrollable)
+    var scrollable: SectionScrollable = scrollable
+        set(value) {
+            if (field == value) return
+            field = value
+            page?.scrollable = value
+        }
 
-    fun update(registry: SectionScrollRegistry<K>, key: K, scrollable: SectionScrollable) {
-        if (this.registry == registry && this.key == key && this.scrollable == scrollable) return
-        if (isAttached) this.registry.detach(this.key, this.scrollable)
-        this.registry = registry
-        this.key = key
-        this.scrollable = scrollable
-        if (isAttached) registry.attach(key, scrollable)
+    override fun onAttach() {
+        page = findNearestAncestor(SectionPageTraverseKey) as? SectionPageNode
+        page?.scrollable = scrollable
+    }
+
+    override fun onDetach() {
+        page?.takeIf { it.scrollable == scrollable }?.scrollable = null
+        page = null
     }
 }
