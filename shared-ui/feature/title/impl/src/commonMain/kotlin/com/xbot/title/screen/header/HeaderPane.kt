@@ -72,15 +72,15 @@ internal fun HeaderPane(
     onExternalPlayerClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val horizontalMargin = 16.dp
+    val horizontalPadding = PaddingValues(horizontal = 16.dp) +
+        scope.contentPadding.only(WindowInsetsSides.Horizontal)
 
     Column(modifier = modifier) {
         LargeReleaseCard(
             modifier = Modifier.verticalParallax { scope.scrollOffset },
             contentModifier = Modifier.animateContentSize(),
             release = release,
-            contentPadding = PaddingValues(horizontal = horizontalMargin) +
-                scope.contentPadding.only(WindowInsetsSides.Horizontal)
+            contentPadding = horizontalPadding
         ) { contentAlignment ->
             alternativeName?.let { name ->
                 Text(
@@ -110,12 +110,12 @@ internal fun HeaderPane(
             modifier = Modifier.padding(top = 10.dp),
             selected = collectionStatus,
             onSelect = onCollectionStatusSelect,
-            contentPadding = PaddingValues(horizontal = horizontalMargin)
+            contentPadding = horizontalPadding
         )
 
         StatusBanner(
             modifier = Modifier
-                .padding(horizontal = horizontalMargin)
+                .padding(horizontalPadding)
                 .padding(top = 10.dp),
             banner = statusBanner,
             onExternalPlayerClick = onExternalPlayerClick

@@ -21,19 +21,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.valentinilk.shimmer.shimmer
 import com.xbot.designsystem.icons.MoreVert
@@ -137,10 +139,13 @@ private fun LargeReleaseCardLayout(
     content: @Composable ColumnScope.(Alignment.Horizontal) -> Unit
 ) {
     BoxWithConstraints {
-        val height = calculateContainerHeight(maxWidth)
-        val ratio = if (height > 0.dp) maxWidth / height else 1f
-        val contentWidth = calculateContentWidth(maxWidth)
-        val contentAlignment = calculateContentAlignment(maxWidth)
+        val windowHeight = with(LocalDensity.current) {
+            LocalWindowInfo.current.containerSize.height.toDp()
+        }
+        val availableHeight = if (constraints.hasBoundedHeight) maxHeight else windowHeight
+        val metrics = largeReleaseCardMetrics(maxWidth, availableHeight)
+        val ratio = if (metrics.height > 0.dp) maxWidth / metrics.height else 1f
+        val contentAlignment = metrics.contentAlignment
 
         Box(
             modifier = Modifier
@@ -162,7 +167,7 @@ private fun LargeReleaseCardLayout(
 
             Column(
                 modifier = contentModifier
-                    .width(contentWidth)
+                    .width(metrics.contentWidth)
                     .padding(contentPadding),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = contentAlignment,
@@ -243,47 +248,25 @@ private fun LargeReleaseCardPreview() {
     }
 }
 
-@Composable
-internal fun calculateContainerHeight(width: Dp): Dp {
-    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
-    val rawHeight = when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) &&
-            windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND) ->
-            width *
-                4f /
-                7f
+@Immutable
+private data class LargeReleaseCardMetrics(
+    val height: Dp,
+    val contentWidth: Dp,
+    val contentAlignment: Alignment.Horizontal
+)
 
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> width * 2.75f / 7f
-
-        else -> width * 10f / 7f
-    }
-
-    return if (windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)) {
-        rawHeight.coerceAtMost(400.dp)
+private fun largeReleaseCardMetrics(width: Dp, availableHeight: Dp): LargeReleaseCardMetrics =
+    if (width < WIDTH_DP_MEDIUM_LOWER_BOUND.dp) {
+        LargeReleaseCardMetrics(
+            height = width * 10f / 7f,
+            contentWidth = width,
+            contentAlignment = Alignment.CenterHorizontally
+        )
     } else {
-        rawHeight
+        val heightRatio = if (availableHeight >= HEIGHT_DP_MEDIUM_LOWER_BOUND.dp) 4f else 2.75f
+        LargeReleaseCardMetrics(
+            height = (width * heightRatio / 7f).coerceAtMost(400.dp),
+            contentWidth = if (width >= WIDTH_DP_EXPANDED_LOWER_BOUND.dp) 500.dp else width * 0.6f,
+            contentAlignment = Alignment.Start
+        )
     }
-}
-
-@Composable
-internal fun calculateContentWidth(width: Dp): Dp {
-    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
-    return when {
-        windowSizeClass.isWidthAtLeastBreakpoint(
-            WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
-        ) -> 500.dp
-
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> width * 0.6f
-
-        else -> width
-    }
-}
-
-@Composable
-internal fun calculateContentAlignment(width: Dp): Alignment.Horizontal {
-    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
-    return when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> Alignment.Start
-        else -> Alignment.CenterHorizontally
-    }
-}

@@ -1,5 +1,9 @@
 package com.xbot.title.screen.details2
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -153,6 +157,9 @@ private fun rememberReleaseSections(): List<PaneSection<ReleaseTab>> {
 private fun TitleTopBar(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(
         modifier = modifier,
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+        ),
         title = {},
         navigationIcon = {
             FilledIconButton(

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.ExpressiveEpisodeListItemDefaults
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.PosterImage
+import com.xbot.designsystem.components.SectionDefaults
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibertyIcons
@@ -45,6 +47,7 @@ import com.xbot.designsystem.icons.CheckCircle
 import com.xbot.designsystem.icons.PlayCircle
 import com.xbot.designsystem.shape.rememberMorphableShape
 import com.xbot.designsystem.utils.AnilibertyPreview
+import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Episode
 import com.xbot.domain.models.EpisodeProgress
 import com.xbot.formatters.localizedName
@@ -81,17 +84,19 @@ internal fun EpisodesPane(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
+    val horizontalInsets = scope.contentPadding only WindowInsetsSides.Horizontal
 
     LazyColumn(
         modifier = modifier.sectionScroll(listState),
         state = listState,
-        contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
+        contentPadding = scope.contentPadding only WindowInsetsSides.Bottom
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {
             Spacer(Modifier.height(scope.contentPadding.calculateTopPadding()))
         }
         item(key = EPISODES_HEADER_KEY, contentType = EPISODES_HEADER_KEY) {
             EpisodesHeader(
+                modifier = Modifier.padding(horizontalInsets),
                 sort = sort,
                 onSortChange = onSortChange
             )
@@ -102,12 +107,19 @@ internal fun EpisodesPane(
             contentType = { _, _ -> EPISODE_CONTENT_TYPE }
         ) { index, episode ->
             EpisodeItem(
-                modifier = Modifier.section(index, episodes.size),
+                modifier = Modifier.section(
+                    index = index,
+                    itemsCount = episodes.size,
+                    sectionSpacing = SectionDefaults.spacing(contentPadding = horizontalInsets)
+                ),
                 episode = episode,
                 progress = episodesProgress[episode.id],
                 isCurrent = episode.id == currentProgress?.episodeId,
                 onClick = { onEpisodeClick(episode) }
             )
+        }
+        item(key = BOTTOM_SPACER_KEY, contentType = BOTTOM_SPACER_KEY) {
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -326,6 +338,7 @@ private fun EpisodesPanePreview() {
 }
 
 private const val TOP_SPACER_KEY = "top_spacer"
+private const val BOTTOM_SPACER_KEY = "bottom_spacer"
 private const val EPISODES_HEADER_KEY = "episodes-header"
 private const val EPISODE_CONTENT_TYPE = "episode"
 private val EpisodeItemHeight = 92.dp

@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,6 +51,7 @@ import com.xbot.designsystem.icons.SmartDisplay
 import com.xbot.designsystem.icons.Timer
 import com.xbot.designsystem.icons.Update
 import com.xbot.designsystem.utils.AnilibertyPreview
+import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseMember
@@ -96,22 +99,27 @@ internal fun AboutPane(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
+    val horizontalInsets = scope.contentPadding only WindowInsetsSides.Horizontal
 
     LazyColumn(
         modifier = modifier.sectionScroll(listState),
         state = listState,
-        contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
+        contentPadding = scope.contentPadding only WindowInsetsSides.Bottom
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {
             Spacer(Modifier.height(scope.contentPadding.calculateTopPadding()))
         }
         description?.takeIf { it.isNotBlank() }?.let { description ->
             item(key = "synopsis_header") {
-                Header(title = { Text(text = stringResource(Res.string.release_details_synopsis)) })
+                Header(modifier = Modifier.padding(horizontalInsets), title = {
+                    Text(text = stringResource(Res.string.release_details_synopsis))
+                })
             }
             item(key = "synopsis") {
                 ExpandableText(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .padding(horizontalInsets)
+                        .padding(horizontal = 16.dp),
                     text = description,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -125,12 +133,14 @@ internal fun AboutPane(
         if (franchiseReleases.isNotEmpty()) {
             item(key = "franchise_header") {
                 Header(
+                    modifier = Modifier.padding(horizontalInsets),
                     title = { Text(text = stringResource(Res.string.release_details_franchise)) },
                     onClick = onFranchiseAllClick
                 )
             }
             item(key = FRANCHISE_KEY) {
                 FranchiseCarousel(
+                    contentPadding = PaddingValues(horizontal = 16.dp) + horizontalInsets,
                     releases = franchiseReleases,
                     onReleaseClick = onFranchiseReleaseClick
                 )
@@ -138,11 +148,15 @@ internal fun AboutPane(
         }
         if (genres.isNotEmpty()) {
             item(key = "genres_header") {
-                Header(title = { Text(text = stringResource(Res.string.label_genres)) })
+                Header(modifier = Modifier.padding(horizontalInsets), title = {
+                    Text(text = stringResource(Res.string.label_genres))
+                })
             }
             item(key = "genres") {
                 FlowRow(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .padding(horizontalInsets)
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -157,11 +171,13 @@ internal fun AboutPane(
         }
         if (members.isNotEmpty()) {
             item(key = "members_header") {
-                Header(title = { Text(text = stringResource(Res.string.label_members)) })
+                Header(modifier = Modifier.padding(horizontalInsets), title = {
+                    Text(text = stringResource(Res.string.label_members))
+                })
             }
             item(key = "members") {
                 LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp) + horizontalInsets,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(items = members, key = { it.id }) { member ->
@@ -174,14 +190,20 @@ internal fun AboutPane(
             }
         }
         item(key = "details_header") {
-            Header(title = { Text(text = stringResource(Res.string.release_details_details)) })
+            Header(modifier = Modifier.padding(horizontalInsets), title = {
+                Text(text = stringResource(Res.string.release_details_details))
+            })
         }
         item(key = "details") {
             ReleaseDetailsList(
+                modifier = Modifier.padding(horizontalInsets),
                 totalDurationMinutes = totalDurationMinutes,
                 lastUpdate = lastUpdate,
                 onExternalPlayerClick = onExternalPlayerClick.takeIf { hasExternalPlayer }
             )
+        }
+        item(key = BOTTOM_SPACER_KEY, contentType = BOTTOM_SPACER_KEY) {
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -191,7 +213,8 @@ internal fun AboutPane(
 private fun FranchiseCarousel(
     releases: List<Release>,
     onReleaseClick: (Release) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
 ) {
     HorizontalMultiBrowseCarousel(
         state = rememberCarouselState { releases.size },
@@ -200,7 +223,7 @@ private fun FranchiseCarousel(
             .fillMaxWidth()
             .height(FranchiseCardHeight),
         itemSpacing = 8.dp,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = contentPadding
     ) { index ->
         val release = releases[index]
         FranchiseCard(
@@ -401,6 +424,7 @@ private fun AboutPanePreview() {
 }
 
 private const val TOP_SPACER_KEY = "top_spacer"
+private const val BOTTOM_SPACER_KEY = "bottom_spacer"
 private const val FRANCHISE_KEY = "franchise"
 private const val SYNOPSIS_COLLAPSED_LINES = 4
 private val FranchiseCardWidth = 172.dp

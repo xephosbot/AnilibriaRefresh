@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -26,6 +28,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import com.xbot.designsystem.modifier.pagerTabIndicatorOffset
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
@@ -69,32 +73,41 @@ internal fun <K : Any> SectionTabsPane(
 internal fun <K : Any> SectionTabRow(
     sections: List<PaneSection<K>>,
     pagerState: PagerState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     val scope = rememberCoroutineScope()
     val selectedIndex = pagerState.currentPage
-    PrimaryTabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedIndex,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        indicator = {
-            TabRowDefaults.PrimaryIndicator(
-                modifier = Modifier.tabIndicatorOffset(selectedIndex, matchContentSize = true)
-            )
+    Column(modifier = modifier) {
+        PrimaryTabRow(
+            modifier = Modifier.padding(contentPadding),
+            selectedTabIndex = selectedIndex,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            indicator = {
+                TabRowDefaults.PrimaryIndicator(
+                    modifier = Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        matchContentSize = true
+                    ),
+                    width = Dp.Unspecified
+                )
+            },
+            divider = {}
+        ) {
+            sections.forEachIndexed { index, section ->
+                Tab(
+                    selected = index == selectedIndex,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                    text = {
+                        Text(
+                            text = section.title,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                )
+            }
         }
-    ) {
-        sections.forEachIndexed { index, section ->
-            Tab(
-                selected = index == selectedIndex,
-                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                text = {
-                    Text(
-                        text = section.title,
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-            )
-        }
+        HorizontalDivider()
     }
 }
 

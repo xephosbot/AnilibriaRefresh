@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +45,7 @@ import com.xbot.designsystem.icons.Insights
 import com.xbot.designsystem.icons.MyAnimeListLogo
 import com.xbot.designsystem.icons.ShikimoriLogo
 import com.xbot.designsystem.utils.AnilibertyPreview
+import com.xbot.designsystem.utils.only
 import com.xbot.domain.models.ExternalRating
 import com.xbot.domain.models.ReleaseRating
 import com.xbot.domain.models.enums.CollectionType
@@ -83,24 +84,27 @@ internal fun RatingsPane(
     }
 
     val listState = rememberLazyListState()
+    val horizontalInsets = scope.contentPadding only WindowInsetsSides.Horizontal
 
     LazyColumn(
         modifier = modifier.sectionScroll(listState),
         state = listState,
-        contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
+        contentPadding = scope.contentPadding only WindowInsetsSides.Bottom
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {
             Spacer(Modifier.height(scope.contentPadding.calculateTopPadding()))
         }
         if (rating != null || shikimoriRating != null || myAnimeListRating != null) {
             item(key = "rating_header") {
-                Header(title = {
+                Header(modifier = Modifier.padding(horizontalInsets), title = {
                     Text(text = stringResource(Res.string.release_details_tab_ratings))
                 })
             }
             item(key = "rating") {
                 RatingCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .padding(horizontalInsets)
+                        .padding(horizontal = 16.dp),
                     rating = rating,
                     shikimoriRating = shikimoriRating,
                     myAnimeListRating = myAnimeListRating,
@@ -111,16 +115,21 @@ internal fun RatingsPane(
         }
         if (collectionCounts.values.sum() > 0) {
             item(key = "community_header") {
-                Header(title = {
+                Header(modifier = Modifier.padding(horizontalInsets), title = {
                     Text(text = stringResource(Res.string.release_details_who_watches))
                 })
             }
             item(key = "community") {
                 CommunityCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .padding(horizontalInsets)
+                        .padding(horizontal = 16.dp),
                     collections = collectionCounts
                 )
             }
+        }
+        item(key = BOTTOM_SPACER_KEY, contentType = BOTTOM_SPACER_KEY) {
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -427,6 +436,7 @@ private fun RatingsPanePreview() {
 }
 
 private const val TOP_SPACER_KEY = "top_spacer"
+private const val BOTTOM_SPACER_KEY = "bottom_spacer"
 private const val MAX_SCORE = 10
 private const val DROPPED_INSIGHT_THRESHOLD = 0.05
 private const val SHIKIMORI_LABEL = "Shikimori"

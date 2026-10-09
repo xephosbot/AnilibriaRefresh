@@ -5,8 +5,11 @@ import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberOverscrollEffect
@@ -31,6 +34,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import com.xbot.designsystem.utils.only
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -48,7 +52,8 @@ internal fun <K : Any> CollapsingSectionPane(
     Scaffold(
         modifier = modifier,
         topBar = topBar,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
         val pagerState = if (sections.isNotEmpty()) {
             rememberSectionPagerState(sections, selectedSection, onSectionSelect)
@@ -85,7 +90,8 @@ internal fun <K : Any> CollapsingSectionPane(
                         SectionTabRow(
                             modifier = Modifier.padding(top = 16.dp),
                             sections = sections,
-                            pagerState = pagerState
+                            pagerState = pagerState,
+                            contentPadding = innerPadding only WindowInsetsSides.Horizontal
                         )
                     }
                 }
@@ -95,9 +101,8 @@ internal fun <K : Any> CollapsingSectionPane(
                         sections = sections,
                         pagerState = pagerState,
                         pageModifier = { page -> Modifier.sectionPage(pagesState, page) },
-                        pageContentPadding = PaddingValues(
-                            bottom = innerPadding.calculateBottomPadding()
-                        ),
+                        pageContentPadding = innerPadding only
+                            (WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
                         content = content
                     )
                 }
