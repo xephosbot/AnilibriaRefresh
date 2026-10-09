@@ -34,7 +34,7 @@ fun Modifier.verticalParallax(state: LazyListState) = verticalParallax {
 
 fun Modifier.verticalParallax(state: ScrollState) = verticalParallax { state.value }
 
-private fun Modifier.verticalParallax(firstItemScrollOffset: () -> Int) = this
+fun Modifier.verticalParallax(firstItemScrollOffset: () -> Int) = this
     .graphicsLayer {
         translationY = firstItemScrollOffset() * 0.7f
     }

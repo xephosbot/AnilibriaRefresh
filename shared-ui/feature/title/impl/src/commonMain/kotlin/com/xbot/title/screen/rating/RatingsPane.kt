@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -62,6 +62,7 @@ import com.xbot.title.component.appLocale
 import com.xbot.title.component.formatGrouped
 import com.xbot.title.component.labelRes
 import com.xbot.title.component.rememberPaneSectionScope
+import com.xbot.title.component.sectionScroll
 import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
@@ -81,9 +82,11 @@ internal fun RatingsPane(
         if (scope.isActive) revealed = true
     }
 
+    val listState = rememberLazyListState()
+
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        state = scope.listState,
+        modifier = modifier.sectionScroll(listState),
+        state = listState,
         contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalToggleButton
@@ -61,6 +62,7 @@ import com.xbot.title.component.episodeLabel
 import com.xbot.title.component.formatPlayback
 import com.xbot.title.component.isSpecial
 import com.xbot.title.component.rememberPaneSectionScope
+import com.xbot.title.component.sectionScroll
 import com.xbot.title.component.watchedFraction
 import com.xbot.title.screen.details2.EpisodesSort
 import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
@@ -78,9 +80,11 @@ internal fun EpisodesPane(
     onEpisodeClick: (Episode) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        state = scope.listState,
+        modifier = modifier.sectionScroll(listState),
+        state = listState,
         contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {

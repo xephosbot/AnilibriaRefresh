@@ -76,7 +76,7 @@ internal fun HeaderPane(
 
     Column(modifier = modifier) {
         LargeReleaseCard(
-            modifier = Modifier.verticalParallax(scope.scrollState),
+            modifier = Modifier.verticalParallax { scope.scrollOffset },
             contentModifier = Modifier.animateContentSize(),
             release = release,
             contentPadding = PaddingValues(horizontal = horizontalMargin) +

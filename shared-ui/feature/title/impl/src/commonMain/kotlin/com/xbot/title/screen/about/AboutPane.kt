@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -70,6 +71,7 @@ import com.xbot.resources.release_details_total_duration
 import com.xbot.resources.release_details_total_duration_value
 import com.xbot.title.component.PaneSectionScope
 import com.xbot.title.component.rememberPaneSectionScope
+import com.xbot.title.component.sectionScroll
 import com.xbot.title.component.totalDurationMinutes
 import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import kotlin.time.Duration.Companion.minutes
@@ -93,9 +95,11 @@ internal fun AboutPane(
     onExternalPlayerClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        state = scope.listState,
+        modifier = modifier.sectionScroll(listState),
+        state = listState,
         contentPadding = PaddingValues(bottom = scope.contentPadding.calculateBottomPadding())
     ) {
         item(key = TOP_SPACER_KEY, contentType = TOP_SPACER_KEY) {
