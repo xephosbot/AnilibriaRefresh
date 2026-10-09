@@ -23,3 +23,11 @@ fun Duration.toLocalizedString(locale: Locale = Locale.current): String = toComp
         "%02d:%02d".format(minutes, seconds)
     }
 }
+
+@Composable
+fun Duration.toLocalizedUnits(): String {
+    val locale = Locale(LocalAppLanguage.current)
+    return toLocalizedUnits(locale)
+}
+
+expect fun Duration.toLocalizedUnits(locale: Locale = Locale.current): String

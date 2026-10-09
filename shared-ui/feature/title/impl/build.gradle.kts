@@ -29,6 +29,7 @@ kotlin {
         implementation(projects.shared.core.testFixtures)
         implementation(projects.sharedUi.common)
         implementation(projects.sharedUi.designSystem.icons)
+        implementation(projects.sharedUi.designSystem.theme)
         implementation(projects.sharedUi.designSystem.components)
         implementation(projects.sharedUi.navigation.scene)
         implementation(projects.sharedUi.feature.title.api)

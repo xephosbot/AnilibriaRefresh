@@ -37,6 +37,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.appcompat)
         }
+        jvmMain.dependencies {
+            implementation(libs.icu4j)
+        }
     }
 
     compilerOptions {

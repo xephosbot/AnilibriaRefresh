@@ -1,6 +1,7 @@
 package com.xbot.formatters
 
 import com.xbot.domain.models.enums.AgeRating
+import com.xbot.domain.models.enums.CollectionType
 import com.xbot.domain.models.enums.MemberRole
 import com.xbot.domain.models.enums.ProductionStatus
 import com.xbot.domain.models.enums.PublishStatus
@@ -31,6 +32,11 @@ import com.xbot.resources.production_status_is_in_production
 import com.xbot.resources.production_status_is_not_in_production
 import com.xbot.resources.publish_status_is_not_ongoing
 import com.xbot.resources.publish_status_is_ongoing
+import com.xbot.resources.release_details_collection_abandoned
+import com.xbot.resources.release_details_collection_planned
+import com.xbot.resources.release_details_collection_postponed
+import com.xbot.resources.release_details_collection_watched
+import com.xbot.resources.release_details_collection_watching
 import com.xbot.resources.release_type_dorama
 import com.xbot.resources.release_type_movie
 import com.xbot.resources.release_type_oad
@@ -124,4 +130,13 @@ val AppLanguage.stringRes: StringResource
     get() = when (this) {
         AppLanguage.English -> Res.string.preference_language_en
         AppLanguage.Russian -> Res.string.preference_language_ru
+    }
+
+val CollectionType.stringRes: StringResource
+    get() = when (this) {
+        CollectionType.WATCHING -> Res.string.release_details_collection_watching
+        CollectionType.PLANNED -> Res.string.release_details_collection_planned
+        CollectionType.WATCHED -> Res.string.release_details_collection_watched
+        CollectionType.POSTPONED -> Res.string.release_details_collection_postponed
+        CollectionType.ABANDONED -> Res.string.release_details_collection_abandoned
     }

@@ -46,11 +46,13 @@ import com.xbot.designsystem.icons.MyAnimeListLogo
 import com.xbot.designsystem.icons.ShikimoriLogo
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.ExternalRating
 import com.xbot.domain.models.ReleaseRating
 import com.xbot.domain.models.enums.CollectionType
 import com.xbot.formatters.formatCompact
 import com.xbot.formatters.formatDecimal
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.release_details_dropped_insight
 import com.xbot.resources.release_details_external_votes
@@ -59,12 +61,9 @@ import com.xbot.resources.release_details_tab_ratings
 import com.xbot.resources.release_details_who_watches
 import com.xbot.title.component.CollectionStatusOrder
 import com.xbot.title.component.PaneSectionScope
-import com.xbot.title.component.appLocale
 import com.xbot.title.component.formatGrouped
-import com.xbot.title.component.labelRes
 import com.xbot.title.component.rememberPaneSectionScope
 import com.xbot.title.component.sectionScroll
-import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -204,7 +203,7 @@ private fun ScoreBadge(average: Double, votes: Int, modifier: Modifier = Modifie
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = average.formatDecimal(appLocale()),
+                text = average.formatDecimal(),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -277,7 +276,6 @@ private fun ExternalRatingTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val locale = appLocale()
     Surface(
         onClick = onClick,
         modifier = modifier,
@@ -296,7 +294,7 @@ private fun ExternalRatingTile(
             )
             Column {
                 Text(
-                    text = rating.rating.formatDecimal(locale),
+                    text = rating.rating.formatDecimal(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -309,7 +307,7 @@ private fun ExternalRatingTile(
                     text = pluralStringResource(
                         Res.plurals.release_details_external_votes,
                         rating.votes,
-                        rating.votes.formatCompact(locale)
+                        rating.votes.formatCompact()
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -321,7 +319,6 @@ private fun ExternalRatingTile(
 
 @Composable
 private fun CommunityCard(collections: Map<CollectionType, Int>, modifier: Modifier = Modifier) {
-    val locale = appLocale()
     val colors = collectionColors()
     val total = collections.values.sum()
     val abandoned = collections[CollectionType.ABANDONED] ?: 0
@@ -374,7 +371,7 @@ private fun CommunityCard(collections: Map<CollectionType, Int>, modifier: Modif
                         )
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = stringResource(status.labelRes),
+                            text = stringResource(status.stringRes),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -398,7 +395,7 @@ private fun CommunityCard(collections: Map<CollectionType, Int>, modifier: Modif
                     Text(
                         text = stringResource(
                             Res.string.release_details_dropped_insight,
-                            "${(abandonedShare * 100).formatDecimal(locale, digits = 1)}%"
+                            "${(abandonedShare * 100).formatDecimal(digits = 1)}%"
                         ),
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -423,7 +420,7 @@ private fun collectionColors(): Map<CollectionType, Color> {
 @AnilibertyPreview
 @Composable
 private fun RatingsPanePreview() {
-    val details = TitleDetailsPreviewDataV2.ongoing.releaseDetails ?: return
+    val details = createReleaseDetails()
     with(rememberPaneSectionScope()) {
         RatingsPane(
             rating = details.rating,

@@ -1,17 +1,12 @@
 package com.xbot.title.screen.about
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
@@ -21,29 +16,22 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.xbot.common.getOrNull
 import com.xbot.designsystem.components.ExpandableText
 import com.xbot.designsystem.components.Header
 import com.xbot.designsystem.components.MemberItem
 import com.xbot.designsystem.components.PosterImage
 import com.xbot.designsystem.components.PreferenceItem
+import com.xbot.designsystem.components.SmallReleaseCard
 import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.OpenInNew
@@ -52,16 +40,15 @@ import com.xbot.designsystem.icons.Timer
 import com.xbot.designsystem.icons.Update
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.ReleaseFixtures
+import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.ReleaseMember
-import com.xbot.formatters.stringRes
 import com.xbot.formatters.toLocalizedString
 import com.xbot.resources.Res
-import com.xbot.resources.episode_abbreviation
 import com.xbot.resources.label_genres
 import com.xbot.resources.label_members
-import com.xbot.resources.release_details_announced
 import com.xbot.resources.release_details_details
 import com.xbot.resources.release_details_external_player
 import com.xbot.resources.release_details_franchise
@@ -76,7 +63,6 @@ import com.xbot.title.component.PaneSectionScope
 import com.xbot.title.component.rememberPaneSectionScope
 import com.xbot.title.component.sectionScroll
 import com.xbot.title.component.totalDurationMinutes
-import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
 import kotlin.time.Duration.Companion.minutes
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.stringResource
@@ -139,11 +125,17 @@ internal fun AboutPane(
                 )
             }
             item(key = FRANCHISE_KEY) {
-                FranchiseCarousel(
+                LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp) + horizontalInsets,
-                    releases = franchiseReleases,
-                    onReleaseClick = onFranchiseReleaseClick
-                )
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(items = franchiseReleases, key = { it.id }) { release ->
+                        SmallReleaseCard(
+                            release = release,
+                            onClick = onFranchiseReleaseClick
+                        )
+                    }
+                }
             }
         }
         if (genres.isNotEmpty()) {
@@ -204,96 +196,6 @@ internal fun AboutPane(
         }
         item(key = BOTTOM_SPACER_KEY, contentType = BOTTOM_SPACER_KEY) {
             Spacer(Modifier.height(16.dp))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun FranchiseCarousel(
-    releases: List<Release>,
-    onReleaseClick: (Release) -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
-) {
-    HorizontalMultiBrowseCarousel(
-        state = rememberCarouselState { releases.size },
-        preferredItemWidth = FranchiseCardWidth,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(FranchiseCardHeight),
-        itemSpacing = 8.dp,
-        contentPadding = contentPadding
-    ) { index ->
-        val release = releases[index]
-        FranchiseCard(
-            modifier = Modifier
-                .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { onReleaseClick(release) },
-            release = release
-        )
-    }
-}
-
-@Composable
-private fun FranchiseCard(release: Release, modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize()) {
-        PosterImage(
-            modifier = Modifier.fillMaxSize(),
-            poster = release.poster
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0.35f to Color.Transparent,
-                        1f to Color.Black.copy(alpha = 0.78f)
-                    )
-                )
-        )
-        val status = if (release.isInProduction) {
-            stringResource(Res.string.release_details_announced)
-        } else {
-            null
-        }
-        status?.let { text ->
-            Text(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(12.dp)
-                    .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape)
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
-                text = text,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-        }
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 14.dp, end = 12.dp, bottom = 12.dp)
-        ) {
-            Text(
-                text = release.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = listOfNotNull(
-                    release.type?.let { stringResource(it.stringRes) },
-                    release.year.toString(),
-                    release.episodesCount?.let {
-                        stringResource(Res.string.episode_abbreviation, it.toString())
-                    }
-                ).joinToString(", "),
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.85f),
-                maxLines = 1
-            )
         }
     }
 }
@@ -403,12 +305,11 @@ private data class DetailsRow(
 @AnilibertyPreview
 @Composable
 private fun AboutPanePreview() {
-    val state = TitleDetailsPreviewDataV2.ongoing
-    val details = state.releaseDetails ?: return
+    val details = createReleaseDetails()
     with(rememberPaneSectionScope()) {
         AboutPane(
             description = details.release.description,
-            franchiseReleases = state.franchiseReleases.getOrNull().orEmpty(),
+            franchiseReleases = ReleaseFixtures.list(count = 3),
             genres = details.genres,
             members = details.releaseMembers,
             totalDurationMinutes = details.release.totalDurationMinutes,
@@ -427,5 +328,3 @@ private const val TOP_SPACER_KEY = "top_spacer"
 private const val BOTTOM_SPACER_KEY = "bottom_spacer"
 private const val FRANCHISE_KEY = "franchise"
 private const val SYNOPSIS_COLLAPSED_LINES = 4
-private val FranchiseCardWidth = 172.dp
-private val FranchiseCardHeight = 244.dp

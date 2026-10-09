@@ -1,150 +1,87 @@
 package com.xbot.title.screen.details
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.SharedTransitionScope.ResizeMode
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onVisibilityChanged
-import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.xbot.common.AsyncResult
-import com.xbot.common.copyText
-import com.xbot.common.getOrElse
 import com.xbot.common.getOrNull
-import com.xbot.designsystem.components.ChipGroup
-import com.xbot.designsystem.components.ContextMenu
-import com.xbot.designsystem.components.ContextMenuItem
-import com.xbot.designsystem.components.EpisodeListItem
-import com.xbot.designsystem.components.Feed
-import com.xbot.designsystem.components.LargeReleaseCard
-import com.xbot.designsystem.components.MemberItem
-import com.xbot.designsystem.components.SectionDefaults
-import com.xbot.designsystem.components.SmallReleaseCard
-import com.xbot.designsystem.components.header
-import com.xbot.designsystem.components.horizontalItems
-import com.xbot.designsystem.components.itemsIndexed
-import com.xbot.designsystem.components.row
-import com.xbot.designsystem.components.section
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.ArrowBack
-import com.xbot.designsystem.icons.Copyright
 import com.xbot.designsystem.icons.MoreVert
-import com.xbot.designsystem.icons.PlayArrow
-import com.xbot.designsystem.icons.PublicOff
 import com.xbot.designsystem.icons.Star
 import com.xbot.designsystem.modifier.ProvideShimmer
 import com.xbot.designsystem.modifier.shimmerUpdater
-import com.xbot.designsystem.modifier.verticalParallax
+import com.xbot.designsystem.theme.AnilibertyTheme
 import com.xbot.designsystem.utils.AnilibertyPreview
-import com.xbot.designsystem.utils.LocalIsSinglePane
-import com.xbot.designsystem.utils.LocalNavSharedTransitionScope
-import com.xbot.designsystem.utils.only
 import com.xbot.domain.fixtures.ReleaseFixtures
 import com.xbot.domain.fixtures.createReleaseDetails
+import com.xbot.domain.models.Episode
+import com.xbot.domain.models.Genre
 import com.xbot.domain.models.Release
+import com.xbot.domain.models.ReleaseDetails
+import com.xbot.domain.models.ReleaseMember
 import com.xbot.domain.models.enums.AvailabilityStatus
-import com.xbot.domain.models.hlsUrl
 import com.xbot.formatters.localizedMessage
 import com.xbot.navigation.snackbar.GlobalSnackbarComponent
 import com.xbot.navigation.snackbar.show
 import com.xbot.resources.Res
 import com.xbot.resources.StringResource
-import com.xbot.resources.alert_blocked_copyright
-import com.xbot.resources.alert_blocked_geo
-import com.xbot.resources.button_copy
 import com.xbot.resources.button_retry
-import com.xbot.resources.button_watch
-import com.xbot.resources.button_watch_continue
-import com.xbot.resources.label_episodes
-import com.xbot.resources.label_members
-import com.xbot.resources.label_related_releases
+import com.xbot.resources.release_details_tab_about
+import com.xbot.resources.release_details_tab_episodes
+import com.xbot.resources.release_details_tab_ratings
+import com.xbot.title.ReleaseTab
 import com.xbot.title.TitleScreenAction
 import com.xbot.title.TitleScreenSideEffect
 import com.xbot.title.TitleScreenState
 import com.xbot.title.TitleViewModel
-import com.xbot.title.component.AlertCard
-import com.xbot.title.component.NotificationCard
+import com.xbot.title.component.PaneSection
+import com.xbot.title.component.SectionPaneScaffold
+import com.xbot.title.component.playButtonState
+import com.xbot.title.component.statusBanner
+import com.xbot.title.component.totalDurationMinutes
+import com.xbot.title.screen.about.AboutPane
+import com.xbot.title.screen.episodes.EpisodesPane
+import com.xbot.title.screen.header.HeaderPane
+import com.xbot.title.screen.rating.RatingsPane
 import io.kotzilla.sdk.compose.TrackScreen
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-@OptIn(
-    ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class
-)
 @TrackScreen
 @Composable
 internal fun TitleDetailsPane(
-    modifier: Modifier = Modifier,
-    viewModel: TitleViewModel = koinViewModel(),
+    directive: PaneScaffoldDirective,
     onBackClick: () -> Unit,
-    onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit
+    onPlayClick: (releaseId: Int, episodeOrdinal: Int) -> Unit,
+    onReleaseClick: (Release) -> Unit,
+    onGenreClick: (Genre) -> Unit,
+    onMemberClick: (ReleaseMember) -> Unit,
+    onFranchiseAllClick: () -> Unit,
+    onUrlClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: TitleViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
 
@@ -160,444 +97,244 @@ internal fun TitleDetailsPane(
         }
     }
 
+    val onEpisodeClick: (Episode) -> Unit = { episode ->
+        state.release?.let { release -> onPlayClick(release.id, episode.ordinal.toInt()) }
+    }
+
     TitleDetailsPaneContent(
-        modifier = modifier,
         state = state,
+        directive = directive,
         onAction = viewModel::onAction,
         onBackClick = onBackClick,
-        onPlayClick = onPlayClick,
-        onReleaseClick = onReleaseClick
+        onPlayClick = { state.episodeToPlay?.let(onEpisodeClick) },
+        onEpisodeClick = onEpisodeClick,
+        onReleaseClick = onReleaseClick,
+        onGenreClick = onGenreClick,
+        onMemberClick = onMemberClick,
+        onFranchiseAllClick = onFranchiseAllClick,
+        onExternalPlayerClick = {
+            state.releaseDetails?.externalPlayerUrl?.let(onUrlClick)
+        },
+        onUrlClick = onUrlClick,
+        modifier = modifier
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun TitleDetailsPaneContent(
-    modifier: Modifier = Modifier,
     state: TitleScreenState,
+    directive: PaneScaffoldDirective,
     onAction: (TitleScreenAction) -> Unit,
     onBackClick: () -> Unit,
-    onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit
+    onPlayClick: () -> Unit,
+    onEpisodeClick: (Episode) -> Unit,
+    onReleaseClick: (Release) -> Unit,
+    onGenreClick: (Genre) -> Unit,
+    onMemberClick: (ReleaseMember) -> Unit,
+    onFranchiseAllClick: () -> Unit,
+    onExternalPlayerClick: () -> Unit,
+    onUrlClick: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val isSinglePane = LocalIsSinglePane.current
-    val gridState = rememberLazyGridState()
-
-    var selected by remember { mutableStateOf(false) }
-    var isWatchButtonOnScreen by remember { mutableStateOf(true) }
-
     val shimmer = rememberShimmer(ShimmerBounds.Custom)
-    val sharedTransitionScope = LocalNavSharedTransitionScope.current
+    val sections = rememberReleaseSections()
 
-    with(sharedTransitionScope) {
-        ProvideShimmer(shimmer) {
-            Scaffold(
-                modifier = modifier
-                    .shimmerUpdater(shimmer),
-                topBar = {
-                    TopAppBar(
-                        modifier = Modifier
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(
-                                        MaterialTheme.colorScheme.surfaceContainer,
-                                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0f)
-                                    )
-                                )
-                            ),
-                        title = {},
-                        navigationIcon = {
-                            FilledIconButton(
-                                onClick = onBackClick,
-                                shapes = IconButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    imageVector = AnilibertyIcons.ArrowBack,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        actions = {
-                            val checkedColor = MaterialTheme.colorScheme.inverseSurface
-                            FilledIconToggleButton(
-                                checked = selected,
-                                onCheckedChange = { selected = it },
-                                shapes = IconButtonDefaults.toggleableShapes(),
-                                colors = IconButtonDefaults.filledIconToggleButtonColors(
-                                    checkedContainerColor = checkedColor,
-                                    checkedContentColor = contentColorFor(checkedColor)
-                                )
-                            ) {
-                                Icon(
-                                    imageVector = AnilibertyIcons.Filled.Star,
-                                    contentDescription = null
-                                )
-                            }
-                            FilledIconButton(
-                                onClick = {},
-                                modifier = Modifier.size(
-                                    IconButtonDefaults.smallContainerSize(
-                                        IconButtonDefaults.IconButtonWidthOption.Narrow
-                                    )
-                                ),
-                                shapes = IconButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    imageVector = AnilibertyIcons.MoreVert,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
-                    )
-                },
-                bottomBar = {
-                    val details = state.details.getOrNull()
-                    val hasEpisodes = details?.episodes?.isNotEmpty() == true
-                    val surfaceContainer = MaterialTheme.colorScheme.surfaceContainer
-
-                    Box(
-                        modifier = Modifier.windowInsetsPadding(
-                            WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
-                        )
-                    ) {
-                        AnimatedVisibility(
-                            modifier = Modifier
-                                .background(
-                                    Brush.verticalGradient(
-                                        listOf(
-                                            surfaceContainer.copy(alpha = 0f),
-                                            surfaceContainer
-                                        )
-                                    )
-                                )
-                                .padding(horizontal = 24.dp, vertical = 16.dp),
-                            visible = isSinglePane && !isWatchButtonOnScreen && hasEpisodes,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            WatchButton(
-                                modifier = Modifier
-                                    .sharedBounds(
-                                        rememberSharedContentState(key = "watch_button"),
-                                        animatedVisibilityScope = this@AnimatedVisibility,
-                                        resizeMode = ResizeMode.scaleToBounds()
-                                    ),
-                                onClick = {
-                                    state.initialRelease?.let { release ->
-                                        onPlayClick(release.id, 0)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ) { innerPadding ->
-                TitleDetails(
-                    state = state,
-                    gridState = gridState,
-                    isSinglePane = isSinglePane,
-                    isWatchButtonOnScreen = isWatchButtonOnScreen,
-                    onWatchButtonVisibilityChanged = { visible ->
-                        if (!visible) {
-                            isWatchButtonOnScreen = false
-                        }
-                    },
-                    contentPadding = innerPadding,
+    ProvideShimmer(shimmer) {
+        SectionPaneScaffold(
+            directive = directive,
+            sections = sections,
+            selectedSection = state.tab,
+            onSectionSelect = { tab -> onAction(TitleScreenAction.OnTabSelect(tab)) },
+            modifier = modifier.shimmerUpdater(shimmer),
+            topBar = { TitleTopBar(onBackClick = onBackClick) },
+            header = {
+                HeaderPane(
+                    release = state.release,
+                    alternativeName = state.releaseDetails?.alternativeName,
+                    playButton = state.playButtonState,
+                    isBlocked = state.isBlocked,
+                    isFavorite = state.isFavorite,
+                    collectionStatus = state.collectionStatus,
+                    statusBanner = state.statusBanner,
                     onPlayClick = onPlayClick,
-                    onReleaseClick = onReleaseClick
+                    onFavoriteToggle = { onAction(TitleScreenAction.OnFavoriteToggle) },
+                    onCollectionStatusSelect = { status ->
+                        onAction(TitleScreenAction.OnCollectionStatusSelect(status))
+                    },
+                    onExternalPlayerClick = onExternalPlayerClick
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun TitleDetails(
-    modifier: Modifier = Modifier,
-    state: TitleScreenState,
-    gridState: LazyGridState,
-    isSinglePane: Boolean,
-    isWatchButtonOnScreen: Boolean,
-    onWatchButtonVisibilityChanged: (Boolean) -> Unit,
-    contentPadding: PaddingValues,
-    onPlayClick: (Int, Int) -> Unit,
-    onReleaseClick: (Release) -> Unit
-) {
-    val columnsCount = remember {
-        derivedStateOf { gridState.layoutInfo.maxSpan }
-    }
-    val horizontalMargin = 16.dp
-
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
-
-    var showEpisodeMenu by remember { mutableStateOf<String?>(null) }
-
-    with(LocalNavSharedTransitionScope.current) {
-        Feed(
-            modifier = modifier,
-            state = gridState,
-            columns = GridCells.Adaptive(400.dp),
-            contentPadding = contentPadding.only(WindowInsetsSides.Bottom)
-        ) {
-            row {
-                LargeReleaseCard(
-                    modifier = Modifier.verticalParallax(gridState),
-                    contentModifier = Modifier.animateContentSize(),
-                    release = state.initialRelease,
-                    contentPadding = PaddingValues(horizontal = horizontalMargin) +
-                        contentPadding.only(WindowInsetsSides.Horizontal)
-                ) { contentAlignment ->
-                    state.initialRelease?.description?.let { description ->
-                        Text(
-                            text = description.lines().joinToString(" "),
-                            style = MaterialTheme.typography.bodySmall,
-                            textAlign = if (contentAlignment == Alignment.Start) {
-                                TextAlign.Start
-                            } else {
-                                TextAlign.Center
-                            },
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    AnimatedVisibility(
-                        visible = (state.details.getOrNull()?.genres ?: emptyList()).isNotEmpty(),
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        ChipGroup(
-                            items = state.details.getOrNull()?.genres ?: emptyList(),
-                            maxLines = 1,
-                            contentPadding = PaddingValues(0.dp)
-                        ) { genre ->
-                            AssistChip(
-                                onClick = {},
-                                label = { Text(text = genre?.name.orEmpty()) }
-                            )
-                        }
-                    }
-                    AnimatedVisibility(
-                        visible = !isSinglePane || isWatchButtonOnScreen,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        WatchButton(
-                            modifier = Modifier
-                                .onVisibilityChanged(callback = onWatchButtonVisibilityChanged)
-                                .sharedBounds(
-                                    rememberSharedContentState(key = "watch_button"),
-                                    animatedVisibilityScope = this@AnimatedVisibility,
-                                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
-                                ),
-                            onClick = {
-                                state.initialRelease?.let { release ->
-                                    onPlayClick(release.id, 0)
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-
-            row {
-                val availability = state.details.getOrNull()?.availabilityStatus
-                val alertText = when (availability) {
-                    AvailabilityStatus.GeoBlocked -> stringResource(Res.string.alert_blocked_geo)
-
-                    AvailabilityStatus.CopyrightBlocked ->
-                        stringResource(Res.string.alert_blocked_copyright)
-
-                    else -> null
-                }
-                AnimatedVisibility(
-                    visible = alertText != null,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    Column {
-                        Spacer(Modifier.height(16.dp))
-                        AlertCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin),
-                            icon = if (availability == AvailabilityStatus.GeoBlocked) {
-                                AnilibertyIcons.PublicOff
-                            } else {
-                                AnilibertyIcons.Copyright
-                            },
-                            title = alertText.orEmpty()
-                        )
-                    }
-                }
-            }
-
-            row {
-                AnimatedVisibility(
-                    visible = state.details.getOrNull()?.notification != null,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    Column {
-                        Spacer(Modifier.height(16.dp))
-                        NotificationCard(
-                            modifier = Modifier.padding(horizontal = horizontalMargin),
-                            text = state.details.getOrNull()?.notification.orEmpty()
-                        )
-                    }
-                }
-            }
-
-            if (state.details.getOrNull()?.releaseMembers?.isNotEmpty() == true) {
-                header(
-                    title = { Text(text = stringResource(Res.string.label_members)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
+        ) { tab ->
+            val details = state.releaseDetails
+            when (tab) {
+                ReleaseTab.Episodes -> EpisodesPane(
+                    episodes = state.sortedEpisodes,
+                    currentProgress = state.currentProgress,
+                    sort = state.episodesSort,
+                    onSortChange = { sort ->
+                        onAction(TitleScreenAction.OnEpisodesSortChange(sort))
+                    },
+                    onEpisodeClick = onEpisodeClick
                 )
-                horizontalItems(
-                    items = state.details.getOrNull()?.releaseMembers ?: emptyList(),
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
-                ) { member ->
-                    MemberItem(
-                        releaseMember = member,
-                        onClick = { /*TODO*/ }
+
+                ReleaseTab.About -> if (details != null) {
+                    AboutPane(
+                        description = details.release.description,
+                        franchiseReleases = state.franchiseReleases.getOrNull().orEmpty(),
+                        genres = details.genres,
+                        members = details.releaseMembers,
+                        totalDurationMinutes = details.release.totalDurationMinutes,
+                        lastUpdate = details.freshAt,
+                        hasExternalPlayer = details.externalPlayerUrl != null,
+                        onFranchiseAllClick = onFranchiseAllClick,
+                        onFranchiseReleaseClick = onReleaseClick,
+                        onGenreClick = onGenreClick,
+                        onMemberClick = onMemberClick,
+                        onExternalPlayerClick = onExternalPlayerClick
                     )
                 }
-            }
 
-            if (state.relatedReleases.getOrElse { emptyList() }.isNotEmpty()) {
-                header(
-                    title = { Text(text = stringResource(Res.string.label_related_releases)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
-                )
-                horizontalItems(
-                    items = state.relatedReleases.getOrElse { emptyList() },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
-                ) { release ->
-                    SmallReleaseCard(
-                        release = release,
-                        onClick = onReleaseClick
+                ReleaseTab.Ratings -> if (details != null) {
+                    RatingsPane(
+                        rating = details.rating,
+                        shikimoriRating = details.shikimoriRating,
+                        myAnimeListRating = details.myAnimeListRating,
+                        collectionCounts = details.collectionCounts,
+                        onUrlClick = onUrlClick
                     )
-                }
-            }
-
-            if ((state.details.getOrNull()?.episodes ?: emptyList()).isNotEmpty()) {
-                header(
-                    title = { Text(text = stringResource(Res.string.label_episodes)) },
-                    contentPadding = contentPadding.only(WindowInsetsSides.Horizontal)
-                )
-                itemsIndexed(
-                    state.details.getOrNull()?.episodes ?: emptyList()
-                ) { index, episode ->
-                    val copyLabel = stringResource(Res.string.button_copy)
-                    ContextMenu(
-                        showMenu = showEpisodeMenu == episode.id,
-                        onDismiss = { showEpisodeMenu = null },
-                        menuContent = {
-                            ContextMenuItem(
-                                icon = AnilibertyIcons.Filled.PlayArrow,
-                                label = stringResource(Res.string.button_watch),
-                                onClick = {
-                                    state.initialRelease?.let { onPlayClick(it.id, index) }
-                                    showEpisodeMenu = null
-                                }
-                            )
-                            ContextMenuItem(
-                                icon = AnilibertyIcons.Filled.Star,
-                                label = copyLabel,
-                                onClick = {
-                                    scope.launch {
-                                        clipboard.copyText(episode.hlsUrl)
-                                    }
-                                    showEpisodeMenu = null
-                                }
-                            )
-                        }
-                    ) {
-                        EpisodeListItem(
-                            modifier = Modifier
-                                .section(
-                                    index = index,
-                                    itemsCount = state.details.getOrNull()?.episodes?.size ?: 0,
-                                    columnsCount = columnsCount.value,
-                                    sectionSpacing = SectionDefaults.spacing(
-                                        contentPadding = contentPadding.only(
-                                            WindowInsetsSides.Horizontal
-                                        )
-                                    )
-                                ),
-                            episode = episode,
-                            onContextClick = {
-                                showEpisodeMenu = episode.id
-                            },
-                            onClick = {
-                                state.initialRelease?.let { release ->
-                                    onPlayClick(release.id, index)
-                                }
-                            }
-                        )
-                    }
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun WatchButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = ButtonDefaults.MediumContainerHeight),
-        onClick = onClick,
-        contentPadding = ButtonDefaults.MediumContentPadding,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.inverseSurface,
-            contentColor = MaterialTheme.colorScheme.inverseOnSurface
+private fun rememberReleaseSections(): List<PaneSection<ReleaseTab>> {
+    val episodesTitle = stringResource(Res.string.release_details_tab_episodes)
+    val aboutTitle = stringResource(Res.string.release_details_tab_about)
+    val ratingsTitle = stringResource(Res.string.release_details_tab_ratings)
+    return remember(episodesTitle, aboutTitle, ratingsTitle) {
+        listOf(
+            PaneSection(ReleaseTab.Episodes, SupportingPaneScaffoldRole.Supporting, episodesTitle),
+            PaneSection(ReleaseTab.About, SupportingPaneScaffoldRole.Main, aboutTitle),
+            PaneSection(ReleaseTab.Ratings, SupportingPaneScaffoldRole.Extra, ratingsTitle)
         )
-    ) {
-        Icon(
-            modifier = Modifier.size(ButtonDefaults.MediumIconSize),
-            imageVector = AnilibertyIcons.Filled.PlayArrow,
-            contentDescription = null
-        )
-        Spacer(Modifier.width(ButtonDefaults.MediumIconSpacing))
-        ProvideTextStyle(
-            LocalTextStyle.current.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        ) {
-            Text(
-                text = stringResource(Res.string.button_watch_continue),
-                maxLines = 1
-            )
-        }
     }
+}
+
+@Composable
+private fun TitleTopBar(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+    TopAppBar(
+        modifier = modifier,
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+        ),
+        title = {},
+        navigationIcon = {
+            FilledIconButton(
+                onClick = onBackClick,
+                shapes = IconButtonDefaults.shapes()
+            ) {
+                Icon(
+                    imageVector = AnilibertyIcons.ArrowBack,
+                    contentDescription = null
+                )
+            }
+        },
+        actions = {
+            FilledIconButton(
+                onClick = {},
+                shapes = IconButtonDefaults.shapes()
+            ) {
+                Icon(
+                    imageVector = AnilibertyIcons.Filled.Star,
+                    contentDescription = null
+                )
+            }
+            FilledIconButton(
+                onClick = {},
+                modifier = Modifier.size(
+                    IconButtonDefaults.smallContainerSize(
+                        IconButtonDefaults.IconButtonWidthOption.Narrow
+                    )
+                ),
+                shapes = IconButtonDefaults.shapes()
+            ) {
+                Icon(
+                    imageVector = AnilibertyIcons.MoreVert,
+                    contentDescription = null
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
+    )
 }
 
 @AnilibertyPreview
 @Composable
-private fun TitleDetailsPanePreview(
-    @PreviewParameter(TitleScreenStateProvider::class) state: TitleScreenState
-) {
-    TitleDetailsPaneContent(
-        state = state,
-        onAction = {},
-        onBackClick = {},
-        onPlayClick = { _, _ -> },
-        onReleaseClick = {}
+private fun TitleDetailsPanePreview() {
+    TitleDetailsPreview(
+        directive = PaneScaffoldDirective.Default,
+        details = createReleaseDetails(availabilityStatus = AvailabilityStatus.GeoBlocked)
     )
 }
 
-private class TitleScreenStateProvider : PreviewParameterProvider<TitleScreenState> {
-    override val values = sequenceOf(
-        TitleScreenState(),
-        TitleScreenState(
-            initialRelease = ReleaseFixtures.frieren,
-            details = AsyncResult.Success(createReleaseDetails(release = ReleaseFixtures.frieren)),
-            relatedReleases = AsyncResult.Success(ReleaseFixtures.all)
+@Preview(name = "Two panes", widthDp = 1000, heightDp = 720, locale = "ru")
+@Composable
+private fun TitleDetailsTwoPanePreview() {
+    TitleDetailsPreview(
+        directive = PaneScaffoldDirective.Default.copy(
+            maxHorizontalPartitions = 2,
+            horizontalPartitionSpacerSize = 24.dp
         )
     )
+}
+
+@Preview(name = "Three panes", widthDp = 1440, heightDp = 900, locale = "ru")
+@Composable
+private fun TitleDetailsThreePanePreview() {
+    TitleDetailsPreview(
+        directive = PaneScaffoldDirective.Default.copy(
+            maxHorizontalPartitions = 3,
+            horizontalPartitionSpacerSize = 24.dp
+        )
+    )
+}
+
+@Preview(name = "Tabletop", widthDp = 720, heightDp = 840, locale = "ru")
+@Composable
+private fun TitleDetailsTabletopPreview() {
+    TitleDetailsPreview(
+        directive = PaneScaffoldDirective.Default.copy(
+            maxVerticalPartitions = 2,
+            verticalPartitionSpacerSize = 24.dp
+        )
+    )
+}
+
+@Composable
+private fun TitleDetailsPreview(
+    directive: PaneScaffoldDirective,
+    details: ReleaseDetails = createReleaseDetails()
+) {
+    AnilibertyTheme {
+        TitleDetailsPaneContent(
+            state = TitleScreenState(
+                details = AsyncResult.Success(details),
+                franchiseReleases = AsyncResult.Success(ReleaseFixtures.list(count = 3))
+            ),
+            directive = directive,
+            onAction = {},
+            onBackClick = {},
+            onPlayClick = {},
+            onEpisodeClick = {},
+            onReleaseClick = {},
+            onGenreClick = {},
+            onMemberClick = {},
+            onFranchiseAllClick = {},
+            onExternalPlayerClick = {},
+            onUrlClick = {}
+        )
+    }
 }

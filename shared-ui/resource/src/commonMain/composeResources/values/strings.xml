@@ -55,7 +55,6 @@
     <!-- Компоненты -->
     <string name="search_bar_placeholder">Search by name…</string>
     <string name="episode_title">Episode</string>
-    <string name="minutes_abbreviation">%1$s min.</string>
     <string name="episode_abbreviation">%1$s ep.</string>
     <string name="releases_count">%1$d releases</string>
     <string name="franchise_seasons_count">%1$d seasons</string>
@@ -174,7 +173,7 @@
     <string name="release_details_copy_title">Copy title</string>
     <string name="release_details_copied">Copied</string>
     <string name="release_details_finished">Finished</string>
-    <string name="release_details_episodes_meta">%1$d ep. × %2$d min</string>
+    <string name="release_details_episodes_meta">%1$d ep. × %2$s</string>
     <plurals name="release_details_more_names">
         <item quantity="one">%1$d more name</item>
         <item quantity="other">%1$d more names</item>
@@ -184,8 +183,8 @@
     <string name="release_details_blocked_body">You can still watch it in the external player.</string>
     <string name="release_details_open_external_player">Open external player</string>
     <string name="release_details_play_continue">Continue</string>
-    <string name="release_details_play_continue_subtitle">Episode %1$s, %2$d min left</string>
-    <string name="release_details_play_start_subtitle">Episode %1$s, %2$d min</string>
+    <string name="release_details_play_continue_subtitle">Episode %1$s, %2$s left</string>
+    <string name="release_details_play_start_subtitle">Episode %1$s, %2$s</string>
     <string name="release_details_favorite">Favorite</string>
     <string name="release_details_collection_watching">Watching</string>
     <string name="release_details_collection_planned">Planned</string>

@@ -32,10 +32,9 @@ import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.ReleaseType
 import com.xbot.domain.models.isFinished
 import com.xbot.formatters.stringRes
-import com.xbot.formatters.toLocalizedString
+import com.xbot.formatters.toLocalizedUnits
 import com.xbot.resources.Res
 import com.xbot.resources.episode_abbreviation
-import com.xbot.resources.minutes_abbreviation
 import com.xbot.resources.release_details_episodes_meta
 import com.xbot.resources.release_details_finished
 import kotlin.time.Duration.Companion.minutes
@@ -105,7 +104,7 @@ private fun releaseMetaParts(release: Release): List<MetaPart> {
     )
     val duration = if (release.type == ReleaseType.MOVIE) {
         val movie = stringResource(ReleaseType.MOVIE.stringRes)
-        val duration = release.episodeDuration?.minutes?.toLocalizedString()
+        val duration = release.episodeDuration?.minutes?.toLocalizedUnits()
         MetaPart(
             text = listOfNotNull(movie, duration).joinToString(", "),
             icon = ReleaseType.MOVIE.icon,
@@ -119,14 +118,14 @@ private fun releaseMetaParts(release: Release): List<MetaPart> {
                 stringResource(
                     Res.string.release_details_episodes_meta,
                     episodesCount,
-                    episodeDuration
+                    episodeDuration.minutes.toLocalizedUnits()
                 )
 
             episodesCount != null ->
                 stringResource(Res.string.episode_abbreviation, episodesCount.toString())
 
             episodeDuration != null ->
-                stringResource(Res.string.minutes_abbreviation, episodeDuration.toString())
+                episodeDuration.minutes.toLocalizedUnits()
 
             else -> null
         }

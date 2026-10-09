@@ -27,9 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.xbot.common.AsyncResult
 import com.xbot.designsystem.components.ConnectedButtonGroupDefaults
 import com.xbot.designsystem.components.LargeReleaseCard
 import com.xbot.designsystem.components.SingleChoiceConnectedButtonGroup
+import com.xbot.designsystem.components.icon
 import com.xbot.designsystem.icons.AnilibertyIcons
 import com.xbot.designsystem.icons.Copyright
 import com.xbot.designsystem.icons.OpenInNew
@@ -37,23 +39,25 @@ import com.xbot.designsystem.icons.PublicOff
 import com.xbot.designsystem.modifier.verticalParallax
 import com.xbot.designsystem.utils.AnilibertyPreview
 import com.xbot.designsystem.utils.only
+import com.xbot.domain.fixtures.createReleaseDetails
 import com.xbot.domain.models.Release
 import com.xbot.domain.models.enums.CollectionType
+import com.xbot.formatters.stringRes
 import com.xbot.resources.Res
 import com.xbot.resources.release_details_open_external_player
 import com.xbot.resources.stringResource
+import com.xbot.title.TitleScreenState
 import com.xbot.title.component.AlertCard
 import com.xbot.title.component.CollectionStatusOrder
 import com.xbot.title.component.FavoriteButton
 import com.xbot.title.component.NotificationCard
 import com.xbot.title.component.PaneHeaderScope
 import com.xbot.title.component.PlayButton
-import com.xbot.title.component.icon
-import com.xbot.title.component.labelRes
+import com.xbot.title.component.PlayButtonState
+import com.xbot.title.component.ReleaseStatusBanner
+import com.xbot.title.component.playButtonState
 import com.xbot.title.component.rememberPaneHeaderScope
-import com.xbot.title.screen.details2.PlayButtonState
-import com.xbot.title.screen.details2.ReleaseStatusBanner
-import com.xbot.title.screen.details2.TitleDetailsPreviewDataV2
+import com.xbot.title.component.statusBanner
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -232,7 +236,7 @@ internal fun CollectionStatusGroup(
             )
             Text(
                 modifier = Modifier.padding(start = ButtonDefaults.IconSpacing),
-                text = stringResource(status.labelRes)
+                text = stringResource(status.stringRes)
             )
         }
     }
@@ -241,12 +245,12 @@ internal fun CollectionStatusGroup(
 @AnilibertyPreview
 @Composable
 private fun HeaderPanePreview() {
-    val state = TitleDetailsPreviewDataV2.ongoing
+    val state = TitleScreenState(details = AsyncResult.Success(createReleaseDetails()))
     with(rememberPaneHeaderScope()) {
         HeaderPane(
             release = state.release,
             alternativeName = state.releaseDetails?.alternativeName,
-            playButton = state.playButton,
+            playButton = state.playButtonState,
             isBlocked = state.isBlocked,
             isFavorite = state.isFavorite,
             collectionStatus = state.collectionStatus,

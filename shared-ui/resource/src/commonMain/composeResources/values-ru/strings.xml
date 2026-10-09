@@ -55,7 +55,6 @@
     <!-- Компоненты -->
     <string name="search_bar_placeholder">Поиск по названию…</string>
     <string name="episode_title">Серия</string>
-    <string name="minutes_abbreviation">%1$s мин.</string>
     <string name="episode_abbreviation">%1$s эп.</string>
     <string name="releases_count">%1$d релизов</string>
     <string name="franchise_seasons_count">%1$d сезонов</string>
@@ -174,7 +173,7 @@
     <string name="release_details_copy_title">Скопировать название</string>
     <string name="release_details_copied">Скопировано</string>
     <string name="release_details_finished">Завершён</string>
-    <string name="release_details_episodes_meta">%1$d эп. по %2$d мин</string>
+    <string name="release_details_episodes_meta">%1$d эп. по %2$s</string>
     <plurals name="release_details_more_names">
         <item quantity="one">ещё %1$d название</item>
         <item quantity="few">ещё %1$d названия</item>
@@ -186,8 +185,8 @@
     <string name="release_details_blocked_body">Смотреть можно во внешнем плеере.</string>
     <string name="release_details_open_external_player">Открыть внешний плеер</string>
     <string name="release_details_play_continue">Продолжить</string>
-    <string name="release_details_play_continue_subtitle">Серия %1$s, осталось %2$d мин</string>
-    <string name="release_details_play_start_subtitle">Серия %1$s, %2$d мин</string>
+    <string name="release_details_play_continue_subtitle">Серия %1$s, осталось %2$s</string>
+    <string name="release_details_play_start_subtitle">Серия %1$s, %2$s</string>
     <string name="release_details_favorite">В избранное</string>
     <string name="release_details_collection_watching">Смотрю</string>
     <string name="release_details_collection_planned">В планах</string>

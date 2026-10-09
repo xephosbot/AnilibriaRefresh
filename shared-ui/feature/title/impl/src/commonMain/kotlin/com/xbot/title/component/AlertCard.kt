@@ -62,10 +62,7 @@ internal fun AlertCard(
 }
 
 @Composable
-internal fun NotificationCard(
-    text: String,
-    modifier: Modifier = Modifier
-) {
+internal fun NotificationCard(text: String, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
