@@ -56,7 +56,7 @@ connectivity = "2.5.2"
 declarative-snackbar = "0.2.1"
 
 # Code quality
-spotless = "8.10.3"
+spotless = "8.10.4"
 ktlint = "1.8.0"
 detekt = "2.0.0-alpha.6"
 
